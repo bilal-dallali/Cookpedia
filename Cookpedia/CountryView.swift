@@ -17,7 +17,7 @@ struct CountryView: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
                         HStack {
-                            NavigationLink(destination: ContentView()) {
+                            NavigationLink(destination: WelcomeView()) {
                                 Image("arrow-left")
                                     .resizable()
                                     .frame(width: 28, height: 28)
@@ -25,7 +25,7 @@ struct CountryView: View {
                                     .padding(.vertical, 10)
                             }
                             .padding(.trailing, 55)
-                            Image("progress-bar")
+                            Image("progress-bar-22")
                             Spacer()
                         }
                         
@@ -52,11 +52,7 @@ struct CountryView: View {
                             
                             VStack(spacing: 20) {
                                 ForEach(countryList, id: \.name) { country in
-                                    Button {
-                                        CountryViewDetails(country: countryList[0])
-                                    } label: {
-                                        CountryViewDetails(country: country)
-                                    }
+                                    CountryDetailsView(country: country)
                                 }
                             }
                         }

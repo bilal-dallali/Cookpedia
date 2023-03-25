@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CountryViewDetails: View {
+struct CountryDetailsView: View {
     
     let country: Country
     
@@ -36,7 +36,7 @@ struct CountryViewDetails: View {
 
 struct CountryViewDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CountryViewDetails(country: countryList[0])
+        CountryDetailsView(country: countryList[0])
             .previewLayout(.sizeThatFits)
             .padding(24)
     }

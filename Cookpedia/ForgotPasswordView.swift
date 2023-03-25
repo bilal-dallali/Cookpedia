@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ForgottenPassword: View {
+struct ForgotPasswordView: View {
     
     @State private var email = ""
     @FocusState private var emailFieldIsFocused: Bool
@@ -16,12 +16,12 @@ struct ForgottenPassword: View {
         VStack {
             Text("forgotten password")
         }
-        .navigationBarBackButtonHidden(true)
+
     }
 }
 
 struct ForgottenPassword_Previews: PreviewProvider {
     static var previews: some View {
-        ForgottenPassword()
+        ForgotPasswordView()
     }
 }

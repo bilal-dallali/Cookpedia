@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct WelcomeView: View {
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Image("background")
                     .resizable()
@@ -32,6 +32,11 @@ struct ContentView: View {
                             .lineSpacing(10)
                     }
                     Divider()
+                        .overlay {
+                            Rectangle()
+                                .frame(height: 1)
+                                .foregroundColor(Color("Dark4"))
+                        }
                     VStack(spacing: 24) {
                         Button {
                             print("continue with google")
@@ -89,12 +94,11 @@ struct ContentView: View {
                 .padding(.top, 13)
             }
         }
-        .navigationBarBackButtonHidden(true)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        WelcomeView()
     }
 }
