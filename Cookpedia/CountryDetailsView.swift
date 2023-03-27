@@ -12,6 +12,8 @@ struct CountryDetailsView: View {
     let country: Country
     
     var body: some View {
+        
+        
         HStack(spacing: 23) {
             Image(country.flag)
                 .resizable()

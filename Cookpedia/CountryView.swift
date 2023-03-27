@@ -12,75 +12,66 @@ struct CountryView: View {
     @State private var country = ""
     
     var body: some View {
-        NavigationView {
-            VStack {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        HStack {
-                            NavigationLink(destination: WelcomeView()) {
-                                Image("arrow-left")
-                                    .resizable()
-                                    .frame(width: 28, height: 28)
-                                    .foregroundColor(Color("Greyscale900"))
-                                    .padding(.vertical, 10)
-                            }
-                            .padding(.trailing, 55)
-                            Image("progress-bar-22")
-                            Spacer()
-                        }
-                        
-                        VStack(spacing: 24) {
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text("Which country are you from? 🏳️")
-                                    .foregroundColor(Color("Greyscale900"))
-                                    .font(.custom("Urbanist-Bold", size: 32))
-                                Text("Please select your country of origin for a better recommendations.")
-                                    .font(.custom("Urbanist-Regular", size: 18))
-                            }
-                            
-                            HStack(spacing: 12) {
-                                Image("magnifying-glass")
-                                    .padding(.leading, 20)
-                                TextField("Search Country", text: $country)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.custom("Urbanist-Regular", size: 18))
-                            }
-                            .frame(height: 58)
-                            .background(Color("Greyscale100"))
-                            .cornerRadius(16)
-                            
-                            VStack(spacing: 20) {
-                                ForEach(countryList, id: \.name) { country in
-                                    CountryDetailsView(country: country)
-                                }
-                            }
+        VStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Which country are you from? 🏳️")
+                            .foregroundColor(Color("Greyscale900"))
+                            .font(.custom("Urbanist-Bold", size: 32))
+                        Text("Please select your country of origin for a better recommendations.")
+                            .foregroundColor(Color("Greyscale900"))
+                            .font(.custom("Urbanist-Regular", size: 18))
+                    }
+                    
+                    HStack(spacing: 12) {
+                        Image("magnifying-glass")
+                            .padding(.leading, 20)
+                        TextField("Search Country", text: $country)
+                            .autocapitalization(.none)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color("Greyscale400"))
+                            .font(.custom("Urbanist-Regular", size: 18))
+                    }
+                    .frame(height: 58)
+                    .background(Color("Greyscale100"))
+                    .cornerRadius(16)
+                    
+                    VStack(spacing: 20) {
+                        ForEach(countryList, id: \.name) { country in
+                            CountryDetailsView(country: country)
                         }
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.top, 16)
                 }
-                Button {
-                    //
-                } label: {
-                    HStack {
-                        Spacer()
-                        Text("Continue")
-                            .foregroundColor(Color("White"))
-                            .frame(height: 58)
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        Spacer()
-                    }
-                    .background(Color("DisButton"))
+                .padding(.top, 40)
+            }
+            
+            NavigationLink {
+                CookingLevelView()
+            } label: {
+                Text("Continue")
+                    .foregroundColor(Color("White"))
+                    .font(.custom("Urbanist-Bold", size: 16))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 58)
+                    .background(Color("Primary"))
                     .cornerRadius(.infinity)
-                    .padding(.horizontal, 24)
+                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                     .padding(.top, 24)
                     .padding(.bottom)
-                    
-                }
             }
         }
+        .padding(.horizontal, 24)
+        .background(Color("White"))
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton()
+            }
+            ToolbarItem(placement: .principal) {
+                Image("progress-bar-22")
+            }
+        }
     }
 }
 

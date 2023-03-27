@@ -35,6 +35,8 @@
 		9C93A31A29B6531800CE5943 /* Urbanist-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C93A30829B6531800CE5943 /* Urbanist-BoldItalic.ttf */; };
 		9C93A31B29B6531800CE5943 /* Urbanist-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C93A30929B6531800CE5943 /* Urbanist-ExtraBoldItalic.ttf */; };
 		9C93A31C29B6531800CE5943 /* Urbanist-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C93A30A29B6531800CE5943 /* Urbanist-Italic.ttf */; };
+		9CB837CD29D0B29600166E0F /* CuisinePreferenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB837CC29D0B29600166E0F /* CuisinePreferenceView.swift */; };
+		9CB837CF29D1AF8E00166E0F /* DietaryPreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB837CE29D1AF8E00166E0F /* DietaryPreferencesView.swift */; };
 		9CCD819129BFA1D9002A7580 /* CookingLevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCD819029BFA1D9002A7580 /* CookingLevelView.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +71,8 @@
 		9C93A30929B6531800CE5943 /* Urbanist-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Urbanist-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		9C93A30A29B6531800CE5943 /* Urbanist-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Urbanist-Italic.ttf"; sourceTree = "<group>"; };
 		9C93A31D29B6536900CE5943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9CB837CC29D0B29600166E0F /* CuisinePreferenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CuisinePreferenceView.swift; sourceTree = "<group>"; };
+		9CB837CE29D1AF8E00166E0F /* DietaryPreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietaryPreferencesView.swift; sourceTree = "<group>"; };
 		9CCD819029BFA1D9002A7580 /* CookingLevelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookingLevelView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -112,9 +116,11 @@
 				9C20B0FE29BCE0CA00857FC2 /* Data.swift */,
 				9C20B10229BD323900857FC2 /* CountryDetailsView.swift */,
 				9CCD819029BFA1D9002A7580 /* CookingLevelView.swift */,
+				9C31CF5D29CF47AE00095B82 /* LoginView.swift */,
+				9CB837CC29D0B29600166E0F /* CuisinePreferenceView.swift */,
+				9CB837CE29D1AF8E00166E0F /* DietaryPreferencesView.swift */,
 				9C93A2EE29B651F000CE5943 /* Assets.xcassets */,
 				9C93A2F029B651F000CE5943 /* Preview Content */,
-				9C31CF5D29CF47AE00095B82 /* LoginView.swift */,
 			);
 			path = Cookpedia;
 			sourceTree = "<group>";
@@ -242,11 +248,13 @@
 			files = (
 				9C20B10329BD323900857FC2 /* CountryDetailsView.swift in Sources */,
 				9C52C88629B746D1004A1E41 /* BackButton.swift in Sources */,
+				9CB837CD29D0B29600166E0F /* CuisinePreferenceView.swift in Sources */,
 				9CCD819129BFA1D9002A7580 /* CookingLevelView.swift in Sources */,
 				9C31CF5E29CF47AE00095B82 /* LoginView.swift in Sources */,
 				9C20B0FF29BCE0CA00857FC2 /* Data.swift in Sources */,
 				9C93A2ED29B651EF00CE5943 /* WelcomeView.swift in Sources */,
 				9C93A2EB29B651EF00CE5943 /* CookpediaApp.swift in Sources */,
+				9CB837CF29D1AF8E00166E0F /* DietaryPreferencesView.swift in Sources */,
 				9C20B10129BD285B00857FC2 /* CountryView.swift in Sources */,
 				9C52C88829B7875F004A1E41 /* ForgotPasswordView.swift in Sources */,
 			);

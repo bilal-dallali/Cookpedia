@@ -13,7 +13,7 @@ struct LoginView: View {
     @State private var password = ""
     @FocusState private var emailFieldIsFocused: Bool
     @State private var isPasswordHidden: Bool = true
-    @State private var isCheckboxChecked: Bool = false
+    @State private var isCheckboxChecked: Bool = true
     @State private var isPresented: Bool = false
     
     var body: some View {
@@ -53,7 +53,7 @@ struct LoginView: View {
                                 .foregroundColor(Color("Greyscale900"))
                                 .font(.custom("Urbanist-Bold", size: 16))
                             HStack {
-                                if isPasswordHidden == true {
+                                if isPasswordHidden {
                                     SecureField("Password", text: $password)
                                         .font(Font.custom("Urbanist-Bold", size: 20))
                                         .foregroundColor(Color("Greyscale900"))
@@ -68,8 +68,6 @@ struct LoginView: View {
                                         .autocapitalization(.none)
                                         .disableAutocorrection(true)
                                 }
-                                
-                                
                                 Spacer()
                                 Button {
                                     isPasswordHidden.toggle()
@@ -89,15 +87,16 @@ struct LoginView: View {
                         }
                         
                         HStack {
-                            HStack(spacing: 16) {
-                                Button {
-                                    isCheckboxChecked.toggle()
-                                } label: {
-                                    Image(isCheckboxChecked == false ? "checkbox-checked" : "checkbox-unchecked")
+                            Button {
+                                isCheckboxChecked.toggle()
+                            } label: {
+                                HStack (spacing: 16) {
+                                    Image(isCheckboxChecked == true ? "checkbox-checked" : "checkbox-unchecked")
+                                    Text("Remember me")
+                                        .foregroundColor(Color("Greyscale900"))
+                                        .font(.custom("Urbanist-SemiBold", size: 18))
                                 }
-                                Text("Remember me")
-                                    .font(.custom("Urbanist-SemiBold", size: 18))
-                                    
+                                
                             }
                             Spacer()
                         }
@@ -112,36 +111,96 @@ struct LoginView: View {
                         }
                     }
                     
-                    VStack(spacing: 24) {
-                        
+                    VStack(spacing: 46) {
+                        HStack {
+                            VStack {
+                                Divider()
+                                    .frame(width: 110)
+                            }
+                            Spacer()
+                            Text("or continue with")
+                                .foregroundColor(Color("Greyscale700"))
+                                .font(.custom("Urbanist-Medium", size: 18))
+                                .multilineTextAlignment(.center)
+                            Spacer()
+                            VStack {
+                                Divider()
+                                    .frame(width: 110)
+                            }
+                            
+                        }
+                        HStack(spacing: 16) {
+                            Button {
+                                //
+                            } label: {
+                                Image("google-logo")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .frame(maxWidth: .infinity)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: .infinity)
+                                            .stroke(Color("Greyscale200"), lineWidth: 1)
+                                            .frame(height: 60)
+                                            
+                                    }
+                            }
+                            Button {
+                                //
+                            } label: {
+                                Image("apple-logo")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .frame(maxWidth: .infinity)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: .infinity)
+                                            .stroke(Color("Greyscale200"), lineWidth: 1)
+                                            .frame(height: 60)
+                                            
+                                    }
+                            }
+                            Button {
+                                //
+                            } label: {
+                                Image("facebook-logo")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .frame(maxWidth: .infinity)
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: .infinity)
+                                            .stroke(Color("Greyscale200"), lineWidth: 1)
+                                            .frame(height: 60)
+                                            
+                                    }
+                            }
+                        }
                     }
                 }
                 .padding(.top, 40)
-                
-                
             }
             
             Button {
                 //
             } label: {
-                HStack {
-                    Spacer()
-                    Text("Sign In")
-                        .foregroundColor(Color("White"))
-                        .frame(height: 58)
-                        .font(.custom("Urbanist-Bold", size: 16))
-                    Spacer()
-                }
-                .background(Color("Primary"))
-                .cornerRadius(.infinity)
-                .padding(.top, 24)
-                .padding(.bottom)
+                Text("Sign In")
+                    .foregroundColor(Color("White"))
+                    .font(.custom("Urbanist-Bold", size: 16))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 58)
+                    .background(Color("Primary"))
+                    .cornerRadius(.infinity)
+                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                    .padding(.top, 24)
+                    .padding(.bottom)
             }
         }
         .padding(.horizontal, 24)
         .background(Color("White"))
         .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: BackButton())
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                BackButton()
+            }
+        }
     }
 }
 

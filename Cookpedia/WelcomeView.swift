@@ -42,7 +42,6 @@ struct WelcomeView: View {
                             print("continue with google")
                         } label: {
                             HStack(spacing: 12) {
-                                Spacer()
                                 Image("google-logo")
                                     .resizable()
                                     .frame(width: 24, height: 24)
@@ -50,8 +49,8 @@ struct WelcomeView: View {
                                     .foregroundColor(Color("Greyscale900"))
                                     .font(.custom("Urbanist-SemiBold", size: 16))
                                     .frame(height: 60)
-                                Spacer()
                             }
+                            .frame(maxWidth: .infinity)
                             .background(Color("White"))
                             .cornerRadius(.infinity)
                             .overlay {
@@ -59,34 +58,25 @@ struct WelcomeView: View {
                                     .stroke(Color("Greyscale200"), lineWidth: 1)
                                     .cornerRadius(.infinity)
                             }
+                            
                         }
-                        NavigationLink {
-                            CountryView()
-                        } label: {
-                            HStack {
-                                Spacer()
-                                Text("Get Started")
-                                    .foregroundColor(Color("White"))
-                                    .frame(height: 58)
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                                Spacer()
-                            }
-                            .background(Color("Primary"))
-                            .cornerRadius(.infinity)
+                        NavigationLink(destination: CountryView()) {
+                            Text("Get Started")
+                                .foregroundColor(Color("White"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(height: 58)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("Primary"))
+                                .cornerRadius(.infinity)
                         }
-                        NavigationLink {
-                            LoginView()
-                        } label: {
-                            HStack {
-                                Spacer()
-                                Text("I Already Have an Account")
-                                    .foregroundColor(Color("Primary"))
-                                    .frame(height: 58)
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                                Spacer()
-                            }
-                            .background(Color("Primary50"))
-                            .cornerRadius(.infinity)
+                        NavigationLink(destination: LoginView()) {
+                            Text("I Already Have an Account")
+                                .foregroundColor(Color("Primary"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(height: 58)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("Primary50"))
+                                .cornerRadius(.infinity)
                         }
                     }
                 }
