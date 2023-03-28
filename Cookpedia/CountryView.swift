@@ -10,6 +10,7 @@ import SwiftUI
 struct CountryView: View {
     
     @State private var country = ""
+    @State private var isCountrySelected: Bool = false
     
     var body: some View {
         VStack {
@@ -42,6 +43,7 @@ struct CountryView: View {
                             CountryDetailsView(country: country)
                         }
                     }
+                    .padding(.horizontal, 1)
                 }
                 .padding(.top, 40)
             }

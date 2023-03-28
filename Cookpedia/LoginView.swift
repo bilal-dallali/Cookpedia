@@ -169,7 +169,6 @@ struct LoginView: View {
                                         RoundedRectangle(cornerRadius: .infinity)
                                             .stroke(Color("Greyscale200"), lineWidth: 1)
                                             .frame(height: 60)
-                                            
                                     }
                             }
                         }
@@ -179,7 +178,7 @@ struct LoginView: View {
             }
             
             Button {
-                //
+                print(email + password)
             } label: {
                 Text("Sign In")
                     .foregroundColor(Color("White"))
