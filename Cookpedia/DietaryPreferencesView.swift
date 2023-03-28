@@ -383,7 +383,7 @@ struct DietaryPreferencesView: View {
                 
                 if vegetarian == true || vegan == true || glutenFree == true || nutFree == true || dairyFree == true || lowCarb == true || peanutFree == true || keto == true || soyFree == true || rawFood == true || lowFat == true || halal == true {
                     NavigationLink {
-                        //
+                        CompleteProfileView()
                     } label: {
                         Text("Continue")
                             .foregroundColor(Color("White"))
@@ -414,7 +414,7 @@ struct DietaryPreferencesView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                BackButtonView()
             }
             ToolbarItem(placement: .principal) {
                 Image("progress-bar-60")

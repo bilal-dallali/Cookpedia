@@ -202,9 +202,8 @@ struct CookingLevelView: View {
                     .font(.custom("Urbanist-Bold", size: 16))
                     .frame(maxWidth: .infinity)
                     .frame(height: 58)
-                    .background(Color("Primary"))
+                    .background(Color("DisabledButton"))
                     .cornerRadius(.infinity)
-                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                     .padding(.top, 24)
                     .padding(.bottom)
             } else {
@@ -229,7 +228,7 @@ struct CookingLevelView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                BackButtonView()
             }
             ToolbarItem(placement: .principal) {
                 Image("progress-bar-33")

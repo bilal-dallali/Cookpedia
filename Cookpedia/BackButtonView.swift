@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BackButton: View {
+struct BackButtonView: View {
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -25,7 +25,7 @@ struct BackButton: View {
 
 struct BackButton_Previews: PreviewProvider {
     static var previews: some View {
-        BackButton()
+        BackButtonView()
             .previewLayout(.sizeThatFits)
     }
 }

@@ -34,7 +34,7 @@ struct LoginView: View {
                             Text("Username / Email")
                                 .foregroundColor(Color("Greyscale900"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("Email or Username", text: $email)
+                            TextField("", text: $email)
                                 .autocapitalization(.none)
                                 .font(Font.custom("Urbanist-Bold", size: 20))
                                 .foregroundColor(Color("Greyscale900"))
@@ -54,14 +54,14 @@ struct LoginView: View {
                                 .font(.custom("Urbanist-Bold", size: 16))
                             HStack {
                                 if isPasswordHidden {
-                                    SecureField("Password", text: $password)
+                                    SecureField("", text: $password)
                                         .font(Font.custom("Urbanist-Bold", size: 20))
                                         .foregroundColor(Color("Greyscale900"))
                                         .textContentType(.password)
                                         .autocapitalization(.none)
                                         .disableAutocorrection(true)
                                 } else {
-                                    TextField("Password", text: $password)
+                                    TextField("", text: $password)
                                         .font(Font.custom("Urbanist-Bold", size: 20))
                                         .foregroundColor(Color("Greyscale900"))
                                         .textContentType(.password)
@@ -197,7 +197,7 @@ struct LoginView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                BackButtonView()
             }
         }
     }

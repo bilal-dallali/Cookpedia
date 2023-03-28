@@ -365,7 +365,7 @@ struct CuisinePreferenceView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                BackButtonView()
             }
             ToolbarItem(placement: .principal) {
                 Image("progress-bar-50")

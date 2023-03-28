@@ -10,11 +10,14 @@ import SwiftUI
 struct CountryDetailsView: View {
     
     let country: Country
-    @State private var isCountrySelected: Bool = false
+    @Binding var selectedCountry: Country?
+    var isCountrySelected: Bool {
+        selectedCountry == country
+    }
     
     var body: some View {
         Button {
-            isCountrySelected.toggle()
+            selectedCountry = isCountrySelected ? nil : country
         } label: {
             HStack(spacing: 23) {
                 Image(country.flag)
@@ -31,12 +34,12 @@ struct CountryDetailsView: View {
             }
             .padding(20)
             .overlay {
-                if isCountrySelected == false {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color("Greyscale200"))
-                } else {
+                if isCountrySelected {
                     RoundedRectangle(cornerRadius: 16)
                         .stroke(Color("Primary"), lineWidth: 2)
+                } else {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(Color("Greyscale200"))
                 }
             }
         }
@@ -45,7 +48,7 @@ struct CountryDetailsView: View {
 
 struct CountryViewDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CountryDetailsView(country: countryList[3])
+        CountryDetailsView(country: .init(name: "ALgérie", flag: "algeria", domain: "DZ"), selectedCountry: .constant(nil))
             .previewLayout(.sizeThatFits)
             .padding(24)
     }

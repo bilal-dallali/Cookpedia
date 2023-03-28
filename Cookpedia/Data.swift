@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Country {
+struct Country: Equatable {
     let name: String
     let flag: String
     let domain: String

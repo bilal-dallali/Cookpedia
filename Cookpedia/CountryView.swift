@@ -7,15 +7,28 @@
 
 import SwiftUI
 
+extension View {
+    func placeholder<Content: View>(
+        when shouldShow: Bool,
+        alignment: Alignment = .leading,
+        @ViewBuilder placeholder: () -> Content) -> some View {
+
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
+        }
+    }
+}
+
 struct CountryView: View {
     
     @State private var country = ""
-    @State private var isCountrySelected: Bool = false
+    @State private var selectedCountry: Country?
     
     var body: some View {
         VStack {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Which country are you from? 🏳️")
                             .foregroundColor(Color("Greyscale900"))
@@ -28,10 +41,15 @@ struct CountryView: View {
                     HStack(spacing: 12) {
                         Image("magnifying-glass")
                             .padding(.leading, 20)
-                        TextField("Search Country", text: $country)
+                        TextField("", text: $country)
+                            .placeholder(when: country.isEmpty) {
+                                Text("Search Country")
+                                    .foregroundColor(Color("Greyscale400"))
+                                    .font(.custom("Urbanist-Regular", size: 16))
+                            }
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
-                            .foregroundColor(Color("Greyscale400"))
+                            .foregroundColor(Color("Greyscale900"))
                             .font(.custom("Urbanist-Regular", size: 18))
                     }
                     .frame(height: 58)
@@ -40,35 +58,53 @@ struct CountryView: View {
                     
                     VStack(spacing: 20) {
                         ForEach(countryList, id: \.name) { country in
-                            CountryDetailsView(country: country)
+                            CountryDetailsView(country: country, selectedCountry: $selectedCountry)
                         }
                     }
                     .padding(.horizontal, 1)
                 }
                 .padding(.top, 40)
             }
-            
-            NavigationLink {
-                CookingLevelView()
-            } label: {
-                Text("Continue")
-                    .foregroundColor(Color("White"))
-                    .font(.custom("Urbanist-Bold", size: 16))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 58)
-                    .background(Color("Primary"))
-                    .cornerRadius(.infinity)
-                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                    .padding(.top, 24)
-                    .padding(.bottom)
+            if selectedCountry != nil {
+                NavigationLink {
+                    CookingLevelView()
+                    //print("Selected country: \(selectedCountry?.name ?? "None")")
+                } label: {
+                    Text("Continue")
+                        .foregroundColor(Color("White"))
+                        .font(.custom("Urbanist-Bold", size: 16))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 58)
+                        .background(Color("Primary"))
+                        .cornerRadius(.infinity)
+                        .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                        .padding(.top, 24)
+                        .padding(.bottom)
+                }
+            } else {
+                Button {
+                    //CookingLevelView()
+                    //print("Selected country: \(selectedCountry?.name ?? "None")")
+                } label: {
+                    Text("Continue")
+                        .foregroundColor(Color("White"))
+                        .font(.custom("Urbanist-Bold", size: 16))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 58)
+                        .background(Color("DisabledButton"))
+                        .cornerRadius(.infinity)
+                        .padding(.top, 24)
+                        .padding(.bottom)
+                }
             }
+            
         }
         .padding(.horizontal, 24)
         .background(Color("White"))
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                BackButton()
+                BackButtonView()
             }
             ToolbarItem(placement: .principal) {
                 Image("progress-bar-22")
