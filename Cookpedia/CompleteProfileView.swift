@@ -83,7 +83,9 @@ struct CompleteProfileView: View {
                             
                             VStack(spacing: 8) {
                                 Button {
-                                    isDropDownMenuActivated.toggle()
+                                    withAnimation {
+                                        isDropDownMenuActivated.toggle()
+                                    }
                                 } label: {
                                     VStack(spacing: 8) {
                                         HStack {
@@ -100,7 +102,7 @@ struct CompleteProfileView: View {
                                 }
                                 
                                 if isDropDownMenuActivated {
-                                    VStack(alignment: .leading, spacing: 10) {
+                                    VStack(spacing: 8) {
                                         Button {
                                             gender = "Male"
                                             isDropDownMenuActivated = false
@@ -138,16 +140,6 @@ struct CompleteProfileView: View {
                                     }
                                 }
                             }
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
                         }
                     }
                 }
@@ -158,7 +150,7 @@ struct CompleteProfileView: View {
                 //
                 print("full name:", fullName)
                 print("phone number:", phoneNumber)
-                //print("gender:", gender)
+                print("gender:", gender)
             } label: {
                 Text("Continue")
                     .foregroundColor(Color("White"))
