@@ -8,12 +8,18 @@
 import SwiftUI
 
 struct CompleteProfileView: View {
-    
     @State private var fullName = ""
     @State private var phoneNumber = ""
     @State private var gender = ""
     @State private var isDropDownMenuActivated: Bool = false
-    
+    @State private var selectedDate = Date()
+    @State private var showDatePicker = false
+    @State private var isShowingDate = false
+    private var date: String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            return formatter.string(from: selectedDate)
+    }
     var body: some View {
         VStack {
             ScrollView {
@@ -43,11 +49,16 @@ struct CompleteProfileView: View {
                             Text("Full Name")
                                 .foregroundColor(Color("Greyscale900"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("Full Name", text: $fullName)
+                            TextField("", text: $fullName)
+                                .placeholder(when: fullName.isEmpty) {
+                                    Text("Full Name")
+                                        .foregroundColor(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
                                 .autocapitalization(.none)
                                 .font(Font.custom("Urbanist-Bold", size: 20))
                                 .foregroundColor(Color("Greyscale900"))
-                                //.focused($emailFieldIsFocused)
+                            //.focused($emailFieldIsFocused)
                                 .frame(height: 41)
                                 .overlay(
                                     Rectangle()
@@ -61,11 +72,16 @@ struct CompleteProfileView: View {
                             Text("Phone Number")
                                 .foregroundColor(Color("Greyscale900"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("Phone Number", text: $phoneNumber)
+                            TextField("", text: $phoneNumber)
+                                .placeholder(when: phoneNumber.isEmpty) {
+                                    Text("Phone Number")
+                                        .foregroundColor(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
                                 .autocapitalization(.none)
                                 .font(Font.custom("Urbanist-Bold", size: 20))
                                 .foregroundColor(Color("Greyscale900"))
-                                //.focused($emailFieldIsFocused)
+                            //.focused($emailFieldIsFocused)
                                 .frame(height: 41)
                                 .overlay(
                                     Rectangle()
@@ -79,13 +95,9 @@ struct CompleteProfileView: View {
                             Text("Gender")
                                 .foregroundColor(Color("Greyscale900"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-
-                            
                             VStack(spacing: 8) {
                                 Button {
-                                    withAnimation {
-                                        isDropDownMenuActivated.toggle()
-                                    }
+                                    isDropDownMenuActivated.toggle()
                                 } label: {
                                     VStack(spacing: 8) {
                                         HStack {
@@ -139,6 +151,54 @@ struct CompleteProfileView: View {
                                             }
                                     }
                                 }
+                                
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Date of Birth")
+                                .foregroundColor(Color("Greyscale900"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                Button {
+                                    showDatePicker.toggle()
+                                } label: {
+                                    HStack {
+                                        Text(isShowingDate ? "\(date)" : "DD/MM/YYYY")
+                                            .foregroundColor(Color(isShowingDate ? "Greyscale900" : "Greyscale500"))
+                                            .font(.custom("Urbanist-Bold", size: 20))
+                                        Spacer()
+                                        Image(systemName: "calendar")
+                                            .foregroundColor(Color("Primary"))
+                                    }
+                                }
+                                .sheet(isPresented: $showDatePicker) {
+                                    VStack(spacing: 0) {
+                                        DatePicker("", selection: $selectedDate, displayedComponents: [.date])
+                                            .datePickerStyle(.wheel)
+                                            .padding()
+                                            .frame(maxWidth: 50)
+                                            .environment(\.locale, Locale(identifier: "fr_FR"))
+                                        Button {
+                                            showDatePicker = false
+                                            isShowingDate = true
+                                            print(date)
+                                        } label: {
+                                            Text("Ok")
+                                                .foregroundColor(Color("White"))
+                                                .font(.custom("Urbanist-Bold", size: 16))
+                                                .frame(width: 80)
+                                                .frame(height: 58)
+                                                .background(Color("Primary"))
+                                                .cornerRadius(.infinity)
+                                                .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                        }
+                                    }
+                                    .presentationDetents([.height(270)])
+                                }
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundColor(Color("Primary"))
                             }
                         }
                     }
@@ -147,10 +207,10 @@ struct CompleteProfileView: View {
             }
             
             Button {
-                //
                 print("full name:", fullName)
                 print("phone number:", phoneNumber)
                 print("gender:", gender)
+                print("date:", date)
             } label: {
                 Text("Continue")
                     .foregroundColor(Color("White"))
@@ -176,6 +236,8 @@ struct CompleteProfileView: View {
             }
         }
     }
+    
+    
 }
 
 struct CompleteProfileView_Previews: PreviewProvider {

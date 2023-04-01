@@ -368,7 +368,7 @@ struct DietaryPreferencesView: View {
             
             HStack(spacing: 16) {
                 NavigationLink {
-                    //
+                    CompleteProfileView()
                 } label: {
                     Text("Skip")
                         .foregroundColor(Color("Primary"))

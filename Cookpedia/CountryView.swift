@@ -84,7 +84,7 @@ struct CountryView: View {
             } else {
                 Button {
                     //CookingLevelView()
-                    //print("Selected country: \(selectedCountry?.name ?? "None")")
+                    print("Selected country: \(selectedCountry?.name ?? "None")")
                 } label: {
                     Text("Continue")
                         .foregroundColor(Color("White"))

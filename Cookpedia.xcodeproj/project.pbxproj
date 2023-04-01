@@ -13,6 +13,7 @@
 		9C31CF5E29CF47AE00095B82 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31CF5D29CF47AE00095B82 /* LoginView.swift */; };
 		9C52C88629B746D1004A1E41 /* BackButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C52C88529B746D1004A1E41 /* BackButtonView.swift */; };
 		9C52C88829B7875F004A1E41 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C52C88729B7875F004A1E41 /* ForgotPasswordView.swift */; };
+		9C5365C129D735E50062B360 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5365C029D735E50062B360 /* TabView.swift */; };
 		9C865FC729D2E22300B4A6FA /* CompleteProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C865FC629D2E22300B4A6FA /* CompleteProfileView.swift */; };
 		9C93A2EB29B651EF00CE5943 /* CookpediaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C93A2EA29B651EF00CE5943 /* CookpediaApp.swift */; };
 		9C93A2ED29B651EF00CE5943 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C93A2EC29B651EF00CE5943 /* WelcomeView.swift */; };
@@ -48,6 +49,7 @@
 		9C31CF5D29CF47AE00095B82 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		9C52C88529B746D1004A1E41 /* BackButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButtonView.swift; sourceTree = "<group>"; };
 		9C52C88729B7875F004A1E41 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
+		9C5365C029D735E50062B360 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
 		9C865FC629D2E22300B4A6FA /* CompleteProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteProfileView.swift; sourceTree = "<group>"; };
 		9C93A2E729B651EF00CE5943 /* Cookpedia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cookpedia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C93A2EA29B651EF00CE5943 /* CookpediaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookpediaApp.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				9CB837CC29D0B29600166E0F /* CuisinePreferenceView.swift */,
 				9CB837CE29D1AF8E00166E0F /* DietaryPreferencesView.swift */,
 				9C865FC629D2E22300B4A6FA /* CompleteProfileView.swift */,
+				9C5365C029D735E50062B360 /* TabView.swift */,
 				9C93A2EE29B651F000CE5943 /* Assets.xcassets */,
 				9C93A2F029B651F000CE5943 /* Preview Content */,
 			);
@@ -251,6 +254,7 @@
 			files = (
 				9C20B10329BD323900857FC2 /* CountryDetailsView.swift in Sources */,
 				9C865FC729D2E22300B4A6FA /* CompleteProfileView.swift in Sources */,
+				9C5365C129D735E50062B360 /* TabView.swift in Sources */,
 				9C52C88629B746D1004A1E41 /* BackButtonView.swift in Sources */,
 				9CB837CD29D0B29600166E0F /* CuisinePreferenceView.swift in Sources */,
 				9CCD819129BFA1D9002A7580 /* CookingLevelView.swift in Sources */,
