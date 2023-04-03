@@ -123,7 +123,6 @@ struct TabView: View {
             .padding(.horizontal, 32)
         }
         .frame(height: 90)
-        //.background(Color("Lime"))
     }
 }
 
