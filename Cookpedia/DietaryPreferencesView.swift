@@ -35,7 +35,7 @@ struct DietaryPreferencesView: View {
                             .font(.custom("Urbanist-Regular", size: 18))
                     }
                     
-                    VStack(spacing: 16) {
+                    VStack(alignment: .leading, spacing: 16) {
                         HStack(spacing: 16) {
                             Button {
                                 vegetarian.toggle()
@@ -45,14 +45,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Vegetarian    ")
+                                    Text("Vegetarian")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if vegetarian == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -63,6 +65,7 @@ struct DietaryPreferencesView: View {
                                     }
                                 }
                             }
+                            
                             Button {
                                 vegan.toggle()
                             } label: {
@@ -71,14 +74,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Vegan             ")
+                                    Text("Vegan")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if vegan == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -99,14 +104,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Gluten-free   ")
+                                    Text("Gluten-free")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if glutenFree == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -117,6 +124,7 @@ struct DietaryPreferencesView: View {
                                     }
                                 }
                             }
+                            
                             Button {
                                 nutFree.toggle()
                             } label: {
@@ -125,14 +133,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("nut-free          ")
+                                    Text("Nut-free")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if nutFree == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -153,14 +163,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Dairy-free    ")
+                                    Text("Dairy-free")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if dairyFree == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -171,6 +183,7 @@ struct DietaryPreferencesView: View {
                                     }
                                 }
                             }
+                            
                             Button {
                                 lowCarb.toggle()
                             } label: {
@@ -179,14 +192,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Low-carb          ")
+                                    Text("Low-carb")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if lowCarb == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -207,14 +222,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Peanut-free   ")
+                                    Text("Peanut-free")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if peanutFree == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -225,6 +242,7 @@ struct DietaryPreferencesView: View {
                                     }
                                 }
                             }
+                            
                             Button {
                                 keto.toggle()
                             } label: {
@@ -233,14 +251,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("keto                  ")
+                                    Text("Keto")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if keto == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -261,14 +281,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Soy-free          ")
+                                    Text("Soy-free")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if soyFree == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -279,22 +301,25 @@ struct DietaryPreferencesView: View {
                                     }
                                 }
                             }
+                            
                             Button {
-                                rawFood.toggle()
+                                vegan.toggle()
                             } label: {
                                 HStack(spacing: 12) {
                                     Image("raw-food")
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Raw food          ")
+                                    Text("Raw food")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if rawFood == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -315,14 +340,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Low-fat           ")
+                                    Text("Low-fat")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if lowFat == false {
                                         RoundedRectangle(cornerRadius: 16)
@@ -333,6 +360,7 @@ struct DietaryPreferencesView: View {
                                     }
                                 }
                             }
+                            
                             Button {
                                 halal.toggle()
                             } label: {
@@ -341,14 +369,16 @@ struct DietaryPreferencesView: View {
                                         .resizable()
                                         .frame(width: 48, height: 48)
                                         .cornerRadius(8)
-                                    Text("Halal             ")
+                                    Text("Halal")
+                                        .lineLimit(1)
                                         .foregroundColor(Color("Greyscale900"))
                                         .font(.custom("Urbanist-Bold", size: 18))
                                         .multilineTextAlignment(.leading)
+                                    Spacer()
                                 }
+                                .padding(.leading, 16)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 16)
-                                .padding(.leading, 16)
                                 .overlay {
                                     if halal == false {
                                         RoundedRectangle(cornerRadius: 16)

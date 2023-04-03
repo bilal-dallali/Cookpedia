@@ -95,7 +95,7 @@ struct CompleteProfileView: View {
                             Text("Gender")
                                 .foregroundColor(Color("Greyscale900"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            VStack(spacing: 8) {
+                            VStack(alignment: .trailing, spacing: 2) {
                                 Button {
                                     isDropDownMenuActivated.toggle()
                                 } label: {
@@ -114,42 +114,45 @@ struct CompleteProfileView: View {
                                 }
                                 
                                 if isDropDownMenuActivated {
-                                    VStack(spacing: 8) {
+                                    VStack(alignment: .leading, spacing: 16) {
                                         Button {
                                             gender = "Male"
                                             isDropDownMenuActivated = false
                                         } label: {
                                             HStack {
+                                                Image(gender == "Male" ? "radio-selected" : "radio-unselected")
+                                                    .resizable()
+                                                    .frame(width: 20, height: 20)
                                                 Text("Male")
                                                     .foregroundColor(Color("Greyscale900"))
-                                                    .font(.custom("Urbanist-Bold", size: 20))
+                                                    .font(.custom("Urbanist-Semibold", size: 14))
                                                 Spacer()
                                             }
                                         }
+                                        
                                         Divider()
-                                            .overlay {
-                                                Rectangle()
-                                                    .foregroundColor(Color("Primary"))
-                                                    .frame(height: 1)
-                                            }
+                                        
                                         Button {
                                             gender = "Female"
                                             isDropDownMenuActivated = false
                                         } label: {
                                             HStack {
+                                                Image(gender == "Female" ? "radio-selected" : "radio-unselected")
+                                                    .resizable()
+                                                    .frame(width: 20, height: 20)
                                                 Text("Female")
                                                     .foregroundColor(Color("Greyscale900"))
-                                                    .font(.custom("Urbanist-Bold", size: 20))
+                                                    .font(.custom("Urbanist-Semibold", size: 14))
                                                 Spacer()
                                             }
                                         }
-                                        Divider()
-                                            .overlay {
-                                                Rectangle()
-                                                    .foregroundColor(Color("Primary"))
-                                                    .frame(height: 1)
-                                            }
                                     }
+                                    .padding(.horizontal, 24)
+                                    .padding(.vertical, 20)
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color("White"))
+                                    .cornerRadius(20)
+                                    .shadow(color: Color(red: 4/255, green: 6/255, blue: 15/255, opacity: 0.08), radius: 100, x: 0, y: 20)
                                 }
                             }
                         }
@@ -263,6 +266,9 @@ struct CompleteProfileView: View {
             ToolbarItem(placement: .principal) {
                 Image("progress-bar-80")
             }
+        }
+        .onTapGesture {
+            isDropDownMenuActivated = false
         }
     }
 }

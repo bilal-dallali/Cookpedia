@@ -13,8 +13,8 @@ struct CreateAccountView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
-    @State private var isPasswordHidden: Bool = false
-    @State private var isConfirmPasswordHidden: Bool = false
+    @State private var isPasswordHidden: Bool = true
+    @State private var isConfirmPasswordHidden: Bool = true
     @State private var isCheckboxChecked: Bool = true
     
     var body: some View {
@@ -187,7 +187,10 @@ struct CreateAccountView: View {
             }
             
             Button {
-                //
+                print(username)
+                print(email)
+                print(password)
+                print(confirmPassword)
             } label: {
                 Text("Continue")
                     .foregroundColor(Color("White"))
