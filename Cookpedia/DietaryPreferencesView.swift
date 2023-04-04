@@ -303,7 +303,7 @@ struct DietaryPreferencesView: View {
                             }
                             
                             Button {
-                                vegan.toggle()
+                                rawFood.toggle()
                             } label: {
                                 HStack(spacing: 12) {
                                     Image("raw-food")
