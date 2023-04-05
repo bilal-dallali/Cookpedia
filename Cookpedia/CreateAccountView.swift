@@ -16,6 +16,7 @@ struct CreateAccountView: View {
     @State private var isPasswordHidden: Bool = true
     @State private var isConfirmPasswordHidden: Bool = true
     @State private var isCheckboxChecked: Bool = true
+    @State private var alertPasswordIdentical: Bool = true
     
     var body: some View {
         ZStack {

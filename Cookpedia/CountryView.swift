@@ -25,6 +25,14 @@ struct CountryView: View {
     @State private var country = ""
     @State private var selectedCountry: Country?
     
+//    var filteredCountries: [Country] {
+//            if searchText.isEmpty {
+//                return countryList
+//            } else {
+//                return countryList.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+//            }
+//        }
+    
     var body: some View {
         VStack {
             ScrollView {

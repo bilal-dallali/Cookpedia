@@ -17,258 +17,272 @@ struct CompleteProfileView: View {
     @State private var showDatePicker = false
     @State private var isShowingDate = false
     private var date: String {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd/MM/yyyy"
-            return formatter.string(from: selectedDate)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        return formatter.string(from: selectedDate)
     }
     @State private var city = ""
     
     var body: some View {
-        VStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Complete Your Profile 📋")
-                            .foregroundColor(Color("Greyscale900"))
-                            .font(.custom("Urbanist-Bold", size: 32))
-                        Text("Don't worry, only you can see your personal data. No one else will be able to see it.")
-                            .foregroundColor(Color("Greyscale900"))
-                            .font(.custom("Urbanist-Regular", size: 18))
-                    }
-
-                    VStack(spacing: 24) {
-                        HStack {
-                            Spacer()
-                            Button {
-                                //
-                            } label: {
-                                Image("avatar")
-                            }
-                            Spacer()
+        ZStack {
+            VStack {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Complete Your Profile 📋")
+                                .foregroundColor(Color("Greyscale900"))
+                                .font(.custom("Urbanist-Bold", size: 32))
+                            Text("Don't worry, only you can see your personal data. No one else will be able to see it.")
+                                .foregroundColor(Color("Greyscale900"))
+                                .font(.custom("Urbanist-Regular", size: 18))
                         }
                         
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("Full Name")
-                                .foregroundColor(Color("Greyscale900"))
-                                .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("", text: $fullName)
-                                .placeholder(when: fullName.isEmpty) {
-                                    Text("Full Name")
-                                        .foregroundColor(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Bold", size: 20))
-                                }
-                                .autocapitalization(.none)
-                                .font(Font.custom("Urbanist-Bold", size: 20))
-                                .foregroundColor(Color("Greyscale900"))
-                                .frame(height: 41)
-                                .overlay(
-                                    Rectangle()
-                                        .frame(height: 1)
-                                        .foregroundColor(Color("Primary"))
-                                        .padding(.top), alignment: .bottom
-                                )
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("Phone Number")
-                                .foregroundColor(Color("Greyscale900"))
-                                .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("", text: $phoneNumber)
-                                .placeholder(when: phoneNumber.isEmpty) {
-                                    Text("Phone Number")
-                                        .foregroundColor(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Bold", size: 20))
-                                }
-                                .autocapitalization(.none)
-                                .font(Font.custom("Urbanist-Bold", size: 20))
-                                .foregroundColor(Color("Greyscale900"))
-                                .frame(height: 41)
-                                .overlay(
-                                    Rectangle()
-                                        .frame(height: 1)
-                                        .foregroundColor(Color("Primary"))
-                                        .padding(.top), alignment: .bottom
-                                )
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 16) {
-                            Text("Gender")
-                                .foregroundColor(Color("Greyscale900"))
-                                .font(.custom("Urbanist-Bold", size: 16))
-                            VStack(alignment: .trailing, spacing: 2) {
+                        VStack(spacing: 24) {
+                            HStack {
+                                Spacer()
                                 Button {
-                                    isDropDownMenuActivated.toggle()
+                                    //
                                 } label: {
-                                    VStack(spacing: 8) {
-                                        HStack {
-                                            Text(gender == "" ? "Gender" : gender)
-                                                .foregroundColor(gender == "" ? Color("Greyscale500") : Color("Greyscale900"))
-                                                .font(.custom("Urbanist-Bold", size: 20))
+                                    ZStack {
+                                        Image("ellipse")
+                                            .resizable()
+                                            .frame(width: 120, height: 120)
+                                        VStack {
                                             Spacer()
-                                            Image(isDropDownMenuActivated ? "arrow-up" : "arrow-down")
+                                            HStack {
+                                                Spacer()
+                                                Image("edit-square")
+                                            }
                                         }
+                                    }
+                                    .frame(width: 120, height: 120)
+                                }
+                                Spacer()
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("Full Name")
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                TextField("", text: $fullName)
+                                    .placeholder(when: fullName.isEmpty) {
+                                        Text("Full Name")
+                                            .foregroundColor(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Bold", size: 20))
+                                    }
+                                    .autocapitalization(.none)
+                                    .font(Font.custom("Urbanist-Bold", size: 20))
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .frame(height: 41)
+                                    .overlay(
                                         Rectangle()
                                             .frame(height: 1)
                                             .foregroundColor(Color("Primary"))
+                                            .padding(.top), alignment: .bottom
+                                    )
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("Phone Number")
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                TextField("", text: $phoneNumber)
+                                    .placeholder(when: phoneNumber.isEmpty) {
+                                        Text("Phone Number")
+                                            .foregroundColor(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Bold", size: 20))
+                                    }
+                                    .autocapitalization(.none)
+                                    .font(Font.custom("Urbanist-Bold", size: 20))
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .frame(height: 41)
+                                    .overlay(
+                                        Rectangle()
+                                            .frame(height: 1)
+                                            .foregroundColor(Color("Primary"))
+                                            .padding(.top), alignment: .bottom
+                                    )
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("Gender")
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                VStack(alignment: .trailing, spacing: 2) {
+                                    Button {
+                                        isDropDownMenuActivated.toggle()
+                                    } label: {
+                                        VStack(spacing: 8) {
+                                            HStack {
+                                                Text(gender == "" ? "Gender" : gender)
+                                                    .foregroundColor(gender == "" ? Color("Greyscale500") : Color("Greyscale900"))
+                                                    .font(.custom("Urbanist-Bold", size: 20))
+                                                Spacer()
+                                                Image(isDropDownMenuActivated ? "arrow-up" : "arrow-down")
+                                            }
+                                            Rectangle()
+                                                .frame(height: 1)
+                                                .foregroundColor(Color("Primary"))
+                                        }
                                     }
                                 }
-                                
-                                if isDropDownMenuActivated {
-                                    VStack(alignment: .leading, spacing: 16) {
-                                        Button {
-                                            gender = "Male"
-                                            isDropDownMenuActivated = false
-                                        } label: {
-                                            HStack {
-                                                Image(gender == "Male" ? "radio-selected" : "radio-unselected")
-                                                    .resizable()
-                                                    .frame(width: 20, height: 20)
-                                                Text("Male")
-                                                    .foregroundColor(Color("Greyscale900"))
-                                                    .font(.custom("Urbanist-Semibold", size: 14))
-                                                Spacer()
-                                            }
-                                        }
-                                        
-                                        Divider()
-                                        
-                                        Button {
-                                            gender = "Female"
-                                            isDropDownMenuActivated = false
-                                        } label: {
-                                            HStack {
-                                                Image(gender == "Female" ? "radio-selected" : "radio-unselected")
-                                                    .resizable()
-                                                    .frame(width: 20, height: 20)
-                                                Text("Female")
-                                                    .foregroundColor(Color("Greyscale900"))
-                                                    .font(.custom("Urbanist-Semibold", size: 14))
-                                                Spacer()
-                                            }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("Date of Birth")
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                VStack(spacing: 8) {
+                                    Button {
+                                        showDatePicker.toggle()
+                                    } label: {
+                                        HStack {
+                                            Text(isShowingDate ? "\(date)" : "DD/MM/YYYY")
+                                                .foregroundColor(Color(isShowingDate ? "Greyscale900" : "Greyscale500"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                            Spacer()
+                                            Image("calendar")
                                         }
                                     }
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 20)
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color("White"))
-                                    .cornerRadius(20)
-                                    .shadow(color: Color(red: 4/255, green: 6/255, blue: 15/255, opacity: 0.08), radius: 100, x: 0, y: 20)
+                                    .sheet(isPresented: $showDatePicker) {
+                                        VStack(spacing: 0) {
+                                            DatePicker("", selection: $selectedDate, displayedComponents: [.date])
+                                                .datePickerStyle(.wheel)
+                                                .padding()
+                                                .frame(maxWidth: 50)
+                                                .environment(\.locale, Locale(identifier: "fr_FR"))
+                                            Button {
+                                                showDatePicker = false
+                                                isShowingDate = true
+                                                print(date)
+                                            } label: {
+                                                Text("Ok")
+                                                    .foregroundColor(Color("White"))
+                                                    .font(.custom("Urbanist-Bold", size: 16))
+                                                    .frame(width: 80)
+                                                    .frame(height: 58)
+                                                    .background(Color("Primary"))
+                                                    .cornerRadius(.infinity)
+                                                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                            }
+                                        }
+                                        .presentationDetents([.height(270)])
+                                    }
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundColor(Color("Primary"))
                                 }
                             }
                         }
-                        
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Date of Birth")
+                            Text("City")
                                 .foregroundColor(Color("Greyscale900"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            VStack(spacing: 8) {
-                                Button {
-                                    showDatePicker.toggle()
-                                } label: {
-                                    HStack {
-                                        Text(isShowingDate ? "\(date)" : "DD/MM/YYYY")
-                                            .foregroundColor(Color(isShowingDate ? "Greyscale900" : "Greyscale500"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                        Spacer()
-                                        Image("calendar")
-                                    }
+                            TextField("", text: $city)
+                                .placeholder(when: city.isEmpty) {
+                                    Text("City")
+                                        .foregroundColor(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
                                 }
-                                .sheet(isPresented: $showDatePicker) {
-                                    VStack(spacing: 0) {
-                                        DatePicker("", selection: $selectedDate, displayedComponents: [.date])
-                                            .datePickerStyle(.wheel)
-                                            .padding()
-                                            .frame(maxWidth: 50)
-                                            .environment(\.locale, Locale(identifier: "fr_FR"))
-                                        Button {
-                                            showDatePicker = false
-                                            isShowingDate = true
-                                            print(date)
-                                        } label: {
-                                            Text("Ok")
-                                                .foregroundColor(Color("White"))
-                                                .font(.custom("Urbanist-Bold", size: 16))
-                                                .frame(width: 80)
-                                                .frame(height: 58)
-                                                .background(Color("Primary"))
-                                                .cornerRadius(.infinity)
-                                                .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                                        }
-                                    }
-                                    .presentationDetents([.height(270)])
-                                }
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundColor(Color("Primary"))
-                            }
+                                .autocapitalization(.none)
+                                .font(Font.custom("Urbanist-Bold", size: 20))
+                                .foregroundColor(Color("Greyscale900"))
+                                .frame(height: 41)
+                                .overlay(
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundColor(Color("Primary"))
+                                        .padding(.top), alignment: .bottom
+                                )
                         }
                     }
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("City")
-                            .foregroundColor(Color("Greyscale900"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        TextField("", text: $city)
-                            .placeholder(when: city.isEmpty) {
-                                Text("City")
-                                    .foregroundColor(Color("Greyscale500"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .autocapitalization(.none)
-                            .font(Font.custom("Urbanist-Bold", size: 20))
-                            .foregroundColor(Color("Greyscale900"))
-                            .frame(height: 41)
-                            .overlay(
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundColor(Color("Primary"))
-                                    .padding(.top), alignment: .bottom
-                            )
-                    }
+                    .padding(.top, 40)
                 }
-                .padding(.top, 40)
-            }
-            
-            if fullName != "" && phoneNumber != "" &&  isShowingDate && city != "" {
-                NavigationLink {
-                    CreateAccountView()
-                } label: {
+                
+                if fullName != "" && phoneNumber != "" &&  isShowingDate && city != "" {
+                    NavigationLink {
+                        CreateAccountView()
+                    } label: {
+                        Text("Continue")
+                            .foregroundColor(Color("White"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("Primary"))
+                            .cornerRadius(.infinity)
+                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                            .padding(.top, 24)
+                            .padding(.bottom)
+                    }
+                } else {
                     Text("Continue")
                         .foregroundColor(Color("White"))
                         .font(.custom("Urbanist-Bold", size: 16))
                         .frame(maxWidth: .infinity)
                         .frame(height: 58)
-                        .background(Color("Primary"))
+                        .background(Color("DisabledButton"))
                         .cornerRadius(.infinity)
-                        .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                    //.shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                         .padding(.top, 24)
                         .padding(.bottom)
                 }
-            } else {
-                Text("Continue")
-                    .foregroundColor(Color("White"))
-                    .font(.custom("Urbanist-Bold", size: 16))
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 58)
-                    .background(Color("DisabledButton"))
-                    .cornerRadius(.infinity)
-                //.shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                    .padding(.top, 24)
-                    .padding(.bottom)
             }
-        }
-        .padding(.horizontal, 24)
-        .background(Color("White"))
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButtonView()
+            .padding(.horizontal, 24)
+            .background(Color("White"))
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    BackButtonView()
+                }
+                ToolbarItem(placement: .principal) {
+                    Image("progress-bar-80")
+                }
             }
-            ToolbarItem(placement: .principal) {
-                Image("progress-bar-80")
+            .onTapGesture {
+                isDropDownMenuActivated = false
             }
-        }
-        .onTapGesture {
-            isDropDownMenuActivated = false
+            if isDropDownMenuActivated {
+                VStack(alignment: .leading, spacing: 16) {
+                    Button {
+                        gender = "Male"
+                        isDropDownMenuActivated = false
+                    } label: {
+                        HStack {
+                            Image(gender == "Male" ? "radio-selected" : "radio-unselected")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Male")
+                                .foregroundColor(Color("Greyscale900"))
+                                .font(.custom("Urbanist-Semibold", size: 14))
+                            Spacer()
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    Button {
+                        gender = "Female"
+                        isDropDownMenuActivated = false
+                    } label: {
+                        HStack {
+                            Image(gender == "Female" ? "radio-selected" : "radio-unselected")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Female")
+                                .foregroundColor(Color("Greyscale900"))
+                                .font(.custom("Urbanist-Semibold", size: 14))
+                            Spacer()
+                        }
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 20)
+                .frame(width: 148)
+                .background(Color("White"))
+                .cornerRadius(20)
+                .shadow(color: Color(red: 4/255, green: 6/255, blue: 15/255, opacity: 0.08), radius: 100, x: 0, y: 20)
+                .padding(.top, 300)
+            }
         }
     }
 }
