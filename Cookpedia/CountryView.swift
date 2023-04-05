@@ -24,14 +24,15 @@ struct CountryView: View {
     
     @State private var country = ""
     @State private var selectedCountry: Country?
+    @State private var searchText: String = ""
     
-//    var filteredCountries: [Country] {
-//            if searchText.isEmpty {
-//                return countryList
-//            } else {
-//                return countryList.filter { $0.name.lowercased().contains(searchText.lowercased()) }
-//            }
-//        }
+    var filteredCountries: [Country] {
+        if searchText.isEmpty {
+            return countryList
+        } else {
+            return countryList.filter { $0.name.lowercased().contains(searchText.lowercased()) }
+        }
+    }
     
     var body: some View {
         VStack {
@@ -49,8 +50,8 @@ struct CountryView: View {
                     HStack(spacing: 12) {
                         Image("magnifying-glass")
                             .padding(.leading, 20)
-                        TextField("", text: $country)
-                            .placeholder(when: country.isEmpty) {
+                        TextField("", text: $searchText)
+                            .placeholder(when: searchText.isEmpty) {
                                 Text("Search Country")
                                     .foregroundColor(Color("Greyscale400"))
                                     .font(.custom("Urbanist-Regular", size: 16))
@@ -65,7 +66,7 @@ struct CountryView: View {
                     .cornerRadius(16)
                     
                     VStack(spacing: 20) {
-                        ForEach(countryList, id: \.name) { country in
+                        ForEach(filteredCountries, id: \.name) { country in
                             CountryDetailsView(country: country, selectedCountry: $selectedCountry)
                         }
                     }
@@ -74,9 +75,9 @@ struct CountryView: View {
                 .padding(.top, 40)
             }
             if selectedCountry != nil {
-                NavigationLink {
-                    CookingLevelView()
-                    //print("Selected country: \(selectedCountry?.name ?? "None")")
+                Button {
+                    //CookingLevelView()
+                    print("Selected country: \(selectedCountry?.name ?? "None")")
                 } label: {
                     Text("Continue")
                         .foregroundColor(Color("White"))
