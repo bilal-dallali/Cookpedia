@@ -9,9 +9,38 @@ import SwiftUI
 
 struct CompleteProfileView: View {
     
+    @Binding var country: String
+    @Binding var level: String
+    @Binding var salad: Bool
+    @Binding var egg: Bool
+    @Binding var soup: Bool
+    @Binding var meat: Bool
+    @Binding var chicken: Bool
+    @Binding var seafood: Bool
+    @Binding var burger: Bool
+    @Binding var pizza: Bool
+    @Binding var sushi: Bool
+    @Binding var rice: Bool
+    @Binding var bread: Bool
+    @Binding var fruit: Bool
+    @Binding var vegetarian: Bool
+    @Binding var vegan: Bool
+    @Binding var glutenFree: Bool
+    @Binding var nutFree: Bool
+    @Binding var dairyFree: Bool
+    @Binding var lowCarb: Bool
+    @Binding var peanutFree: Bool
+    @Binding var keto: Bool
+    @Binding var soyFree: Bool
+    @Binding var rawFood: Bool
+    @Binding var lowFat: Bool
+    @Binding var halal: Bool
+    
+    
     @State var fullName = ""
     @State var phoneNumber = ""
     @State var gender = ""
+    
     @State private var isDropDownMenuActivated: Bool = false
     @State private var phoneNumberInvalid: Bool = false
     @State private var selectedDate = Date()
@@ -22,6 +51,7 @@ struct CompleteProfileView: View {
         formatter.dateFormat = "dd/MM/yyyy"
         return formatter.string(from: selectedDate)
     }
+    
     @State var date: String = ""
     @State var city = ""
     
@@ -219,8 +249,39 @@ struct CompleteProfileView: View {
                 if fullName != "" && phoneNumber != "" &&  isShowingDate && city != "" {
                     if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
                         NavigationLink {
-                            CreateAccountView(date: $date)
+                            CreateAccountView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city)
                             //print(localDate)
+//                            print("pays:", country)
+//                            print("niveau:", level)
+//                            print("salad:", salad)
+//                            print("egg:", egg)
+//                            print("soup:", soup)
+//                            print("meat:", meat)
+//                            print("chicken:", chicken)
+//                            print("seafood:", seafood)
+//                            print("burger:", burger)
+//                            print("pizza:", pizza)
+//                            print("sushi:", sushi)
+//                            print("bread:", bread)
+//                            print("rice:", rice)
+//                            print("fruit:", fruit)
+//                            print("vegetarian:", vegetarian)
+//                            print("vegan:", vegan)
+//                            print("gluten-free:", glutenFree)
+//                            print("nut-free:", nutFree)
+//                            print("dairy-free:", dairyFree)
+//                            print("low-carb:", lowCarb)
+//                            print("peanut-free:", peanutFree)
+//                            print("keto:", keto)
+//                            print("soy-free:", soyFree)
+//                            print("raw-food:", rawFood)
+//                            print("low-fat:", lowFat)
+//                            print("halal:", halal)
+//                            print("full name:", fullName)
+//                            print("phone number:", phoneNumber)
+//                            print("gender:", gender)
+//                            print("date-of-birth:", date)
+//                            print("city:", city)
                         } label: {
                             Text("Continue")
                                 .foregroundColor(Color("White"))
@@ -333,6 +394,6 @@ struct CompleteProfileView: View {
 
 struct CompleteProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        CompleteProfileView()
+        CompleteProfileView(country: .constant("France"), level: .constant("Novice"), salad: .constant(false), egg: .constant(false), soup: .constant(false), meat: .constant(false), chicken: .constant(false), seafood: .constant(false), burger: .constant(false), pizza: .constant(false), sushi: .constant(false), rice: .constant(false), bread: .constant(false), fruit: .constant(false), vegetarian: .constant(false), vegan: .constant(false), glutenFree: .constant(false), nutFree: .constant(false), dairyFree: .constant(false), lowCarb: .constant(false), peanutFree: .constant(false), keto: .constant(false), soyFree: .constant(false), rawFood: .constant(false), lowFat: .constant(false), halal: .constant(false))
     }
 }
