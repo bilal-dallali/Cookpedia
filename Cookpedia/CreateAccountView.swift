@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CreateAccountView: View {
     
+    @Binding var date: String
+    
     @State private var username = ""
     @State private var email = ""
     @State private var password = ""
@@ -189,6 +191,7 @@ struct CreateAccountView: View {
                 }
                 
                 Button {
+                    print(date)
                     print(username)
                     print(email)
                     print(password)
@@ -226,6 +229,6 @@ struct CreateAccountView: View {
 
 struct CreateAccountView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateAccountView()
+        CreateAccountView(date: .constant("12/05/1997"))
     }
 }

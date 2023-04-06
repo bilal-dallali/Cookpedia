@@ -9,20 +9,21 @@ import SwiftUI
 
 struct CompleteProfileView: View {
     
-    @State private var fullName = ""
-    @State private var phoneNumber = ""
-    @State private var gender = ""
+    @State var fullName = ""
+    @State var phoneNumber = ""
+    @State var gender = ""
     @State private var isDropDownMenuActivated: Bool = false
     @State private var phoneNumberInvalid: Bool = false
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
     @State private var isShowingDate = false
-    private var date: String {
+    private var localDate: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy"
         return formatter.string(from: selectedDate)
     }
-    @State private var city = ""
+    @State var date: String = ""
+    @State var city = ""
     
     var body: some View {
         ZStack {
@@ -152,7 +153,7 @@ struct CompleteProfileView: View {
                                         showDatePicker.toggle()
                                     } label: {
                                         HStack {
-                                            Text(isShowingDate ? "\(date)" : "DD/MM/YYYY")
+                                            Text(isShowingDate ? "\(localDate)" : "DD/MM/YYYY")
                                                 .foregroundColor(Color(isShowingDate ? "Greyscale900" : "Greyscale500"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
                                             Spacer()
@@ -169,7 +170,8 @@ struct CompleteProfileView: View {
                                             Button {
                                                 showDatePicker = false
                                                 isShowingDate = true
-                                                print(date)
+                                                print(localDate)
+                                                print(selectedDate)
                                             } label: {
                                                 Text("Ok")
                                                     .foregroundColor(Color("White"))
@@ -217,7 +219,8 @@ struct CompleteProfileView: View {
                 if fullName != "" && phoneNumber != "" &&  isShowingDate && city != "" {
                     if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
                         NavigationLink {
-                            CreateAccountView()
+                            CreateAccountView(date: $date)
+                            //print(localDate)
                         } label: {
                             Text("Continue")
                                 .foregroundColor(Color("White"))
@@ -230,6 +233,9 @@ struct CompleteProfileView: View {
                                 .padding(.top, 24)
                                 .padding(.bottom)
                         }
+                        .onAppear {
+                            date = localDate
+                        }
                     } else {
                         Button {
                             //CreateAccountView()
@@ -237,6 +243,7 @@ struct CompleteProfileView: View {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                 phoneNumberInvalid = false
                             }
+                            print(localDate)
                         } label: {
                             Text("Continue")
                                 .foregroundColor(Color("White"))
