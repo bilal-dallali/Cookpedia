@@ -22,9 +22,9 @@ extension View {
 
 struct CountryView: View {
     
-    @State private var country = ""
     @State private var selectedCountry: Country?
     @State private var searchText: String = ""
+    @State var country: String = ""
     
     var filteredCountries: [Country] {
         if searchText.isEmpty {
@@ -75,9 +75,10 @@ struct CountryView: View {
                 .padding(.top, 40)
             }
             if selectedCountry != nil {
-                Button {
-                    //CookingLevelView()
-                    print("Selected country: \(selectedCountry?.name ?? "None")")
+                NavigationLink {
+                    CookingLevelView(country: $country)
+                    //print("Selected country: \(selectedCountry?.name ?? "None")")
+                    //print(country)
                 } label: {
                     Text("Continue")
                         .foregroundColor(Color("White"))
@@ -89,6 +90,9 @@ struct CountryView: View {
                         .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                         .padding(.top, 24)
                         .padding(.bottom)
+                }
+                .onAppear {
+                    country = selectedCountry?.name ?? ""
                 }
             } else {
                 Button {
@@ -107,6 +111,9 @@ struct CountryView: View {
                 }
             }
             
+        }
+        .onAppear {
+            country = selectedCountry?.name ?? ""
         }
         .padding(.horizontal, 24)
         .background(Color("White"))

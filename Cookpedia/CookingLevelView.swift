@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CookingLevelView: View {
     
+    @Binding var country: String
     @State var novice: Bool = false
     @State var intermediate: Bool = false
     @State var advanced: Bool = false
@@ -207,8 +208,9 @@ struct CookingLevelView: View {
                     .padding(.top, 24)
                     .padding(.bottom)
             } else {
-                NavigationLink {
-                    CuisinePreferenceView()
+                Button {
+                    //CuisinePreferenceView()
+                    print("country: \(country)")
                 } label: {
                     Text("Continue")
                         .foregroundColor(Color("White"))
@@ -239,6 +241,6 @@ struct CookingLevelView: View {
 
 struct CookingLevelView_Previews: PreviewProvider {
     static var previews: some View {
-        CookingLevelView()
+        CookingLevelView(country: .constant("France"))
     }
 }
