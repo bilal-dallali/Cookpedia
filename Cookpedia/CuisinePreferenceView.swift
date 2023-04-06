@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CuisinePreferenceView: View {
     
+    @Binding var country: String
+    @Binding var level: String
     @State private var salad: Bool = false
     @State private var egg: Bool = false
     @State private var soup: Bool = false
@@ -333,8 +335,10 @@ struct CuisinePreferenceView: View {
                 }
                 
                 if salad == true || egg == true || soup == true || meat == true || chicken == true || seafood == true || burger == true || pizza == true || sushi == true || rice == true || bread == true || fruit == true {
-                    NavigationLink {
-                        DietaryPreferencesView()
+                    Button {
+                        //DietaryPreferencesView()
+                        print(country)
+                        print(level)
                     } label: {
                         Text("Continue")
                             .foregroundColor(Color("White"))
@@ -376,6 +380,6 @@ struct CuisinePreferenceView: View {
 
 struct CuisinePreferenceView_Previews: PreviewProvider {
     static var previews: some View {
-        CuisinePreferenceView()
+        CuisinePreferenceView(country: .constant("France"), level: .constant("Advanced"))
     }
 }

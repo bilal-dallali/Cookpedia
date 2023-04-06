@@ -15,6 +15,7 @@ struct CookingLevelView: View {
     @State var advanced: Bool = false
     @State var professional: Bool = false
     @State var master: Bool = false
+    @State var level: String = ""
     
     var body: some View {
         VStack {
@@ -36,6 +37,7 @@ struct CookingLevelView: View {
                             advanced = false
                             professional = false
                             master = false
+                            level = "Novice"
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
@@ -68,6 +70,7 @@ struct CookingLevelView: View {
                             advanced = false
                             professional = false
                             master = false
+                            level = "Intermediate"
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
@@ -100,6 +103,7 @@ struct CookingLevelView: View {
                             advanced = true
                             professional = false
                             master = false
+                            level = "Advanced"
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
@@ -133,6 +137,7 @@ struct CookingLevelView: View {
                             advanced = false
                             professional = true
                             master = false
+                            level = "Professional"
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
@@ -158,7 +163,6 @@ struct CookingLevelView: View {
                                 }
                             }
                         }
-
                         
                         Button {
                             novice = false
@@ -166,6 +170,7 @@ struct CookingLevelView: View {
                             advanced = false
                             professional = false
                             master = true
+                            level = "master"
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 HStack {
@@ -208,9 +213,9 @@ struct CookingLevelView: View {
                     .padding(.top, 24)
                     .padding(.bottom)
             } else {
-                Button {
-                    //CuisinePreferenceView()
-                    print("country: \(country)")
+                NavigationLink {
+                    CuisinePreferenceView(country: $country, level: $level)
+                    //print("country: \(country)")
                 } label: {
                     Text("Continue")
                         .foregroundColor(Color("White"))
