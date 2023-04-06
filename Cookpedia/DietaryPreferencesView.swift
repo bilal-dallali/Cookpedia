@@ -9,18 +9,33 @@ import SwiftUI
 
 struct DietaryPreferencesView: View {
     
-    @State private var vegetarian: Bool = false
-    @State private var vegan: Bool = false
-    @State private var glutenFree: Bool = false
-    @State private var nutFree: Bool = false
-    @State private var dairyFree: Bool = false
-    @State private var lowCarb: Bool = false
-    @State private var peanutFree: Bool = false
-    @State private var keto: Bool = false
-    @State private var soyFree: Bool = false
-    @State private var rawFood: Bool = false
-    @State private var lowFat: Bool = false
-    @State private var halal: Bool = false
+    @Binding var country: String
+    @Binding var level: String
+    @Binding var salad: Bool
+    @Binding var egg: Bool
+    @Binding var soup: Bool
+    @Binding var meat: Bool
+    @Binding var chicken: Bool
+    @Binding var seafood: Bool
+    @Binding var burger: Bool
+    @Binding var pizza: Bool
+    @Binding var sushi: Bool
+    @Binding var rice: Bool
+    @Binding var bread: Bool
+    @Binding var fruit: Bool
+    
+    @State var vegetarian: Bool = false
+    @State var vegan: Bool = false
+    @State var glutenFree: Bool = false
+    @State var nutFree: Bool = false
+    @State var dairyFree: Bool = false
+    @State var lowCarb: Bool = false
+    @State var peanutFree: Bool = false
+    @State var keto: Bool = false
+    @State var soyFree: Bool = false
+    @State var rawFood: Bool = false
+    @State var lowFat: Bool = false
+    @State var halal: Bool = false
     
     var body: some View {
         VStack {
@@ -412,8 +427,34 @@ struct DietaryPreferencesView: View {
                 }
                 
                 if vegetarian == true || vegan == true || glutenFree == true || nutFree == true || dairyFree == true || lowCarb == true || peanutFree == true || keto == true || soyFree == true || rawFood == true || lowFat == true || halal == true {
-                    NavigationLink {
-                        CompleteProfileView()
+                    Button {
+                        //CompleteProfileView()
+                        print("pays:", country)
+                        print("niveau:", level)
+                        print("salad:", salad)
+                        print("egg:", egg)
+                        print("soup:", soup)
+                        print("meat:", meat)
+                        print("chicken:", chicken)
+                        print("seafood:", seafood)
+                        print("burger:", burger)
+                        print("pizza:", pizza)
+                        print("sushi:", sushi)
+                        print("bread:", bread)
+                        print("rice:", rice)
+                        print("fruit:", fruit)
+                        print("vegetarian:", vegetarian)
+                        print("vegan:", vegan)
+                        print("gluten-free:", glutenFree)
+                        print("nut-free:", nutFree)
+                        print("dairy-free:", dairyFree)
+                        print("low-carb:", lowCarb)
+                        print("peanut-free:", peanutFree)
+                        print("keto:", keto)
+                        print("soy-free:", soyFree)
+                        print("raw-food:", rawFood)
+                        print("low-fat:", lowFat)
+                        print("halal:", halal)
                     } label: {
                         Text("Continue")
                             .foregroundColor(Color("White"))
@@ -456,6 +497,6 @@ struct DietaryPreferencesView: View {
 
 struct DietaryPreferencesView_Previews: PreviewProvider {
     static var previews: some View {
-        DietaryPreferencesView()
+        DietaryPreferencesView(country: .constant("France"), level: .constant("Novice"), salad: .constant(false), egg: .constant(false), soup: .constant(false), meat: .constant(false), chicken: .constant(false), seafood: .constant(false), burger: .constant(false), pizza: .constant(false), sushi: .constant(false), rice: .constant(false), bread: .constant(false), fruit: .constant(false))
     }
 }

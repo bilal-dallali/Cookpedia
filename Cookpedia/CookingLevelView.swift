@@ -202,7 +202,7 @@ struct CookingLevelView: View {
                 .padding(.top, 40)
             }
             
-            if novice == false && intermediate == false && advanced == false && professional == false && master == false {
+            if level == "" {
                 Text("Continue")
                     .foregroundColor(Color("White"))
                     .font(.custom("Urbanist-Bold", size: 16))

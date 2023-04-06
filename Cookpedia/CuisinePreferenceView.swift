@@ -11,18 +11,18 @@ struct CuisinePreferenceView: View {
     
     @Binding var country: String
     @Binding var level: String
-    @State private var salad: Bool = false
-    @State private var egg: Bool = false
-    @State private var soup: Bool = false
-    @State private var meat: Bool = false
-    @State private var chicken: Bool = false
-    @State private var seafood: Bool = false
-    @State private var burger: Bool = false
-    @State private var pizza: Bool = false
-    @State private var sushi: Bool = false
-    @State private var rice: Bool = false
-    @State private var bread: Bool = false
-    @State private var fruit: Bool = false
+    @State var salad: Bool = false
+    @State var egg: Bool = false
+    @State var soup: Bool = false
+    @State var meat: Bool = false
+    @State var chicken: Bool = false
+    @State var seafood: Bool = false
+    @State var burger: Bool = false
+    @State var pizza: Bool = false
+    @State var sushi: Bool = false
+    @State var rice: Bool = false
+    @State var bread: Bool = false
+    @State var fruit: Bool = false
     
     var body: some View {
         VStack {
@@ -321,7 +321,7 @@ struct CuisinePreferenceView: View {
             
             HStack(spacing: 16) {
                 NavigationLink {
-                    DietaryPreferencesView()
+                    DietaryPreferencesView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit)
                 } label: {
                     Text("Skip")
                         .foregroundColor(Color("Primary"))
@@ -335,10 +335,10 @@ struct CuisinePreferenceView: View {
                 }
                 
                 if salad == true || egg == true || soup == true || meat == true || chicken == true || seafood == true || burger == true || pizza == true || sushi == true || rice == true || bread == true || fruit == true {
-                    Button {
-                        //DietaryPreferencesView()
-                        print(country)
-                        print(level)
+                    NavigationLink {
+                        DietaryPreferencesView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit)
+                        //print("pays:", country)
+                        //print("niveau:", level)
                     } label: {
                         Text("Continue")
                             .foregroundColor(Color("White"))
