@@ -13,6 +13,7 @@ struct CompleteProfileView: View {
     @State private var phoneNumber = ""
     @State private var gender = ""
     @State private var isDropDownMenuActivated: Bool = false
+    @State private var phoneNumberInvalid: Bool = false
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
     @State private var isShowingDate = false
@@ -93,7 +94,7 @@ struct CompleteProfileView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .autocapitalization(.none)
-                                    .font(Font.custom("Urbanist-Bold", size: 20))
+                                    .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .frame(height: 41)
                                     .overlay(
@@ -102,6 +103,20 @@ struct CompleteProfileView: View {
                                             .foregroundColor(Color("Primary"))
                                             .padding(.top), alignment: .bottom
                                     )
+                                if phoneNumberInvalid {
+                                    HStack(spacing: 6) {
+                                        Image("red-alert")
+                                            .padding(.leading, 12)
+                                        Text("Phone number invalid")
+                                            .foregroundColor(Color("Error"))
+                                            .font(.custom("Urbanist-Regular", size: 10))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 34)
+                                    .background(Color("TransparentRed"))
+                                    .cornerRadius(10)
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 16) {
@@ -200,20 +215,42 @@ struct CompleteProfileView: View {
                 }
                 
                 if fullName != "" && phoneNumber != "" &&  isShowingDate && city != "" {
-                    NavigationLink {
-                        CreateAccountView()
-                    } label: {
-                        Text("Continue")
-                            .foregroundColor(Color("White"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 58)
-                            .background(Color("Primary"))
-                            .cornerRadius(.infinity)
-                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                            .padding(.top, 24)
-                            .padding(.bottom)
+                    if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
+                        NavigationLink {
+                            CreateAccountView()
+                        } label: {
+                            Text("Continue")
+                                .foregroundColor(Color("White"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("Primary"))
+                                .cornerRadius(.infinity)
+                                .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                .padding(.top, 24)
+                                .padding(.bottom)
+                        }
+                    } else {
+                        Button {
+                            //CreateAccountView()
+                            phoneNumberInvalid = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                phoneNumberInvalid = false
+                            }
+                        } label: {
+                            Text("Continue")
+                                .foregroundColor(Color("White"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("Primary"))
+                                .cornerRadius(.infinity)
+                                .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                .padding(.top, 24)
+                                .padding(.bottom)
+                        }
                     }
+                    
                 } else {
                     Text("Continue")
                         .foregroundColor(Color("White"))
