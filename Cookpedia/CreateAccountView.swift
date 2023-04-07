@@ -49,7 +49,8 @@ struct CreateAccountView: View {
     @State private var isPasswordHidden: Bool = true
     @State private var isConfirmPasswordHidden: Bool = true
     @State private var isCheckboxChecked: Bool = true
-    @State private var alertPasswordIdentical: Bool = true
+    @State private var passwordNotIdentical: Bool = false
+    @State private var emailNotIdentical: Bool = false
     
     var body: some View {
         ZStack {
@@ -204,6 +205,21 @@ struct CreateAccountView: View {
                                         .foregroundColor(Color("Primary"))
                                         .padding(.top), alignment: .bottom
                                 )
+                                
+                                if passwordNotIdentical {
+                                    HStack(spacing: 6) {
+                                        Image("red-alert")
+                                            .padding(.leading, 12)
+                                        Text("Confirm password and password must be identical")
+                                            .foregroundColor(Color("Error"))
+                                            .font(.custom("Urbanist-Regular", size: 10))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 34)
+                                    .background(Color("TransparentRed"))
+                                    .cornerRadius(10)
+                                }
                             }
                             
                             Button {
@@ -221,43 +237,42 @@ struct CreateAccountView: View {
                     .padding(.top, 40)
                 }
                 
-                Button {
-                    print("pays:", country)
-                    print("niveau:", level)
-                    print("salad:", salad)
-                    print("egg:", egg)
-                    print("soup:", soup)
-                    print("meat:", meat)
-                    print("chicken:", chicken)
-                    print("seafood:", seafood)
-                    print("burger:", burger)
-                    print("pizza:", pizza)
-                    print("sushi:", sushi)
-                    print("bread:", bread)
-                    print("rice:", rice)
-                    print("fruit:", fruit)
-                    print("vegetarian:", vegetarian)
-                    print("vegan:", vegan)
-                    print("gluten-free:", glutenFree)
-                    print("nut-free:", nutFree)
-                    print("dairy-free:", dairyFree)
-                    print("low-carb:", lowCarb)
-                    print("peanut-free:", peanutFree)
-                    print("keto:", keto)
-                    print("soy-free:", soyFree)
-                    print("raw-food:", rawFood)
-                    print("low-fat:", lowFat)
-                    print("halal:", halal)
-                    print("full name:", fullName)
-                    print("phone number:", phoneNumber)
-                    print("gender:", gender)
-                    print("date-of-birth:", date)
-                    print("city:", city)
-                    print("username:", username)
-                    print("email:", email)
-                    print("password:", password)
-                    print("confirmPassword", confirmPassword)
-                } label: {
+                if username != "" && email != "" && password != "" && confirmPassword != "" {
+                    if password == confirmPassword {
+                        NavigationLink {
+                            Text("Accueil")
+                        } label: {
+                            Text("Continue")
+                                .foregroundColor(Color("White"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("Primary"))
+                                .cornerRadius(.infinity)
+                                .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                .padding(.top, 24)
+                                .padding(.bottom)
+                        }
+                    } else {
+                        Button {
+                            passwordNotIdentical = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                passwordNotIdentical = false
+                            }
+                        } label: {
+                            Text("Continue")
+                                .foregroundColor(Color("White"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("Primary"))
+                                .cornerRadius(.infinity)
+                                .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                .padding(.top, 24)
+                                .padding(.bottom)
+                        }
+                    }
+                } else {
                     Text("Continue")
                         .foregroundColor(Color("White"))
                         .font(.custom("Urbanist-Bold", size: 16))
@@ -265,7 +280,6 @@ struct CreateAccountView: View {
                         .frame(height: 58)
                         .background(Color("DisabledButton"))
                         .cornerRadius(.infinity)
-                    //.shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                         .padding(.top, 24)
                         .padding(.bottom)
                 }

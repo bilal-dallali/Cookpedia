@@ -250,38 +250,6 @@ struct CompleteProfileView: View {
                     if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
                         NavigationLink {
                             CreateAccountView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city)
-                            //print(localDate)
-//                            print("pays:", country)
-//                            print("niveau:", level)
-//                            print("salad:", salad)
-//                            print("egg:", egg)
-//                            print("soup:", soup)
-//                            print("meat:", meat)
-//                            print("chicken:", chicken)
-//                            print("seafood:", seafood)
-//                            print("burger:", burger)
-//                            print("pizza:", pizza)
-//                            print("sushi:", sushi)
-//                            print("bread:", bread)
-//                            print("rice:", rice)
-//                            print("fruit:", fruit)
-//                            print("vegetarian:", vegetarian)
-//                            print("vegan:", vegan)
-//                            print("gluten-free:", glutenFree)
-//                            print("nut-free:", nutFree)
-//                            print("dairy-free:", dairyFree)
-//                            print("low-carb:", lowCarb)
-//                            print("peanut-free:", peanutFree)
-//                            print("keto:", keto)
-//                            print("soy-free:", soyFree)
-//                            print("raw-food:", rawFood)
-//                            print("low-fat:", lowFat)
-//                            print("halal:", halal)
-//                            print("full name:", fullName)
-//                            print("phone number:", phoneNumber)
-//                            print("gender:", gender)
-//                            print("date-of-birth:", date)
-//                            print("city:", city)
                         } label: {
                             Text("Continue")
                                 .foregroundColor(Color("White"))
@@ -299,7 +267,6 @@ struct CompleteProfileView: View {
                         }
                     } else {
                         Button {
-                            //CreateAccountView()
                             phoneNumberInvalid = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                 phoneNumberInvalid = false
