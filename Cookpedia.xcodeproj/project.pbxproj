@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C05893029E059B400959933 /* PostDatas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C05892F29E059B400959933 /* PostDatas.swift */; };
 		9C20B0FF29BCE0CA00857FC2 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B0FE29BCE0CA00857FC2 /* Data.swift */; };
 		9C20B10129BD285B00857FC2 /* CountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B10029BD285B00857FC2 /* CountryView.swift */; };
 		9C20B10329BD323900857FC2 /* CountryDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B10229BD323900857FC2 /* CountryDetailsView.swift */; };
@@ -45,6 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9C05892F29E059B400959933 /* PostDatas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDatas.swift; sourceTree = "<group>"; };
 		9C20B0FE29BCE0CA00857FC2 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		9C20B10029BD285B00857FC2 /* CountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryView.swift; sourceTree = "<group>"; };
 		9C20B10229BD323900857FC2 /* CountryDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryDetailsView.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				9C5365C029D735E50062B360 /* TabView.swift */,
 				9C8169B529D9E5DA0055871E /* CreateAccountView.swift */,
 				9C9B5A6929DC1E6C00C02A6A /* ModalView.swift */,
+				9C05892F29E059B400959933 /* PostDatas.swift */,
 				9C93A2EE29B651F000CE5943 /* Assets.xcassets */,
 				9C93A2F029B651F000CE5943 /* Preview Content */,
 			);
@@ -271,6 +274,7 @@
 				9C93A2EB29B651EF00CE5943 /* CookpediaApp.swift in Sources */,
 				9C8169B629D9E5DA0055871E /* CreateAccountView.swift in Sources */,
 				9CB837CF29D1AF8E00166E0F /* DietaryPreferencesView.swift in Sources */,
+				9C05893029E059B400959933 /* PostDatas.swift in Sources */,
 				9C20B10129BD285B00857FC2 /* CountryView.swift in Sources */,
 				9C52C88829B7875F004A1E41 /* ForgotPasswordView.swift in Sources */,
 			);
