@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+func isValidEmail(_ email: String) -> Bool {
+    let emailRegEx = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+    let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+    return emailPredicate.evaluate(with: email)
+}
 
 struct CreateAccountView: View {
     
@@ -53,6 +58,7 @@ struct CreateAccountView: View {
     @State private var isCheckboxChecked: Bool = true
     @State private var passwordNotIdentical: Bool = false
     @State private var emailNotIdentical: Bool = false
+    @State private var emailInvalid: Bool = false
     
     var body: some View {
         ZStack {
@@ -111,6 +117,21 @@ struct CreateAccountView: View {
                                             .foregroundColor(Color("Primary"))
                                             .padding(.top), alignment: .bottom
                                     )
+                                
+                                if emailInvalid {
+                                    HStack(spacing: 6) {
+                                        Image("red-alert")
+                                            .padding(.leading, 12)
+                                        Text("You must enter a valid email")
+                                            .foregroundColor(Color("Error"))
+                                            .font(.custom("Urbanist-Semibold", size: 12))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 34)
+                                    .background(Color("TransparentRed"))
+                                    .cornerRadius(10)
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 16) {
@@ -133,6 +154,20 @@ struct CreateAccountView: View {
                                             .foregroundColor(Color("Primary"))
                                             .padding(.top), alignment: .bottom
                                     )
+                                if emailNotIdentical {
+                                    HStack(spacing: 6) {
+                                        Image("red-alert")
+                                            .padding(.leading, 12)
+                                        Text("Confirm email must be identical to email")
+                                            .foregroundColor(Color("Error"))
+                                            .font(.custom("Urbanist-Semibold", size: 12))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 34)
+                                    .background(Color("TransparentRed"))
+                                    .cornerRadius(10)
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 16) {
@@ -180,7 +215,7 @@ struct CreateAccountView: View {
                                         .frame(height: 1)
                                         .foregroundColor(Color("Primary"))
                                         .padding(.top), alignment: .bottom
-                                )  
+                                )
                                 
                                 if password != "" && password.count <= 8 {
                                     HStack(spacing: 6) {
@@ -304,19 +339,61 @@ struct CreateAccountView: View {
                 
                 if username != "" && email != "" && password != "" && confirmPassword != "" {
                     if password == confirmPassword {
-                        NavigationLink {
-                            Text("Accueil")
-                        } label: {
-                            Text("Continue")
-                                .foregroundColor(Color("White"))
-                                .font(.custom("Urbanist-Bold", size: 16))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 58)
-                                .background(Color("Primary"))
-                                .cornerRadius(.infinity)
-                                .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                                .padding(.top, 24)
-                                .padding(.bottom)
+                        if email != "" && email == confirmEmail {
+                            if isValidEmail(email) {
+                                NavigationLink {
+                                    Text("Accueil")
+                                } label: {
+                                    Text("Continue")
+                                        .foregroundColor(Color("White"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary"))
+                                        .cornerRadius(.infinity)
+                                        .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                        .padding(.top, 24)
+                                        .padding(.bottom)
+                            }
+                            } else {
+                                Button {
+                                    emailInvalid = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                        emailInvalid = false
+                                    }
+                                } label: {
+                                    Text("Continue")
+                                        .foregroundColor(Color("White"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary"))
+                                        .cornerRadius(.infinity)
+                                        .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                        .padding(.top, 24)
+                                        .padding(.bottom)
+                                }
+
+                            }
+                        } else {
+                            Button {
+                                emailNotIdentical = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                    emailNotIdentical = false
+                                }
+                            } label: {
+                                Text("Continue")
+                                    .foregroundColor(Color("White"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 58)
+                                    .background(Color("Primary"))
+                                    .cornerRadius(.infinity)
+                                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                    .padding(.top, 24)
+                                    .padding(.bottom)
+                            }
+
                         }
                     } else {
                         Button {
