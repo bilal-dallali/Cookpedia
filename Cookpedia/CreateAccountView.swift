@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct CreateAccountView: View {
     
     @Binding var country: String
@@ -43,6 +44,7 @@ struct CreateAccountView: View {
     
     @State var username = ""
     @State var email = ""
+    @State var confirmEmail = ""
     @State var password = ""
     @State var confirmPassword = ""
     
@@ -78,7 +80,7 @@ struct CreateAccountView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .autocapitalization(.none)
-                                    .font(Font.custom("Urbanist-Bold", size: 20))
+                                    .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .frame(height: 41)
                                     .overlay(
@@ -96,6 +98,28 @@ struct CreateAccountView: View {
                                 TextField("", text: $email)
                                     .placeholder(when: email.isEmpty) {
                                         Text("Email")
+                                            .foregroundColor(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Bold", size: 20))
+                                    }
+                                    .autocapitalization(.none)
+                                    .font(Font.custom("Urbanist-Bold", size: 20))
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .frame(height: 41)
+                                    .overlay(
+                                        Rectangle()
+                                            .frame(height: 1)
+                                            .foregroundColor(Color("Primary"))
+                                            .padding(.top), alignment: .bottom
+                                    )
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text("Confirm Email")
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                TextField("", text: $confirmEmail)
+                                    .placeholder(when: confirmEmail.isEmpty) {
+                                        Text("Confirm Email")
                                             .foregroundColor(Color("Greyscale500"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
@@ -156,7 +180,48 @@ struct CreateAccountView: View {
                                         .frame(height: 1)
                                         .foregroundColor(Color("Primary"))
                                         .padding(.top), alignment: .bottom
-                                )
+                                )  
+                                
+                                if password != "" && password.count <= 8 {
+                                    HStack(spacing: 6) {
+                                        Image("red-alert")
+                                            .padding(.leading, 12)
+                                        Text("Your password is weak, try a better one")
+                                            .foregroundColor(Color("Error"))
+                                            .font(.custom("Urbanist-Semibold", size: 12))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 34)
+                                    .background(Color("TransparentRed"))
+                                    .cornerRadius(10)
+                                } else if password.count >= 8 && password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .decimalDigits) != nil {
+                                    HStack(spacing: 6) {
+                                        Image("green-alert")
+                                            .padding(.leading, 12)
+                                        Text("Your password is strong, it is able to defeat hackers")
+                                            .foregroundColor(Color("Green"))
+                                            .font(.custom("Urbanist-Semibold", size: 12))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 34)
+                                    .background(Color("TransparentGreen"))
+                                    .cornerRadius(10)
+                                } else if password.count >= 8 {
+                                    HStack(spacing: 6) {
+                                        Image("yellow-alert")
+                                            .padding(.leading, 12)
+                                        Text("Your password is correct, but you can do better")
+                                            .foregroundColor(Color("Orange"))
+                                            .font(.custom("Urbanist-Semibold", size: 12))
+                                        Spacer()
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 34)
+                                    .background(Color("TransparentYellow"))
+                                    .cornerRadius(10)
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 16) {
