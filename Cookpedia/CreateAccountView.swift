@@ -62,6 +62,8 @@ struct CreateAccountView: View {
     @State private var emailInvalid: Bool = false
     @State private var redirectHomePage: Bool = false
     @State private var loadingScreen = false
+    @State private var alreadyExist = "\(errorMessage)"
+    @State private var alertEmail = false
     
     var body: some View {
         ZStack {
@@ -340,32 +342,53 @@ struct CreateAccountView: View {
                     .padding(.top, 40)
                 }
                 
+                
                 if username != "" && email != "" && password != "" && confirmPassword != "" {
                     if password == confirmPassword {
                         if email != "" && email == confirmEmail {
                             if isValidEmail(email) {
-                                Button {
-                                    loadingScreen = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                        self.redirectHomePage = true
-                                        loadingScreen = false
+                                if errorMessage == "" {
+                                    Button {
+                                        let apiManager = APIManager()
+                                        apiManager.registerUser(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
+                                            loadingScreen = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                self.redirectHomePage = true
+                                                loadingScreen = false
+                                            }
+                                    } label: {
+                                        Text("Continue")
+                                            .foregroundColor(Color("White"))
+                                            .font(.custom("Urbanist-Bold", size: 16))
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 58)
+                                            .background(Color("Primary"))
+                                            .cornerRadius(.infinity)
+                                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                            .padding(.top, 24)
+                                            .padding(.bottom)
                                     }
-                                    let apiManager = APIManager()
-                                    apiManager.registerUser(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
-                                } label: {
-                                    Text("Continue")
-                                        .foregroundColor(Color("White"))
-                                        .font(.custom("Urbanist-Bold", size: 16))
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 58)
-                                        .background(Color("Primary"))
-                                        .cornerRadius(.infinity)
-                                        .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                                        .padding(.top, 24)
-                                        .padding(.bottom)
+                                    .navigationDestination(isPresented: $redirectHomePage) {
+                                        HomePage()
                                 }
-                                .navigationDestination(isPresented: $redirectHomePage) {
-                                    HomePage()
+                                } else {
+                                    Button {
+                                        let apiManager = APIManager()
+                                        apiManager.registerUser(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
+                                        alertEmail = true
+                                    } label: {
+                                        Text("Continue")
+                                            .foregroundColor(Color("White"))
+                                            .font(.custom("Urbanist-Bold", size: 16))
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 58)
+                                            .background(Color("Primary"))
+                                            .cornerRadius(.infinity)
+                                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                            .padding(.top, 24)
+                                            .padding(.bottom)
+                                    }
+                                    // alert bitch
                                 }
                             } else {
                                 Button {

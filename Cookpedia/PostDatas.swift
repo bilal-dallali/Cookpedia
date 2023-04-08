@@ -7,6 +7,8 @@
 
 import Foundation
 
+var errorMessage = ""
+
 class APIManager {
     
     func registerUser(username: String, email: String, password: String, country: String, level: String, salad: Bool, egg: Bool, soup: Bool, meat: Bool, chicken: Bool, seafood: Bool, burger: Bool, pizza: Bool, sushi: Bool, rice: Bool, bread: Bool, fruit: Bool, vegetarian: Bool, vegan: Bool, glutenFree: Bool, nutFree: Bool, dairyFree: Bool, lowCarb: Bool, peanutFree: Bool, keto: Bool, soyFree: Bool, rawFood: Bool, lowFat: Bool, halal: Bool, fullName: String, phoneNumber: String, gender: String, date: String, city: String, profilePictureUrl: String) {
@@ -66,15 +68,25 @@ class APIManager {
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
             if let error = error {
-                print("error1",error.localizedDescription)
+                print("Error: \(error.localizedDescription)")
             }
             if let data = data {
                 do {
                     let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any]
-                    print(result ?? "No result2")
+                    print("bone chance", result ?? "No result")
                 } catch let error {
-                    print("error datas3", error.localizedDescription)
+                    print("Error: \(error.localizedDescription)")
                 }
+            }
+            guard let httpResponse = response as? HTTPURLResponse else { return }
+            if httpResponse.statusCode == 400 {
+                print("Error: Email already exists.")
+                errorMessage = "Your email is already registered"
+            } else if httpResponse.statusCode == 402 {
+                print("Phone number already exists")
+                errorMessage = "Your phone number is already registered"
+            } else if httpResponse.statusCode >= 400 {
+                print("Error: Something went wrong.")
             }
         }
         task.resume()

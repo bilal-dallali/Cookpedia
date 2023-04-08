@@ -15,11 +15,11 @@ struct ModalView: View {
         VStack(spacing: 32) {
             Image("modal-icon")
             VStack(spacing: 16) {
-                Text("Sign Up Successful!")
+                Text("Siging up!")
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color("Primary"))
                     .font(.custom("Urbanist-Bold", size: 24))
-                Text("Your account has been created. Please wait a moment, we are preparing for you...")
+                Text("We are currenctly processing your informations. Please wait!")
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color("Greyscale900"))
                     .font(.custom("Urbanist-Regular", size: 16))
