@@ -26,12 +26,11 @@ struct ModalView: View {
             }
             Image("modal-loader")
                 .rotationEffect(isRotating ? .degrees(360) : .degrees(0))
-                .animation(Animation.linear(duration: 1).repeatForever(autoreverses: false))
+                .animation(.linear(duration: 1).repeatForever(autoreverses: false))
                 .onAppear() {
                     self.isRotating = true
                 }
         }
-        
         .padding(.top, 40)
         .padding(.bottom, 32)
         .padding(.horizontal, 32)

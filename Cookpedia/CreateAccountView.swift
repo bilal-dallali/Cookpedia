@@ -60,6 +60,8 @@ struct CreateAccountView: View {
     @State private var passwordNotIdentical: Bool = false
     @State private var emailNotIdentical: Bool = false
     @State private var emailInvalid: Bool = false
+    @State private var redirectHomePage: Bool = false
+    @State private var loadingScreen = false
     
     var body: some View {
         ZStack {
@@ -343,7 +345,11 @@ struct CreateAccountView: View {
                         if email != "" && email == confirmEmail {
                             if isValidEmail(email) {
                                 Button {
-                                    //Text("Accueil")
+                                    loadingScreen = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                        self.redirectHomePage = true
+                                        loadingScreen = false
+                                    }
                                     let apiManager = APIManager()
                                     apiManager.registerUser(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
                                 } label: {
@@ -357,6 +363,9 @@ struct CreateAccountView: View {
                                         .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                                         .padding(.top, 24)
                                         .padding(.bottom)
+                                }
+                                .navigationDestination(isPresented: $redirectHomePage) {
+                                    HomePage()
                                 }
                             } else {
                                 Button {
@@ -430,9 +439,8 @@ struct CreateAccountView: View {
                 }
             }
             .padding(.horizontal, 24)
-            .background(Color("White"))
-            //.background(Color(red: 9/255, green: 16/255, blue: 29/255, opacity: 0.6))
-            //.blur(radius: 4)
+            .background(Color(loadingScreen ? "BackgroundOpacity" : "White"))
+            .blur(radius: loadingScreen ? 4 : 0)
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -442,7 +450,9 @@ struct CreateAccountView: View {
                     Image("progress-bar-100")
                 }
             }
-            //ModalView()
+            if loadingScreen {
+                ModalView()
+            }
         }
     }
 }

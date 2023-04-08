@@ -59,21 +59,21 @@ class APIManager {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
         } catch let error {
-            print(error.localizedDescription)
+            print("bitch", error.localizedDescription)
             return
         }
         
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
             if let error = error {
-                print("error",error.localizedDescription)
+                print("error1",error.localizedDescription)
             }
             if let data = data {
                 do {
                     let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any]
-                    print(result ?? "No result")
+                    print(result ?? "No result2")
                 } catch let error {
-                    print("error datas", error.localizedDescription)
+                    print("error datas3", error.localizedDescription)
                 }
             }
         }
