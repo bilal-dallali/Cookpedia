@@ -62,8 +62,10 @@ struct CreateAccountView: View {
     @State private var emailInvalid: Bool = false
     @State private var redirectHomePage: Bool = false
     @State private var loadingScreen = false
-    @State private var alreadyExist = "\(errorMessage)"
-    @State private var alertEmail = false
+    @State private var alertUsersExists = false
+    
+    @State var errorMessage: String?
+    let apiRequest = APIRequest()
     
     var body: some View {
         ZStack {
@@ -342,53 +344,51 @@ struct CreateAccountView: View {
                     .padding(.top, 40)
                 }
                 
-                
                 if username != "" && email != "" && password != "" && confirmPassword != "" {
                     if password == confirmPassword {
                         if email != "" && email == confirmEmail {
                             if isValidEmail(email) {
-                                if errorMessage == "" {
-                                    Button {
-                                        let apiManager = APIManager()
-                                        apiManager.registerUser(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
+                                Button {
+                                    let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
+                                    apiRequest.registerUser(registration: registration) { result in
+                                        switch result {
+                                        case .success(_):
+                                            print("ça veux se connecter")
+                                            errorMessage = nil
                                             loadingScreen = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                 self.redirectHomePage = true
                                                 loadingScreen = false
                                             }
-                                    } label: {
-                                        Text("Continue")
-                                            .foregroundColor(Color("White"))
-                                            .font(.custom("Urbanist-Bold", size: 16))
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 58)
-                                            .background(Color("Primary"))
-                                            .cornerRadius(.infinity)
-                                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                                            .padding(.top, 24)
-                                            .padding(.bottom)
+                                        case .failure(let error):
+                                            print("ça veux pas se connecter")
+                                            alertUsersExists = true
+                                            switch error {
+                                            case APIError.userAlreadyExists:
+                                                errorMessage = "This email address is already registered"
+                                            default:
+                                                errorMessage = "An error occured: \(error.localizedDescription)"
+                                            }
+                                        }
+                                        
                                     }
-                                    .navigationDestination(isPresented: $redirectHomePage) {
-                                        HomePage()
+                                } label: {
+                                    Text("Continue")
+                                        .foregroundColor(Color("White"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary"))
+                                        .cornerRadius(.infinity)
+                                        .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                        .padding(.top, 24)
+                                        .padding(.bottom)
                                 }
-                                } else {
-                                    Button {
-                                        let apiManager = APIManager()
-                                        apiManager.registerUser(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
-                                        alertEmail = true
-                                    } label: {
-                                        Text("Continue")
-                                            .foregroundColor(Color("White"))
-                                            .font(.custom("Urbanist-Bold", size: 16))
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 58)
-                                            .background(Color("Primary"))
-                                            .cornerRadius(.infinity)
-                                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
-                                            .padding(.top, 24)
-                                            .padding(.bottom)
-                                    }
-                                    // alert bitch
+                                .navigationDestination(isPresented: $redirectHomePage) {
+                                    HomePage()
+                                }
+                                .alert("This user already exists, please login or use other informatons", isPresented: $alertUsersExists) {
+                                    Button("OK", role: .cancel) { }
                                 }
                             } else {
                                 Button {
