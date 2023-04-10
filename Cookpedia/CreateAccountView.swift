@@ -65,7 +65,7 @@ struct CreateAccountView: View {
     @State private var alertUsersExists = false
     
     @State var errorMessage: String?
-    let apiRequest = APIRequest()
+    var apiManager = APIRequest()
     
     var body: some View {
         ZStack {
@@ -350,27 +350,56 @@ struct CreateAccountView: View {
                             if isValidEmail(email) {
                                 Button {
                                     let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
-                                    apiRequest.registerUser(registration: registration) { result in
+                                    apiManager.registerUser(registration: registration) { result in
                                         switch result {
-                                        case .success(_):
-                                            print("ça veux se connecter")
-                                            errorMessage = nil
+                                        case .success:
+                                            print("User registered successfully")
                                             loadingScreen = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                 self.redirectHomePage = true
                                                 loadingScreen = false
                                             }
                                         case .failure(let error):
-                                            print("ça veux pas se connecter")
-                                            alertUsersExists = true
+                                            print("Registration failed: \(error.localizedDescription)")
                                             switch error {
-                                            case APIError.userAlreadyExists:
+                                            case .invalidUrl:
+                                                // afficher un message d'erreur pour une URL invalide
+                                                errorMessage = "URL invalid"
+                                                alertUsersExists = true
+                                                print("URL INVALIDE !!!!!")
+                                                break
+                                            case .invalidData:
+                                                // afficher un message d'erreur pour des données invalides
+                                                errorMessage = "Your datas are invalid, please try again later!"
+                                                alertUsersExists = true
+                                                print("DATA INVALID !!!")
+                                                break
+                                            case .emailAlreadyExists:
+                                                // afficher un message d'erreur pour un e-mail déjà existant
                                                 errorMessage = "This email address is already registered"
-                                            default:
-                                                errorMessage = "An error occured: \(error.localizedDescription)"
+                                                alertUsersExists = true
+                                                print("EMAIL EXISTS !!!")
+                                                break
+                                            case .usernameAlreadyExists:
+                                                // afficher un message d'erreur pour un nom d'utilisateur déjà existant
+                                                errorMessage = "This username is already registered"
+                                                alertUsersExists = true
+                                                print("USERNAME EXISTS !!!!")
+                                                break
+                                            case .phoneNumberAlreadyExists:
+                                                // afficher un message d'erreur pour un numéro de téléphone déjà existant
+                                                errorMessage = "This phone number is already registered"
+                                                alertUsersExists = true
+                                                print("PHONE NUMBER EXISTS !!!!")
+                                                break
+                                            case .serverError:
+                                                // afficher un message d'erreur pour une erreur du serveur
+                                                errorMessage = "Server error"
+                                                alertUsersExists = true
+                                                print("SERVER ERROR!!!!")
+                                                break
                                             }
                                         }
-                                        
                                     }
                                 } label: {
                                     Text("Continue")
@@ -387,7 +416,7 @@ struct CreateAccountView: View {
                                 .navigationDestination(isPresented: $redirectHomePage) {
                                     HomePage()
                                 }
-                                .alert("This user already exists, please login or use other informatons", isPresented: $alertUsersExists) {
+                                .alert(errorMessage ?? "an error occured", isPresented: $alertUsersExists) {
                                     Button("OK", role: .cancel) { }
                                 }
                             } else {
@@ -408,7 +437,6 @@ struct CreateAccountView: View {
                                         .padding(.top, 24)
                                         .padding(.bottom)
                                 }
-
                             }
                         } else {
                             Button {
@@ -428,7 +456,6 @@ struct CreateAccountView: View {
                                     .padding(.top, 24)
                                     .padding(.bottom)
                             }
-
                         }
                     } else {
                         Button {

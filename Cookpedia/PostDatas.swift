@@ -46,14 +46,14 @@ struct UserRegistration: Codable {
     let city: String
     let profilePictureUrl: String
 }
-
+/*
 class APIRequest {
-    let baseUrl = "http://localhost:3000/api"
+    let baseUrl = ""
     
-    func registerUser(registration: UserRegistration, completion: @escaping (Result<Bool, Error>) -> ()) {
+    func registerUser(registration: UserRegistration, completion: @escaping (Error?) -> ()) {
         let endpoint = "/users"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIError.invalidUrl))
+            completion(APIError.invalidUrl)
             return
         }
         var request = URLRequest(url: url)
@@ -64,18 +64,169 @@ class APIRequest {
             request.httpBody = jsonData
             URLSession.shared.dataTask(with: request) { data, response, error in
                 if let error = error {
-                    completion(.failure(error))
+                    completion(error)
+                    return
+                }
+                guard let data = data else {
+                    completion(APIError.invalidData)
+                    return
+                }
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    guard let responseDict = json as? [String: Any] else {
+                        completion(APIError.invalidData)
+                        return
+                    }
+                    if let errorMessage = responseDict["error"] as? String {
+                        if errorMessage.contains("email") {
+                            completion(APIError.emailAlreadyExists)
+                            print("email exists")
+                            return
+                        } else if errorMessage.contains("username") {
+                            completion(APIError.usernameAlreadyExists)
+                            print("username exists")
+                            return
+                        } else if errorMessage.contains("phone_number") {
+                            completion(APIError.phoneNumberAlreadyExists)
+                            print("phonenumber exists")
+                            return
+                        } else {
+                            completion(APIError.serverError)
+                            return
+                        }
+                    } else if let message = responseDict["message"] as? String, message == "User created" {
+                        completion(nil)
+                    } else {
+                        completion(APIError.invalidData)
+                    }
+                } catch {
+                    completion(APIError.invalidData)
+                }
+            }.resume()
+        } catch {
+            completion(APIError.invalidData)
+        }
+    }
+}
+*/
+/*
+class APIRequest {
+    let baseUrl = ""
+    
+    func registerUser(registration: UserRegistration, completion: @escaping (Error?) -> ()) {
+        let endpoint = "/users"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(APIError.invalidUrl)
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        do {
+            let jsonData = try JSONEncoder().encode(registration)
+            request.httpBody = jsonData
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+                guard let data = data else {
+                    completion(APIError.invalidData)
+                    return
+                }
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    guard let responseDict = json as? [String: Any] else {
+                        completion(APIError.invalidData)
+                        return
+                    }
+                    var errorMessageSent = false
+                    if let errorMessage = responseDict["error"] as? String {
+                        if errorMessage.contains("email") {
+                            completion(APIError.emailAlreadyExists)
+                            errorMessageSent = true
+                        } else if errorMessage.contains("username") {
+                            print(errorMessage)
+                            completion(APIError.usernameAlreadyExists)
+                            errorMessageSent = true
+                        } else if errorMessage.contains("phone_number") {
+                            completion(APIError.phoneNumberAlreadyExists)
+                            errorMessageSent = true
+                        } else {
+                            completion(APIError.serverError)
+                            errorMessageSent = true
+                        }
+                    }
+                    if !errorMessageSent, let message = responseDict["message"] as? String, message == "User created" {
+                        completion(nil)
+                    } else if !errorMessageSent {
+                        completion(APIError.invalidData)
+                    }
+                } catch {
+                    completion(APIError.invalidData)
+                }
+            }.resume()
+        } catch {
+            completion(APIError.invalidData)
+        }
+    }
+}*/
+
+
+class APIRequest {
+    let baseUrl = "http://localhost:3000/api"
+    
+    func registerUser(registration: UserRegistration, completion: @escaping (Result<Void, APIError>) -> ()) {
+        let endpoint = "/users"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        do {
+            let jsonData = try JSONEncoder().encode(registration)
+            request.httpBody = jsonData
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(APIError.serverError))
                     return
                 }
                 guard let data = data else {
                     completion(.failure(APIError.invalidData))
                     return
                 }
-                if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 400 {
-                    completion(.failure(APIError.userAlreadyExists))
-                    return
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: [])
+                    guard let responseDict = json as? [String: Any] else {
+                        completion(.failure(APIError.invalidData))
+                        return
+                    }
+                    var errorMessageSent = false
+                    if let errorMessage = responseDict["error"] as? String {
+                        if errorMessage.contains("Email") {
+                            completion(.failure(APIError.emailAlreadyExists))
+                            errorMessageSent = true
+                        } else if errorMessage.contains("Username") {
+                            completion(.failure(APIError.usernameAlreadyExists))
+                            errorMessageSent = true
+                        } else if errorMessage.contains("Phone") {
+                            completion(.failure(APIError.phoneNumberAlreadyExists))
+                            errorMessageSent = true
+                        } else {
+                            completion(.failure(APIError.serverError))
+                            errorMessageSent = true
+                        }
+                    }
+                    if !errorMessageSent, let message = responseDict["message"] as? String, message == "User created" {
+                        completion(.success(()))
+                    } else if !errorMessageSent {
+                        completion(.failure(APIError.invalidData))
+                    }
+                } catch {
+                    completion(.failure(APIError.invalidData))
                 }
-                completion(.success(true))
             }.resume()
         } catch {
             completion(.failure(APIError.invalidData))
@@ -86,5 +237,25 @@ class APIRequest {
 enum APIError: Error {
     case invalidUrl
     case invalidData
-    case userAlreadyExists
+    case emailAlreadyExists
+    case usernameAlreadyExists
+    case phoneNumberAlreadyExists
+    case serverError
+
+    var localizedDescription: String {
+        switch self {
+        case .invalidUrl:
+            return "Invalid URL"
+        case .invalidData:
+            return "Invalid data"
+        case .emailAlreadyExists:
+            return "Email already exists"
+        case .usernameAlreadyExists:
+            return "Username already exists"
+        case .phoneNumberAlreadyExists:
+            return "Phone number already exists"
+        case .serverError:
+            return "Server error"
+        }
+    }
 }
