@@ -118,7 +118,6 @@ struct TabView: View {
                 }
             }
             .frame(height: 48)
-            //.background(Color("Purple"))
             .padding(.bottom, 34)
             .padding(.horizontal, 32)
         }

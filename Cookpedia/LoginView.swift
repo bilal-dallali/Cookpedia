@@ -127,7 +127,6 @@ struct LoginView: View {
                                 Divider()
                                     .frame(width: 110)
                             }
-                            
                         }
                         HStack(spacing: 16) {
                             Button {
@@ -155,7 +154,6 @@ struct LoginView: View {
                                         RoundedRectangle(cornerRadius: .infinity)
                                             .stroke(Color("Greyscale200"), lineWidth: 1)
                                             .frame(height: 60)
-                                            
                                     }
                             }
                             Button {

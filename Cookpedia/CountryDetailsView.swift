@@ -48,7 +48,7 @@ struct CountryDetailsView: View {
 
 struct CountryViewDetails_Previews: PreviewProvider {
     static var previews: some View {
-        CountryDetailsView(country: .init(name: "ALgérie", flag: "algeria", domain: "DZ"), selectedCountry: .constant(nil))
+        CountryDetailsView(country: .init(name: "Algérie", flag: "algeria", domain: "DZ"), selectedCountry: .constant(nil))
             .previewLayout(.sizeThatFits)
             .padding(24)
     }

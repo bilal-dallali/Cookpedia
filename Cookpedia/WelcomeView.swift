@@ -58,7 +58,6 @@ struct WelcomeView: View {
                                     .stroke(Color("Greyscale200"), lineWidth: 1)
                                     .cornerRadius(.infinity)
                             }
-                            
                         }
                         NavigationLink(destination: CountryView()) {
                             Text("Get Started")

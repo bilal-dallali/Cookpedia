@@ -16,7 +16,6 @@ struct ForgotPasswordView: View {
         VStack {
             Text("forgotten password")
         }
-
     }
 }
 
