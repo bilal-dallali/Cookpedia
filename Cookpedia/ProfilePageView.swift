@@ -208,7 +208,7 @@ struct ProfilePageView: View {
                                     VStack(alignment: .leading, spacing: 8) {
                                         HStack(spacing: 12) {
                                             Image("world-icon")
-                                            Text("www.exampledomain.com")
+                                            Text("ww.exampledomain.com")
                                                 .foregroundColor(Color("Primary"))
                                                 .font(.custom("Urbanist-Medium", size: 16))
                                                 .foregroundColor(Color("Primary"))
