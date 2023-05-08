@@ -136,6 +136,7 @@ struct HomePageView: View {
                     }
                     .padding(.top, 16)
                 }
+                .background(Color("White"))
             }
         }
     }
