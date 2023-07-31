@@ -109,6 +109,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C5CAE502A782974001F7CC6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9C93A2EC29B651EF00CE5943 /* WelcomeView.swift */,
+				9C52C88529B746D1004A1E41 /* BackButtonView.swift */,
+				9C20B10029BD285B00857FC2 /* CountryView.swift */,
+				9C52C88729B7875F004A1E41 /* ForgotPasswordView.swift */,
+				9C20B10229BD323900857FC2 /* CountryDetailsView.swift */,
+				9CCD819029BFA1D9002A7580 /* CookingLevelView.swift */,
+				9C31CF5D29CF47AE00095B82 /* LoginView.swift */,
+				9CB837CC29D0B29600166E0F /* CuisinePreferenceView.swift */,
+				9CB837CE29D1AF8E00166E0F /* DietaryPreferencesView.swift */,
+				9C865FC629D2E22300B4A6FA /* CompleteProfileView.swift */,
+				9C5365C029D735E50062B360 /* TabView.swift */,
+				9C8169B529D9E5DA0055871E /* CreateAccountView.swift */,
+				9C9B5A6929DC1E6C00C02A6A /* ModalView.swift */,
+				9C7F7FE729E70EB50048E7B0 /* DiscoverPageView.swift */,
+				9C7F7FE929E70EE00048E7B0 /* RecipePageView.swift */,
+				9C7F7FEB29E70F280048E7B0 /* ProfilePageView.swift */,
+				9CC02B7C29E1574600E8E99B /* HomePageView.swift */,
+				9C0E758429EC032E0048A603 /* RecipeCardNameView.swift */,
+				9CC04D2A29EEB71E00C98055 /* RecipeCardView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9C5CAE512A782A48001F7CC6 /* ModelView */ = {
+			isa = PBXGroup;
+			children = (
+				9C05892F29E059B400959933 /* PostDatas.swift */,
+			);
+			path = ModelView;
+			sourceTree = "<group>";
+		};
+		9C5CAE522A782A64001F7CC6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9C20B0FE29BCE0CA00857FC2 /* Data.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		9C93A2DE29B651EF00CE5943 = {
 			isa = PBXGroup;
 			children = (
@@ -128,30 +170,12 @@
 		9C93A2E929B651EF00CE5943 /* Cookpedia */ = {
 			isa = PBXGroup;
 			children = (
+				9C5CAE522A782A64001F7CC6 /* Model */,
+				9C5CAE512A782A48001F7CC6 /* ModelView */,
+				9C5CAE502A782974001F7CC6 /* Views */,
 				9C93A31D29B6536900CE5943 /* Info.plist */,
 				9C93A2F829B652E600CE5943 /* Fonts */,
 				9C93A2EA29B651EF00CE5943 /* CookpediaApp.swift */,
-				9C93A2EC29B651EF00CE5943 /* WelcomeView.swift */,
-				9C52C88529B746D1004A1E41 /* BackButtonView.swift */,
-				9C52C88729B7875F004A1E41 /* ForgotPasswordView.swift */,
-				9C20B10029BD285B00857FC2 /* CountryView.swift */,
-				9C20B0FE29BCE0CA00857FC2 /* Data.swift */,
-				9C20B10229BD323900857FC2 /* CountryDetailsView.swift */,
-				9CCD819029BFA1D9002A7580 /* CookingLevelView.swift */,
-				9C31CF5D29CF47AE00095B82 /* LoginView.swift */,
-				9CB837CC29D0B29600166E0F /* CuisinePreferenceView.swift */,
-				9CB837CE29D1AF8E00166E0F /* DietaryPreferencesView.swift */,
-				9C865FC629D2E22300B4A6FA /* CompleteProfileView.swift */,
-				9C5365C029D735E50062B360 /* TabView.swift */,
-				9C8169B529D9E5DA0055871E /* CreateAccountView.swift */,
-				9C9B5A6929DC1E6C00C02A6A /* ModalView.swift */,
-				9C05892F29E059B400959933 /* PostDatas.swift */,
-				9C7F7FE729E70EB50048E7B0 /* DiscoverPageView.swift */,
-				9C7F7FE929E70EE00048E7B0 /* RecipePageView.swift */,
-				9C7F7FEB29E70F280048E7B0 /* ProfilePageView.swift */,
-				9CC02B7C29E1574600E8E99B /* HomePageView.swift */,
-				9C0E758429EC032E0048A603 /* RecipeCardNameView.swift */,
-				9CC04D2A29EEB71E00C98055 /* RecipeCardView.swift */,
 				9C93A2EE29B651F000CE5943 /* Assets.xcassets */,
 				9C93A2F029B651F000CE5943 /* Preview Content */,
 			);
