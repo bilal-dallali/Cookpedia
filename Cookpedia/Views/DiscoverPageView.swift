@@ -13,7 +13,7 @@ struct DiscoverPageView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 24) {
                         HStack {
                             Image("logo")

@@ -70,7 +70,7 @@ struct CreateAccountView: View {
     var body: some View {
         ZStack {
             VStack {
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 24) {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Create an Account 🔐")

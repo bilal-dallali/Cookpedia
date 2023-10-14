@@ -18,7 +18,7 @@ struct LoginView: View {
     
     var body: some View {
         VStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 32) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Hello there 👋")

@@ -26,7 +26,7 @@ struct CuisinePreferenceView: View {
     
     var body: some View {
         VStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Select your cuisines preferences 🥘")
