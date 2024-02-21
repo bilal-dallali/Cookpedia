@@ -19,13 +19,14 @@ struct CountryDetailsView: View {
         Button {
             selectedCountry = isCountrySelected ? nil : country
         } label: {
-            HStack(spacing: 23) {
+            HStack(spacing: 16) {
                 Image(country.flag)
                     .resizable()
                     .frame(width: 48, height: 32)
                     .cornerRadius(6)
                 Text(country.domain)
                     .foregroundColor(Color("Greyscale600"))
+                    .frame(width: 36)
                     .font(.custom("Urbanist-Semibold", size: 18))
                 Text(country.name)
                     .foregroundColor(Color("Greyscale900"))

@@ -9,13 +9,14 @@
 /* Begin PBXBuildFile section */
 		9C05893029E059B400959933 /* PostDatas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C05892F29E059B400959933 /* PostDatas.swift */; };
 		9C0E758529EC032E0048A603 /* RecipeCardNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0E758429EC032E0048A603 /* RecipeCardNameView.swift */; };
-		9C20B0FF29BCE0CA00857FC2 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B0FE29BCE0CA00857FC2 /* Data.swift */; };
+		9C20B0FF29BCE0CA00857FC2 /* DataCountries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B0FE29BCE0CA00857FC2 /* DataCountries.swift */; };
 		9C20B10129BD285B00857FC2 /* CountryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B10029BD285B00857FC2 /* CountryView.swift */; };
 		9C20B10329BD323900857FC2 /* CountryDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B10229BD323900857FC2 /* CountryDetailsView.swift */; };
 		9C31CF5E29CF47AE00095B82 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C31CF5D29CF47AE00095B82 /* LoginView.swift */; };
 		9C52C88629B746D1004A1E41 /* BackButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C52C88529B746D1004A1E41 /* BackButtonView.swift */; };
 		9C52C88829B7875F004A1E41 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C52C88729B7875F004A1E41 /* ForgotPasswordView.swift */; };
 		9C5365C129D735E50062B360 /* TabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5365C029D735E50062B360 /* TabView.swift */; };
+		9C5675DA2B867BE200D25BB0 /* UsersData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5675D92B867BE200D25BB0 /* UsersData.swift */; };
 		9C7F7FE829E70EB50048E7B0 /* DiscoverPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7F7FE729E70EB50048E7B0 /* DiscoverPageView.swift */; };
 		9C7F7FEA29E70EE00048E7B0 /* RecipePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7F7FE929E70EE00048E7B0 /* RecipePageView.swift */; };
 		9C7F7FEC29E70F280048E7B0 /* ProfilePageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7F7FEB29E70F280048E7B0 /* ProfilePageView.swift */; };
@@ -54,13 +55,14 @@
 /* Begin PBXFileReference section */
 		9C05892F29E059B400959933 /* PostDatas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDatas.swift; sourceTree = "<group>"; usesTabs = 0; };
 		9C0E758429EC032E0048A603 /* RecipeCardNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCardNameView.swift; sourceTree = "<group>"; };
-		9C20B0FE29BCE0CA00857FC2 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		9C20B0FE29BCE0CA00857FC2 /* DataCountries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCountries.swift; sourceTree = "<group>"; };
 		9C20B10029BD285B00857FC2 /* CountryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryView.swift; sourceTree = "<group>"; };
 		9C20B10229BD323900857FC2 /* CountryDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryDetailsView.swift; sourceTree = "<group>"; };
 		9C31CF5D29CF47AE00095B82 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		9C52C88529B746D1004A1E41 /* BackButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButtonView.swift; sourceTree = "<group>"; };
 		9C52C88729B7875F004A1E41 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		9C5365C029D735E50062B360 /* TabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabView.swift; sourceTree = "<group>"; };
+		9C5675D92B867BE200D25BB0 /* UsersData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersData.swift; sourceTree = "<group>"; };
 		9C7F7FE729E70EB50048E7B0 /* DiscoverPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverPageView.swift; sourceTree = "<group>"; };
 		9C7F7FE929E70EE00048E7B0 /* RecipePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipePageView.swift; sourceTree = "<group>"; };
 		9C7F7FEB29E70F280048E7B0 /* ProfilePageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePageView.swift; sourceTree = "<group>"; };
@@ -135,18 +137,19 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		9C5CAE512A782A48001F7CC6 /* ModelView */ = {
+		9C5CAE512A782A48001F7CC6 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				9C05892F29E059B400959933 /* PostDatas.swift */,
 			);
-			path = ModelView;
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		9C5CAE522A782A64001F7CC6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				9C20B0FE29BCE0CA00857FC2 /* Data.swift */,
+				9C20B0FE29BCE0CA00857FC2 /* DataCountries.swift */,
+				9C5675D92B867BE200D25BB0 /* UsersData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -171,7 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				9C5CAE522A782A64001F7CC6 /* Model */,
-				9C5CAE512A782A48001F7CC6 /* ModelView */,
+				9C5CAE512A782A48001F7CC6 /* ViewModel */,
 				9C5CAE502A782974001F7CC6 /* Views */,
 				9C93A31D29B6536900CE5943 /* Info.plist */,
 				9C93A2F829B652E600CE5943 /* Fonts */,
@@ -243,7 +246,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1420;
-				LastUpgradeCheck = 1420;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					9C93A2E629B651EF00CE5943 = {
 						CreatedOnToolsVersion = 14.2;
@@ -312,7 +315,7 @@
 				9CB837CD29D0B29600166E0F /* CuisinePreferenceView.swift in Sources */,
 				9CCD819129BFA1D9002A7580 /* CookingLevelView.swift in Sources */,
 				9C31CF5E29CF47AE00095B82 /* LoginView.swift in Sources */,
-				9C20B0FF29BCE0CA00857FC2 /* Data.swift in Sources */,
+				9C20B0FF29BCE0CA00857FC2 /* DataCountries.swift in Sources */,
 				9C93A2ED29B651EF00CE5943 /* WelcomeView.swift in Sources */,
 				9C7F7FE829E70EB50048E7B0 /* DiscoverPageView.swift in Sources */,
 				9CC04D2B29EEB71E00C98055 /* RecipeCardView.swift in Sources */,
@@ -322,6 +325,7 @@
 				9C8169B629D9E5DA0055871E /* CreateAccountView.swift in Sources */,
 				9CB837CF29D1AF8E00166E0F /* DietaryPreferencesView.swift in Sources */,
 				9C05893029E059B400959933 /* PostDatas.swift in Sources */,
+				9C5675DA2B867BE200D25BB0 /* UsersData.swift in Sources */,
 				9C20B10129BD285B00857FC2 /* CountryView.swift in Sources */,
 				9C7F7FEA29E70EE00048E7B0 /* RecipePageView.swift in Sources */,
 				9C52C88829B7875F004A1E41 /* ForgotPasswordView.swift in Sources */,
@@ -367,6 +371,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -427,6 +432,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
