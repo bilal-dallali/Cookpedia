@@ -6,6 +6,59 @@
 //
 
 import SwiftUI
+import PhotosUI
+
+func generateUniqueImageName() -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyyMMddHHmmss"
+    let dateString = dateFormatter.string(from: Date())
+    return "profile_\(dateString).jpg"
+}
+
+struct PhotoPicker: UIViewControllerRepresentable {
+    @Binding var selectedImage: UIImage?
+    @Binding var profilePictureUrl: String
+
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 1
+        config.filter = .images
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        var parent: PhotoPicker
+
+        init(_ parent: PhotoPicker) {
+            self.parent = parent
+        }
+
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
+            guard let provider = results.first?.itemProvider else { return }
+            if provider.canLoadObject(ofClass: UIImage.self) {
+                provider.loadObject(ofClass: UIImage.self) { image, _ in
+                    DispatchQueue.main.async {
+                        if let image = image as? UIImage {
+                            self.parent.selectedImage = image
+                            let uniqueImageName = generateUniqueImageName() // Assurez-vous que cette fonction est accessible ici
+                            self.parent.profilePictureUrl = uniqueImageName
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 struct CompleteProfileView: View {
     
@@ -36,10 +89,13 @@ struct CompleteProfileView: View {
     @Binding var lowFat: Bool
     @Binding var halal: Bool
     
-    @State var profilePictureUrl: String = "profile-picture"
+    @State var profilePictureUrl: String = ""
     @State var fullName = ""
     @State var phoneNumber = ""
     @State var gender = ""
+    
+    @State private var isImagePickerPresented = false
+    @State private var selectedImage: UIImage?
     
     @State private var isDropDownMenuActivated: Bool = false
     @State private var phoneNumberInvalid: Bool = false
@@ -73,13 +129,20 @@ struct CompleteProfileView: View {
                             HStack {
                                 Spacer()
                                 Button {
-                                    //
+                                    isImagePickerPresented = true
                                 } label: {
                                     ZStack {
-                                        Image(profilePictureUrl)
-                                            .resizable()
-                                            .frame(width: 120, height: 120)
-                                            .cornerRadius(.infinity)
+                                        if let selectedImage = selectedImage {
+                                            Image(uiImage: selectedImage)
+                                                .resizable()
+                                                .frame(width: 120, height: 120)
+                                                .cornerRadius(.infinity)
+                                        } else {
+                                            Image("ellipse")
+                                                .resizable()
+                                                .frame(width: 120, height: 120)
+                                                .cornerRadius(.infinity)
+                                        }
                                         VStack {
                                             Spacer()
                                             HStack {
@@ -89,6 +152,9 @@ struct CompleteProfileView: View {
                                         }
                                     }
                                     .frame(width: 120, height: 120)
+                                }
+                                .sheet(isPresented: $isImagePickerPresented) {
+                                    PhotoPicker(selectedImage: $selectedImage, profilePictureUrl: $profilePictureUrl)
                                 }
                                 Spacer()
                             }
@@ -273,6 +339,7 @@ struct CompleteProfileView: View {
                                 phoneNumberInvalid = false
                             }
                             print(localDate)
+                            print("profile picture = ", profilePictureUrl)
                         } label: {
                             Text("Continue")
                                 .foregroundColor(Color("White"))
