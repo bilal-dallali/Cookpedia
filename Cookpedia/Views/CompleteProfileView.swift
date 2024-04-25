@@ -49,7 +49,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
                     DispatchQueue.main.async {
                         if let image = image as? UIImage {
                             self.parent.selectedImage = image
-                            let uniqueImageName = generateUniqueImageName() // Assurez-vous que cette fonction est accessible ici
+                            let uniqueImageName = generateUniqueImageName()
                             self.parent.profilePictureUrl = uniqueImageName
                         }
                     }
