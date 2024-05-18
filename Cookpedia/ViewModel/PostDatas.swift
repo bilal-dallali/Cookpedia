@@ -66,6 +66,37 @@ class APIRequest {
             completion(.failure(APIError.invalidData))
         }
     }
+    
+    func loginUser(email: String, password: String, completion: @escaping (Result<Void, APIError>) -> ()) {
+        let endpoint = "/users"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let loginDetails = ["email": email, "password": password]
+        do {
+            let jsonData = try JSONEncoder().encode(loginDetails)
+            request.httpBody = jsonData
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(.serverError))
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    completion(.failure(.invalidData))
+                    return
+                }
+                completion(.success(()))
+            }.resume()
+        } catch {
+            completion(.failure(.invalidData))
+        }
+    }
 }
 
 enum APIError: Error {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 struct UserRegistration: Codable {
     let username: String
@@ -44,3 +45,4 @@ struct UserRegistration: Codable {
     let city: String
     let profilePictureUrl: String
 }
+

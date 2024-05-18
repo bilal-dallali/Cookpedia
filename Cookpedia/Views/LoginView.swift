@@ -11,10 +11,16 @@ struct LoginView: View {
     
     @State private var email = ""
     @State private var password = ""
+    
     @FocusState private var emailFieldIsFocused: Bool
     @State private var isPasswordHidden: Bool = true
     @State private var isCheckboxChecked: Bool = true
     @State private var isPresented: Bool = false
+    
+    @State private var emailInvalid: Bool = false
+    
+    var apiManager = APIRequest()
+    
     
     var body: some View {
         VStack {
@@ -46,6 +52,22 @@ struct LoginView: View {
                                         .foregroundColor(Color("Primary"))
                                         .padding(.top), alignment: .bottom
                                 )
+                            
+                            
+                            if emailInvalid {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("You must enter a valid email")
+                                        .foregroundColor(Color("Error"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .cornerRadius(10)
+                            }
                         }
                         
                         VStack(alignment: .leading, spacing: 16) {
@@ -174,21 +196,59 @@ struct LoginView: View {
                 }
                 .padding(.top, 40)
             }
-            
-            Button {
-                print(email + password)
-            } label: {
+            if email != "" && password != "" {
+                if isValidEmail(email) {
+                    Button {
+                        print("\(email)\n\(password)")
+                        //APIRequest.loginUser(email: email, password: password, completion: (Result<Void, APIError>) -> ())
+                        apiManager.loginUser(email: email, password: password) { result in
+                            //
+                        }
+                    } label: {
+                        Text("Sign In")
+                            .foregroundColor(Color("White"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("Primary"))
+                            .cornerRadius(.infinity)
+                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                            .padding(.top, 24)
+                            .padding(.bottom)
+                    }
+                } else {
+                    
+                    Button(action: {
+                        emailInvalid = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                            emailInvalid = false
+                        }
+                    }, label: {
+                        Text("Sign In")
+                            .foregroundColor(Color("White"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("Primary"))
+                            .cornerRadius(.infinity)
+                            .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                            .padding(.top, 24)
+                            .padding(.bottom)
+                    })
+                }
+                
+            } else {
                 Text("Sign In")
                     .foregroundColor(Color("White"))
                     .font(.custom("Urbanist-Bold", size: 16))
                     .frame(maxWidth: .infinity)
                     .frame(height: 58)
-                    .background(Color("Primary"))
+                    .background(Color("DisabledButton"))
                     .cornerRadius(.infinity)
-                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                     .padding(.top, 24)
                     .padding(.bottom)
             }
+            
         }
         .padding(.horizontal, 24)
         .background(Color("White"))
