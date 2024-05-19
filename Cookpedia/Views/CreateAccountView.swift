@@ -374,6 +374,19 @@ struct CreateAccountView: View {
                                                 alertUsersExists = true
                                                 print("DATA INVALID !!!")
                                                 break
+                                            case .invalidCredentials:
+                                                // afficher un message d'erreur pour un mot de passe invalide
+                                                errorMessage = "Incorrect password"
+                                                alertUsersExists = true
+                                                print("INVALID CREDENTIALS!!!")
+                                                break
+                                            case .userNotFound:
+                                                // Afficher un message d'erreur pour un utilisateur non trouvé
+                                                errorMessage = "User not found"
+                                                alertUsersExists = true
+                                                print("USER NOT FOUND!!!")
+                                                break
+                                                
                                             case .emailAlreadyExists:
                                                 // afficher un message d'erreur pour un e-mail déjà existant
                                                 errorMessage = "This email address is already registered"

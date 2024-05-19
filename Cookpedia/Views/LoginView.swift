@@ -13,11 +13,16 @@ struct LoginView: View {
     @State private var password = ""
     
     @FocusState private var emailFieldIsFocused: Bool
+    
     @State private var isPasswordHidden: Bool = true
     @State private var isCheckboxChecked: Bool = true
     @State private var isPresented: Bool = false
     
     @State private var emailInvalid: Bool = false
+    
+    @State private var loginError: String? = nil
+    @State private var isLoading: Bool = false
+    @State private var navigateToHome: Bool = false
     
     var apiManager = APIRequest()
     
@@ -196,14 +201,19 @@ struct LoginView: View {
                 }
                 .padding(.top, 40)
             }
+            
+            if let loginError = loginError {
+                Text(loginError)
+                    .foregroundColor(.red)
+                    .font(.custom("Urbanist-Bold", size: 16))
+                    .padding(.top, 24)
+            }
+            
             if email != "" && password != "" {
                 if isValidEmail(email) {
                     Button {
                         print("\(email)\n\(password)")
-                        //APIRequest.loginUser(email: email, password: password, completion: (Result<Void, APIError>) -> ())
-                        apiManager.loginUser(email: email, password: password) { result in
-                            //
-                        }
+                        loginUser(email: email, password: password)
                     } label: {
                         Text("Sign In")
                             .foregroundColor(Color("White"))
@@ -217,7 +227,6 @@ struct LoginView: View {
                             .padding(.bottom)
                     }
                 } else {
-                    
                     Button(action: {
                         emailInvalid = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
@@ -256,6 +265,21 @@ struct LoginView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackButtonView()
+            }
+        }
+    }
+    
+    func loginUser(email: String, password: String) {
+        isLoading = true
+        apiManager.loginUser(email: email, password: password) { result in
+            DispatchQueue.main.async {
+                isLoading = false
+                switch result {
+                case .success:
+                    navigateToHome = true
+                case .failure(let error):
+                    loginError = error.localizedDescription
+                }
             }
         }
     }

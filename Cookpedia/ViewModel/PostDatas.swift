@@ -68,7 +68,7 @@ class APIRequest {
     }
     
     func loginUser(email: String, password: String, completion: @escaping (Result<Void, APIError>) -> ()) {
-        let endpoint = "/users"
+        let endpoint = "/login"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
@@ -102,6 +102,8 @@ class APIRequest {
 enum APIError: Error {
     case invalidUrl
     case invalidData
+    case invalidCredentials
+    case userNotFound
     case emailAlreadyExists
     case usernameAlreadyExists
     case phoneNumberAlreadyExists
@@ -113,6 +115,10 @@ enum APIError: Error {
             return "Invalid URL"
         case .invalidData:
             return "Invalid data"
+        case .invalidCredentials:
+            return "Incorrect password"
+        case .userNotFound:
+            return "User not found"
         case .emailAlreadyExists:
             return "Email already exists"
         case .usernameAlreadyExists:
