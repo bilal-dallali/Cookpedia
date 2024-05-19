@@ -24,6 +24,9 @@ struct LoginView: View {
     @State private var isLoading: Bool = false
     @State private var navigateToHome: Bool = false
     
+    @State private var alertUsersExists = false
+    @State var errorMessage: String?
+    
     var apiManager = APIRequest()
     
     
@@ -213,7 +216,71 @@ struct LoginView: View {
                 if isValidEmail(email) {
                     Button {
                         print("\(email)\n\(password)")
-                        loginUser(email: email, password: password)
+                        isLoading = true
+                        apiManager.loginUser(email: email, password: password) { result in
+                            switch result {
+                            case .success:
+                                print("USER SUCCESSFULLY CONNECTED!!!")
+                                //loadingScreen = true
+//                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//                                    self.redirectHomePage = true
+//                                    loadingScreen = false
+//                                }
+                            case .failure(let error):
+                                print("Registration failed: \(error.localizedDescription)")
+                                switch error {
+                                case .invalidUrl:
+                                    // afficher un message d'erreur pour une URL invalide
+                                    errorMessage = "URL invalid"
+                                    alertUsersExists = true
+                                    print("URL INVALIDE !!!!!")
+                                    break
+                                case .invalidData:
+                                    // afficher un message d'erreur pour des données invalides
+                                    errorMessage = "Your datas are invalid, please try again later!"
+                                    alertUsersExists = true
+                                    print("DATA INVALID !!!")
+                                    break
+                                case .invalidCredentials:
+                                    // afficher un message d'erreur pour un mot de passe invalide
+                                    errorMessage = "Incorrect password"
+                                    alertUsersExists = true
+                                    print("INVALID PASSWORD!!!")
+                                    break
+                                case .userNotFound:
+                                    // Afficher un message d'erreur pour un utilisateur non trouvé
+                                    errorMessage = "User not found"
+                                    alertUsersExists = true
+                                    print("USER NOT FOUND!!!")
+                                    break
+                                    
+                                case .emailAlreadyExists:
+                                    // afficher un message d'erreur pour un e-mail déjà existant
+                                    errorMessage = "This email address is already registered"
+                                    alertUsersExists = true
+                                    print("EMAIL EXISTS !!!")
+                                    break
+                                case .usernameAlreadyExists:
+                                    // afficher un message d'erreur pour un nom d'utilisateur déjà existant
+                                    errorMessage = "This username is already registered"
+                                    alertUsersExists = true
+                                    print("USERNAME EXISTS !!!!")
+                                    break
+                                case .phoneNumberAlreadyExists:
+                                    // afficher un message d'erreur pour un numéro de téléphone déjà existant
+                                    errorMessage = "This phone number is already registered"
+                                    alertUsersExists = true
+                                    print("PHONE NUMBER EXISTS !!!!")
+                                    break
+                                case .serverError:
+                                    // afficher un message d'erreur pour une erreur du serveur
+                                    errorMessage = "Server error"
+                                    alertUsersExists = true
+                                    print("SERVER ERROR!!!!")
+                                    break
+                                }
+                            }
+                        }
                     } label: {
                         Text("Sign In")
                             .foregroundColor(Color("White"))
@@ -225,6 +292,9 @@ struct LoginView: View {
                             .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
                             .padding(.top, 24)
                             .padding(.bottom)
+                    }
+                    .alert(errorMessage ?? "an error occured", isPresented: $alertUsersExists) {
+                        Button("OK", role: .cancel) { }
                     }
                 } else {
                     Button(action: {
@@ -265,21 +335,6 @@ struct LoginView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackButtonView()
-            }
-        }
-    }
-    
-    func loginUser(email: String, password: String) {
-        isLoading = true
-        apiManager.loginUser(email: email, password: password) { result in
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success:
-                    navigateToHome = true
-                case .failure(let error):
-                    loginError = error.localizedDescription
-                }
             }
         }
     }

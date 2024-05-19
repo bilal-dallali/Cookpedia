@@ -67,17 +67,18 @@ class APIRequest {
         }
     }
     
+    
     func loginUser(email: String, password: String, completion: @escaping (Result<Void, APIError>) -> ()) {
         let endpoint = "/login"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        
         let loginDetails = ["email": email, "password": password]
         do {
             let jsonData = try JSONEncoder().encode(loginDetails)
@@ -87,11 +88,20 @@ class APIRequest {
                     completion(.failure(.serverError))
                     return
                 }
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                guard let httpResponse = response as? HTTPURLResponse else {
                     completion(.failure(.invalidData))
                     return
                 }
-                completion(.success(()))
+                switch httpResponse.statusCode {
+                case 200:
+                    completion(.success(()))
+                case 401:
+                    completion(.failure(.invalidCredentials))
+                case 404:
+                    completion(.failure(.userNotFound))
+                default:
+                    completion(.failure(.serverError))
+                }
             }.resume()
         } catch {
             completion(.failure(.invalidData))
@@ -108,7 +118,7 @@ enum APIError: Error {
     case usernameAlreadyExists
     case phoneNumberAlreadyExists
     case serverError
-
+    
     var localizedDescription: String {
         switch self {
         case .invalidUrl:
