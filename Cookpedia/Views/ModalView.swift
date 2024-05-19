@@ -10,16 +10,18 @@ import SwiftUI
 struct ModalView: View {
     
     @State private var isRotating = false
+    @State var modalTitle: String
+    @State var modalMessage: String
     
     var body: some View {
         VStack(spacing: 32) {
             Image("modal-icon")
             VStack(spacing: 16) {
-                Text("Siging up!")
+                Text(modalTitle)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color("Primary"))
                     .font(.custom("Urbanist-Bold", size: 24))
-                Text("We are currenctly processing your informations. Please wait!")
+                Text(modalMessage)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color("Greyscale900"))
                     .font(.custom("Urbanist-Regular", size: 16))
@@ -42,7 +44,7 @@ struct ModalView: View {
 
 struct ModalView_Previews: PreviewProvider {
     static var previews: some View {
-        ModalView()
+        ModalView(modalTitle: "Sign Up Successful!", modalMessage: "Your account has been created. Please wait a moment, we are preparing for you...")
             .previewLayout(.sizeThatFits)
             .background(.gray)
             .padding()
