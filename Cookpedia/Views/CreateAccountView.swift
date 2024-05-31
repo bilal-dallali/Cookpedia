@@ -427,7 +427,7 @@ struct CreateAccountView: View {
                                         .padding(.bottom)
                                 }
                                 .navigationDestination(isPresented: $redirectHomePage) {
-                                    HomePageView()
+                                    TabView()
                                 }
                                 .alert(errorMessage ?? "an error occured", isPresented: $alertUsersExists) {
                                     Button("OK", role: .cancel) { }

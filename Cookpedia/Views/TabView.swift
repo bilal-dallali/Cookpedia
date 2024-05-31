@@ -108,7 +108,6 @@ struct TabView: View {
                 }
                 .frame(height: 48)
                 .frame(maxWidth: .infinity)
-                //.background(Color("Lime"))
                 .padding(.top, 8)
                 .padding(.bottom, 34)
                 .padding(.horizontal, 32)

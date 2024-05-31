@@ -138,6 +138,7 @@ struct HomePageView: View {
                 }
                 .background(Color("White"))
             }
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

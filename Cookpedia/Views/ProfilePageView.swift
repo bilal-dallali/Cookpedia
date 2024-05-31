@@ -40,7 +40,6 @@ struct ProfilePageView: View {
                             .padding(.leading, 20)
                         }
                         .padding(.vertical, 10)
-                        .padding(.horizontal, 24)
                         
                         VStack(spacing: 28) {
                             VStack(spacing: 16) {
@@ -153,7 +152,7 @@ struct ProfilePageView: View {
                                 }
                             }
                             if isRecipeSelected {
-                                VStack(spacing: 16) {
+                                VStack(alignment: .leading, spacing: 16) {
                                     HStack(spacing: 16) {
                                         RecipeCardView(title: "Vegetable Fruit Salad Simple Rec...", image: "vegetable-fruit-salad")
                                         RecipeCardView(title: "Vegetable, Fruit and Meat Salad", image: "vegetables-fruit-meat-salad")
@@ -235,11 +234,11 @@ struct ProfilePageView: View {
                                 }
                             }
                         }
-                        .padding(.horizontal, 24)
                     }
                     .padding(.top, 16)
                 }
             }
+            .padding(.horizontal, 24)
         }
     }
 }
