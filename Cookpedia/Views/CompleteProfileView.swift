@@ -170,6 +170,7 @@ struct CompleteProfileView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .autocapitalization(.none)
+                                    .keyboardType(.default)
                                     .font(Font.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .frame(height: 41)
@@ -192,6 +193,7 @@ struct CompleteProfileView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .autocapitalization(.none)
+                                    .keyboardType(.numberPad)
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .frame(height: 41)

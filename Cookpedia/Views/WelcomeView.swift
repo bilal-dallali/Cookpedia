@@ -38,27 +38,27 @@ struct WelcomeView: View {
                                 .foregroundColor(Color("Dark4"))
                         }
                     VStack(spacing: 24) {
-//                        Button {
-//                            print("continue with google")
-//                        } label: {
-//                            HStack(spacing: 12) {
-//                                Image("google-logo")
-//                                    .resizable()
-//                                    .frame(width: 24, height: 24)
-//                                Text("Continue with Google")
-//                                    .foregroundColor(Color("Greyscale900"))
-//                                    .font(.custom("Urbanist-SemiBold", size: 16))
-//                                    .frame(height: 60)
-//                            }
-//                            .frame(maxWidth: .infinity)
-//                            .background(Color("White"))
-//                            .cornerRadius(.infinity)
-//                            .overlay {
-//                                RoundedRectangle(cornerRadius: .infinity)
-//                                    .stroke(Color("Greyscale200"), lineWidth: 1)
-//                                    .cornerRadius(.infinity)
-//                            }
-//                        }
+                        Button {
+                            print("continue with google")
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image("google-logo")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                Text("Continue with Google")
+                                    .foregroundColor(Color("Greyscale900"))
+                                    .font(.custom("Urbanist-SemiBold", size: 16))
+                                    .frame(height: 60)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .background(Color("White"))
+                            .cornerRadius(.infinity)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: .infinity)
+                                    .stroke(Color("Greyscale200"), lineWidth: 1)
+                                    .cornerRadius(.infinity)
+                            }
+                        }
                         NavigationLink(destination: CountryView()) {
                             Text("Get Started")
                                 .foregroundColor(Color("White"))

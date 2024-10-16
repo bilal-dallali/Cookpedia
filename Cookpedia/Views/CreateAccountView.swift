@@ -93,6 +93,7 @@ struct CreateAccountView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .autocapitalization(.none)
+                                    .keyboardType(.default)
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .frame(height: 41)
@@ -115,6 +116,7 @@ struct CreateAccountView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .autocapitalization(.none)
+                                    .keyboardType(.emailAddress)
                                     .font(Font.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .frame(height: 41)
@@ -152,6 +154,7 @@ struct CreateAccountView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .autocapitalization(.none)
+                                    .keyboardType(.emailAddress)
                                     .font(Font.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .frame(height: 41)

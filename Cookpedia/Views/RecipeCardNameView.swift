@@ -70,10 +70,8 @@ struct RecipeCardNameView: View {
     }
 }
 
-struct RecipeCardNameView_Previews: PreviewProvider {
-    static var previews: some View {
-        RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "original-pizza", name: "Name")
-            .previewLayout(.sizeThatFits)
-            .padding()
-    }
+#Preview {
+    RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "original-pizza", name: "Name")
+        .previewLayout(.sizeThatFits)
+        .padding()
 }

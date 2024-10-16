@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9AC1DDBB2C0DEBA600784578 /* MyRecipeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC1DDBA2C0DEBA600784578 /* MyRecipeCardView.swift */; };
 		9C05893029E059B400959933 /* PostDatas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C05892F29E059B400959933 /* PostDatas.swift */; };
 		9C0E758529EC032E0048A603 /* RecipeCardNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0E758429EC032E0048A603 /* RecipeCardNameView.swift */; };
 		9C20B0FF29BCE0CA00857FC2 /* DataCountries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C20B0FE29BCE0CA00857FC2 /* DataCountries.swift */; };
@@ -53,6 +54,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9AC1DDBA2C0DEBA600784578 /* MyRecipeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyRecipeCardView.swift; sourceTree = "<group>"; };
 		9C05892F29E059B400959933 /* PostDatas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDatas.swift; sourceTree = "<group>"; usesTabs = 0; };
 		9C0E758429EC032E0048A603 /* RecipeCardNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCardNameView.swift; sourceTree = "<group>"; };
 		9C20B0FE29BCE0CA00857FC2 /* DataCountries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCountries.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				9CC02B7C29E1574600E8E99B /* HomePageView.swift */,
 				9C0E758429EC032E0048A603 /* RecipeCardNameView.swift */,
 				9CC04D2A29EEB71E00C98055 /* RecipeCardView.swift */,
+				9AC1DDBA2C0DEBA600784578 /* MyRecipeCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -173,12 +176,12 @@
 		9C93A2E929B651EF00CE5943 /* Cookpedia */ = {
 			isa = PBXGroup;
 			children = (
+				9C93A2EA29B651EF00CE5943 /* CookpediaApp.swift */,
 				9C5CAE522A782A64001F7CC6 /* Model */,
 				9C5CAE512A782A48001F7CC6 /* ViewModel */,
 				9C5CAE502A782974001F7CC6 /* Views */,
 				9C93A31D29B6536900CE5943 /* Info.plist */,
 				9C93A2F829B652E600CE5943 /* Fonts */,
-				9C93A2EA29B651EF00CE5943 /* CookpediaApp.swift */,
 				9C93A2EE29B651F000CE5943 /* Assets.xcassets */,
 				9C93A2F029B651F000CE5943 /* Preview Content */,
 			);
@@ -318,6 +321,7 @@
 				9C20B0FF29BCE0CA00857FC2 /* DataCountries.swift in Sources */,
 				9C93A2ED29B651EF00CE5943 /* WelcomeView.swift in Sources */,
 				9C7F7FE829E70EB50048E7B0 /* DiscoverPageView.swift in Sources */,
+				9AC1DDBB2C0DEBA600784578 /* MyRecipeCardView.swift in Sources */,
 				9CC04D2B29EEB71E00C98055 /* RecipeCardView.swift in Sources */,
 				9C9B5A6A29DC1E6C00C02A6A /* ModalView.swift in Sources */,
 				9C93A2EB29B651EF00CE5943 /* CookpediaApp.swift in Sources */,

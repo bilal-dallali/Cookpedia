@@ -40,6 +40,7 @@ struct ProfilePageView: View {
                             .padding(.leading, 20)
                         }
                         .padding(.vertical, 10)
+                        .padding(.horizontal, 24)
                         
                         VStack(spacing: 28) {
                             VStack(spacing: 16) {
@@ -234,11 +235,13 @@ struct ProfilePageView: View {
                                 }
                             }
                         }
+                        .padding(.horizontal, 24)
                     }
                     .padding(.top, 16)
                 }
+                .background(Color("White"))
             }
-            .padding(.horizontal, 24)
+            .navigationBarBackButtonHidden(true)
         }
     }
 }

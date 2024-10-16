@@ -52,6 +52,7 @@ struct LoginView: View {
                                     .font(.custom("Urbanist-Bold", size: 16))
                                 TextField("", text: $email)
                                     .autocapitalization(.none)
+                                    .keyboardType(.emailAddress)
                                     .font(Font.custom("Urbanist-Bold", size: 20))
                                     .foregroundColor(Color("Greyscale900"))
                                     .focused($emailFieldIsFocused)

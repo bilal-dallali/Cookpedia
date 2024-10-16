@@ -58,6 +58,7 @@ struct DiscoverPageView: View {
                 }
                 .background(Color("White"))
             }
+            .navigationBarBackButtonHidden(true)
         }
     }
 }
