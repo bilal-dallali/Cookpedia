@@ -11,7 +11,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "progress-bar-60.svg",
+      "filename" : "magnifying-glass.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -22,7 +22,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Group(3).svg",
+      "filename" : "magnifying-glass-greyscale600.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },

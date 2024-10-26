@@ -58,8 +58,8 @@ struct WelcomeView: View {
                                     .stroke(Color("Dark4"), lineWidth: 1)
                             }
                         }
-                        Button {
-                            print("Get started")
+                        NavigationLink {
+                            CountryView()
                         } label: {
                             Text("Get Started")
                                 .foregroundStyle(Color("MyWhite"))

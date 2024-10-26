@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "magnifying-glass-focused.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -11,7 +12,6 @@
           "value" : "light"
         }
       ],
-      "filename" : "progress-bar-60.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -22,7 +22,6 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Group(3).svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
