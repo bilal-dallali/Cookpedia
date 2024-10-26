@@ -97,7 +97,7 @@ struct CountryView: View {
                             NavigationLink {
                                 //print("Selected country: \(selectedCountry?.name ?? "No country selected")")
                                 //CookingLevelView(country: $country)
-                                CookingLevelView()
+                                CookingLevelView(country: $country)
                             } label: {
                                 Text("Continue")
                                     .foregroundStyle(Color("MyWhite"))
