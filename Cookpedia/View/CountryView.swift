@@ -94,8 +94,10 @@ struct CountryView: View {
                         }
                     VStack {
                         if selectedCountry != nil {
-                            Button {
-                                print("Selected country: \(selectedCountry?.name ?? "No country selected")")
+                            NavigationLink {
+                                //print("Selected country: \(selectedCountry?.name ?? "No country selected")")
+                                //CookingLevelView(country: $country)
+                                CookingLevelView()
                             } label: {
                                 Text("Continue")
                                     .foregroundStyle(Color("MyWhite"))
