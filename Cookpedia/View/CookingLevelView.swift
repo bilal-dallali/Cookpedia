@@ -210,21 +210,32 @@ struct CookingLevelView: View {
                                 .foregroundStyle(Color("Dark4"))
                         }
                     VStack {
-                        Button {
-                            //
-                        } label: {
+                        if level == "" {
                             Text("Continue")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 58)
-                                .background(Color("MyPrimary"))
+                                .background(Color("DisabledButton"))
                                 .clipShape(.rect(cornerRadius: .infinity))
-                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                 .padding(.top, 24)
                                 .padding(.horizontal, 24)
+                        } else {
+                            NavigationLink {
+                                CuisinePreferenceView(country: $country, level: $level)
+                            } label: {
+                                Text("Continue")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 58)
+                                    .background(Color("MyPrimary"))
+                                    .clipShape(.rect(cornerRadius: .infinity))
+                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                    .padding(.top, 24)
+                                    .padding(.horizontal, 24)
+                            }
                         }
-                        
                         Spacer()
                     }
                     .frame(height: 118)
