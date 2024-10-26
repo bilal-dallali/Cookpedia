@@ -93,24 +93,49 @@ struct CountryView: View {
                                 .foregroundStyle(Color("Dark4"))
                         }
                     VStack {
-                        Text("Continue")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 58)
-                            .background(Color("MyPrimary"))
-                            .clipShape(.rect(cornerRadius: .infinity))
-                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                            .padding(.top, 24)
-                            .padding(.horizontal, 24)
+                        if selectedCountry != nil {
+                            Button {
+                                print("Selected country: \(selectedCountry?.name ?? "No country selected")")
+                            } label: {
+                                Text("Continue")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 58)
+                                    .background(Color("MyPrimary"))
+                                    .clipShape(.rect(cornerRadius: .infinity))
+                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                    .padding(.top, 24)
+                                    .padding(.horizontal, 24)
+                            }
+                            .onAppear {
+                                country = selectedCountry?.name ?? ""
+                            }
+                        } else {
+                            Button {
+                                print("Selected country: \(selectedCountry?.name ?? "No country selected")")
+                            } label: {
+                                Text("Continue")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 58)
+                                    .background(Color("DisabledButton"))
+                                    .clipShape(.rect(cornerRadius: .infinity))
+                                    .padding(.top, 24)
+                                    .padding(.horizontal, 24)
+                            }
+                        }
                         Spacer()
-                        
                     }
                     .frame(height: 118)
                     .frame(maxWidth: .infinity)
                     .background(Color("Dark1"))
                 }
             }
+        }
+        .onAppear {
+            country = selectedCountry?.name ?? ""
         }
         .ignoresSafeArea(edges: .bottom)
         .background(Color("Dark1"))
