@@ -184,7 +184,7 @@ struct CompleteProfileView: View {
                                         Rectangle()
                                             .frame(height: 1)
                                             .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 32)
+                                            .padding(.top, 40)
                                     }
                             }
                             
@@ -207,7 +207,7 @@ struct CompleteProfileView: View {
                                         Rectangle()
                                             .frame(height: 1)
                                             .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 32)
+                                            .padding(.top, 40)
                                     }
                                 if phoneNumberInvalid {
                                     HStack(spacing: 6) {
@@ -225,7 +225,81 @@ struct CompleteProfileView: View {
                                 }
                             }
                             
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Gender")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                Button {
+                                    isDropDownMenuActivated.toggle()
+                                } label: {
+                                    VStack(spacing: 8) {
+                                        HStack {
+                                            Text(gender == "" ? "Gender" : gender)
+                                                .foregroundStyle(gender == "" ? Color("Dark4") : Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                            Spacer()
+                                            Image(isDropDownMenuActivated ? "arrow-up" : "arrow-down")
+                                        }
+                                        
+                                        
+                                        Rectangle()
+                                            .frame(height: 1)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
+                                }
+                                
+                                
+                            }
                             
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Date of Birth")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                VStack(spacing: 8) {
+                                    Button {
+                                        showDatePicker.toggle()
+                                    } label: {
+                                        HStack {
+                                            Text(isShowingDate ? localDate : "DD/MM/YYYY")
+                                                .foregroundStyle(Color(isShowingDate ? "MyWhite" : "Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                            Spacer()
+                                            Image("calendar")
+                                        }
+                                    }
+                                    .sheet(isPresented: $showDatePicker) {
+                                        VStack(spacing: 0) {
+                                            DatePicker("", selection: $selectedDate, displayedComponents: [.date])
+                                                .datePickerStyle(.wheel)
+                                                .padding()
+                                                .frame(maxWidth: 50)
+                                                .environment(\.locale, Locale(identifier: "fr_FR"))
+                                            Button {
+                                                showDatePicker = false
+                                                isShowingDate = true
+                                                print(localDate)
+                                                print(selectedDate)
+                                            } label: {
+                                                Text("Done")
+                                                    .foregroundStyle(Color("MyWhite"))
+                                                    .font(.custom("Urbanist-Bold", size: 16))
+                                                    .frame(width: 80, height: 58)
+                                                    .background(Color("Primary900"))
+                                                    .clipShape(.rect(cornerRadius: .infinity))
+                                                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                            }
+                                        }
+                                        .presentationDetents([.height(270)])
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color("Dark2"))
+                                    }
+                                    
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundStyle(Color("Primary900"))
+                                }
+                            }
                         }
                     }
                 }
@@ -260,6 +334,51 @@ struct CompleteProfileView: View {
                     .frame(height: 118)
                     .frame(maxWidth: .infinity)
                     .background(Color("Dark1"))
+                }
+                
+                if isDropDownMenuActivated {
+                    VStack(alignment: .leading, spacing: 16) {
+                        Button {
+                            gender = "Male"
+                            isDropDownMenuActivated = false
+                        } label: {
+                            Image(gender == "Male" ? "radio-selected" : "radio-unselected")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Male")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Semibold", size: 14))
+                            Spacer()
+                        }
+                        
+                        Divider()
+                            .overlay {
+                                Rectangle()
+                                    .strokeBorder(Color("Dark4"), lineWidth: 1)
+                            }
+                        
+                        Button {
+                            gender = "Female"
+                            isDropDownMenuActivated = false
+                        } label: {
+                            Image(gender == "Female" ? "radio-selected" : "radio-unselected")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Female")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Semibold", size: 14))
+                            Spacer()
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 28)
+                    .frame(width: 300)
+                    .background(Color("Dark2"))
+                    .clipShape(.rect(cornerRadius: 20))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 16)
+                            .strokeBorder(Color("Dark4"), lineWidth: 1)
+                    }
                 }
             }
         }
