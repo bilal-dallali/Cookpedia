@@ -32,6 +32,8 @@ struct CountryDetailsView: View {
                     Text(country.name)
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 18))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
                     Spacer()
                 }
                 .padding(20)
@@ -40,7 +42,7 @@ struct CountryDetailsView: View {
                 .overlay {
                     if isCountrySelected {
                         RoundedRectangle(cornerRadius: 16)
-                            .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                            .strokeBorder(Color("Primary900"), lineWidth: 2)
                     } else {
                         RoundedRectangle(cornerRadius: 16)
                             .strokeBorder(Color("Dark4"), lineWidth: 1)

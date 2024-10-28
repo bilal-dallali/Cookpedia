@@ -23,7 +23,7 @@ struct WelcomeView: View {
                                 .foregroundStyle(Color("MyWhite"))
                             Text("Cookpedia 👋 ")
                                 .font(.custom("Urbanist-Bold", size: 40))
-                                .foregroundStyle(Color("MyPrimary"))
+                                .foregroundStyle(Color("Primary900"))
                         }
                         Text("The best cooking and food recipes app of the century.")
                             .foregroundColor(Color("MyWhite"))
@@ -66,7 +66,7 @@ struct WelcomeView: View {
                                 .font(.custom("urbanist-SemiBold", size: 16))
                                 .frame(height: 58)
                                 .frame(maxWidth: .infinity)
-                                .background(Color("MyPrimary"))
+                                .background(Color("Primary900"))
                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
                         }
                         Button {

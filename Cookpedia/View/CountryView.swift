@@ -104,7 +104,7 @@ struct CountryView: View {
                                     .font(.custom("Urbanist-Bold", size: 16))
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 58)
-                                    .background(Color("MyPrimary"))
+                                    .background(Color("Primary900"))
                                     .clipShape(.rect(cornerRadius: .infinity))
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                     .padding(.top, 24)

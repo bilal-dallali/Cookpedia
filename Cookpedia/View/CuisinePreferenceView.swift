@@ -61,7 +61,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -87,7 +87,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -113,7 +113,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -141,7 +141,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -167,7 +167,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -193,7 +193,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -221,7 +221,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -247,7 +247,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -273,7 +273,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -301,7 +301,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -327,7 +327,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -353,7 +353,7 @@ struct CuisinePreferenceView: View {
                                                 .strokeBorder(Color("Dark4"), lineWidth: 1)
                                         } else {
                                             RoundedRectangle(cornerRadius: 16)
-                                                .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
                                         }
                                     }
                                 }
@@ -374,8 +374,9 @@ struct CuisinePreferenceView: View {
                         }
                     VStack {
                         HStack(spacing: 16) {
-                            Button {
-                                //
+                            NavigationLink {
+                                //DietaryPreferencesView()
+                                DietaryPreferencesView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit)
                             } label: {
                                 Text("Skip")
                                     .foregroundStyle(Color("MyWhite"))
@@ -384,26 +385,33 @@ struct CuisinePreferenceView: View {
                                     .frame(height: 58)
                                     .background(Color("Dark4"))
                                     .clipShape(.rect(cornerRadius: .infinity))
-                                    .padding(.top, 24)
-                                    .padding(.leading, 24)
                             }
-                            
-                            Button {
-                                //
-                            } label: {
+                            if salad == true || egg == true || soup == true || meat == true || chicken == true || seafood == true || burger == true || pizza == true || sushi == true || rice == true || bread == true || fruit == true {
+                                NavigationLink {
+                                    //DietaryPreferencesView()
+                                    DietaryPreferencesView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit)
+                                } label: {
+                                    Text("Continue")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary900"))
+                                        .clipShape(.rect(cornerRadius: .infinity))
+                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                }
+                            } else {
                                 Text("Continue")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 58)
-                                    .background(Color("MyPrimary"))
+                                    .background(Color("DisabledButton"))
                                     .clipShape(.rect(cornerRadius: .infinity))
-                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                    .padding(.top, 24)
-                                    .padding(.trailing, 24)
                             }
                         }
-                        
+                        .padding(.top, 24)
+                        .padding(.horizontal, 24)
                         Spacer()
                     }
                     .frame(height: 118)

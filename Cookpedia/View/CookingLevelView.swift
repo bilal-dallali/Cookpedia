@@ -56,7 +56,7 @@ struct CookingLevelView: View {
                                 .overlay {
                                     if novice == true {
                                         RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                            .strokeBorder(Color("Primary900"), lineWidth: 2)
                                     } else {
                                         RoundedRectangle(cornerRadius: 16)
                                             .strokeBorder(Color("Dark4"), lineWidth: 2)
@@ -89,7 +89,7 @@ struct CookingLevelView: View {
                                 .overlay {
                                     if intermediate == true {
                                         RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                            .strokeBorder(Color("Primary900"), lineWidth: 2)
                                     } else {
                                         RoundedRectangle(cornerRadius: 16)
                                             .strokeBorder(Color("Dark4"), lineWidth: 2)
@@ -122,7 +122,7 @@ struct CookingLevelView: View {
                                 .overlay {
                                     if advanced == true {
                                         RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                            .strokeBorder(Color("Primary900"), lineWidth: 2)
                                     } else {
                                         RoundedRectangle(cornerRadius: 16)
                                             .strokeBorder(Color("Dark4"), lineWidth: 2)
@@ -155,7 +155,7 @@ struct CookingLevelView: View {
                                 .overlay {
                                     if professional == true {
                                         RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                            .strokeBorder(Color("Primary900"), lineWidth: 2)
                                     } else {
                                         RoundedRectangle(cornerRadius: 16)
                                             .strokeBorder(Color("Dark4"), lineWidth: 2)
@@ -188,7 +188,7 @@ struct CookingLevelView: View {
                                 .overlay {
                                     if master == true {
                                         RoundedRectangle(cornerRadius: 16)
-                                            .strokeBorder(Color("MyPrimary"), lineWidth: 2)
+                                            .strokeBorder(Color("Primary900"), lineWidth: 2)
                                     } else {
                                         RoundedRectangle(cornerRadius: 16)
                                             .strokeBorder(Color("Dark4"), lineWidth: 2)
@@ -229,7 +229,7 @@ struct CookingLevelView: View {
                                     .font(.custom("Urbanist-Bold", size: 16))
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 58)
-                                    .background(Color("MyPrimary"))
+                                    .background(Color("Primary900"))
                                     .clipShape(.rect(cornerRadius: .infinity))
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                     .padding(.top, 24)
