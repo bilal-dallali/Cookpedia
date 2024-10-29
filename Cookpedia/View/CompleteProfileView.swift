@@ -247,8 +247,6 @@ struct CompleteProfileView: View {
                                             .foregroundStyle(Color("Primary900"))
                                     }
                                 }
-                                
-                                
                             }
                             
                             
@@ -300,6 +298,29 @@ struct CompleteProfileView: View {
                                         .foregroundStyle(Color("Primary900"))
                                 }
                             }
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("City")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                TextField("", text: $city)
+                                    .placeholder(when: city.isEmpty) {
+                                        Text("City")
+                                            .foregroundStyle(Color("Dark4"))
+                                            .font(.custom("Urbanist-Bold", size: 20))
+                                    }
+                                    .textInputAutocapitalization(.never)
+                                    .keyboardType(.default)
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .frame(height: 41)
+                                    .overlay {
+                                        Rectangle()
+                                            .frame(height: 1)
+                                            .foregroundStyle(Color("Primary900"))
+                                            .padding(.top, 40)
+                                    }
+                            }
                         }
                     }
                 }
@@ -315,17 +336,54 @@ struct CompleteProfileView: View {
                                 .foregroundStyle(Color("Dark4"))
                         }
                     VStack {
-                        Button {
-                            print(profilePictureUrl)
-                        } label: {
+                        if fullName != "" && phoneNumber != "" && isShowingDate && city != "" {
+                            if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
+                                NavigationLink {
+                                    //print(profilePictureUrl)
+                                    //print(date)
+                                    CreateAccountView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city, profilePictureUrl: $profilePictureUrl)
+                                } label: {
+                                    Text("Continue")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary900"))
+                                        .clipShape(.rect(cornerRadius: .infinity))
+                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                        .padding(.top, 24)
+                                        .padding(.horizontal, 24)
+                                }
+                                .onAppear {
+                                    date = localDate
+                                }
+                            } else {
+                                Button {
+                                    phoneNumberInvalid = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                        phoneNumberInvalid = false
+                                    }
+                                } label: {
+                                    Text("Continue")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary900"))
+                                        .clipShape(.rect(cornerRadius: .infinity))
+                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                        .padding(.top, 24)
+                                        .padding(.horizontal, 24)
+                                }
+                            }
+                        } else {
                             Text("Continue")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 58)
-                                .background(Color("Primary900"))
+                                .background(Color("DisabledButton"))
                                 .clipShape(.rect(cornerRadius: .infinity))
-                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                 .padding(.top, 24)
                                 .padding(.horizontal, 24)
                         }
@@ -392,6 +450,9 @@ struct CompleteProfileView: View {
             ToolbarItem(placement: .principal) {
                 Image("progress-bar-80")
             }
+        }
+        .onTapGesture {
+            isDropDownMenuActivated = false
         }
     }
 }
