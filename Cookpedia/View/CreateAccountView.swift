@@ -103,9 +103,270 @@ struct CreateAccountView: View {
                                         .padding(.top, 33)
                                 }
                         }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Email")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            TextField("", text: $email)
+                                .placeholder(when: email.isEmpty) {
+                                    Text("Email")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.none)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 41)
+                                .overlay {
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundStyle(Color("Primary900"))
+                                        .padding(.top, 33)
+                                }
+                            
+                            if emailInvalid {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("You must enter a valid email")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Bold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Confirm Email")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            TextField("", text: $confirmEmail)
+                                .placeholder(when: confirmEmail.isEmpty) {
+                                    Text("Confirm Email")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.none)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 41)
+                                .overlay {
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundStyle(Color("Primary900"))
+                                        .padding(.top, 33)
+                                }
+                            
+                            if emailNotIdentical {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("Confirm email must be identical to email")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Bold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Password")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            HStack {
+                                if isPasswordHidden {
+                                    SecureField("", text: $password)
+                                        .placeholder(when: password.isEmpty) {
+                                            Text("Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                        }
+                                        .textInputAutocapitalization(.none)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                } else {
+                                    TextField("", text: $password)
+                                        .placeholder(when: password.isEmpty) {
+                                            Text("Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                        }
+                                        .textInputAutocapitalization(.none)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                Spacer()
+                                Button {
+                                    isPasswordHidden.toggle()
+                                } label: {
+                                    Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                        .resizable()
+                                        .frame(width: 28, height: 28)
+                                }
+
+                            }
+                            .frame(height: 41)
+                            .overlay {
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundStyle(Color("Primary900"))
+                                    .padding(.top, 33)
+                            }
+                            
+                            if password != "" && password.count <= 8 {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("Your password is weak, try a better one!")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            } else if password.count >= 8 && password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .decimalDigits) != nil {
+                                HStack(spacing: 6) {
+                                    Image("green-alert")
+                                        .padding(.leading, 12)
+                                    Text("Your password is strong enough.")
+                                        .foregroundStyle(Color("MyGreen"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentGreen"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            } else if password.count >= 8 {
+                                HStack(spacing: 6) {
+                                    Image("yellow-alert")
+                                        .padding(.leading, 12)
+                                    Text("Your password is correct, but you can do better")
+                                        .foregroundStyle(Color("MyOrange"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentYellow"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Confirm Password")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            HStack {
+                                if isPasswordHidden {
+                                    SecureField("", text: $confirmPassword)
+                                        .placeholder(when: confirmPassword.isEmpty) {
+                                            Text("Confirm Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                        }
+                                        .textInputAutocapitalization(.none)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                } else {
+                                    TextField("", text: $confirmPassword)
+                                        .placeholder(when: confirmPassword.isEmpty) {
+                                            Text("Confirm Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                        }
+                                        .textInputAutocapitalization(.none)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                Spacer()
+                                Button {
+                                    isConfirmPasswordHidden.toggle()
+                                } label: {
+                                    Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
+                                        .resizable()
+                                        .frame(width: 28, height: 28)
+                                }
+
+                            }
+                            .frame(height: 41)
+                            .overlay {
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundStyle(Color("Primary900"))
+                                    .padding(.top, 33)
+                            }
+                            
+                            if passwordNotIdentical {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("Confirm password and password must be identical!")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            }
+                        }
+                        
                     }
                 }
                 .padding(.horizontal, 24)
+                
+                VStack(spacing: 0) {
+                    Spacer()
+                    Divider()
+                        .overlay {
+                            Rectangle()
+                                .frame(height: 1)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(Color("Dark4"))
+                        }
+                    VStack {
+                        Button {
+                            //
+                        } label: {
+                            Text("Continue")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("Primary900"))
+                                .clipShape(.rect(cornerRadius: .infinity))
+                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                .padding(.top, 24)
+                                .padding(.horizontal, 24)
+                        }
+
+                        
+                        Spacer()
+                    }
+                    .frame(height: 118)
+                    .frame(maxWidth: .infinity)
+                    .background(Color("Dark1"))
+                    
+                }
             }
         }
         .ignoresSafeArea(edges: .bottom)
