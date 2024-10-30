@@ -61,7 +61,7 @@ struct CreateAccountView: View {
     @State private var emailNotIdentical: Bool = false
     @State private var emailInvalid: Bool = false
     @State private var redirectHomePage: Bool = false
-    @State private var loadingScreen = true
+    @State private var loadingScreen = false
     @State private var alertUsersExists = false
     
     @State var errorMessage: String?
@@ -330,7 +330,16 @@ struct CreateAccountView: View {
                                     .clipShape(.rect(cornerRadius: 10))
                                 }
                             }
-                            
+                            Button {
+                                isCheckboxChecked.toggle()
+                            } label: {
+                                HStack(spacing: 16) {
+                                    Image(isCheckboxChecked ? "checkbox-checked" : "checkbox-unchecked")
+                                    Text("Remember me")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Semibold", size: 18))
+                                }
+                            }
                         }
                     }
                     .padding(.horizontal, 24)

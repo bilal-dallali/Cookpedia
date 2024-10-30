@@ -29,7 +29,7 @@ struct ModalView: View {
             Image("modal-loader")
                 .resizable()
                 .frame(width: 60, height: 60)
-                .rotationEffect(.degrees(isRotating ? 360 : 0)) // Passe de 0 à 360 degrés
+                .rotationEffect(.degrees(isRotating ? 360 : 0))
                 .onAppear {
                     withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
                         isRotating = true
