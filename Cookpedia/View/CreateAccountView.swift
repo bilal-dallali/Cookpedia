@@ -92,7 +92,7 @@ struct CreateAccountView: View {
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
-                                    .textInputAutocapitalization(.none)
+                                    .textInputAutocapitalization(.never)
                                     .keyboardType(.default)
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
@@ -115,7 +115,7 @@ struct CreateAccountView: View {
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
-                                    .textInputAutocapitalization(.none)
+                                    .textInputAutocapitalization(.never)
                                     .keyboardType(.default)
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
@@ -153,7 +153,7 @@ struct CreateAccountView: View {
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
-                                    .textInputAutocapitalization(.none)
+                                    .textInputAutocapitalization(.never)
                                     .keyboardType(.default)
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
@@ -193,7 +193,7 @@ struct CreateAccountView: View {
                                                     .foregroundStyle(Color("Dark4"))
                                                     .font(.custom("Urbanist-Bold", size: 20))
                                             }
-                                            .textInputAutocapitalization(.none)
+                                            .textInputAutocapitalization(.never)
                                             .keyboardType(.default)
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -204,7 +204,7 @@ struct CreateAccountView: View {
                                                     .foregroundStyle(Color("Dark4"))
                                                     .font(.custom("Urbanist-Bold", size: 20))
                                             }
-                                            .textInputAutocapitalization(.none)
+                                            .textInputAutocapitalization(.never)
                                             .keyboardType(.default)
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -281,7 +281,7 @@ struct CreateAccountView: View {
                                                     .foregroundStyle(Color("Dark4"))
                                                     .font(.custom("Urbanist-Bold", size: 20))
                                             }
-                                            .textInputAutocapitalization(.none)
+                                            .textInputAutocapitalization(.never)
                                             .keyboardType(.default)
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -292,7 +292,7 @@ struct CreateAccountView: View {
                                                     .foregroundStyle(Color("Dark4"))
                                                     .font(.custom("Urbanist-Bold", size: 20))
                                             }
-                                            .textInputAutocapitalization(.none)
+                                            .textInputAutocapitalization(.never)
                                             .keyboardType(.default)
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -343,6 +343,7 @@ struct CreateAccountView: View {
                         }
                     }
                     .padding(.horizontal, 24)
+                    .padding(.bottom, 120)
                     
                     VStack(spacing: 0) {
                         Spacer()

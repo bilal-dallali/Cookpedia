@@ -194,7 +194,7 @@ struct CompleteProfileView: View {
                                     .font(.custom("Urbanist-Bold", size: 16))
                                 TextField("", text: $phoneNumber)
                                     .placeholder(when: phoneNumber.isEmpty) {
-                                        Text("0700000000")
+                                        Text("Phone Number")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
@@ -285,7 +285,7 @@ struct CompleteProfileView: View {
                                                     .frame(width: 80, height: 58)
                                                     .background(Color("Primary900"))
                                                     .clipShape(.rect(cornerRadius: .infinity))
-                                                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 4, x: 4, y: 8)
+                                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                             }
                                         }
                                         .presentationDetents([.height(270)])
@@ -325,6 +325,7 @@ struct CompleteProfileView: View {
                     }
                 }
                 .padding(.horizontal, 24)
+                .padding(.bottom, 120)
                 
                 VStack(spacing: 0) {
                     Spacer()

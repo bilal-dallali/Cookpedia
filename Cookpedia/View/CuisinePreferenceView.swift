@@ -362,6 +362,7 @@ struct CuisinePreferenceView: View {
                     }
                 }
                 .padding(.horizontal, 24)
+                .padding(.bottom, 120)
                 
                 VStack(spacing: 0) {
                     Spacer()

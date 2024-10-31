@@ -64,6 +64,8 @@ struct DietaryPreferencesView: View {
                                         Text("Vegetarian")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -86,6 +88,8 @@ struct DietaryPreferencesView: View {
                                         Text("Vegan")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -110,6 +114,8 @@ struct DietaryPreferencesView: View {
                                         Text("Gluten-free")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -132,6 +138,8 @@ struct DietaryPreferencesView: View {
                                         Text("Nut-free")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -156,6 +164,8 @@ struct DietaryPreferencesView: View {
                                         Text("Dairy-free")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -178,6 +188,8 @@ struct DietaryPreferencesView: View {
                                         Text("Low-carb")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -202,6 +214,8 @@ struct DietaryPreferencesView: View {
                                         Text("Peanut-free")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -224,6 +238,8 @@ struct DietaryPreferencesView: View {
                                         Text("Keto")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -248,6 +264,8 @@ struct DietaryPreferencesView: View {
                                         Text("Soy-free")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -270,6 +288,8 @@ struct DietaryPreferencesView: View {
                                         Text("Raw food")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -294,6 +314,8 @@ struct DietaryPreferencesView: View {
                                         Text("Low-fat")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -316,6 +338,8 @@ struct DietaryPreferencesView: View {
                                         Text("Halal")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 18))
+                                            .lineLimit(1)
+                                            .truncationMode(.tail)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(16)
@@ -331,6 +355,7 @@ struct DietaryPreferencesView: View {
                     }
                 }
                 .padding(.horizontal, 24)
+                .padding(.bottom, 120)
                 
                 VStack(spacing: 0) {
                     Spacer()
