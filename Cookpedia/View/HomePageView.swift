@@ -23,8 +23,8 @@ struct HomePageView: View {
                                 .padding(.leading, 16)
                             Spacer()
                             
-                            Button {
-                                //
+                            NavigationLink {
+                                NotificationPageView()
                             } label: {
                                 Image("notifications")
                                     .resizable()
@@ -87,14 +87,14 @@ struct HomePageView: View {
                                             .resizable()
                                             .frame(width: 24, height: 24)
                                     }
-
+                                    
                                 }
                                 
                                 ScrollView(.horizontal) {
                                     HStack(spacing: 16) {
-                                        RecipeCardNameView(title: "Vegetable & Fruit Vegetarian Recip...", avatarImage: "tanner-stafford", image: "vegetable-and-fruit", name: "Tanner Stafford")
-                                        RecipeCardNameView(title: "Delicious & Easy Mexican Taco Re...", avatarImage: "lauralee-quintero", image: "mexican-taco", name: "Lauralee Qintero")
-                                        RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "vegetable-salad", name: "Jean-Philippe Hubert")
+                                        RecipeCardNameView(title: "Original Italian Pizza Recipe for ...", avatarImage: "jane-cooper", image: "original-pizza", name: "Jane Cooper")
+                                        RecipeCardNameView(title: "Special Blueberry & Banana Sandw...", avatarImage: "rayford-chenail", image: "blueberry-banana-sandwich", name: "Rayford Chenail")
+                                        RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "pancakes", name: "Jean-Philippe Hubert")
                                     }
                                 }
                             }
@@ -112,7 +112,6 @@ struct HomePageView: View {
                                             .resizable()
                                             .frame(width: 24, height: 24)
                                     }
-
                                 }
                                 
                                 ScrollView(.horizontal) {
@@ -120,6 +119,30 @@ struct HomePageView: View {
                                         RecipeCardNameView(title: "Vegetable & Fruit Vegetarian Recip...", avatarImage: "tanner-stafford", image: "vegetable-and-fruit", name: "Tanner Stafford")
                                         RecipeCardNameView(title: "Delicious & Easy Mexican Taco Re...", avatarImage: "lauralee-quintero", image: "mexican-taco", name: "Lauralee Qintero")
                                         RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "vegetable-salad", name: "Jean-Philippe Hubert")
+                                    }
+                                }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 20) {
+                                HStack {
+                                    Text("Your Bookmark")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    Button {
+                                        //
+                                    } label: {
+                                        Image("arrow-right")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                    }
+                                }
+                                
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 16) {
+                                        RecipeCardNameView(title: "Meat, Noodle and Seafood Recipes ...", avatarImage: "clinton-mcclure", image: "meat-noodles-recipe", name: "Clinton Mcclure")
+                                        RecipeCardNameView(title: "Scrambled Eggs & French Bread ...", avatarImage: "charolette-hanlin", image: "scrambled-eggs", name: "Charolette Hanlin")
+                                        RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "egg-salad", name: "Jean-Philippe Hubert")
                                     }
                                 }
                             }

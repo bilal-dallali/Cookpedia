@@ -11,7 +11,9 @@ import SwiftUI
 struct CookpediaApp: App {
     var body: some Scene {
         WindowGroup {
-            TabView()
+            NavigationStack {
+                WelcomeView()
+            }
         }
     }
 }
