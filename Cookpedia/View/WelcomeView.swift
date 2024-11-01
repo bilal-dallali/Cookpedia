@@ -69,8 +69,8 @@ struct WelcomeView: View {
                                 .background(Color("Primary900"))
                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
                         }
-                        Button {
-                            print("login")
+                        NavigationLink {
+                            LoginView()
                         } label: {
                             Text("I Already Have an Account")
                                 .foregroundStyle(Color("MyWhite"))
