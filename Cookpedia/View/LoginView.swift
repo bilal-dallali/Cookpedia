@@ -246,16 +246,126 @@ struct LoginView: View {
                                 .foregroundStyle(Color("Dark4"))
                         }
                     VStack {
-                        Text("Continue")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 58)
-                            .background(Color("Primary900"))
-                            .clipShape(.rect(cornerRadius: .infinity))
-                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                            .padding(.top, 24)
-                            .padding(.horizontal, 24)
+                        if email != "" && password != "" {
+                            if isValidEmail(email) {
+                                Button {
+                                    print("that's ok")
+                                    print("\(email)\n\(password)")
+                                    isLoading = true
+                                    apiManager.loginUser(email: email, password: password) { result in
+                                        switch result {
+                                        case .success:
+                                            print("USER SUCCESSFULLY CONNECTED!!!")
+                                            loadingScreen = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                self.redirectHomePage = true
+                                                loadingScreen = false
+                                            }
+                                        case .failure(let error):
+                                            print("Registration failed: \(error.localizedDescription)")
+                                            switch error {
+                                            case .invalidUrl:
+                                                // afficher un message d'erreur pour une URL invalide
+                                                errorMessage = "URL invalid"
+                                                alertUsersExists = true
+                                                print("URL INVALIDE !!!!!")
+                                                break
+                                            case .invalidData:
+                                                // afficher un message d'erreur pour des données invalides
+                                                errorMessage = "Your datas are invalid, please try again later!"
+                                                alertUsersExists = true
+                                                print("DATA INVALID !!!")
+                                                break
+                                            case .invalidCredentials:
+                                                // afficher un message d'erreur pour un mot de passe invalide
+                                                errorMessage = "Incorrect password"
+                                                alertUsersExists = true
+                                                print("INVALID PASSWORD!!!")
+                                                break
+                                            case .userNotFound:
+                                                // Afficher un message d'erreur pour un utilisateur non trouvé
+                                                errorMessage = "User not found"
+                                                alertUsersExists = true
+                                                print("USER NOT FOUND!!!")
+                                                break
+                                                
+                                            case .emailAlreadyExists:
+                                                // afficher un message d'erreur pour un e-mail déjà existant
+                                                errorMessage = "This email address is already registered"
+                                                alertUsersExists = true
+                                                print("EMAIL EXISTS !!!")
+                                                break
+                                            case .usernameAlreadyExists:
+                                                // afficher un message d'erreur pour un nom d'utilisateur déjà existant
+                                                errorMessage = "This username is already registered"
+                                                alertUsersExists = true
+                                                print("USERNAME EXISTS !!!!")
+                                                break
+                                            case .phoneNumberAlreadyExists:
+                                                // afficher un message d'erreur pour un numéro de téléphone déjà existant
+                                                errorMessage = "This phone number is already registered"
+                                                alertUsersExists = true
+                                                print("PHONE NUMBER EXISTS !!!!")
+                                                break
+                                            case .serverError:
+                                                // afficher un message d'erreur pour une erreur du serveur
+                                                errorMessage = "Server error"
+                                                alertUsersExists = true
+                                                print("SERVER ERROR!!!!")
+                                                break
+                                            }
+                                        }
+                                    }
+                                } label: {
+                                    Text("Sign In")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary900"))
+                                        .clipShape(.rect(cornerRadius: .infinity))
+                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                        .padding(.top, 24)
+                                        .padding(.horizontal, 24)
+                                }
+                                .navigationDestination(isPresented: $redirectHomePage) {
+                                    TabView()
+                                }
+                                .alert(errorMessage ?? "an error occured", isPresented: $alertUsersExists) {
+                                    Button("OK", role: .cancel) { }
+                                }
+                                
+                            } else {
+                                Button {
+                                    emailInvalid = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                        emailInvalid = false
+                                    }
+                                } label: {
+                                    Text("Sign In")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary900"))
+                                        .clipShape(.rect(cornerRadius: .infinity))
+                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                        .padding(.top, 24)
+                                        .padding(.horizontal, 24)
+                                }
+                            }
+                            
+                        } else {
+                            Text("Sign In")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("DisabledButton"))
+                                .clipShape(.rect(cornerRadius: .infinity))
+                                .padding(.top, 24)
+                                .padding(.horizontal, 24)
+                        }
                         Spacer()
                     }
                     .frame(height: 118)
