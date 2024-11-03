@@ -69,156 +69,32 @@ struct CreateAccountView: View {
     
     var body: some View {
         ZStack {
-            VStack {
-                ZStack {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 24) {
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text("Create an Account 🔐")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 32))
-                                Text("Enter your username, email & password. If you forget it, then you have to do forgot password.")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Regular", size: 18))
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Username")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                                TextField("", text: $username)
-                                    .placeholder(when: username.isEmpty) {
-                                        Text("Username")
-                                            .foregroundStyle(Color("Dark4"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                    }
-                                    .textInputAutocapitalization(.never)
-                                    .keyboardType(.default)
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                                    .frame(height: 41)
-                                    .overlay {
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 33)
-                                    }
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Email")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                                TextField("", text: $email)
-                                    .placeholder(when: email.isEmpty) {
-                                        Text("Email")
-                                            .foregroundStyle(Color("Dark4"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                    }
-                                    .textInputAutocapitalization(.never)
-                                    .keyboardType(.default)
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                                    .frame(height: 41)
-                                    .overlay {
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 33)
-                                    }
-                                
-                                if emailInvalid {
-                                    HStack(spacing: 6) {
-                                        Image("red-alert")
-                                            .padding(.leading, 12)
-                                        Text("You must enter a valid email")
-                                            .foregroundStyle(Color("Error"))
-                                            .font(.custom("Urbanist-Bold", size: 12))
-                                        Spacer()
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 34)
-                                    .background(Color("TransparentRed"))
-                                    .clipShape(.rect(cornerRadius: 10))
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Create an Account 🔐")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 32))
+                            Text("Enter your username, email & password. If you forget it, then you have to do forgot password.")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Regular", size: 18))
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Username")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            TextField("", text: $username)
+                                .placeholder(when: username.isEmpty) {
+                                    Text("Username")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
                                 }
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Confirm Email")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                                TextField("", text: $confirmEmail)
-                                    .placeholder(when: confirmEmail.isEmpty) {
-                                        Text("Confirm Email")
-                                            .foregroundStyle(Color("Dark4"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                    }
-                                    .textInputAutocapitalization(.never)
-                                    .keyboardType(.default)
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                                    .frame(height: 41)
-                                    .overlay {
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 33)
-                                    }
-                                
-                                if emailNotIdentical {
-                                    HStack(spacing: 6) {
-                                        Image("red-alert")
-                                            .padding(.leading, 12)
-                                        Text("Confirm email must be identical to email")
-                                            .foregroundStyle(Color("Error"))
-                                            .font(.custom("Urbanist-Bold", size: 12))
-                                        Spacer()
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 34)
-                                    .background(Color("TransparentRed"))
-                                    .clipShape(.rect(cornerRadius: 10))
-                                }
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Password")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                                HStack {
-                                    if isPasswordHidden {
-                                        SecureField("", text: $password)
-                                            .placeholder(when: password.isEmpty) {
-                                                Text("Password")
-                                                    .foregroundStyle(Color("Dark4"))
-                                                    .font(.custom("Urbanist-Bold", size: 20))
-                                            }
-                                            .textInputAutocapitalization(.never)
-                                            .keyboardType(.default)
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                    } else {
-                                        TextField("", text: $password)
-                                            .placeholder(when: password.isEmpty) {
-                                                Text("Password")
-                                                    .foregroundStyle(Color("Dark4"))
-                                                    .font(.custom("Urbanist-Bold", size: 20))
-                                            }
-                                            .textInputAutocapitalization(.never)
-                                            .keyboardType(.default)
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                    }
-                                    Spacer()
-                                    Button {
-                                        isPasswordHidden.toggle()
-                                    } label: {
-                                        Image(isPasswordHidden ? "hidden-eye" : "eye")
-                                            .resizable()
-                                            .frame(width: 28, height: 28)
-                                    }
-                                    
-                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
                                 .frame(height: 41)
                                 .overlay {
                                     Rectangle()
@@ -226,87 +102,22 @@ struct CreateAccountView: View {
                                         .foregroundStyle(Color("Primary900"))
                                         .padding(.top, 33)
                                 }
-                                
-                                if password != "" && password.count <= 8 {
-                                    HStack(spacing: 6) {
-                                        Image("red-alert")
-                                            .padding(.leading, 12)
-                                        Text("Your password is weak, try a better one!")
-                                            .foregroundStyle(Color("Error"))
-                                            .font(.custom("Urbanist-Semibold", size: 12))
-                                        Spacer()
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 34)
-                                    .background(Color("TransparentRed"))
-                                    .clipShape(.rect(cornerRadius: 10))
-                                } else if password.count >= 8 && password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .decimalDigits) != nil {
-                                    HStack(spacing: 6) {
-                                        Image("green-alert")
-                                            .padding(.leading, 12)
-                                        Text("Your password is strong enough.")
-                                            .foregroundStyle(Color("MyGreen"))
-                                            .font(.custom("Urbanist-Semibold", size: 12))
-                                        Spacer()
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 34)
-                                    .background(Color("TransparentGreen"))
-                                    .clipShape(.rect(cornerRadius: 10))
-                                } else if password.count >= 8 {
-                                    HStack(spacing: 6) {
-                                        Image("yellow-alert")
-                                            .padding(.leading, 12)
-                                        Text("Your password is correct, but you can do better")
-                                            .foregroundStyle(Color("MyOrange"))
-                                            .font(.custom("Urbanist-Semibold", size: 12))
-                                        Spacer()
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 34)
-                                    .background(Color("TransparentYellow"))
-                                    .clipShape(.rect(cornerRadius: 10))
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Email")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            TextField("", text: $email)
+                                .placeholder(when: email.isEmpty) {
+                                    Text("Email")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
                                 }
-                            }
-                            
-                            VStack(alignment: .leading, spacing: 16) {
-                                Text("Confirm Password")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                                HStack {
-                                    if isConfirmPasswordHidden {
-                                        SecureField("", text: $confirmPassword)
-                                            .placeholder(when: confirmPassword.isEmpty) {
-                                                Text("Confirm Password")
-                                                    .foregroundStyle(Color("Dark4"))
-                                                    .font(.custom("Urbanist-Bold", size: 20))
-                                            }
-                                            .textInputAutocapitalization(.never)
-                                            .keyboardType(.default)
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                    } else {
-                                        TextField("", text: $confirmPassword)
-                                            .placeholder(when: confirmPassword.isEmpty) {
-                                                Text("Confirm Password")
-                                                    .foregroundStyle(Color("Dark4"))
-                                                    .font(.custom("Urbanist-Bold", size: 20))
-                                            }
-                                            .textInputAutocapitalization(.never)
-                                            .keyboardType(.default)
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 20))
-                                    }
-                                    Spacer()
-                                    Button {
-                                        isConfirmPasswordHidden.toggle()
-                                    } label: {
-                                        Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
-                                            .resizable()
-                                            .frame(width: 28, height: 28)
-                                    }
-                                    
-                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.emailAddress)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
                                 .frame(height: 41)
                                 .overlay {
                                     Rectangle()
@@ -314,178 +125,302 @@ struct CreateAccountView: View {
                                         .foregroundStyle(Color("Primary900"))
                                         .padding(.top, 33)
                                 }
-                                
-                                if passwordNotIdentical {
-                                    HStack(spacing: 6) {
-                                        Image("red-alert")
-                                            .padding(.leading, 12)
-                                        Text("Confirm password and password must be identical!")
-                                            .foregroundStyle(Color("Error"))
-                                            .font(.custom("Urbanist-Semibold", size: 12))
-                                        Spacer()
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 34)
-                                    .background(Color("TransparentRed"))
-                                    .clipShape(.rect(cornerRadius: 10))
+                            
+                            if emailInvalid {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("You must enter a valid email")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Bold", size: 12))
+                                    Spacer()
                                 }
-                            }
-                            Button {
-                                isCheckboxChecked.toggle()
-                            } label: {
-                                HStack(spacing: 16) {
-                                    Image(isCheckboxChecked ? "checkbox-checked" : "checkbox-unchecked")
-                                    Text("Remember me")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Semibold", size: 18))
-                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
                             }
                         }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 120)
-                    
-                    VStack(spacing: 0) {
-                        Spacer()
-                        Divider()
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Confirm Email")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            TextField("", text: $confirmEmail)
+                                .placeholder(when: confirmEmail.isEmpty) {
+                                    Text("Confirm Email")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.emailAddress)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 41)
+                                .overlay {
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundStyle(Color("Primary900"))
+                                        .padding(.top, 33)
+                                }
+                            
+                            if emailNotIdentical {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("Confirm email must be identical to email")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Bold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Password")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            HStack {
+                                if isPasswordHidden {
+                                    SecureField("", text: $password)
+                                        .placeholder(when: password.isEmpty) {
+                                            Text("Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                        }
+                                        .textInputAutocapitalization(.never)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                } else {
+                                    TextField("", text: $password)
+                                        .placeholder(when: password.isEmpty) {
+                                            Text("Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                        }
+                                        .textInputAutocapitalization(.never)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                Spacer()
+                                Button {
+                                    isPasswordHidden.toggle()
+                                } label: {
+                                    Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                        .resizable()
+                                        .frame(width: 28, height: 28)
+                                }
+                                
+                            }
+                            .frame(height: 41)
                             .overlay {
                                 Rectangle()
                                     .frame(height: 1)
-                                    .frame(maxWidth: .infinity)
-                                    .foregroundStyle(Color("Dark4"))
+                                    .foregroundStyle(Color("Primary900"))
+                                    .padding(.top, 33)
                             }
-                        VStack {
-                            if username != "" && email != "" && password != "" && confirmPassword != "" {
-                                if password == confirmPassword {
-                                    if email != "" && email == confirmEmail {
-                                        if isValidEmail(email) {
-                                            Button {
-                                                let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
-                                                apiManager.registerUser(registration: registration) { result in
-                                                    switch result {
-                                                    case .success:
-                                                        print("User registered successfully")
-                                                        loadingScreen = true
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                                            self.redirectHomePage = true
-                                                            loadingScreen = false
-                                                        }
-                                                    case .failure(let error):
-                                                        print("Registration failed: \(error.localizedDescription)")
-                                                        switch error {
-                                                        case .invalidUrl:
-                                                            // afficher un message d'erreur pour une URL invalide
-                                                            errorMessage = "URL invalid"
-                                                            alertUsersExists = true
-                                                            print("URL INVALIDE !!!!!")
-                                                            break
-                                                        case .invalidData:
-                                                            // afficher un message d'erreur pour des données invalides
-                                                            errorMessage = "Your datas are invalid, please try again later!"
-                                                            alertUsersExists = true
-                                                            print("DATA INVALID !!!")
-                                                            break
-                                                        case .invalidCredentials:
-                                                            // afficher un message d'erreur pour un mot de passe invalide
-                                                            errorMessage = "Incorrect password"
-                                                            alertUsersExists = true
-                                                            print("INVALID CREDENTIALS!!!")
-                                                            break
-                                                        case .userNotFound:
-                                                            // Afficher un message d'erreur pour un utilisateur non trouvé
-                                                            errorMessage = "User not found"
-                                                            alertUsersExists = true
-                                                            print("USER NOT FOUND!!!")
-                                                            break
-                                                            
-                                                        case .emailAlreadyExists:
-                                                            // afficher un message d'erreur pour un e-mail déjà existant
-                                                            errorMessage = "This email address is already registered"
-                                                            alertUsersExists = true
-                                                            print("EMAIL EXISTS !!!")
-                                                            break
-                                                        case .usernameAlreadyExists:
-                                                            // afficher un message d'erreur pour un nom d'utilisateur déjà existant
-                                                            errorMessage = "This username is already registered"
-                                                            alertUsersExists = true
-                                                            print("USERNAME EXISTS !!!!")
-                                                            break
-                                                        case .phoneNumberAlreadyExists:
-                                                            // afficher un message d'erreur pour un numéro de téléphone déjà existant
-                                                            errorMessage = "This phone number is already registered"
-                                                            alertUsersExists = true
-                                                            print("PHONE NUMBER EXISTS !!!!")
-                                                            break
-                                                        case .serverError:
-                                                            // afficher un message d'erreur pour une erreur du serveur
-                                                            errorMessage = "Server error"
-                                                            alertUsersExists = true
-                                                            print("SERVER ERROR!!!!")
-                                                            break
-                                                        }
-                                                    }
-                                                }
-                                            } label: {
-                                                Text("Continue")
-                                                    .foregroundStyle(Color("MyWhite"))
-                                                    .font(.custom("Urbanist-Bold", size: 16))
-                                                    .frame(maxWidth: .infinity)
-                                                    .frame(height: 58)
-                                                    .background(Color("Primary900"))
-                                                    .clipShape(.rect(cornerRadius: .infinity))
-                                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                                    .padding(.top, 24)
-                                                    .padding(.horizontal, 24)
-                                            }
-                                            .navigationDestination(isPresented: $redirectHomePage) {
-                                                TabView()
-                                            }
-                                            .alert(errorMessage ?? "an error occured", isPresented: $alertUsersExists) {
-                                                Button("Ok", role: .cancel) {}
-                                            }
-                                        } else {
-                                            Button {
-                                                emailInvalid = true
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                                    emailInvalid = false
-                                                }
-                                            } label: {
-                                                Text("Continue")
-                                                    .foregroundStyle(Color("MyWhite"))
-                                                    .font(.custom("Urbanist-Bold", size: 16))
-                                                    .frame(maxWidth: .infinity)
-                                                    .frame(height: 58)
-                                                    .background(Color("Primary900"))
-                                                    .clipShape(.rect(cornerRadius: .infinity))
-                                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                                    .padding(.top, 24)
-                                                    .padding(.horizontal, 24)
-                                            }
+                            
+                            if password != "" && password.count <= 8 {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("Your password is weak, try a better one!")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            } else if password.count >= 8 && password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .decimalDigits) != nil {
+                                HStack(spacing: 6) {
+                                    Image("green-alert")
+                                        .padding(.leading, 12)
+                                    Text("Your password is strong enough.")
+                                        .foregroundStyle(Color("MyGreen"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentGreen"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            } else if password.count >= 8 {
+                                HStack(spacing: 6) {
+                                    Image("yellow-alert")
+                                        .padding(.leading, 12)
+                                    Text("Your password is correct, but you can do better")
+                                        .foregroundStyle(Color("MyOrange"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentYellow"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Confirm Password")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            HStack {
+                                if isConfirmPasswordHidden {
+                                    SecureField("", text: $confirmPassword)
+                                        .placeholder(when: confirmPassword.isEmpty) {
+                                            Text("Confirm Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
                                         }
-                                    } else {
-                                        Button {
-                                            emailNotIdentical = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                                emailNotIdentical = false
-                                            }
-                                        } label: {
-                                            Text("Continue")
-                                                .foregroundStyle(Color("MyWhite"))
-                                                .font(.custom("Urbanist-Bold", size: 16))
-                                                .frame(maxWidth: .infinity)
-                                                .frame(height: 58)
-                                                .background(Color("Primary900"))
-                                                .clipShape(.rect(cornerRadius: .infinity))
-                                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                                .padding(.top, 24)
-                                                .padding(.horizontal, 24)
-                                        }
-                                    }
+                                        .textInputAutocapitalization(.never)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
                                 } else {
+                                    TextField("", text: $confirmPassword)
+                                        .placeholder(when: confirmPassword.isEmpty) {
+                                            Text("Confirm Password")
+                                                .foregroundStyle(Color("Dark4"))
+                                                .font(.custom("Urbanist-Bold", size: 20))
+                                        }
+                                        .textInputAutocapitalization(.never)
+                                        .keyboardType(.default)
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                Spacer()
+                                Button {
+                                    isConfirmPasswordHidden.toggle()
+                                } label: {
+                                    Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
+                                        .resizable()
+                                        .frame(width: 28, height: 28)
+                                }
+                                
+                            }
+                            .frame(height: 41)
+                            .overlay {
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundStyle(Color("Primary900"))
+                                    .padding(.top, 33)
+                            }
+                            
+                            if passwordNotIdentical {
+                                HStack(spacing: 6) {
+                                    Image("red-alert")
+                                        .padding(.leading, 12)
+                                    Text("Confirm password and password must be identical!")
+                                        .foregroundStyle(Color("Error"))
+                                        .font(.custom("Urbanist-Semibold", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(.rect(cornerRadius: 10))
+                            }
+                        }
+                        Button {
+                            isCheckboxChecked.toggle()
+                        } label: {
+                            HStack(spacing: 16) {
+                                Image(isCheckboxChecked ? "checkbox-checked" : "checkbox-unchecked")
+                                Text("Remember me")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Semibold", size: 18))
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 24)
+                
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(Color("Dark4"))
+                    }
+                
+                VStack {
+                    if username != "" && email != "" && password != "" && confirmPassword != "" {
+                        if password == confirmPassword {
+                            if email != "" && email == confirmEmail {
+                                if isValidEmail(email) {
                                     Button {
-                                        passwordNotIdentical = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                            passwordNotIdentical = false
+                                        let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
+                                        apiManager.registerUser(registration: registration) { result in
+                                            switch result {
+                                            case .success:
+                                                print("User registered successfully")
+                                                loadingScreen = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                    self.redirectHomePage = true
+                                                    loadingScreen = false
+                                                }
+                                            case .failure(let error):
+                                                print("Registration failed: \(error.localizedDescription)")
+                                                switch error {
+                                                case .invalidUrl:
+                                                    // afficher un message d'erreur pour une URL invalide
+                                                    errorMessage = "URL invalid"
+                                                    alertUsersExists = true
+                                                    print("URL INVALIDE !!!!!")
+                                                    break
+                                                case .invalidData:
+                                                    // afficher un message d'erreur pour des données invalides
+                                                    errorMessage = "Your datas are invalid, please try again later!"
+                                                    alertUsersExists = true
+                                                    print("DATA INVALID !!!")
+                                                    break
+                                                case .invalidCredentials:
+                                                    // afficher un message d'erreur pour un mot de passe invalide
+                                                    errorMessage = "Incorrect password"
+                                                    alertUsersExists = true
+                                                    print("INVALID CREDENTIALS!!!")
+                                                    break
+                                                case .userNotFound:
+                                                    // Afficher un message d'erreur pour un utilisateur non trouvé
+                                                    errorMessage = "User not found"
+                                                    alertUsersExists = true
+                                                    print("USER NOT FOUND!!!")
+                                                    break
+                                                    
+                                                case .emailAlreadyExists:
+                                                    // afficher un message d'erreur pour un e-mail déjà existant
+                                                    errorMessage = "This email address is already registered"
+                                                    alertUsersExists = true
+                                                    print("EMAIL EXISTS !!!")
+                                                    break
+                                                case .usernameAlreadyExists:
+                                                    // afficher un message d'erreur pour un nom d'utilisateur déjà existant
+                                                    errorMessage = "This username is already registered"
+                                                    alertUsersExists = true
+                                                    print("USERNAME EXISTS !!!!")
+                                                    break
+                                                case .phoneNumberAlreadyExists:
+                                                    // afficher un message d'erreur pour un numéro de téléphone déjà existant
+                                                    errorMessage = "This phone number is already registered"
+                                                    alertUsersExists = true
+                                                    print("PHONE NUMBER EXISTS !!!!")
+                                                    break
+                                                case .serverError:
+                                                    // afficher un message d'erreur pour une erreur du serveur
+                                                    errorMessage = "Server error"
+                                                    alertUsersExists = true
+                                                    print("SERVER ERROR!!!!")
+                                                    break
+                                                }
+                                            }
                                         }
                                     } label: {
                                         Text("Continue")
@@ -496,31 +431,82 @@ struct CreateAccountView: View {
                                             .background(Color("Primary900"))
                                             .clipShape(.rect(cornerRadius: .infinity))
                                             .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                            .padding(.top, 24)
-                                            .padding(.horizontal, 24)
+                                    }
+                                    .navigationDestination(isPresented: $redirectHomePage) {
+                                        TabView()
+                                    }
+                                    .alert(errorMessage ?? "an error occured", isPresented: $alertUsersExists) {
+                                        Button("Ok", role: .cancel) {}
+                                    }
+                                } else {
+                                    Button {
+                                        emailInvalid = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                            emailInvalid = false
+                                        }
+                                    } label: {
+                                        Text("Continue")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 16))
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 58)
+                                            .background(Color("Primary900"))
+                                            .clipShape(.rect(cornerRadius: .infinity))
+                                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                     }
                                 }
                             } else {
+                                Button {
+                                    emailNotIdentical = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                        emailNotIdentical = false
+                                    }
+                                } label: {
+                                    Text("Continue")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 58)
+                                        .background(Color("Primary900"))
+                                        .clipShape(.rect(cornerRadius: .infinity))
+                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                }
+                            }
+                        } else {
+                            Button {
+                                passwordNotIdentical = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                    passwordNotIdentical = false
+                                }
+                            } label: {
                                 Text("Continue")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 58)
-                                    .background(Color("DisabledButton"))
+                                    .background(Color("Primary900"))
                                     .clipShape(.rect(cornerRadius: .infinity))
-                                    .padding(.top, 24)
-                                    .padding(.horizontal, 24)
+                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                             }
-                            Spacer()
                         }
-                        .frame(height: 118)
-                        .frame(maxWidth: .infinity)
-                        .background(Color("Dark1"))
-                        
+                    } else {
+                        Text("Continue")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("DisabledButton"))
+                            .clipShape(.rect(cornerRadius: .infinity))
                     }
+                    Spacer()
                 }
+                .padding(.top, 24)
+                .padding(.horizontal, 24)
+                .frame(height: 84)
+                .frame(maxWidth: .infinity)
+                .background(Color("Dark1"))
+                
             }
-            .ignoresSafeArea(edges: .bottom)
             .background(Color(loadingScreen ? "BackgroundOpacity" : "Dark1"))
             .blur(radius: loadingScreen ? 4 : 0)
             .navigationBarBackButtonHidden(true)
@@ -536,7 +522,6 @@ struct CreateAccountView: View {
                 ModalView(modalTitle: "Sign Up Successful", modalMessage: "Your account has been created. Please wait a moment, we are preparing for you...")
             }
         }
-        
     }
 }
 

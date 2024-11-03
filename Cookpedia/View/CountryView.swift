@@ -104,7 +104,6 @@ struct CountryView: View {
                             .background(Color("Primary900"))
                             .clipShape(.rect(cornerRadius: .infinity))
                             .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                            .padding(.top, 24)
                     }
                     .onAppear {
                         country = selectedCountry?.name ?? ""
@@ -120,11 +119,11 @@ struct CountryView: View {
                             .frame(height: 58)
                             .background(Color("DisabledButton"))
                             .clipShape(.rect(cornerRadius: .infinity))
-                            .padding(.top, 24)
                     }
                 }
                 Spacer()
             }
+            .padding(.top, 24)
             .padding(.horizontal, 24)
             .frame(height: 84)
             .frame(maxWidth: .infinity)

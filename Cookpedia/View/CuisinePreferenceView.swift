@@ -408,10 +408,9 @@ struct CuisinePreferenceView: View {
                             .clipShape(.rect(cornerRadius: .infinity))
                     }
                 }
-                .padding(.top, 24)
-                
                 Spacer()
             }
+            .padding(.top, 24)
             .padding(.horizontal, 24)
             .frame(height: 84)
             .frame(maxWidth: .infinity)

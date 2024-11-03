@@ -10,15 +10,11 @@ import PhotosUI
 
 func generateUniqueImageName() -> String {
     let uuid = UUID().uuidString
-    return "profile_\(uuid).jpg"
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyyMMddHHmmss"
+    let dateString = dateFormatter.string(from: Date())
+    return "profile_\(dateString)_\(uuid).jpg"
 }
-
-//func generateUniqueImageName() -> String {
-//    let dateFormatter = DateFormatter()
-//    dateFormatter.dateFormat = "yyyyMMddHHmmss"
-//    let dateString = dateFormatter.string(from: Date())
-//    return "profile_\(dateString).jpg"
-//}
 
 struct PhotoPicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
@@ -117,8 +113,8 @@ struct CompleteProfileView: View {
     @State var city = ""
     
     var body: some View {
-        VStack {
-            ZStack {
+        ZStack {
+            VStack(spacing: 0) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
                         VStack(alignment: .leading, spacing: 12) {
@@ -200,6 +196,7 @@ struct CompleteProfileView: View {
                                     }
                                     .textInputAutocapitalization(.never)
                                     .keyboardType(.numberPad)
+                                    .scrollDismissesKeyboard(.immediately)
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundStyle(Color("MyWhite"))
                                     .frame(height: 41)
@@ -325,135 +322,126 @@ struct CompleteProfileView: View {
                     }
                 }
                 .padding(.horizontal, 24)
-                .padding(.bottom, 120)
                 
-                VStack(spacing: 0) {
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(Color("Dark4"))
+                    }
+                VStack {
+                    if fullName != "" && phoneNumber != "" && isShowingDate && city != "" {
+                        if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
+                            NavigationLink {
+                                //print(profilePictureUrl)
+                                //print(date)
+                                CreateAccountView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city, profilePictureUrl: $profilePictureUrl)
+                            } label: {
+                                Text("Continue")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 58)
+                                    .background(Color("Primary900"))
+                                    .clipShape(.rect(cornerRadius: .infinity))
+                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                            }
+                            .onAppear {
+                                date = localDate
+                            }
+                        } else {
+                            Button {
+                                phoneNumberInvalid = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                    phoneNumberInvalid = false
+                                }
+                            } label: {
+                                Text("Continue")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 16))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 58)
+                                    .background(Color("Primary900"))
+                                    .clipShape(.rect(cornerRadius: .infinity))
+                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                            }
+                        }
+                    } else {
+                        Text("Continue")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("DisabledButton"))
+                            .clipShape(.rect(cornerRadius: .infinity))
+                    }
                     Spacer()
+                }
+                .padding(.top, 24)
+                .padding(.horizontal, 24)
+                .frame(height: 84)
+                .frame(maxWidth: .infinity)
+                .background(Color("Dark1"))
+            }
+            .background(Color("Dark1"))
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    BackButtonView()
+                }
+                ToolbarItem(placement: .principal) {
+                    Image("progress-bar-80")
+                }
+            }
+            .onTapGesture {
+                isDropDownMenuActivated = false
+            }
+            
+            if isDropDownMenuActivated {
+                VStack(alignment: .leading, spacing: 16) {
+                    Button {
+                        gender = "Male"
+                        isDropDownMenuActivated = false
+                    } label: {
+                        Image(gender == "Male" ? "radio-selected" : "radio-unselected")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                        Text("Male")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Semibold", size: 14))
+                        Spacer()
+                    }
+                    
                     Divider()
                         .overlay {
                             Rectangle()
-                                .frame(height: 1)
-                                .frame(maxWidth: .infinity)
-                                .foregroundStyle(Color("Dark4"))
+                                .strokeBorder(Color("Dark4"), lineWidth: 1)
                         }
-                    VStack {
-                        if fullName != "" && phoneNumber != "" && isShowingDate && city != "" {
-                            if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
-                                NavigationLink {
-                                    //print(profilePictureUrl)
-                                    //print(date)
-                                    CreateAccountView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city, profilePictureUrl: $profilePictureUrl)
-                                } label: {
-                                    Text("Continue")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Bold", size: 16))
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 58)
-                                        .background(Color("Primary900"))
-                                        .clipShape(.rect(cornerRadius: .infinity))
-                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                        .padding(.top, 24)
-                                        .padding(.horizontal, 24)
-                                }
-                                .onAppear {
-                                    date = localDate
-                                }
-                            } else {
-                                Button {
-                                    phoneNumberInvalid = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                        phoneNumberInvalid = false
-                                    }
-                                } label: {
-                                    Text("Continue")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Bold", size: 16))
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 58)
-                                        .background(Color("Primary900"))
-                                        .clipShape(.rect(cornerRadius: .infinity))
-                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                        .padding(.top, 24)
-                                        .padding(.horizontal, 24)
-                                }
-                            }
-                        } else {
-                            Text("Continue")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 16))
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 58)
-                                .background(Color("DisabledButton"))
-                                .clipShape(.rect(cornerRadius: .infinity))
-                                .padding(.top, 24)
-                                .padding(.horizontal, 24)
-                        }
+                    
+                    Button {
+                        gender = "Female"
+                        isDropDownMenuActivated = false
+                    } label: {
+                        Image(gender == "Female" ? "radio-selected" : "radio-unselected")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                        Text("Female")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Semibold", size: 14))
                         Spacer()
                     }
-                    .frame(height: 118)
-                    .frame(maxWidth: .infinity)
-                    .background(Color("Dark1"))
                 }
-                
-                if isDropDownMenuActivated {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Button {
-                            gender = "Male"
-                            isDropDownMenuActivated = false
-                        } label: {
-                            Image(gender == "Male" ? "radio-selected" : "radio-unselected")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                            Text("Male")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Semibold", size: 14))
-                            Spacer()
-                        }
-                        
-                        Divider()
-                            .overlay {
-                                Rectangle()
-                                    .strokeBorder(Color("Dark4"), lineWidth: 1)
-                            }
-                        
-                        Button {
-                            gender = "Female"
-                            isDropDownMenuActivated = false
-                        } label: {
-                            Image(gender == "Female" ? "radio-selected" : "radio-unselected")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                            Text("Female")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Semibold", size: 14))
-                            Spacer()
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 28)
-                    .frame(width: 300)
-                    .background(Color("Dark2"))
-                    .clipShape(.rect(cornerRadius: 20))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 16)
-                            .strokeBorder(Color("Dark4"), lineWidth: 1)
-                    }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 28)
+                .frame(width: 300)
+                .background(Color("Dark2"))
+                .clipShape(.rect(cornerRadius: 20))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 16)
+                        .strokeBorder(Color("Dark4"), lineWidth: 1)
                 }
             }
-        }
-        .ignoresSafeArea(edges: .bottom)
-        .background(Color("Dark1"))
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButtonView()
-            }
-            ToolbarItem(placement: .principal) {
-                Image("progress-bar-80")
-            }
-        }
-        .onTapGesture {
-            isDropDownMenuActivated = false
         }
     }
 }
