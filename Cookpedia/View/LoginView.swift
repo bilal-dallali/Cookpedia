@@ -45,6 +45,7 @@ struct LoginView: View {
                                 .font(.custom("Urbanist-Regular", size: 18))
                         }
                         
+                        
                         VStack(spacing: 24) {
                             VStack(alignment: .leading, spacing: 16) {
                                 Text("Email")
@@ -148,8 +149,8 @@ struct LoginView: View {
                                         .foregroundStyle(Color("Dark4"))
                                         .frame(height: 1)
                                 }
-                            Button {
-                                //
+                            NavigationLink {
+                                ForgotPasswordView()
                             } label: {
                                 Text("Forgot Password")
                                     .foregroundStyle(Color("Primary900"))
@@ -157,6 +158,7 @@ struct LoginView: View {
                             }
                         }
                         
+                        /*
                         VStack(spacing: 24) {
                             HStack(spacing: 16) {
                                 Rectangle()
@@ -229,8 +231,7 @@ struct LoginView: View {
                                 }
                                 
                             }
-                            
-                        }
+                        }*/
                     }
                 }
                 .padding(.horizontal, 24)
