@@ -107,6 +107,68 @@ class APIRequest {
             completion(.failure(.invalidData))
         }
     }
+    
+    // Function to send the reset code request
+    func sendResetCode(email: String, completion: @escaping (Result<Void, APIError>) -> ()) {
+        let endpoint = "/send-reset-code"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["email": email]
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(.serverError))
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    completion(.failure(.invalidData))
+                    return
+                }
+                completion(.success(()))
+            }.resume()
+        } catch {
+            completion(.failure(.invalidData))
+        }
+    }
+    
+    // Function to verify the reset code
+    func verifyResetCode(email: String, code: String, completion: @escaping (Result<Void, APIError>) -> ()) {
+        let endpoint = "/verify-reset-code"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["email": email, "code": code]
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(.serverError))
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    completion(.failure(.invalidData))
+                    return
+                }
+                completion(.success(()))
+            }.resume()
+        } catch {
+            completion(.failure(.invalidData))
+        }
+    }
 }
 
 enum APIError: Error {

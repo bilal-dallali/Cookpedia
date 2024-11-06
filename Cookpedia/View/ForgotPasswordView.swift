@@ -13,6 +13,11 @@ struct ForgotPasswordView: View {
     
     @State private var emailInvalid: Bool = false
     
+    @State private var showOTPScreen: Bool = false
+    @State private var isLoading: Bool = false
+    @State private var errorMessage: String?
+    var apiManager = APIRequest()
+    
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -73,8 +78,19 @@ struct ForgotPasswordView: View {
             VStack {
                 if email != "" {
                     if isValidEmail(email) {
-                        NavigationLink {
-                            ForgotPasswordCheckEmailView(email: $email)
+                        Button {
+                            //ForgotPasswordCheckEmailView(email: $email)
+                            isLoading = true
+                            apiManager.sendResetCode(email: email) { result in
+                                isLoading = false
+                                switch result {
+                                case .success:
+                                    showOTPScreen = true
+                                case .failure(let error):
+                                    errorMessage = error.localizedDescription
+                                    emailInvalid = true
+                                }
+                            }
                         } label: {
                             Text("Sign In")
                                 .foregroundStyle(Color("MyWhite"))
@@ -124,6 +140,12 @@ struct ForgotPasswordView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackButtonView()
             }
+        }
+        .alert(errorMessage ?? "An error occurred", isPresented: $emailInvalid) {
+            Button("OK", role: .cancel) { }
+        }
+        .navigationDestination(isPresented: $showOTPScreen) {
+            ForgotPasswordCheckEmailView(email: $email)
         }
     }
 }

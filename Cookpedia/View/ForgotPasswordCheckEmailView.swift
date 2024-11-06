@@ -10,9 +10,11 @@ import SwiftUI
 struct ForgotPasswordCheckEmailView: View {
     
     @Binding var email: String
-    
     @State private var code: [String] = Array(repeating: "", count: 4)
     @FocusState private var focusedIndex: Int?
+    @State private var isLoading: Bool = false
+    @State private var errorMessage: String?
+    var apiManager = APIRequest()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -36,11 +38,14 @@ struct ForgotPasswordCheckEmailView: View {
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .focused($focusedIndex, equals: index)
-                                .background {
+                                .background(
                                     RoundedRectangle(cornerRadius: 16)
                                         .fill(Color("Dark2"))
-                                        .strokeBorder(Color(index == focusedIndex ? "Primary900" : "Dark4"), lineWidth: 1)
-                                }
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 16)
+                                                .strokeBorder(Color(index == focusedIndex ? "Primary900" : "Dark4"), lineWidth: 1)
+                                        )
+                                )
                                 .onChange(of: code[index]) { newValue in
                                     if newValue.count > 1 {
                                         code[index] = String(newValue.prefix(1))
@@ -64,17 +69,22 @@ struct ForgotPasswordCheckEmailView: View {
                 }
             
             VStack {
-                Button {
-                    print("code:", code)
-                } label: {
+                Button(action: confirmCode) {
                     Text("Confirm")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 16))
                         .frame(maxWidth: .infinity)
                         .frame(height: 58)
-                        .background(Color("Primary900"))
-                        .clipShape(.rect(cornerRadius: .infinity))
+                        .background(Color(code.joined().count == 4 ? "Primary900" : "DisabledButton"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                         .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                }
+                .disabled(code.joined().count != 4)
+                .alert(errorMessage ?? "Invalid Code", isPresented: Binding<Bool>(
+                    get: { errorMessage != nil },
+                    set: { if !$0 { errorMessage = nil } }
+                )) {
+                    Button("OK", role: .cancel) { }
                 }
                 
                 Spacer()
@@ -96,7 +106,25 @@ struct ForgotPasswordCheckEmailView: View {
             focusedIndex = 0
         }
     }
+    
+    private func confirmCode() {
+        guard code.joined().count == 4 else { return }
+        
+        isLoading = true
+        apiManager.verifyResetCode(email: email, code: code.joined()) { result in
+            isLoading = false
+            switch result {
+            case .success:
+                print("OTP Verified!")
+                // Handle successful verification, e.g., navigate to reset password screen
+            case .failure(let error):
+                errorMessage = error.localizedDescription
+                print("OTP not verified!")
+            }
+        }
+    }
 }
+
 
 #Preview {
     ForgotPasswordCheckEmailView(email: .constant(""))
