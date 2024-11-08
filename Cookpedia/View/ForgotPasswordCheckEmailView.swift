@@ -15,7 +15,7 @@ struct ForgotPasswordCheckEmailView: View {
     @State private var isVerified: Bool = false
     @State private var errorMessage: String?
     
-    @State private var timeRemaining = 10
+    @State private var timeRemaining = 60
     @State private var timerActive = false
     @State private var timer: Timer?
     
@@ -83,7 +83,7 @@ struct ForgotPasswordCheckEmailView: View {
                                     .font(.custom("Urbanist-Medium", size: 18))
                                 Button {
                                     timerActive = true
-                                    timeRemaining = 10
+                                    timeRemaining = 60
                                     apiManager.sendResetCode(email: email) { result in
                                         
                                     }
@@ -174,7 +174,7 @@ struct ForgotPasswordCheckEmailView: View {
                 }
             }
         }
-        .alert(errorMessage ?? "Invalid Code", isPresented: Binding<Bool>(
+        .alert("Invalid Code", isPresented: Binding<Bool>(
             get: { errorMessage != nil },
             set: { if !$0 { errorMessage = nil } }
         )) {
