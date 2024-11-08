@@ -10,7 +10,7 @@ import SwiftUI
 struct ForgotPasswordCheckEmailView: View {
     
     @Binding var email: String
-    @State private var code: [String] = Array(repeating: "", count: 4)
+    @State var code: [String] = Array(repeating: "", count: 4)
     @FocusState private var focusedIndex: Int?
     @State private var isVerified: Bool = false
     @State private var errorMessage: String?
@@ -154,7 +154,7 @@ struct ForgotPasswordCheckEmailView: View {
             .background(Color("Dark1"))
         }
         .navigationDestination(isPresented: $isVerified) {
-            CreateNewPasswordView(email: $email)
+            CreateNewPasswordView(email: $email, code: $code)
         }
         .background(Color("Dark1"))
         .navigationBarBackButtonHidden(true)

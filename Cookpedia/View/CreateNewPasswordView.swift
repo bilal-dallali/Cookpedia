@@ -10,6 +10,7 @@ import SwiftUI
 struct CreateNewPasswordView: View {
     
     @Binding var email: String
+    @Binding var code: [String]
     
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
@@ -288,5 +289,5 @@ struct CreateNewPasswordView: View {
 }
 
 #Preview {
-    CreateNewPasswordView(email: .constant(""))
+    CreateNewPasswordView(email: .constant(""), code: .constant(["", "", "", ""]))
 }
