@@ -76,7 +76,7 @@ struct ForgotPasswordCheckEmailView: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 58)
                         .background(Color(code.joined().count == 4 ? "Primary900" : "DisabledButton"))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
                         .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                 }
                 .disabled(code.joined().count != 4)
