@@ -129,7 +129,7 @@ class APIRequest {
                     return
                 }
                 guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                    completion(.failure(.invalidData))
+                    completion(.failure(.userNotFound))
                     return
                 }
                 completion(.success(()))
@@ -169,6 +169,37 @@ class APIRequest {
             completion(.failure(.invalidData))
         }
     }
+    
+    func resetPassword(email: String, newPassword: String, completion: @escaping (Result<Void, APIError>) -> ()) {
+        let endpoint = "/reset-password"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["email": email, "newPassword": newPassword]
+        do {
+            request.httpBody = try JSONEncoder().encode(body)
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let _ = error {
+                    completion(.failure(.serverError))
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    completion(.failure(.invalidData))
+                    return
+                }
+                completion(.success(()))
+            }.resume()
+        } catch {
+            completion(.failure(.invalidData))
+        }
+    }
+
 }
 
 enum APIError: Error {

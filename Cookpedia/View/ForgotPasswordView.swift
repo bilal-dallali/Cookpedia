@@ -12,9 +12,8 @@ struct ForgotPasswordView: View {
     @State var email: String = ""
     
     @State private var emailInvalid: Bool = false
-    
+    @State private var emailDoesntExist: Bool = false
     @State private var showOTPScreen: Bool = false
-    @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     var apiManager = APIRequest()
     
@@ -62,6 +61,19 @@ struct ForgotPasswordView: View {
                             .frame(height: 34)
                             .background(Color("TransparentRed"))
                             .clipShape(.rect(cornerRadius: 10))
+                        } else if emailDoesntExist {
+                            HStack(spacing: 6) {
+                                Image("red-alert")
+                                    .padding(.leading, 12)
+                                Text("This email address isn't used by one of our client")
+                                    .foregroundStyle(Color("Error"))
+                                    .font(.custom("Urbanist-Bold", size: 12))
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 34)
+                            .background(Color("TransparentRed"))
+                            .clipShape(.rect(cornerRadius: 10))
                         }
                     }
                 }
@@ -79,16 +91,19 @@ struct ForgotPasswordView: View {
                 if email != "" {
                     if isValidEmail(email) {
                         Button {
-                            //ForgotPasswordCheckEmailView(email: $email)
-                            isLoading = true
                             apiManager.sendResetCode(email: email) { result in
-                                isLoading = false
                                 switch result {
                                 case .success:
                                     showOTPScreen = true
                                 case .failure(let error):
                                     errorMessage = error.localizedDescription
-                                    emailInvalid = true
+                                    print(errorMessage ?? "")
+                                    if error.localizedDescription.contains("User not found") {
+                                        emailDoesntExist = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                            emailDoesntExist = false
+                                        }
+                                    }
                                 }
                             }
                         } label: {
@@ -140,9 +155,6 @@ struct ForgotPasswordView: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 BackButtonView()
             }
-        }
-        .alert(errorMessage ?? "An error occurred", isPresented: $emailInvalid) {
-            Button("OK", role: .cancel) { }
         }
         .navigationDestination(isPresented: $showOTPScreen) {
             ForgotPasswordCheckEmailView(email: $email)

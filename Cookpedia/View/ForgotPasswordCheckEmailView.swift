@@ -12,9 +12,13 @@ struct ForgotPasswordCheckEmailView: View {
     @Binding var email: String
     @State private var code: [String] = Array(repeating: "", count: 4)
     @FocusState private var focusedIndex: Int?
-    //@State private var isLoading: Bool = false
     @State private var isVerified: Bool = false
     @State private var errorMessage: String?
+    
+    @State private var timeRemaining = 10
+    @State private var timerActive = false
+    @State private var timer: Timer?
+    
     var apiManager = APIRequest()
     
     var body: some View {
@@ -39,14 +43,14 @@ struct ForgotPasswordCheckEmailView: View {
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .focused($focusedIndex, equals: index)
-                                .background(
+                                .background {
                                     RoundedRectangle(cornerRadius: 16)
                                         .fill(Color("Dark2"))
-                                        .overlay(
+                                        .overlay {
                                             RoundedRectangle(cornerRadius: 16)
                                                 .strokeBorder(Color(index == focusedIndex ? "Primary900" : "Dark4"), lineWidth: 1)
-                                        )
-                                )
+                                        }
+                                }
                                 .onChange(of: code[index]) { newValue in
                                     if newValue.count > 1 {
                                         code[index] = String(newValue.prefix(1))
@@ -54,6 +58,44 @@ struct ForgotPasswordCheckEmailView: View {
                                         focusedIndex = index + 1
                                     }
                                 }
+                        }
+                    }
+                    VStack(spacing: 16) {
+                        Text("Didn't receive email?")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Medium", size: 18))
+                        if timerActive {
+                            HStack(spacing: 0) {
+                                Text("You can resend code in ")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Medium", size: 18))
+                                Text("\(timeRemaining)")
+                                    .foregroundStyle(Color("Primary900"))
+                                    .font(.custom("Urbanist-Medium", size: 18))
+                                Text(" s")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Medium", size: 18))
+                            }
+                        } else {
+                            HStack(spacing: 8) {
+                                Text("You can resend code in")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Medium", size: 18))
+                                Button {
+                                    timerActive = true
+                                    timeRemaining = 10
+                                    apiManager.sendResetCode(email: email) { result in
+                                        
+                                    }
+                                } label: {
+                                    Text("Resend")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-SemiBold", size: 16))
+                                        .frame(width: 86, height: 38)
+                                        .background(Color("Primary900"))
+                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                }
+                            }
                         }
                     }
                 }
@@ -121,9 +163,16 @@ struct ForgotPasswordCheckEmailView: View {
                 BackButtonView()
             }
         }
-        
         .onAppear {
             focusedIndex = 0
+            timerActive = true
+            timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                if timeRemaining > 0 {
+                    timeRemaining -= 1
+                } else {
+                    timerActive = false
+                }
+            }
         }
         .alert(errorMessage ?? "Invalid Code", isPresented: Binding<Bool>(
             get: { errorMessage != nil },
