@@ -170,7 +170,7 @@ class APIRequest {
         }
     }
     
-    func resetPassword(email: String, newPassword: String, completion: @escaping (Result<Void, APIError>) -> ()) {
+    func resetPassword(email: String, newPassword: String, resetCode: String , completion: @escaping (Result<Void, APIError>) -> ()) {
         let endpoint = "/reset-password"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -181,7 +181,7 @@ class APIRequest {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let body = ["email": email, "newPassword": newPassword]
+        let body = ["email": email, "newPassword": newPassword, "resetCode": resetCode]
         do {
             request.httpBody = try JSONEncoder().encode(body)
             URLSession.shared.dataTask(with: request) { data, response, error in
@@ -191,7 +191,6 @@ class APIRequest {
                 }
                 guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                     completion(.failure(.invalidData))
-                    //
                     return
                 }
                 completion(.success(()))

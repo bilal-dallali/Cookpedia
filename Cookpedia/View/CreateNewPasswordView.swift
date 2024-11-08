@@ -132,7 +132,7 @@ struct CreateNewPasswordView: View {
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
                             HStack {
-                                if isPasswordHidden {
+                                if isConfirmPasswordHidden {
                                     SecureField("", text: $confirmPassword)
                                         .placeholder(when: confirmPassword.isEmpty) {
                                             Text("Confirm Password")
@@ -214,7 +214,7 @@ struct CreateNewPasswordView: View {
                 if password != "" && confirmPassword != "" {
                     if password == confirmPassword {
                         Button {
-                            apiManager.resetPassword(email: email, newPassword: password) { result in
+                            apiManager.resetPassword(email: email, newPassword: password, resetCode: code.joined()) { result in
                                 switch result {
                                 case .success:
                                     print("Password reset successfully!")
