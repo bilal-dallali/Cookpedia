@@ -95,8 +95,9 @@ struct ForgotPasswordCheckEmailView: View {
             .frame(height: 84)
             .frame(maxWidth: .infinity)
             .background(Color("Dark1"))
-            NavigationLink("", destination: CreateNewPasswordView(email: $email), isActive: $isVerified)
-                .hidden()
+        }
+        .navigationDestination(isPresented: $isVerified) {
+            CreateNewPasswordView(email: $email)
         }
         .background(Color("Dark1"))
         .navigationBarBackButtonHidden(true)
