@@ -191,6 +191,7 @@ class APIRequest {
                 }
                 guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                     completion(.failure(.invalidData))
+                    //
                     return
                 }
                 completion(.success(()))
