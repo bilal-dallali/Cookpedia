@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CreateNewPasswordView: View {
     
+    @Binding var email: String
+    
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     
@@ -95,9 +97,9 @@ struct CreateNewPasswordView: View {
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 } else {
-                                    TextField("", text: $password)
-                                        .placeholder(when: password.isEmpty) {
-                                            Text("Password")
+                                    TextField("", text: $confirmPassword)
+                                        .placeholder(when: confirmPassword.isEmpty) {
+                                            Text("Confirm Password")
                                                 .foregroundStyle(Color("Dark4"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
                                         }
@@ -108,9 +110,9 @@ struct CreateNewPasswordView: View {
                                 }
                                 Spacer()
                                 Button {
-                                    isPasswordHidden.toggle()
+                                    isConfirmPasswordHidden.toggle()
                                 } label: {
-                                    Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                    Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
                                         .resizable()
                                         .frame(width: 28, height: 28)
                                 }
@@ -175,5 +177,5 @@ struct CreateNewPasswordView: View {
 }
 
 #Preview {
-    CreateNewPasswordView()
+    CreateNewPasswordView(email: .constant(""))
 }

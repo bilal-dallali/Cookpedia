@@ -13,6 +13,7 @@ struct ForgotPasswordCheckEmailView: View {
     @State private var code: [String] = Array(repeating: "", count: 4)
     @FocusState private var focusedIndex: Int?
     @State private var isLoading: Bool = false
+    @State private var isVerified: Bool = false
     @State private var errorMessage: String?
     var apiManager = APIRequest()
     
@@ -94,6 +95,8 @@ struct ForgotPasswordCheckEmailView: View {
             .frame(height: 84)
             .frame(maxWidth: .infinity)
             .background(Color("Dark1"))
+            NavigationLink("", destination: CreateNewPasswordView(email: $email), isActive: $isVerified)
+                .hidden()
         }
         .background(Color("Dark1"))
         .navigationBarBackButtonHidden(true)
@@ -102,6 +105,7 @@ struct ForgotPasswordCheckEmailView: View {
                 BackButtonView()
             }
         }
+        
         .onAppear {
             focusedIndex = 0
         }
@@ -116,6 +120,7 @@ struct ForgotPasswordCheckEmailView: View {
             switch result {
             case .success:
                 print("OTP Verified!")
+                isVerified = true
                 // Handle successful verification, e.g., navigate to reset password screen
             case .failure(let error):
                 errorMessage = error.localizedDescription
