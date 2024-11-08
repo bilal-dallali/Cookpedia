@@ -12,7 +12,7 @@ struct ForgotPasswordCheckEmailView: View {
     @Binding var email: String
     @State private var code: [String] = Array(repeating: "", count: 4)
     @FocusState private var focusedIndex: Int?
-    @State private var isLoading: Bool = false
+    //@State private var isLoading: Bool = false
     @State private var isVerified: Bool = false
     @State private var errorMessage: String?
     var apiManager = APIRequest()
@@ -70,24 +70,39 @@ struct ForgotPasswordCheckEmailView: View {
                 }
             
             VStack {
-                Button(action: confirmCode) {
+                if code.joined().count == 4 {
+                    Button {
+                        apiManager.verifyResetCode(email: email, code: code.joined()) { result in
+                            switch result {
+                            case .success:
+                                print("OTP Verified!")
+                                isVerified = true
+                                // Handle successful verification, e.g., navigate to reset password screen
+                            case .failure(let error):
+                                errorMessage = error.localizedDescription
+                                print("OTP not verified!")
+                            }
+                        }
+                    } label: {
+                        Text("Confirm")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("Primary900"))
+                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                    }
+
+                } else {
                     Text("Confirm")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 16))
                         .frame(maxWidth: .infinity)
                         .frame(height: 58)
-                        .background(Color(code.joined().count == 4 ? "Primary900" : "DisabledButton"))
+                        .background(Color("DisabledButton"))
                         .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                 }
-                .disabled(code.joined().count != 4)
-                .alert(errorMessage ?? "Invalid Code", isPresented: Binding<Bool>(
-                    get: { errorMessage != nil },
-                    set: { if !$0 { errorMessage = nil } }
-                )) {
-                    Button("OK", role: .cancel) { }
-                }
-                
                 Spacer()
             }
             .padding(.top, 24)
@@ -110,23 +125,11 @@ struct ForgotPasswordCheckEmailView: View {
         .onAppear {
             focusedIndex = 0
         }
-    }
-    
-    private func confirmCode() {
-        guard code.joined().count == 4 else { return }
-        
-        isLoading = true
-        apiManager.verifyResetCode(email: email, code: code.joined()) { result in
-            isLoading = false
-            switch result {
-            case .success:
-                print("OTP Verified!")
-                isVerified = true
-                // Handle successful verification, e.g., navigate to reset password screen
-            case .failure(let error):
-                errorMessage = error.localizedDescription
-                print("OTP not verified!")
-            }
+        .alert(errorMessage ?? "Invalid Code", isPresented: Binding<Bool>(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { }
         }
     }
 }
