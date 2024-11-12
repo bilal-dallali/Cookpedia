@@ -6,30 +6,27 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LoginView: View {
     
-    @State private var email = ""
-    @State private var password = ""
-    
     @FocusState private var emailFieldIsFocused: Bool
-    
     @State private var isPasswordHidden: Bool = true
-    @State var isCheckboxChecked: Bool = false
     @State private var isPresented: Bool = false
-    
     @State private var emailInvalid: Bool = false
     @State private var redirectHomePage: Bool = false
-    
     @State private var loginError: String? = nil
     @State private var isLoading: Bool = false
     @State private var navigateToHome: Bool = false
     @State private var loadingScreen = false
-    
     @State private var alertUsersExists = false
     @State var errorMessage: String?
     
-    var apiManager = APIRequest()
+    @State private var email = ""
+    @State private var password = ""
+    @State var rememberMe: Bool = false
+    @Environment(\.modelContext) private var context: ModelContext
+    @EnvironmentObject private var apiManager: APIRequest
     
     var body: some View {
         ZStack {
@@ -132,10 +129,10 @@ struct LoginView: View {
                             }
                             
                             Button {
-                                isCheckboxChecked.toggle()
+                                rememberMe.toggle()
                             } label: {
                                 HStack(spacing: 16) {
-                                    Image(isCheckboxChecked ? "checkbox-checked" : "checkbox-unchecked")
+                                    Image(rememberMe ? "checkbox-checked" : "checkbox-unchecked")
                                     Text("Remember me")
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Semibold", size: 18))
@@ -250,9 +247,11 @@ struct LoginView: View {
                                 print("that's ok")
                                 print("\(email)\n\(password)")
                                 isLoading = true
-                                apiManager.loginUser(email: email, password: password, rememberMe: isCheckboxChecked) { result in
+                                apiManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
                                     switch result {
-                                    case .success:
+                                    case .success(let authToken):
+                                        // Store session in SwiftData
+                                        let userSession = UserSession(userId: email, authToken: authToken, isRemembered: rememberMe)
                                         print("USER SUCCESSFULLY CONNECTED!!!")
                                         loadingScreen = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

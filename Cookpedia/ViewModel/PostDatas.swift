@@ -7,7 +7,9 @@
 
 import Foundation
 
-class APIRequest {
+class APIRequest: ObservableObject {
+    @Published var isAuthenticated: Bool = false
+    
     let baseUrl = "http://localhost:3000/api"
     
     func registerUser(registration: UserRegistration, completion: @escaping (Result<Void, APIError>) -> ()) {
@@ -67,7 +69,7 @@ class APIRequest {
         }
     }
     
-    func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<Void, APIError>) -> ()) {
+    func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
         let endpoint = "/login"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -95,7 +97,13 @@ class APIRequest {
                 }
                 switch httpResponse.statusCode {
                 case 200:
-                    completion(.success(()))
+                    // Decode the token from the response data
+                    if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
+                       let authToken = json["token"] as? String {
+                        completion(.success(authToken)) // Pass the token back on success
+                    } else {
+                        completion(.failure(.invalidData)) // Handle case where token is missing
+                    }
                 case 401:
                     completion(.failure(.invalidCredentials))
                 case 404:
@@ -243,7 +251,7 @@ class APIRequest {
             completion(.failure(.invalidData))
         }
     }
-
+    
 }
 
 enum APIError: Error {

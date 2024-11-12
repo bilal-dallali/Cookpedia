@@ -66,12 +66,12 @@ struct TabView: View {
                                 Circle()
                                     .foregroundStyle(Color("Primary900"))
                                     .frame(width: 38, height: 38)
-                                    .shadow(color: Color(red: 245/255, green: 72/255, blue: 74/255, opacity: 0.25), radius: 24, x: 4, y: 8)
+                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29, opacity: 0.25), radius: 12, x: 4, y: 8)
                                 Image(systemName: "plus")
                                     .foregroundColor(Color("MyWhite"))
                                     .frame(width: 12, height: 12)
                             }
-                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29, opacity: 0.25), radius: 12, x: 4, y: 8)
+                            
                         }
                         
                         Button {
@@ -82,7 +82,7 @@ struct TabView: View {
                         } label: {
                             VStack(spacing: 2) {
                                 Image(isMyRecipeSelected ? "recipe-selected" : "recipe")
-                                Text("Home")
+                                Text("My Recipes")
                                     .foregroundStyle(Color(isMyRecipeSelected ? "Primary900" : "Greyscale500"))
                                     .font(.custom(isMyRecipeSelected ? "Urbanist-Bold" : "Urbanist-Medium", size: 10))
                             }
