@@ -67,7 +67,50 @@ class APIRequest {
         }
     }
     
+    func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<Void, APIError>) -> ()) {
+        let endpoint = "/login"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Include the "rememberMe" option in the request body
+        let loginDetails = ["email": email, "password": password, "rememberMe": rememberMe] as [String : Any]
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: loginDetails, options: [])
+            request.httpBody = jsonData
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(.serverError))
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completion(.failure(.invalidData))
+                    return
+                }
+                switch httpResponse.statusCode {
+                case 200:
+                    completion(.success(()))
+                case 401:
+                    completion(.failure(.invalidCredentials))
+                case 404:
+                    completion(.failure(.userNotFound))
+                default:
+                    completion(.failure(.serverError))
+                }
+            }.resume()
+        } catch {
+            completion(.failure(.invalidData))
+        }
+    }
+
     
+    /*
     func loginUser(email: String, password: String, completion: @escaping (Result<Void, APIError>) -> ()) {
         let endpoint = "/login"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
@@ -107,6 +150,7 @@ class APIRequest {
             completion(.failure(.invalidData))
         }
     }
+    */
     
     // Function to send the reset code request
     func sendResetCode(email: String, completion: @escaping (Result<Void, APIError>) -> ()) {

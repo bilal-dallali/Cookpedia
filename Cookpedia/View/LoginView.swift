@@ -15,7 +15,7 @@ struct LoginView: View {
     @FocusState private var emailFieldIsFocused: Bool
     
     @State private var isPasswordHidden: Bool = true
-    @State private var isCheckboxChecked: Bool = true
+    @State var isCheckboxChecked: Bool = false
     @State private var isPresented: Bool = false
     
     @State private var emailInvalid: Bool = false
@@ -250,7 +250,7 @@ struct LoginView: View {
                                 print("that's ok")
                                 print("\(email)\n\(password)")
                                 isLoading = true
-                                apiManager.loginUser(email: email, password: password) { result in
+                                apiManager.loginUser(email: email, password: password, rememberMe: isCheckboxChecked) { result in
                                     switch result {
                                     case .success:
                                         print("USER SUCCESSFULLY CONNECTED!!!")
