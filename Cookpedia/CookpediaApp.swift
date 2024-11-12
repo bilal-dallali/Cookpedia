@@ -12,7 +12,7 @@ struct CookpediaApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                WelcomeView()
+                TabView()
             }
         }
     }

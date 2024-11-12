@@ -23,7 +23,7 @@ struct TabView: View {
             } else if isMyRecipeSelected {
                 MyRecipePageView()
             } else if isMyProfileSelected {
-                ProfilePageView()
+                MyProfilePageView()
             }
             VStack {
                 Spacer()
