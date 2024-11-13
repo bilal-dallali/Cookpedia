@@ -244,7 +244,6 @@ struct LoginView: View {
                     if email != "" && password != "" {
                         if isValidEmail(email) {
                             Button {
-                                print("that's ok")
                                 print("\(email)\n\(password)")
                                 isLoading = true
                                 apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
@@ -252,6 +251,15 @@ struct LoginView: View {
                                     case .success(let authToken):
                                         // Store session in SwiftData
                                         let userSession = UserSession(userId: email, authToken: authToken, isRemembered: rememberMe)
+                                        context.insert(userSession)
+                                        do {
+                                            try context.save()
+                                            print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
+                                            print("usersession token: \(userSession.authToken)")
+                                            print("usersession remember: \(userSession.isRemembered)")
+                                        } catch {
+                                            print("Failed to save user session: \(error.localizedDescription)")
+                                        }
                                         print("USER SUCCESSFULLY CONNECTED!!!")
                                         loadingScreen = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
