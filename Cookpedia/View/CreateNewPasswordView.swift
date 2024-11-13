@@ -26,7 +26,7 @@ struct CreateNewPasswordView: View {
     @State private var isRotating: Bool = false
     
     @State var errorMessage: String?
-    var apiManager = APIRequest()
+    var apiPostManager = APIPostRequest()
     
     var body: some View {
         ZStack {
@@ -217,7 +217,7 @@ struct CreateNewPasswordView: View {
                     if password != "" && confirmPassword != "" {
                         if password == confirmPassword {
                             Button {
-                                apiManager.resetPassword(email: email, newPassword: password, resetCode: code.joined()) { result in
+                                apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined()) { result in
                                     switch result {
                                     case .success:
                                         print("Password reset successfully!")

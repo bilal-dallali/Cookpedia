@@ -65,7 +65,7 @@ struct CreateAccountView: View {
     @State private var alertUsersExists = false
     
     @State var errorMessage: String?
-    var apiManager = APIRequest()
+    var apiPostManager = APIPostRequest()
     
     var body: some View {
         ZStack {
@@ -358,7 +358,7 @@ struct CreateAccountView: View {
                                 if isValidEmail(email) {
                                     Button {
                                         let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
-                                        apiManager.registerUser(registration: registration) { result in
+                                        apiPostManager.registerUser(registration: registration) { result in
                                             switch result {
                                             case .success:
                                                 print("User registered successfully")

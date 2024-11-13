@@ -19,7 +19,7 @@ struct ForgotPasswordCheckEmailView: View {
     @State private var timerActive = false
     @State private var timer: Timer?
     
-    var apiManager = APIRequest()
+    var apiPostManager = APIPostRequest()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -84,7 +84,7 @@ struct ForgotPasswordCheckEmailView: View {
                                 Button {
                                     timerActive = true
                                     timeRemaining = 60
-                                    apiManager.sendResetCode(email: email) { result in
+                                    apiPostManager.sendResetCode(email: email) { result in
                                         
                                     }
                                 } label: {
@@ -114,7 +114,7 @@ struct ForgotPasswordCheckEmailView: View {
             VStack {
                 if code.joined().count == 4 {
                     Button {
-                        apiManager.verifyResetCode(email: email, code: code.joined()) { result in
+                        apiPostManager.verifyResetCode(email: email, code: code.joined()) { result in
                             switch result {
                             case .success:
                                 print("OTP Verified!")

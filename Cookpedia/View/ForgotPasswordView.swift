@@ -15,7 +15,7 @@ struct ForgotPasswordView: View {
     @State private var emailDoesntExist: Bool = false
     @State private var showOTPScreen: Bool = false
     @State private var errorMessage: String?
-    var apiManager = APIRequest()
+    var apiPostManager = APIPostRequest()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -91,7 +91,7 @@ struct ForgotPasswordView: View {
                 if email != "" {
                     if isValidEmail(email) {
                         Button {
-                            apiManager.sendResetCode(email: email) { result in
+                            apiPostManager.sendResetCode(email: email) { result in
                                 switch result {
                                 case .success:
                                     showOTPScreen = true

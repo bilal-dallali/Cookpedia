@@ -12,7 +12,7 @@ import SwiftData
 final class UserSession {
     @Attribute(.unique) var userId: String
     var authToken: String
-    var isRemembered: Bool = false
+    var isRemembered: Bool
     
     init(userId: String, authToken: String, isRemembered: Bool) {
         self.userId = userId

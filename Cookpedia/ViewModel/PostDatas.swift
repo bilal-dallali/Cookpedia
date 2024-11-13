@@ -7,7 +7,7 @@
 
 import Foundation
 
-class APIRequest: ObservableObject {
+class APIPostRequest: ObservableObject {
     @Published var isAuthenticated: Bool = false
     
     let baseUrl = "http://localhost:3000/api"

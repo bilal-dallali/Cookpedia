@@ -11,7 +11,7 @@ import SwiftData
 @main
 struct CookpediaApp: App {
     
-    @StateObject private var apiManager = APIRequest()
+    @StateObject private var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) private var context: ModelContext
     
     var body: some Scene {
@@ -29,7 +29,7 @@ struct CookpediaApp: App {
                     WelcomeView()
                 }
             }
-            .environmentObject(apiManager)
+            .environmentObject(apiPostManager)
         }
     }
 }

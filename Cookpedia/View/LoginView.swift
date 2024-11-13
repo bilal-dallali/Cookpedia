@@ -26,7 +26,7 @@ struct LoginView: View {
     @State private var password = ""
     @State var rememberMe: Bool = false
     @Environment(\.modelContext) private var context: ModelContext
-    @EnvironmentObject private var apiManager: APIRequest
+    @EnvironmentObject private var apiPostManager: APIPostRequest
     
     var body: some View {
         ZStack {
@@ -155,7 +155,7 @@ struct LoginView: View {
                             }
                         }
                         
-                        /*
+                        
                         VStack(spacing: 24) {
                             HStack(spacing: 16) {
                                 Rectangle()
@@ -228,7 +228,7 @@ struct LoginView: View {
                                 }
                                 
                             }
-                        }*/
+                        }
                     }
                 }
                 .padding(.horizontal, 24)
@@ -247,7 +247,7 @@ struct LoginView: View {
                                 print("that's ok")
                                 print("\(email)\n\(password)")
                                 isLoading = true
-                                apiManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
+                                apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
                                     switch result {
                                     case .success(let authToken):
                                         // Store session in SwiftData
