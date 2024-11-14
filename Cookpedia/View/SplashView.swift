@@ -18,18 +18,18 @@ struct SplashView: View {
     @Environment(\.modelContext) private var context: ModelContext
     
     var body: some View {
-        NavigationStack {
+        VStack {
             Text("Hello, World!")
                 .onAppear() {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                if let _ = try? context.fetch(sessionDescriptor).first {
-                                    print("Session trouvée - Redirection vers TabView")
-                                    redirectHomePage = true
-                                } else {
-                                    print("Aucune session avec 'Se souvenir de moi' trouvée - Redirection vers WelcomeView")
-                                    redirectWelcomePage = true
-                                }
-                            }
+                        if let _ = try? context.fetch(sessionDescriptor).first {
+                            print("Session trouvée - Redirection vers TabView")
+                            redirectHomePage = true
+                        } else {
+                            print("Aucune session avec 'Se souvenir de moi' trouvée - Redirection vers WelcomeView")
+                            redirectWelcomePage = true
+                        }
+                    }
                 }
                 .navigationDestination(isPresented: $redirectHomePage) {
                     TabView()

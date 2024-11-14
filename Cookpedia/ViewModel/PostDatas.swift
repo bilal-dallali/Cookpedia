@@ -8,8 +8,6 @@
 import Foundation
 
 class APIPostRequest: ObservableObject {
-    @Published var isAuthenticated: Bool = false
-    
     let baseUrl = "http://localhost:3000/api"
     
     func registerUser(registration: UserRegistration, completion: @escaping (Result<Void, APIError>) -> ()) {
@@ -116,49 +114,6 @@ class APIPostRequest: ObservableObject {
             completion(.failure(.invalidData))
         }
     }
-
-    
-    /*
-    func loginUser(email: String, password: String, completion: @escaping (Result<Void, APIError>) -> ()) {
-        let endpoint = "/login"
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(.invalidUrl))
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let loginDetails = ["email": email, "password": password]
-        do {
-            let jsonData = try JSONEncoder().encode(loginDetails)
-            request.httpBody = jsonData
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    completion(.failure(.serverError))
-                    return
-                }
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    completion(.failure(.invalidData))
-                    return
-                }
-                switch httpResponse.statusCode {
-                case 200:
-                    completion(.success(()))
-                case 401:
-                    completion(.failure(.invalidCredentials))
-                case 404:
-                    completion(.failure(.userNotFound))
-                default:
-                    completion(.failure(.serverError))
-                }
-            }.resume()
-        } catch {
-            completion(.failure(.invalidData))
-        }
-    }
-    */
     
     // Function to send the reset code request
     func sendResetCode(email: String, completion: @escaping (Result<Void, APIError>) -> ()) {
@@ -251,66 +206,6 @@ class APIPostRequest: ObservableObject {
             completion(.failure(.invalidData))
         }
     }
-    
-    
-    func checkUserSession(userId: String, completion: @escaping (Result<(Bool, String), APIError>) -> Void) {
-        let endpoint = "/check-session"
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(.invalidUrl))
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let body = ["userId": userId]
-        do {
-            let jsonData = try JSONEncoder().encode(body)
-            request.httpBody = jsonData
-
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    print("Erreur réseau :", error)
-                    completion(.failure(.serverError))
-                    return
-                }
-
-                guard let httpResponse = response as? HTTPURLResponse, let data = data else {
-                    print("Réponse invalide ou pas de données reçues.")
-                    completion(.failure(.invalidData))
-                    return
-                }
-
-                switch httpResponse.statusCode {
-                case 200:
-                    do {
-                        if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                           let isRemembered = json["isRemembered"] as? Bool,
-                           let message = json["message"] as? String {
-                            completion(.success((isRemembered, message)))
-                        } else {
-                            completion(.failure(.invalidData))
-                        }
-                    } catch {
-                        print("Erreur de décodage des données :", error)
-                        completion(.failure(.invalidData))
-                    }
-                case 404:
-                    print("Aucune session active trouvée.")
-                    completion(.failure(.userNotFound))
-                default:
-                    print("Erreur serveur avec code :", httpResponse.statusCode)
-                    completion(.failure(.serverError))
-                }
-            }.resume()
-        } catch {
-            print("Erreur de codage JSON :", error)
-            completion(.failure(.invalidData))
-        }
-    }
-
-    
 }
 
 enum APIError: Error {
