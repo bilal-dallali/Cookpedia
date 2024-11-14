@@ -252,6 +252,65 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    
+    func checkUserSession(userId: String, completion: @escaping (Result<(Bool, String), APIError>) -> Void) {
+        let endpoint = "/check-session"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let body = ["userId": userId]
+        do {
+            let jsonData = try JSONEncoder().encode(body)
+            request.httpBody = jsonData
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("Erreur réseau :", error)
+                    completion(.failure(.serverError))
+                    return
+                }
+
+                guard let httpResponse = response as? HTTPURLResponse, let data = data else {
+                    print("Réponse invalide ou pas de données reçues.")
+                    completion(.failure(.invalidData))
+                    return
+                }
+
+                switch httpResponse.statusCode {
+                case 200:
+                    do {
+                        if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                           let isRemembered = json["isRemembered"] as? Bool,
+                           let message = json["message"] as? String {
+                            completion(.success((isRemembered, message)))
+                        } else {
+                            completion(.failure(.invalidData))
+                        }
+                    } catch {
+                        print("Erreur de décodage des données :", error)
+                        completion(.failure(.invalidData))
+                    }
+                case 404:
+                    print("Aucune session active trouvée.")
+                    completion(.failure(.userNotFound))
+                default:
+                    print("Erreur serveur avec code :", httpResponse.statusCode)
+                    completion(.failure(.serverError))
+                }
+            }.resume()
+        } catch {
+            print("Erreur de codage JSON :", error)
+            completion(.failure(.invalidData))
+        }
+    }
+
+    
 }
 
 enum APIError: Error {

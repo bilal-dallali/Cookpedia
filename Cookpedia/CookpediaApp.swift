@@ -13,46 +13,51 @@ struct CookpediaApp: App {
     
     @StateObject private var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) private var context: ModelContext
-    @State private var isSessionAvailable: Bool? = nil
     
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                if let isSessionAvailable = isSessionAvailable {
-                    if isSessionAvailable {
-                        TabView()
-                    } else {
-                        WelcomeView()
-                    }
-                } else {
-                    ProgressView("Checking session...") // Loading indicator
-                        .onAppear(perform: checkUserSession)
-                }
+                SplashView()
             }
             .environmentObject(apiPostManager)
         }
         .modelContainer(for: UserSession.self)
     }
     
-    // Function to check if a user session is saved and log it
-        private func checkUserSession() {
-            let sessionDescriptor = FetchDescriptor<UserSession>(
-                predicate: #Predicate { $0.isRemembered == true }
-            )
-            
-            do {
-                let sessions = try context.fetch(sessionDescriptor)
-                if let session = sessions.first {
-                    print("Persisted User ID: \(session.userId)")
-                    print("Persisted Auth Token: \(session.authToken)")
-                    isSessionAvailable = true
-                } else {
-                    print("No remembered session found.")
-                    isSessionAvailable = false
-                }
-            } catch {
-                print("Failed to fetch user session: \(error)")
-                isSessionAvailable = false
-            }
-        }
+    
 }
+
+//import SwiftUI
+//import SwiftData
+//
+//@main
+//struct CookpediaApp: App {
+//    
+//    @StateObject private var apiPostManager = APIPostRequest()
+//    @Environment(\.modelContext) private var context: ModelContext
+//    //    @State private var isSessionAvailable: Bool? = nil
+//    
+//    // Propriété calculée pour vérifier la session isRemembered
+//    private var isSessionAvailable: Bool {
+//        let sessionDescriptor = FetchDescriptor<UserSession>(predicate: #Predicate { $0.isRemembered == true })
+//        // Tente de récupérer une session avec isRemembered = true
+//        if let _ = try? context.fetch(sessionDescriptor).first {
+//            print("Session avec 'Se souvenir de moi' trouvée.")
+//            return true
+//        } else {
+//            print("Aucune session avec 'Se souvenir de moi' trouvée.")
+//            return false
+//        }
+//    }
+//
+//    var body: some Scene {
+//        WindowGroup {
+//            if isSessionAvailable {
+//                TabView()
+//            } else {
+//                WelcomeView()
+//            }
+//        }
+//        .environmentObject(apiPostManager)
+//    }
+//}
