@@ -32,7 +32,7 @@ struct LoginView: View {
         ZStack {
             VStack(spacing: 0) {
                 ScrollView {
-                    VStack(spacing: 32) {
+                    VStack(alignment: .leading, spacing: 32) {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Hello there 👋")
                                 .foregroundStyle(Color("MyWhite"))
