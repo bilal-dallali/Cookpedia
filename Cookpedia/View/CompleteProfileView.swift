@@ -93,9 +93,10 @@ struct CompleteProfileView: View {
     @State var fullName = ""
     @State var phoneNumber = ""
     @State var gender = ""
+    @State var selectedImage: UIImage?
     
     @State private var isImagePickerPresented = false
-    @State private var selectedImage: UIImage?
+    
     
     @State private var isDropDownMenuActivated: Bool = false
     @State private var phoneNumberInvalid: Bool = false
@@ -336,7 +337,7 @@ struct CompleteProfileView: View {
                             NavigationLink {
                                 //print(profilePictureUrl)
                                 //print(date)
-                                CreateAccountView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city, profilePictureUrl: $profilePictureUrl)
+                                CreateAccountView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city, profilePictureUrl: $profilePictureUrl, selectedImage: $selectedImage)
                             } label: {
                                 Text("Continue")
                                     .foregroundStyle(Color("MyWhite"))
