@@ -12,7 +12,7 @@ class APIPostRequest: ObservableObject {
     let baseUrl = "http://localhost:3000/api"
     
     
-    func registerUser(registration: UserRegistration, profilePicture: UIImage?, completion: @escaping (Result<Void, APIError>) -> ()) {
+    func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
         let endpoint = "/users"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -35,11 +35,11 @@ class APIPostRequest: ObservableObject {
 
                 // Convertir les types spécifiques avant de les ajouter au corps
                 if let boolValue = value as? Bool {
-                    fieldValue = boolValue ? "1" : "0" // Booléens en 0/1
+                    fieldValue = boolValue ? "1" : "0"
                 } else if let value = value as? CustomStringConvertible {
-                    fieldValue = value.description // Autres types (String, Int)
+                    fieldValue = value.description
                 } else {
-                    continue // Ignore les valeurs non convertibles
+                    continue
                 }
 
                 // Ajouter au corps
@@ -49,6 +49,11 @@ class APIPostRequest: ObservableObject {
                 body.append("\r\n".data(using: .utf8)!)
             }
         }
+        
+        // Ajouter le paramètre rememberMe
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"rememberMe\"\r\n\r\n".data(using: .utf8)!)
+        body.append("\(rememberMe ? "true" : "false")\r\n".data(using: .utf8)!)
         
         // Add profile picture if provided
         if let profilePicture = profilePicture, let imageData = profilePicture.jpegData(compressionQuality: 0.8) {
@@ -72,25 +77,28 @@ class APIPostRequest: ObservableObject {
                 return
             }
             
-            guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
-                if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let errorMessage = json["error"] as? String {
-                    if errorMessage.contains("Email") {
-                        completion(.failure(APIError.emailAlreadyExists))
-                    } else if errorMessage.contains("Username") {
-                        completion(.failure(APIError.usernameAlreadyExists))
-                    } else if errorMessage.contains("Phone") {
-                        completion(.failure(APIError.phoneNumberAlreadyExists))
-                    } else {
-                        completion(.failure(APIError.serverError))
-                    }
-                } else {
-                    completion(.failure(APIError.invalidData))
-                }
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(.failure(.invalidData))
                 return
             }
             
-            completion(.success(()))
+            switch httpResponse.statusCode {
+            case 201:
+                // Décoder le token depuis la réponse
+                if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
+                   let token = json["token"] as? String {
+                    completion(.success(token)) // Retourner le token en cas de succès
+                } else {
+                    completion(.failure(.invalidData)) // Si le token est manquant
+                }
+            case 400:
+                completion(.failure(.invalidData))
+            case 500:
+                completion(.failure(.serverError))
+            default:
+                completion(.failure(.serverError))
+            }
+            
         }.resume()
     }
     

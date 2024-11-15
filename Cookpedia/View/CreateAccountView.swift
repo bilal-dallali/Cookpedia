@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 func isValidEmail(_ email: String) -> Bool {
     let emailRegEx = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
@@ -66,7 +67,9 @@ struct CreateAccountView: View {
     @State private var alertUsersExists = false
     
     @State var errorMessage: String?
-    var apiPostManager = APIPostRequest()
+    //var apiPostManager = APIPostRequest()
+    @Environment(\.modelContext) private var context: ModelContext
+    @EnvironmentObject private var apiPostManager: APIPostRequest
     
     var body: some View {
         ZStack {
@@ -359,10 +362,20 @@ struct CreateAccountView: View {
                                 if isValidEmail(email) {
                                     Button {
                                         let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
-                                        apiPostManager.registerUser(registration: registration, profilePicture: selectedImage) { result in
+                                        apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe) { result in
                                             switch result {
-                                            case .success:
+                                            case .success(let authToken):
                                                 print("User registered successfully")
+                                                let userSession = UserSession(userId: email, authToken: authToken, isRemembered: rememberMe)
+                                                context.insert(userSession)
+                                                do {
+                                                    try context.save()
+                                                    print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
+                                                    print("usersession token: \(userSession.authToken)")
+                                                    print("usersession remember: \(userSession.isRemembered)")
+                                                } catch {
+                                                    print("Failed to save user session: \(error.localizedDescription)")
+                                                }
                                                 loadingScreen = true
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                     self.redirectHomePage = true
