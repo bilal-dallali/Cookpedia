@@ -17,109 +17,15 @@ class APIPostRequest: ObservableObject {
             completion(.failure(.invalidUrl))
             return
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
+        
         let boundary = UUID().uuidString
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-
+        
         var body = Data()
-
-        // Encodage JSON des données utilisateur (dans l'ordre)
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .sortedKeys
-
-        do {
-            let jsonData = try encoder.encode(registration)
-            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"userData\"\r\n".data(using: .utf8)!)
-            body.append("Content-Type: application/json\r\n\r\n".data(using: .utf8)!)
-            body.append(jsonData)
-            body.append("\r\n".data(using: .utf8)!)
-        } catch {
-            completion(.failure(.invalidData))
-            return
-        }
-
-        // Ajout de l'image de profil si disponible
-        if let profilePicture = profilePicture, let imageData = profilePicture.jpegData(compressionQuality: 0.8) {
-            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"profilePicture\"; filename=\"profile_picture.jpg\"\r\n".data(using: .utf8)!)
-            body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
-            body.append(imageData)
-            body.append("\r\n".data(using: .utf8)!)
-        }
-
-        // Terminer la requête multipart/form-data
-        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-
-        request.httpBody = body
-
-        // Debug : Affiche les données envoyées
-        if let jsonString = String(data: body, encoding: .utf8) {
-            print("Final Multipart Payload Sent: \n\(jsonString)")
-        }
-
-        // Envoyer la requête
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(APIError.serverError))
-                return
-            }
-            guard let data = data else {
-                completion(.failure(.invalidData))
-                return
-            }
-            do {
-                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: [])
-                guard let responseDict = jsonResponse as? [String: Any] else {
-                    completion(.failure(.invalidData))
-                    return
-                }
-                var errorMessageSent = false
-                if let errorMessage = responseDict["error"] as? String {
-                    if errorMessage.contains("Email") {
-                        completion(.failure(.emailAlreadyExists))
-                        errorMessageSent = true
-                    } else if errorMessage.contains("Username") {
-                        completion(.failure(.usernameAlreadyExists))
-                        errorMessageSent = true
-                    } else if errorMessage.contains("Phone") {
-                        completion(.failure(.phoneNumberAlreadyExists))
-                        errorMessageSent = true
-                    } else {
-                        completion(.failure(.serverError))
-                        errorMessageSent = true
-                    }
-                }
-                if !errorMessageSent, let message = responseDict["message"] as? String, message == "User created" {
-                    completion(.success(()))
-                } else if !errorMessageSent {
-                    completion(.failure(APIError.invalidData))
-                }
-            } catch {
-                completion(.failure(APIError.invalidData))
-            }
-        }.resume()
-    }
-
-    
-    /*
-    func registerUser(registration: UserRegistration, profilePicture: UIImage?, completion: @escaping (Result<Void, APIError>) -> ()) {
-        let endpoint = "/users"
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(.invalidUrl))
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-
-        let boundary = UUID().uuidString
-        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-
-        var body = Data()
-
+        
         // Add JSON data as form-data
         do {
             let jsonData = try JSONEncoder().encode(registration)
@@ -132,7 +38,7 @@ class APIPostRequest: ObservableObject {
             completion(.failure(.invalidData))
             return
         }
-
+        
         // Add profile picture if provided
         if let profilePicture = profilePicture, let imageData = profilePicture.jpegData(compressionQuality: 0.8) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -141,12 +47,12 @@ class APIPostRequest: ObservableObject {
             body.append(imageData)
             body.append("\r\n".data(using: .utf8)!)
         }
-
+        
         // End the multipart form-data body
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
-
+        
         request.httpBody = body
-
+        
         // Execute the request
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -188,7 +94,7 @@ class APIPostRequest: ObservableObject {
                 completion(.failure(APIError.invalidData))
             }
         }.resume()
-    }*/
+    }
     
     func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
         let endpoint = "/login"
