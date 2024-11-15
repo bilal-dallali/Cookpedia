@@ -11,32 +11,31 @@ import UIKit
 class APIPostRequest: ObservableObject {
     let baseUrl = "http://localhost:3000/api"
     
+    
     func registerUser(registration: UserRegistration, profilePicture: UIImage?, completion: @escaping (Result<Void, APIError>) -> ()) {
         let endpoint = "/users"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
         }
-        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
+        // Define the boundary for the multipart form-data
         let boundary = UUID().uuidString
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
+        // Start building the multipart body
         var body = Data()
         
-        // Add JSON data as form-data
-        do {
-            let jsonData = try JSONEncoder().encode(registration)
-            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"userData\"\r\n".data(using: .utf8)!)
-            body.append("Content-Type: application/json\r\n\r\n".data(using: .utf8)!)
-            body.append(jsonData)
-            body.append("\r\n".data(using: .utf8)!)
-        } catch {
-            completion(.failure(.invalidData))
-            return
+        // Add each field of UserRegistration as a form-data field
+        for (key, value) in Mirror(reflecting: registration).children {
+            if let key = key, let value = value as? CustomStringConvertible {
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
+                body.append(value.description.data(using: .utf8)!)
+                body.append("\r\n".data(using: .utf8)!)
+            }
         }
         
         // Add profile picture if provided
@@ -51,7 +50,52 @@ class APIPostRequest: ObservableObject {
         // End the multipart form-data body
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
+        // Assign the body to the request
         request.httpBody = body
+        
+        // Execute the request
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(APIError.serverError))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
+                if let data = data, let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let errorMessage = json["error"] as? String {
+                    if errorMessage.contains("Email") {
+                        completion(.failure(APIError.emailAlreadyExists))
+                    } else if errorMessage.contains("Username") {
+                        completion(.failure(APIError.usernameAlreadyExists))
+                    } else if errorMessage.contains("Phone") {
+                        completion(.failure(APIError.phoneNumberAlreadyExists))
+                    } else {
+                        completion(.failure(APIError.serverError))
+                    }
+                } else {
+                    completion(.failure(APIError.invalidData))
+                }
+                return
+            }
+            
+            completion(.success(()))
+        }.resume()
+    }
+    
+    /*func registerUser(registration: UserRegistration, profilePicture: UIImage?, completion: @escaping (Result<Void, APIError>) -> ()) {
+        let endpoint = "/users"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let jsonData = try JSONEncoder().encode(registration)
+        request.httpBody = jsonData
         
         // Execute the request
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -94,7 +138,7 @@ class APIPostRequest: ObservableObject {
                 completion(.failure(APIError.invalidData))
             }
         }.resume()
-    }
+    }*/
     
     func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
         let endpoint = "/login"
