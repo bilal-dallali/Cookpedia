@@ -30,10 +30,22 @@ class APIPostRequest: ObservableObject {
         
         // Add each field of UserRegistration as a form-data field
         for (key, value) in Mirror(reflecting: registration).children {
-            if let key = key, let value = value as? CustomStringConvertible {
+            if let key = key {
+                var fieldValue: String
+
+                // Convertir les types spécifiques avant de les ajouter au corps
+                if let boolValue = value as? Bool {
+                    fieldValue = boolValue ? "1" : "0" // Booléens en 0/1
+                } else if let value = value as? CustomStringConvertible {
+                    fieldValue = value.description // Autres types (String, Int)
+                } else {
+                    continue // Ignore les valeurs non convertibles
+                }
+
+                // Ajouter au corps
                 body.append("--\(boundary)\r\n".data(using: .utf8)!)
                 body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
-                body.append(value.description.data(using: .utf8)!)
+                body.append(fieldValue.data(using: .utf8)!)
                 body.append("\r\n".data(using: .utf8)!)
             }
         }
@@ -81,64 +93,6 @@ class APIPostRequest: ObservableObject {
             completion(.success(()))
         }.resume()
     }
-    
-    /*func registerUser(registration: UserRegistration, profilePicture: UIImage?, completion: @escaping (Result<Void, APIError>) -> ()) {
-        let endpoint = "/users"
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(.invalidUrl))
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        let jsonData = try JSONEncoder().encode(registration)
-        request.httpBody = jsonData
-        
-        // Execute the request
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(APIError.serverError))
-                return
-            }
-            guard let data = data else {
-                completion(.failure(APIError.invalidData))
-                return
-            }
-            do {
-                let json = try JSONSerialization.jsonObject(with: data, options: [])
-                guard let responseDict = json as? [String: Any] else {
-                    completion(.failure(APIError.invalidData))
-                    return
-                }
-                var errorMessageSent = false
-                if let errorMessage = responseDict["error"] as? String {
-                    if errorMessage.contains("Email") {
-                        completion(.failure(APIError.emailAlreadyExists))
-                        errorMessageSent = true
-                    } else if errorMessage.contains("Username") {
-                        completion(.failure(APIError.usernameAlreadyExists))
-                        errorMessageSent = true
-                    } else if errorMessage.contains("Phone") {
-                        completion(.failure(APIError.phoneNumberAlreadyExists))
-                        errorMessageSent = true
-                    } else {
-                        completion(.failure(APIError.serverError))
-                        errorMessageSent = true
-                    }
-                }
-                if !errorMessageSent, let message = responseDict["message"] as? String, message == "User created" {
-                    completion(.success(()))
-                } else if !errorMessageSent {
-                    completion(.failure(APIError.invalidData))
-                }
-            } catch {
-                completion(.failure(APIError.invalidData))
-            }
-        }.resume()
-    }*/
     
     func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
         let endpoint = "/login"
