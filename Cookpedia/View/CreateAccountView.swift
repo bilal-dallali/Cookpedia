@@ -57,7 +57,7 @@ struct CreateAccountView: View {
     
     @State private var isPasswordHidden: Bool = true
     @State private var isConfirmPasswordHidden: Bool = true
-    @State private var isCheckboxChecked: Bool = true
+    @State var rememberMe: Bool = false
     @State private var passwordNotIdentical: Bool = false
     @State private var emailNotIdentical: Bool = false
     @State private var emailInvalid: Bool = false
@@ -331,10 +331,10 @@ struct CreateAccountView: View {
                             }
                         }
                         Button {
-                            isCheckboxChecked.toggle()
+                            rememberMe.toggle()
                         } label: {
                             HStack(spacing: 16) {
-                                Image(isCheckboxChecked ? "checkbox-checked" : "checkbox-unchecked")
+                                Image(rememberMe ? "checkbox-checked" : "checkbox-unchecked")
                                 Text("Remember me")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Semibold", size: 18))
