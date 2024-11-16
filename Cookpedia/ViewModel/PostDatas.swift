@@ -11,7 +11,6 @@ import UIKit
 class APIPostRequest: ObservableObject {
     let baseUrl = "http://localhost:3000/api"
     
-    
     func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
         let endpoint = "/users"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {

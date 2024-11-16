@@ -45,7 +45,7 @@ struct SplashView: View {
         .frame(maxWidth: .infinity)
         .background(Color("Dark1"))
         .onAppear() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     print("Session trouvée - Redirection vers TabView")
                     redirectHomePage = true
