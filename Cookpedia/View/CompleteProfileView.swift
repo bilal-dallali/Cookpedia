@@ -13,7 +13,7 @@ func generateUniqueImageName() -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyyMMddHHmmss"
     let dateString = dateFormatter.string(from: Date())
-    return "profile_\(dateString)_\(uuid).jpg"
+    return "profile_\(dateString)_\(uuid)"
 }
 
 struct PhotoPicker: UIViewControllerRepresentable {

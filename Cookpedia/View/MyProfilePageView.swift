@@ -37,7 +37,6 @@ struct MyProfilePageView: View {
                         } label: {
                             Image("setting")
                         }
-
                     }
                     
                     VStack(alignment: .leading, spacing: 28) {
@@ -215,7 +214,6 @@ struct MyProfilePageView: View {
                             Text("About")
                         }
                     }
-                        
                 }
             }
             .padding(.top, 16)
