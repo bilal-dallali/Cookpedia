@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CreateNewPasswordView: View {
     
@@ -14,19 +15,21 @@ struct CreateNewPasswordView: View {
     
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
+    @State var rememberMe: Bool = false
     
     @State private var isPasswordHidden: Bool = true
     @State private var isConfirmPasswordHidden: Bool = true
     
     @State private var passwordNotIdentical: Bool = false
     @State private var redirectHomePage: Bool = false
-    @State private var isCheckboxChecked: Bool = false
     @State private var loadingScreen: Bool = false
     @State private var loadedScreen: Bool = false
     @State private var isRotating: Bool = false
     
     @State var errorMessage: String?
-    var apiPostManager = APIPostRequest()
+    
+    @Environment(\.modelContext) private var context: ModelContext
+    @EnvironmentObject private var apiPostManager: APIPostRequest
     
     var body: some View {
         ZStack {
@@ -192,10 +195,10 @@ struct CreateNewPasswordView: View {
                             }
                             
                             Button {
-                                isCheckboxChecked.toggle()
+                                rememberMe.toggle()
                             } label: {
                                 HStack(spacing: 16) {
-                                    Image(isCheckboxChecked ? "checkbox-checked" : "checkbox-unchecked")
+                                    Image(rememberMe ? "checkbox-checked" : "checkbox-unchecked")
                                     Text("Remember me")
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Semibold", size: 18))
@@ -217,9 +220,20 @@ struct CreateNewPasswordView: View {
                     if password != "" && confirmPassword != "" {
                         if password == confirmPassword {
                             Button {
-                                apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined()) { result in
+                                apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined(), rememberMe: rememberMe) { result in
                                     switch result {
-                                    case .success:
+                                    case .success(let authToken):
+                                        // Store session in SwiftData
+                                        let userSession = UserSession(userId: email, authToken: authToken, isRemembered: rememberMe)
+                                        context.insert(userSession)
+                                        do {
+                                            try context.save()
+                                            print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
+                                            print("usersession token: \(userSession.authToken)")
+                                            print("usersession remember: \(userSession.isRemembered)")
+                                        } catch {
+                                            print("Failed to save user session: \(error.localizedDescription)")
+                                        }
                                         print("Password reset successfully!")
                                         withAnimation(.smooth) {
                                             loadingScreen = true

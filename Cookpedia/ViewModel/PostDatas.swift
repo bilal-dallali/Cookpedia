@@ -235,7 +235,9 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func resetPassword(email: String, newPassword: String, resetCode: String , completion: @escaping (Result<Void, APIError>) -> ()) {
+    
+    /*
+    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
         let endpoint = "/reset-password"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -246,9 +248,9 @@ class APIPostRequest: ObservableObject {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let body = ["email": email, "newPassword": newPassword, "resetCode": resetCode]
+        let body = ["email": email, "newPassword": newPassword, "resetCode": resetCode, "rememberMe": rememberMe] as [String: any]
         do {
-            request.httpBody = try JSONEncoder().encode(body)
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
             URLSession.shared.dataTask(with: request) { data, response, error in
                 if let _ = error {
                     completion(.failure(.serverError))
@@ -258,12 +260,99 @@ class APIPostRequest: ObservableObject {
                     completion(.failure(.invalidData))
                     return
                 }
-                completion(.success(()))
+                
+                switch httpResponse.statusCode {
+                case 200:
+                    // Décoder le token depuis la réponse
+                    if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
+                       let authToken = json["token"] as? String {
+                        completion(.success(authToken))
+                    } else {
+                        completion(.failure(.invalidData))
+                    }
+                case 400:
+                    if let data = data,
+                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let errorMessage = json["error"] as? String {
+                        if errorMessage.contains("Invalid reset code") {
+                            completion(.failure(.invalidCredentials))
+                        } else {
+                            completion(.failure(.invalidData))
+                        }
+                    } else {
+                        completion(.failure(.invalidData))
+                    }
+                case 500:
+                    completion(.failure(.serverError))
+                default:
+                    completion(.failure(.serverError))
+                }
+                
+            }.resume()
+        } catch {
+            completion(.failure(.invalidData))
+        }
+    }*/
+    
+    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
+        let endpoint = "/reset-password"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // Ajouter le paramètre rememberMe dans le corps
+        let body = ["email": email, "newPassword": newPassword, "resetCode": resetCode, "rememberMe": rememberMe] as [String: Any]
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(.serverError))
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    completion(.failure(.invalidData))
+                    return
+                }
+                
+                switch httpResponse.statusCode {
+                case 200:
+                    // Décoder le token depuis la réponse
+                    if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
+                       let authToken = json["token"] as? String {
+                        completion(.success(authToken)) // Retourner le token en cas de succès
+                    } else {
+                        completion(.failure(.invalidData)) // Si le token est manquant
+                    }
+                case 400:
+                    if let data = data,
+                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                       let errorMessage = json["error"] as? String {
+                        if errorMessage.contains("Invalid reset code") {
+                            completion(.failure(.invalidCredentials))
+                        } else {
+                            completion(.failure(.invalidData)) // Default error
+                        }
+                    } else {
+                        completion(.failure(.invalidData))
+                    }
+                case 500:
+                    completion(.failure(.serverError))
+                default:
+                    completion(.failure(.serverError))
+                }
             }.resume()
         } catch {
             completion(.failure(.invalidData))
         }
     }
+
 }
 
 enum APIError: Error {

@@ -53,8 +53,6 @@ struct MyProfilePageView: View {
                                     Text("@andrew_ainsley")
                                         .foregroundStyle(Color("Greyscale300"))
                                         .font(.custom("Urbanist-Medium", size: 14))
-                                    
-
                                 }
                                 Spacer()
                                 Button {
