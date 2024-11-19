@@ -14,14 +14,17 @@ struct CreateRecipeView: View {
     @State private var cookTime = ""
     @State private var serves = ""
     @State private var origin = ""
-    @State private var ingredients: [String] = []
+    @State private var ingredients: [String] = Array(repeating: "", count: 7)
+    @State private var ingredientCounter: Int = 7
+    @State private var ingredientDict: [Int: String] = [:]
+    
     
     @Binding var isCreateRecipeSelected: Bool
     @FocusState private var isOriginFocused: Bool
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(spacing: 24) {
                 HStack {
                     HStack(spacing: 16) {
                         Button {
@@ -40,7 +43,8 @@ struct CreateRecipeView: View {
                     Spacer()
                     HStack(spacing: 12) {
                         Button {
-                            //
+                            print("Ingredients to submit:", ingredientDict)
+                            print("Ingredients to submit:", ingredients)
                         } label: {
                             Text("Save")
                                 .foregroundStyle(Color("MyWhite"))
@@ -50,7 +54,8 @@ struct CreateRecipeView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
                         }
                         Button {
-                            //
+                            print("Ingredients to submit:", ingredientDict)
+                            print("Ingredients to submit:", ingredients)
                         } label: {
                             Text("Publish")
                                 .foregroundStyle(Color("Primary900"))
@@ -208,40 +213,61 @@ struct CreateRecipeView: View {
                             .frame(height: 1)
                             .foregroundStyle(Color("Dark4"))
                     }
-                Text("Ingredients")
-                    .foregroundStyle(Color("MyWhite"))
-                    .font(.custom("Urbanist-Bold", size: 24))
                 
-                HStack(spacing: 12) {
-                    Image("drag-drop")
-                    Circle()
-                        .foregroundStyle(Color("Dark3"))
-                        .frame(width: 32, height: 32)
-                        .overlay {
-                            Text("1")
-                                .foregroundStyle(Color("Primary900"))
-                                .font(.custom("Urbanist-Semibold", size: 16))
-                        }
-                    TextField("", text: $title)
-                        .placeholder(when: ingredients.isEmpty) {
-                            Text("Ingredients 1")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 16))
-                        }
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Ingredients:")
                         .foregroundStyle(Color("MyWhite"))
-                        .font(.custom("Urbanist-Semibold", size: 16))
-                        .padding(.leading, 20)
-                        .frame(height: 58)
-                        .background {
-                            RoundedRectangle(cornerRadius: 16)
-                                .fill(Color("Dark2"))
-                        }
-                    Button {
-                        //
-                    } label: {
-                        Image("delete")
+                        .font(.custom("Urbanist-Bold", size: 24))
+                    ForEach(0..<ingredientCounter, id: \.self) { index in
+                        IngredientSlotView(ingredient: Binding(
+                            get: { ingredients[safe: index] ?? "" },
+                            set: { value in
+                                ingredients[safe: index] = value
+                                ingredientDict[index] = value
+                            }),
+                            index: index,
+                            onDelete: {
+                                if index < ingredients.count {
+                                    ingredients.remove(at: index)
+                                    ingredientCounter -= 1
+                                    ingredientDict.removeValue(forKey: index)
+                                }
+                            }
+                        )
                     }
-
+                }
+                
+                Button {
+                    withAnimation {
+                        ingredients.append("")
+                        ingredientCounter += 1
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "plus")
+                            .resizable()
+                            .frame(width: 15, height: 15)
+                            .foregroundStyle(Color("MyWhite"))
+                        Text("Add Ingredients")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                    }
+                    .frame(height: 58)
+                    .frame(maxWidth: .infinity)
+                    .background(Color("Dark4"))
+                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                    
+                }
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(Color("Dark4"))
+                    }
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Instructions:")
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 24))
                 }
             }
             .padding(.top, 16)
@@ -249,6 +275,18 @@ struct CreateRecipeView: View {
         }
         .background(Color("Dark1"))
         
+    }
+}
+
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        get {
+            return indices.contains(index) ? self[index] : nil
+        }
+        set {
+            guard let newValue = newValue, indices.contains(index) else { return }
+            self[index] = newValue
+        }
     }
 }
 
