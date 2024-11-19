@@ -15,6 +15,8 @@ struct TabView: View {
     @State private var isMyRecipeSelected: Bool = false
     @State private var isMyProfileSelected: Bool = false
     
+    @State var isCreateRecipeSelected: Bool = false
+    
     var body: some View {
         ZStack {
             if isHomeSelected {
@@ -61,7 +63,7 @@ struct TabView: View {
                         .frame(maxWidth: .infinity)
                         
                         Button {
-                            print("create recipe")
+                            isCreateRecipeSelected = true
                         } label: {
                             ZStack {
                                 Circle()
@@ -104,21 +106,21 @@ struct TabView: View {
                             }
                         }
                         .frame(maxWidth: .infinity)
-
                     }
                     .padding(.horizontal, 32)
                     .padding(.vertical, 5)
-                    
                 }
                 .padding(.top, 8)
                 .padding(.bottom, 29)
                 .background {
                     Rectangle()
                         .fill(Color(red: 0.09, green: 0.1, blue: 0.13, opacity: 0.85))
-                        
                 }
             }
             .edgesIgnoringSafeArea(.bottom)
+        }
+        .fullScreenCover(isPresented: $isCreateRecipeSelected) {
+            CreateRecipeView(isCreateRecipeSelected: $isCreateRecipeSelected)
         }
     }
 }
