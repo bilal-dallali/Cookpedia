@@ -11,12 +11,17 @@ struct CreateRecipeView: View {
     
     @State private var title = ""
     @State private var description = ""
+    @State private var cookTime = ""
+    @State private var serves = ""
+    @State private var origin = ""
+    @State private var ingredients: [String] = []
     
     @Binding var isCreateRecipeSelected: Bool
+    @FocusState private var isOriginFocused: Bool
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(alignment: .leading, spacing: 24) {
                 HStack {
                     HStack(spacing: 16) {
                         Button {
@@ -86,7 +91,7 @@ struct CreateRecipeView: View {
                             .strokeBorder(Color("Dark4"), lineWidth: 1)
                     }
                 }
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text("Title")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 20))
@@ -106,7 +111,7 @@ struct CreateRecipeView: View {
                         }
                 }
                 
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text("Description")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 20))
@@ -128,6 +133,115 @@ struct CreateRecipeView: View {
                             }
                         }
                     }
+                }
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Cook Time")
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 20))
+                    TextField("", text: $cookTime)
+                        .placeholder(when: cookTime.isEmpty) {
+                            Text("1 hour, 30 mins, etc")
+                                .foregroundStyle(Color("Greyscale500"))
+                                .font(.custom("Urbanist-Regular", size: 16))
+                        }
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Semibold", size: 16))
+                        .padding(.leading, 20)
+                        .frame(height: 58)
+                        .background {
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color("Dark2"))
+                        }
+                }
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Serves")
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 20))
+                    TextField("", text: $serves)
+                        .placeholder(when: serves.isEmpty) {
+                            Text("3 people")
+                                .foregroundStyle(Color("Greyscale500"))
+                                .font(.custom("Urbanist-Regular", size: 16))
+                        }
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Semibold", size: 16))
+                        .padding(.leading, 20)
+                        .frame(height: 58)
+                        .background {
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color("Dark2"))
+                        }
+                }
+                
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Origin")
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 20))
+                    HStack(spacing: 12) {
+                        TextField("", text: $origin)
+                            .placeholder(when: origin.isEmpty) {
+                                Text("Location")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 16))
+                            }
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Semibold", size: 16))
+                            .focused($isOriginFocused)
+                        if isOriginFocused {
+                            Image("location-focused")
+                        } else {
+                            Image("location-unfocused")
+                        }
+                    }
+                    .frame(height: 58)
+                    .padding(.horizontal, 20)
+                    .background {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color("Dark2"))
+                    }
+                }
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(Color("Dark4"))
+                    }
+                Text("Ingredients")
+                    .foregroundStyle(Color("MyWhite"))
+                    .font(.custom("Urbanist-Bold", size: 24))
+                
+                HStack(spacing: 12) {
+                    Image("drag-drop")
+                    Circle()
+                        .foregroundStyle(Color("Dark3"))
+                        .frame(width: 32, height: 32)
+                        .overlay {
+                            Text("1")
+                                .foregroundStyle(Color("Primary900"))
+                                .font(.custom("Urbanist-Semibold", size: 16))
+                        }
+                    TextField("", text: $title)
+                        .placeholder(when: ingredients.isEmpty) {
+                            Text("Ingredients 1")
+                                .foregroundStyle(Color("Greyscale500"))
+                                .font(.custom("Urbanist-Regular", size: 16))
+                        }
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Semibold", size: 16))
+                        .padding(.leading, 20)
+                        .frame(height: 58)
+                        .background {
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color("Dark2"))
+                        }
+                    Button {
+                        //
+                    } label: {
+                        Image("delete")
+                    }
+
                 }
             }
             .padding(.top, 16)
