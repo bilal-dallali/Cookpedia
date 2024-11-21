@@ -13,7 +13,7 @@ func generateUniqueRecipeImageName() -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyyMMddHHmmss"
     let dateString = dateFormatter.string(from: Date())
-    return "recipe_cover_\(dateString)_\(uuid)"
+    return "\(dateString)_\(uuid)"
 }
 
 struct ImagePicker: UIViewControllerRepresentable {
@@ -197,7 +197,7 @@ struct CreateRecipeView: View {
                             }
                             .sheet(isPresented: $isImagePickerPresented1) {
                                 ImagePicker(image: $selectedImage1) { fileName in
-                                    recipeCoverPictureUrl1 = fileName
+                                    recipeCoverPictureUrl1 = "recipe_cover_1_\(fileName)"
                                 }
                             }
                             Button {
@@ -241,7 +241,7 @@ struct CreateRecipeView: View {
                             }
                             .sheet(isPresented: $isImagePickerPresented2) {
                                 ImagePicker(image: $selectedImage2) { fileName in
-                                    recipeCoverPictureUrl2 = fileName
+                                    recipeCoverPictureUrl2 = "recipe_cover_2_\(fileName)"
                                 }
                             }
                         }
