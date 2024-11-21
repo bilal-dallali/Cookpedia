@@ -16,6 +16,8 @@ struct IngredientSlotView: View {
     var body: some View {
         HStack(spacing: 12) {
             Image("drag-drop")
+                .resizable()
+                .frame(width: 24, height: 24)
             Circle()
                 .foregroundStyle(Color("Dark3"))
                 .frame(width: 32, height: 32)

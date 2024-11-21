@@ -22,7 +22,7 @@ struct CustomTextEditor: UIViewRepresentable {
         textView.backgroundColor = backgroundColor
         textView.textColor = textColor
         textView.font = font
-        textView.textContainerInset = textPadding // Ajout du padding interne
+        textView.textContainerInset = textPadding
         textView.delegate = context.coordinator
         return textView
     }

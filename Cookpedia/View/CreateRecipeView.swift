@@ -18,6 +18,8 @@ struct CreateRecipeView: View {
     @State private var ingredientCounter: Int = 7
     @State private var ingredientDict: [Int: String] = [:]
     
+    @State private var instruction: String = ""
+    
     @Binding var isCreateRecipeSelected: Bool
     @FocusState private var isOriginFocused: Bool
     
@@ -267,6 +269,100 @@ struct CreateRecipeView: View {
                     Text("Instructions:")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 24))
+                    HStack(alignment: .top, spacing: 12) {
+                        VStack(spacing: 4) {
+                            Image("drag-drop")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                            Circle()
+                                .foregroundStyle(Color("Dark3"))
+                                .frame(width: 32, height: 32)
+                                .overlay {
+                                    Text("1")
+                                        .foregroundStyle(Color("Primary900"))
+                                        .font(.custom("Urbanist-Semibold", size: 16))
+                                }
+                        }
+                        VStack(spacing: 8) {
+                            CustomTextEditor(text: $instruction, backgroundColor: UIColor(named: "Dark2") ?? .gray, textColor: UIColor(named: "MyWhite") ?? .white, font: UIFont(name: "Urbanist-Semibold", size: 16) ?? .systemFont(ofSize: 16), textPadding: UIEdgeInsets(top: 18, left: 15, bottom: 18, right: 15))
+                                .frame(height: 100)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .overlay {
+                                    if instruction.isEmpty {
+                                        VStack {
+                                            HStack {
+                                                Text("Instructions 1")
+                                                    .foregroundStyle(Color("Greyscale500"))
+                                                    .font(.custom("Urbanist-Regular", size: 16))
+                                                    .padding(.horizontal, 20)
+                                                    .padding(.vertical, 18)
+                                                Spacer()
+                                            }
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                            HStack(spacing: 8) {
+                                Button {
+                                    //
+                                } label: {
+                                    VStack(spacing: 8) {
+                                        Image("image")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                        Text("Add image")
+                                            .foregroundStyle(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Regular", size: 10))
+                                    }
+                                    .frame(height: 72)
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color("Dark2"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                
+                                Button {
+                                    //
+                                } label: {
+                                    VStack(spacing: 8) {
+                                        Image("image")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                        Text("Add image")
+                                            .foregroundStyle(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Regular", size: 10))
+                                    }
+                                    .frame(height: 72)
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color("Dark2"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                
+                                Button {
+                                    //
+                                } label: {
+                                    VStack(spacing: 8) {
+                                        Image("image")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                        Text("Add image")
+                                            .foregroundStyle(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Regular", size: 10))
+                                    }
+                                    .frame(height: 72)
+                                    .frame(maxWidth: .infinity)
+                                    .background(Color("Dark2"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                            }
+
+                        }
+                        Button {
+                            //
+                        } label: {
+                            Image("delete")
+                        }
+
+                    }
                     
                 }
             }
