@@ -97,7 +97,6 @@ struct CompleteProfileView: View {
     
     @State private var isImagePickerPresented = false
     
-    
     @State private var isDropDownMenuActivated: Bool = false
     @State private var phoneNumberInvalid: Bool = false
     @State private var selectedDate = Date()
