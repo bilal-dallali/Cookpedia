@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 
-func generateUniqueImageName() -> String {
+func generateUniqueProfileImageName() -> String {
     let uuid = UUID().uuidString
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyyMMddHHmmss"
@@ -16,7 +16,7 @@ func generateUniqueImageName() -> String {
     return "profile_\(dateString)_\(uuid)"
 }
 
-struct PhotoPicker: UIViewControllerRepresentable {
+struct ProfilePhotoPicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     @Binding var profilePictureUrl: String
     
@@ -36,9 +36,9 @@ struct PhotoPicker: UIViewControllerRepresentable {
     }
     
     class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        var parent: PhotoPicker
+        var parent: ProfilePhotoPicker
         
-        init(_ parent: PhotoPicker) {
+        init(_ parent: ProfilePhotoPicker) {
             self.parent = parent
         }
         
@@ -50,7 +50,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
                     DispatchQueue.main.async {
                         if let image = image as? UIImage {
                             self.parent.selectedImage = image
-                            let uniqueImageName = generateUniqueImageName()
+                            let uniqueImageName = generateUniqueProfileImageName()
                             self.parent.profilePictureUrl = uniqueImageName
                         }
                     }
@@ -155,7 +155,7 @@ struct CompleteProfileView: View {
                                     .frame(width: 120, height: 120)
                                 }
                                 .sheet(isPresented: $isImagePickerPresented) {
-                                    PhotoPicker(selectedImage: $selectedImage, profilePictureUrl: $profilePictureUrl)
+                                    ProfilePhotoPicker(selectedImage: $selectedImage, profilePictureUrl: $profilePictureUrl)
                                 }
                                 Spacer()
                             }

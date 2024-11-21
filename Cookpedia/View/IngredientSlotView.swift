@@ -41,13 +41,11 @@ struct IngredientSlotView: View {
                         .fill(Color("Dark2"))
                 }
             Button {
-                withAnimation {
-                    onDelete()
-                }
+                onDelete()
             } label: {
                 Image("delete")
             }
-
+            
         }
     }
 }

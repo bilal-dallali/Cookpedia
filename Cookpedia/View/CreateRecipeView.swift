@@ -6,6 +6,61 @@
 //
 
 import SwiftUI
+import PhotosUI
+
+func generateUniqueRecipeImageName() -> String {
+    let uuid = UUID().uuidString
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyyMMddHHmmss"
+    let dateString = dateFormatter.string(from: Date())
+    return "recipe_cover_\(dateString)_\(uuid)"
+}
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var image: UIImage?
+    var onImagePicked: (String) -> Void
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.filter = .images
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+    
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        var parent: ImagePicker
+        
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+        
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
+            
+            guard let provider = results.first?.itemProvider,
+                  provider.canLoadObject(ofClass: UIImage.self) else { return }
+            
+            provider.loadObject(ofClass: UIImage.self) { [weak self] image, _ in
+                DispatchQueue.main.async {
+                    if let uiImage = image as? UIImage {
+                        self?.parent.image = uiImage
+                        
+                        // Générer un nom aléatoire pour l'image
+                        let fileName = generateUniqueRecipeImageName()
+                        self?.parent.onImagePicked(fileName)
+                    }
+                }
+            }
+        }
+    }
+}
 
 struct CreateRecipeView: View {
     
@@ -16,6 +71,12 @@ struct CreateRecipeView: View {
     @State var origin = ""
     @State var recipeCoverPictureUrl1: String = ""
     @State var recipeCoverPictureUrl2: String = ""
+    
+    @State private var selectedImage1: UIImage? = nil
+    @State private var selectedImage2: UIImage? = nil
+    @State private var isImagePickerPresented1: Bool = false
+    @State private var isImagePickerPresented2: Bool = false
+    
     @State var ingredients: [String] = Array(repeating: "", count: 7)
     @State private var ingredientCounter: Int = 7
     @State private var ingredientDict: [Int: String] = [:]
@@ -97,41 +158,90 @@ struct CreateRecipeView: View {
                     ScrollView(.horizontal) {
                         HStack(spacing: 12) {
                             Button {
-                                print("add image")
+                                isImagePickerPresented1 = true
                             } label: {
-                                VStack(spacing: 32) {
-                                    Image("image")
+                                if let selectedImage1 = selectedImage1 {
+                                    Image(uiImage: selectedImage1)
                                         .resizable()
-                                        .frame(width: 60, height: 60)
-                                    Text("Add recipe cover image")
-                                        .foregroundStyle(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Regular", size: 16))
+                                        .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                        .overlay(alignment: .trailingLastTextBaseline) {
+                                            Circle()
+                                                .foregroundStyle(Color("Primary900"))
+                                                .frame(width: 52, height: 52)
+                                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                                .overlay {
+                                                    Image("edit-white")
+                                                        .resizable()
+                                                        .frame(width: 28, height: 28)
+                                                }
+                                                .padding(12)
+                                        }
+                                } else {
+                                    VStack(spacing: 32) {
+                                        Image("image")
+                                            .resizable()
+                                            .frame(width: 60, height: 60)
+                                        Text("Add recipe cover image")
+                                            .foregroundStyle(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Regular", size: 16))
+                                    }
+                                    .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                    .background(Color("Dark2"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .strokeBorder(Color("Dark4"), lineWidth: 1)
+                                    }
                                 }
-                                .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                .background(Color("Dark2"))
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .strokeBorder(Color("Dark4"), lineWidth: 1)
+                            }
+                            .sheet(isPresented: $isImagePickerPresented1) {
+                                ImagePicker(image: $selectedImage1) { fileName in
+                                    recipeCoverPictureUrl1 = fileName
                                 }
                             }
                             Button {
-                                print("add image")
+                                isImagePickerPresented2 = true
                             } label: {
-                                VStack(spacing: 32) {
-                                    Image("image")
+                                if let selectedImage2 = selectedImage2 {
+                                    Image(uiImage: selectedImage2)
                                         .resizable()
-                                        .frame(width: 60, height: 60)
-                                    Text("Add recipe cover image")
-                                        .foregroundStyle(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Regular", size: 16))
+                                        .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                        .overlay(alignment: .trailingLastTextBaseline) {
+                                            Circle()
+                                                .foregroundStyle(Color("Primary900"))
+                                                .frame(width: 52, height: 52)
+                                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                                .overlay {
+                                                    Image("edit-white")
+                                                        .resizable()
+                                                        .frame(width: 28, height: 28)
+                                                }
+                                                .padding(12)
+                                        }
+
+                                } else {
+                                    VStack(spacing: 32) {
+                                        Image("image")
+                                            .resizable()
+                                            .frame(width: 60, height: 60)
+                                        Text("Add recipe cover image")
+                                            .foregroundStyle(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Regular", size: 16))
+                                    }
+                                    .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                    .background(Color("Dark2"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .strokeBorder(Color("Dark4"), lineWidth: 1)
+                                    }
                                 }
-                                .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                .background(Color("Dark2"))
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .strokeBorder(Color("Dark4"), lineWidth: 1)
+                            }
+                            .sheet(isPresented: $isImagePickerPresented2) {
+                                ImagePicker(image: $selectedImage2) { fileName in
+                                    recipeCoverPictureUrl2 = fileName
                                 }
                             }
                         }
@@ -142,6 +252,10 @@ struct CreateRecipeView: View {
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 20))
+                        Text("Image 1 URL: \(recipeCoverPictureUrl1)")
+                            .foregroundStyle(Color("MyWhite"))
+                        Text("Image 2 URL: \(recipeCoverPictureUrl2)")
+                            .foregroundStyle(Color("MyWhite"))
                         TextField("", text: $title)
                             .placeholder(when: title.isEmpty) {
                                 Text("Recipe Title")
@@ -280,10 +394,8 @@ struct CreateRecipeView: View {
                     }
                     
                     Button {
-                        withAnimation {
-                            ingredients.append("")
-                            ingredientCounter += 1
-                        }
+                        ingredients.append("")
+                        ingredientCounter += 1
                     } label: {
                         HStack {
                             Image(systemName: "plus")
