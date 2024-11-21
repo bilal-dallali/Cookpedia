@@ -139,8 +139,7 @@ struct CompleteProfileView: View {
                                                 .resizable()
                                                 .frame(width: 120, height: 120)
                                                 .clipShape(.rect(cornerRadius: .infinity))
-                                        }
-                                        else {
+                                        } else {
                                             Image("ellipse")
                                                 .resizable()
                                                 .frame(width: 120, height: 120)

@@ -18,13 +18,12 @@ struct CreateRecipeView: View {
     @State private var ingredientCounter: Int = 7
     @State private var ingredientDict: [Int: String] = [:]
     
-    
     @Binding var isCreateRecipeSelected: Bool
     @FocusState private var isOriginFocused: Bool
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(alignment: .leading, spacing: 24) {
                 HStack {
                     HStack(spacing: 16) {
                         Button {
@@ -268,6 +267,7 @@ struct CreateRecipeView: View {
                     Text("Instructions:")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 24))
+                    
                 }
             }
             .padding(.top, 16)
