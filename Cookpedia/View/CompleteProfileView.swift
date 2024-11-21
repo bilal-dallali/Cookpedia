@@ -6,59 +6,6 @@
 //
 
 import SwiftUI
-import PhotosUI
-
-func generateUniqueProfileImageName() -> String {
-    let uuid = UUID().uuidString
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyyMMddHHmmss"
-    let dateString = dateFormatter.string(from: Date())
-    return "profile_\(dateString)_\(uuid)"
-}
-
-struct ProfilePhotoPicker: UIViewControllerRepresentable {
-    @Binding var selectedImage: UIImage?
-    @Binding var profilePictureUrl: String
-    
-    func makeUIViewController(context: Context) -> PHPickerViewController {
-        var config = PHPickerConfiguration()
-        config.selectionLimit = 1
-        config.filter = .images
-        let picker = PHPickerViewController(configuration: config)
-        picker.delegate = context.coordinator
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, PHPickerViewControllerDelegate {
-        var parent: ProfilePhotoPicker
-        
-        init(_ parent: ProfilePhotoPicker) {
-            self.parent = parent
-        }
-        
-        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            picker.dismiss(animated: true)
-            guard let provider = results.first?.itemProvider else { return }
-            if provider.canLoadObject(ofClass: UIImage.self) {
-                provider.loadObject(ofClass: UIImage.self) { image, _ in
-                    DispatchQueue.main.async {
-                        if let image = image as? UIImage {
-                            self.parent.selectedImage = image
-                            let uniqueImageName = generateUniqueProfileImageName()
-                            self.parent.profilePictureUrl = uniqueImageName
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 struct CompleteProfileView: View {
     
@@ -155,7 +102,9 @@ struct CompleteProfileView: View {
                                     .frame(width: 120, height: 120)
                                 }
                                 .sheet(isPresented: $isImagePickerPresented) {
-                                    ProfilePhotoPicker(selectedImage: $selectedImage, profilePictureUrl: $profilePictureUrl)
+                                    ImagePicker(image: $selectedImage) { filename in
+                                        profilePictureUrl = "profile_picture_\(filename)"
+                                    }
                                 }
                                 Spacer()
                             }
