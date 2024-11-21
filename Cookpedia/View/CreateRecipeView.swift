@@ -136,8 +136,8 @@ struct CreateRecipeView: View {
                             }
                         }
                     }
-                    .scrollTargetBehavior(.paging)
                     .scrollIndicators(.hidden)
+                    .scrollTargetBehavior(.paging)
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
@@ -267,14 +267,14 @@ struct CreateRecipeView: View {
                                     ingredients[safe: index] = value
                                     ingredientDict[index] = value
                                 }),
-                                               index: index,
-                                               onDelete: {
-                                if index < ingredients.count {
-                                    ingredients.remove(at: index)
-                                    ingredientCounter -= 1
-                                    ingredientDict.removeValue(forKey: index)
+                                index: index,
+                                onDelete: {
+                                    if index < ingredients.count {
+                                        ingredients.remove(at: index)
+                                        ingredientCounter -= 1
+                                        ingredientDict.removeValue(forKey: index)
+                                    }
                                 }
-                            }
                             )
                         }
                     }

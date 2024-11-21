@@ -18,7 +18,6 @@ struct BackButtonView: View {
             Image("arrow-left")
                 .resizable()
                 .frame(width: 28, height: 28)
-                .foregroundStyle(Color("MyWhite"))
         }
 
     }
