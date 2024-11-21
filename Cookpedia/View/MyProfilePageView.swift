@@ -214,6 +214,7 @@ struct MyProfilePageView: View {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
             .padding(.top, 16)
             .padding(.horizontal, 24)
             .background(Color("Dark1"))

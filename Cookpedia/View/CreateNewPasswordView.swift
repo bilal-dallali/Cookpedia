@@ -207,6 +207,7 @@ struct CreateNewPasswordView: View {
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
                 .padding(.horizontal, 24)
                 
                 Divider()

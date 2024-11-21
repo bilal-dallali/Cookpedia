@@ -197,6 +197,7 @@ struct CookingLevelView: View {
                     }
                 }
             }
+            .scrollIndicators(.hidden)
             .padding(.horizontal, 24)
             
             Divider()

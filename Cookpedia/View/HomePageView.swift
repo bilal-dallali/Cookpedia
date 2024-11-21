@@ -97,6 +97,7 @@ struct HomePageView: View {
                                         RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "pancakes", name: "Jean-Philippe Hubert")
                                     }
                                 }
+                                .scrollIndicators(.hidden)
                             }
                             
                             VStack(alignment: .leading, spacing: 20) {
@@ -121,6 +122,7 @@ struct HomePageView: View {
                                         RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "vegetable-salad", name: "Jean-Philippe Hubert")
                                     }
                                 }
+                                .scrollIndicators(.hidden)
                             }
                             
                             VStack(alignment: .leading, spacing: 20) {
@@ -145,10 +147,12 @@ struct HomePageView: View {
                                         RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "egg-salad", name: "Jean-Philippe Hubert")
                                     }
                                 }
+                                .scrollIndicators(.hidden)
                             }
                         }
                     }
                 }
+                .scrollIndicators(.hidden)
                 .padding(.top, 16)
                 .padding(.horizontal, 24)
                 .background(Color("Dark1"))

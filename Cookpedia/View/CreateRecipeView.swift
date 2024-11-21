@@ -137,6 +137,7 @@ struct CreateRecipeView: View {
                         }
                     }
                     .scrollTargetBehavior(.paging)
+                    .scrollIndicators(.hidden)
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
@@ -409,6 +410,7 @@ struct CreateRecipeView: View {
                 .padding(.top, 16)
                 .padding(.horizontal, 24)
             }
+            .scrollIndicators(.hidden)
             .background(Color("Dark1"))
         }
     }
