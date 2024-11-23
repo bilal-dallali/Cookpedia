@@ -116,7 +116,8 @@ struct InstructionSlotView: View {
 }
 
 #Preview {
-    InstructionSlotView(instruction: .constant("."), images: .constant([
+    InstructionSlotView(instruction: .constant(""), images: .constant([
+            UIImage(named: "profile-picture")!,
             UIImage(named: "profile-picture")!,
             UIImage(named: "profile-picture")!
         ]),

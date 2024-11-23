@@ -359,21 +359,8 @@ struct CreateRecipeView: View {
                         Text("Instructions:")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 24))
-                        ForEach($instructions) { $instruction in
-                            InstructionSlotView(instruction: $instruction.text, images: $instruction.images,
-                                onDelete: {
-                                if let index = instructions.firstIndex(where: { $0.id == instruction.id }) {
-                                    Instruction.remove(at: index)
-                                }
-                            }, index: instructions.firstIndex(where: { $0.id == instruction.id }) ?? 0
-                            )
-                        }
-                        
-                        Button {
-                            instructions.append(Instruction())
-                        } label: {
-                            Text("add instruction")
-                        }
+                        //instructionlist
+                        InstructionListView(instructions: $instructions)
                     }
                 }
                 .padding(.top, 16)
