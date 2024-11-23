@@ -15,16 +15,14 @@ struct InstructionListView: View {
     var body: some View {
         VStack(spacing: 24) {
             VStack(alignment: .leading, spacing: 16) {
-                ForEach($instructions) { $instruction in
+                ForEach(instructions.indices, id: \.self) { index in
                     InstructionSlotView(
-                        instruction: $instruction.text,
-                        images: $instruction.images,
-                        onDelete: { _ in 
-                            if let index = instructions.firstIndex(where: { $0.id == instruction.id }) {
-                                instructions.remove(at: index)
-                            }
+                        instruction: $instructions[index].text,
+                        images: $instructions[index].images,
+                        onDelete: {
+                            instructions.remove(at: index)
                         },
-                        number: instruction.number
+                        number: index + 1
                     )
                 }
                 
