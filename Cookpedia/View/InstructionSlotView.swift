@@ -13,8 +13,7 @@ struct InstructionSlotView: View {
     @Binding var images: [UIImage]
     
     let onDelete: (Int) -> Void
-    var index: Int
-    
+    var number: Int
     
     @State private var isImagePickerPresented: Bool = false
     @State private var selectedImageIndex: Int? = nil
@@ -29,7 +28,7 @@ struct InstructionSlotView: View {
                     .foregroundStyle(Color("Dark3"))
                     .frame(width: 32, height: 32)
                     .overlay {
-                        Text("\(index + 1)")
+                        Text("\(number)")
                             .foregroundStyle(Color("Primary900"))
                             .font(.custom("Urbanist-Semibold", size: 16))
                     }
@@ -42,7 +41,7 @@ struct InstructionSlotView: View {
                         if instruction.isEmpty {
                             VStack {
                                 HStack {
-                                    Text("Instructions \(index + 1)")
+                                    Text("Instructions \(number)")
                                         .foregroundStyle(Color("Greyscale500"))
                                         .font(.custom("Urbanist-Regular", size: 16))
                                         .padding(.horizontal, 20)
@@ -93,7 +92,7 @@ struct InstructionSlotView: View {
                 
             }
             Button {
-                onDelete(index)
+                onDelete(number)
             } label: {
                 Image("delete")
             }
@@ -123,5 +122,5 @@ struct InstructionSlotView: View {
         UIImage(named: "profile-picture")!,
         UIImage(named: "profile-picture")!
     ]),
-                        onDelete: { _ in print("Delete tapped") }, index: 0)
+    onDelete: { _ in print("Delete tapped") }, number: 0)
 }

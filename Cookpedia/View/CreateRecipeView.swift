@@ -26,12 +26,13 @@ struct CreateRecipeView: View {
     @State private var ingredientCounter: Int = 7
     @State private var ingredientDict: [Int: String] = [:]
     
-    @State private var instructions: [Instruction] = Array(repeating: Instruction(), count: 7)
-    
+    @State private var instructions: [Instruction] = (1...7).map { Instruction(number: $0) }
+    @State private var instructionCounter: Int = 7
     struct Instruction: Identifiable {
         let id = UUID()
         var text: String = ""
         var images: [UIImage] = []
+        var number: Int
     }
     
     @Binding var isCreateRecipeSelected: Bool
@@ -189,10 +190,6 @@ struct CreateRecipeView: View {
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 20))
-                        Text("Image 1 URL: \(recipeCoverPictureUrl1)")
-                            .foregroundStyle(Color("MyWhite"))
-                        Text("Image 2 URL: \(recipeCoverPictureUrl2)")
-                            .foregroundStyle(Color("MyWhite"))
                         TextField("", text: $title)
                             .placeholder(when: title.isEmpty) {
                                 Text("Recipe Title")
@@ -359,8 +356,7 @@ struct CreateRecipeView: View {
                         Text("Instructions:")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 24))
-                        //instructionlist
-                        InstructionListView(instructions: $instructions)
+                        InstructionListView(instructions: $instructions, instructionCounter: $ingredientCounter)
                     }
                 }
                 .padding(.top, 16)
