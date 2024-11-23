@@ -11,12 +11,16 @@ struct InstructionSlotView: View {
     
     @Binding var instruction: String
     @Binding var images: [UIImage]
+    @Binding var instructionPicture1: String?
+    @Binding var instructionPicture2: String?
+    @Binding var instructionPicture3: String?
     
     let onDelete: () -> Void
     var number: Int
     
     @State private var isImagePickerPresented: Bool = false
     @State private var selectedImageIndex: Int? = nil
+    @State private var selectedImage: UIImage? = nil
     
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -98,29 +102,27 @@ struct InstructionSlotView: View {
             }
         }
         .sheet(isPresented: $isImagePickerPresented) {
-            if let index = selectedImageIndex {
-                ImagePicker(image: Binding(
-                    get: { images[safe: index] },
-                    set: { value in
-                        if let value = value {
-                            if index < images.count {
-                                images[index] = value
-                            } else {
-                                images.append(value)
-                            }
-                        }
+            ImagePicker(image: $selectedImage) { fileName in
+                if let selectedIndex = selectedImageIndex, let selectedImage = selectedImage {
+                    if selectedIndex < images.count {
+                        images[selectedIndex] = selectedImage
+                    } else {
+                        images.append(selectedImage)
                     }
-                )) { _ in }
+                    // Generate unique name and assign it
+                    let fileName = generateUniqueImageName()
+                    switch selectedIndex {
+                    case 0: instructionPicture1 = "instruction_picture_1_\(fileName)"
+                    case 1: instructionPicture2 = "instruction_picture_2_\(fileName)"
+                    case 2: instructionPicture3 = "instruction_picture_3_\(fileName)"
+                    default: break
+                    }
+                }
             }
         }
     }
 }
 
 #Preview {
-    InstructionSlotView(instruction: .constant(""), images: .constant([
-        UIImage(named: "profile-picture")!,
-        UIImage(named: "profile-picture")!,
-        UIImage(named: "profile-picture")!
-    ]),
-                        onDelete: {  print("Delete tapped") }, number: 0)
+    InstructionSlotView(instruction: .constant(""), images: .constant([UIImage(named: "profile-picture")!, UIImage(named: "profile-picture")!, UIImage(named: "profile-picture")!]), instructionPicture1: .constant(""), instructionPicture2: .constant(""), instructionPicture3: .constant(""), onDelete: {  print("Delete tapped") }, number: 0)
 }

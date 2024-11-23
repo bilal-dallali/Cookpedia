@@ -26,13 +26,17 @@ struct CreateRecipeView: View {
     @State private var ingredientCounter: Int = 7
     @State private var ingredientDict: [Int: String] = [:]
     
-    @State private var instructions: [Instruction] = (1...7).map { Instruction(number: $0) }
+    @State var instructions: [Instruction] = (1...7).map { Instruction(number: $0) }
     @State private var instructionCounter: Int = 7
+    
     struct Instruction: Identifiable {
         let id = UUID()
         var text: String = ""
         var images: [UIImage] = []
         var number: Int
+        var instructionPicture1: String? = nil
+        var instructionPicture2: String? = nil
+        var instructionPicture3: String? = nil
     }
     
     @Binding var isCreateRecipeSelected: Bool
@@ -60,8 +64,13 @@ struct CreateRecipeView: View {
                         Spacer()
                         HStack(spacing: 12) {
                             Button {
-                                print("Ingredients to submit:", ingredientDict)
-                                print("Ingredients to submit:", ingredients)
+//                                print("Ingredients to submit:", ingredientDict)
+//                                print("Ingredients to submit:", ingredients)
+                                print("Instructions: \(instructions)")
+//                                print("Instruction1: \(instructions.first?.text ?? "No instructions")")
+//                                print("Instruction picture 1: \(instructions.first?.instructionPicture1 ?? "")")
+//                                print("Instruction picture 2: \(instructions.first?.instructionPicture2 ?? "")")
+//                                print("Instruction picture 3: \(instructions.first?.instructionPicture3 ?? "")")
                                 
                             } label: {
                                 Text("Save")
@@ -72,8 +81,13 @@ struct CreateRecipeView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: .infinity))
                             }
                             Button {
-                                print("Ingredients to submit:", ingredientDict)
-                                print("Ingredients to submit:", ingredients)
+//                                print("Ingredients to submit:", ingredientDict)
+//                                print("Ingredients to submit:", ingredients)
+                                print("Instructions: \(instructions)")
+//                                print("Instruction1: \(instructions.first?.text ?? "No instructions")")
+//                                print("Instruction picture 1: \(instructions.first?.instructionPicture1 ?? "No instructions")")
+//                                print("Instruction picture 2: \(instructions.first?.instructionPicture2 ?? "No instructions")")
+//                                print("Instruction picture 3: \(instructions.first?.instructionPicture3 ?? "No instructions")")
                             } label: {
                                 Text("Publish")
                                     .foregroundStyle(Color("Primary900"))
