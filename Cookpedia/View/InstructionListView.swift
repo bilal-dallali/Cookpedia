@@ -12,23 +12,24 @@ struct InstructionListView: View {
     @Binding var instructions: [CreateRecipeView.Instruction]
     
     var body: some View {
-        VStack(spacing: 0) {
-            ForEach($instructions) { $instruction in
-                InstructionSlotView(
-                    instruction: $instruction.text,
-                    images: $instruction.images,
-                    onDelete: { _ in
-                    if let index = instructions.firstIndex(where: { $0.id == instruction.id }) {
-                        instructions.remove(at: index)
-                    }
-                }, index: instructions.firstIndex(where: { $0.id == instruction.id }) ?? 0
-                )
-            }
-            
-            Button {
-                instructions.append(CreateRecipeView.Instruction())
-            } label: {
-                Text("add instruction")
+        VStack(spacing: 24) {
+            VStack(alignment: .leading, spacing: 16) {
+                ForEach(Array(instructions.enumerated()), id: \.element.id) { index, instruction in
+                    InstructionSlotView(
+                        instruction: $instructions[index].text,
+                        images: $instructions[index].images,
+                        onDelete: { _ in
+                            instructions.remove(at: index)
+                        },
+                        index: index // Passez l'index correctement ici
+                    )
+                }
+                
+                Button {
+                    instructions.append(CreateRecipeView.Instruction())
+                } label: {
+                    Text("add instruction")
+                }
             }
         }
     }

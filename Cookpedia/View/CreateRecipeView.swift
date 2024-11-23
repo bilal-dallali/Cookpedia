@@ -26,7 +26,7 @@ struct CreateRecipeView: View {
     @State private var ingredientCounter: Int = 7
     @State private var ingredientDict: [Int: String] = [:]
     
-    @State private var instructions: [Instruction] = []
+    @State private var instructions: [Instruction] = Array(repeating: Instruction(), count: 7)
     
     struct Instruction: Identifiable {
         let id = UUID()

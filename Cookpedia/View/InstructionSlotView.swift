@@ -11,8 +11,10 @@ struct InstructionSlotView: View {
     
     @Binding var instruction: String
     @Binding var images: [UIImage]
+    
     let onDelete: (Int) -> Void
-    let index: Int
+    var index: Int
+    
     
     @State private var isImagePickerPresented: Bool = false
     @State private var selectedImageIndex: Int? = nil
@@ -117,9 +119,9 @@ struct InstructionSlotView: View {
 
 #Preview {
     InstructionSlotView(instruction: .constant(""), images: .constant([
-            UIImage(named: "profile-picture")!,
-            UIImage(named: "profile-picture")!,
-            UIImage(named: "profile-picture")!
-        ]),
-        onDelete: { _ in print("Delete tapped") }, index: 0)
+        UIImage(named: "profile-picture")!,
+        UIImage(named: "profile-picture")!,
+        UIImage(named: "profile-picture")!
+    ]),
+                        onDelete: { _ in print("Delete tapped") }, index: 0)
 }
