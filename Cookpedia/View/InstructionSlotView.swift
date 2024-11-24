@@ -41,19 +41,13 @@ struct InstructionSlotView: View {
                 CustomTextEditor(text: $instruction, backgroundColor: UIColor(named: "Dark2") ?? .gray, textColor: UIColor(named: "MyWhite") ?? .white, font: UIFont(name: "Urbanist-Semibold", size: 16) ?? .systemFont(ofSize: 16), textPadding: UIEdgeInsets(top: 18, left: 15, bottom: 18, right: 15))
                     .frame(height: 100)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .overlay {
+                    .overlay(alignment: .topLeading) {
                         if instruction.isEmpty {
-                            VStack {
-                                HStack {
-                                    Text("Instructions \(number)")
-                                        .foregroundStyle(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Regular", size: 16))
-                                        .padding(.horizontal, 20)
-                                        .padding(.vertical, 18)
-                                    Spacer()
-                                }
-                                Spacer()
-                            }
+                            Text("Instructions \(number)")
+                                .foregroundStyle(Color("Greyscale500"))
+                                .font(.custom("Urbanist-Regular", size: 16))
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 18)
                         }
                     }
                 HStack(spacing: 8) {
@@ -62,36 +56,32 @@ struct InstructionSlotView: View {
                             selectedImageIndex = imageIndex
                             isImagePickerPresented = true
                         } label: {
-                            if imageIndex < images.count {
-                                Image(uiImage: images[imageIndex])
+                            VStack(spacing: 8) {
+                                Image("image")
                                     .resizable()
-                                    .scaledToFill()
-                                    .frame(height: 72)
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color("Dark2"))
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .strokeBorder(Color("Dark4"), lineWidth: 1)
+                                    .frame(width: 20, height: 20)
+                                Text("Add image")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 10))
+                            }
+                            .frame(height: 72)
+                            .frame(maxWidth: .infinity)
+                            .background(Color("Dark2"))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay {
+                                if imageIndex < images.count  {
+                                    GeometryReader { geometry in
+                                        Image(uiImage: images[imageIndex])
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(height: 72)
+                                            .frame(width: geometry.size.width, height: 72)
+                                            .clipShape(RoundedRectangle(cornerRadius: 12))
                                     }
-                            } else {
-                                VStack(spacing: 8) {
-                                    Image("image")
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                    Text("Add image")
-                                        .foregroundStyle(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Regular", size: 10))
                                 }
-                                .frame(height: 72)
-                                .frame(maxWidth: .infinity)
-                                .background(Color("Dark2"))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
                         }
                     }
-                    
-                    
                 }
                 
             }
@@ -124,5 +114,6 @@ struct InstructionSlotView: View {
 }
 
 #Preview {
-    InstructionSlotView(instruction: .constant(""), images: .constant([UIImage(named: "profile-picture")!, UIImage(named: "profile-picture")!, UIImage(named: "profile-picture")!]), instructionPicture1: .constant(""), instructionPicture2: .constant(""), instructionPicture3: .constant(""), onDelete: {  print("Delete tapped") }, number: 0)
+    InstructionSlotView(instruction: .constant(""), images: .constant([UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!]), instructionPicture1: .constant(""), instructionPicture2: .constant(""), instructionPicture3: .constant(""), onDelete: {  print("Delete tapped") }, number: 0)
+        .padding(.horizontal, 24)
 }
