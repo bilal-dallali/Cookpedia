@@ -64,9 +64,26 @@ struct CreateRecipeView: View {
                         Spacer()
                         HStack(spacing: 12) {
                             Button {
-                                print("Ingredients to submit:", ingredientDict)
-                                print("Ingredients to submit:", ingredients)
-                                print("Instructions: \(instructions)")
+                                //print("Ingredients to submit:", ingredientDict)
+                                //print("Ingredients to submit:", ingredients)
+                                //print("Instructions: \(instructions)")
+                                //print("Instructions text: \(instructions.first?.text ?? "")")
+                                //print("Instruction picture 1: \(instructions.first?.instructionPicture1 ?? "")")
+                                for instruction in instructions {
+                                    print("Instruction Text : \(instruction.text)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Image : \(instruction.images)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Picture URL : \(instruction.instructionPicture1)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Picture URL : \(instruction.instructionPicture2)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Picture URL : \(instruction.instructionPicture3)")
+                                }
                             } label: {
                                 Text("Save")
                                     .foregroundStyle(Color("MyWhite"))
@@ -76,9 +93,26 @@ struct CreateRecipeView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: .infinity))
                             }
                             Button {
-                                print("Ingredients to submit:", ingredientDict)
-                                print("Ingredients to submit:", ingredients)
-                                print("Instructions: \(instructions)")
+                                //print("Ingredients to submit:", ingredientDict)
+                                //print("Ingredients to submit:", ingredients)
+                                //print("Instructions: \(instructions)")
+                                //print("Instructions text: \(instructions.first?.text ?? "")")
+                                //print("Instruction picture 1: \(instructions.first?.instructionPicture1 ?? "")")
+                                for instruction in instructions {
+                                    print("Instruction Text : \(instruction.text)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Image : \(instruction.images)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Picture URL : \(instruction.instructionPicture1)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Picture URL : \(instruction.instructionPicture2)")
+                                }
+                                for instruction in instructions {
+                                    print("Instruction Picture URL : \(instruction.instructionPicture3)")
+                                }
                             } label: {
                                 Text("Publish")
                                     .foregroundStyle(Color("Primary900"))
