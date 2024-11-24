@@ -10,8 +10,8 @@ import SwiftUI
 struct IngredientSlotView: View {
     
     @Binding var ingredient: String
-    var index: Int
-    var onDelete: () -> Void
+    let index: Int
+    let onDelete: () -> Void
     
     var body: some View {
         HStack(spacing: 12) {

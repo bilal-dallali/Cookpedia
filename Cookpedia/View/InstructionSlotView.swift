@@ -16,7 +16,7 @@ struct InstructionSlotView: View {
     @Binding var instructionPicture3: String?
     
     let onDelete: () -> Void
-    var number: Int
+    let number: Int
     
     @State private var isImagePickerPresented: Bool = false
     @State private var selectedImageIndex: Int? = nil

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct InstructionListView: View {
     
@@ -28,10 +29,8 @@ struct InstructionListView: View {
                         number: index + 1
                     )
                 }
-                
                 Button {
-                    instructionCounter += 1
-                    instructions.append(CreateRecipeView.Instruction(number: instructionCounter))
+                    instructions.append(CreateRecipeView.Instruction())
                 } label: {
                     HStack {
                         Image(systemName: "plus")
@@ -54,9 +53,9 @@ struct InstructionListView: View {
 
 #Preview {
     @Previewable @State var sampleInstructions: [CreateRecipeView.Instruction] = [
-        CreateRecipeView.Instruction(text: "Mix the ingredients.", images: [UIImage(systemName: "photo")!], number: 0),
-        CreateRecipeView.Instruction(text: "Bake at 180°C.", images: [], number: 0),
-        CreateRecipeView.Instruction(text: "Let it cool before serving.", images: [], number: 0)
+        CreateRecipeView.Instruction(text: "Mix the ingredients.", images: [UIImage(systemName: "photo")!]),
+        CreateRecipeView.Instruction(text: "Bake at 180°C.", images: []),
+        CreateRecipeView.Instruction(text: "Let it cool before serving.", images: [])
     ]
     InstructionListView(instructions: $sampleInstructions, instructionCounter: .constant(1))
 }
