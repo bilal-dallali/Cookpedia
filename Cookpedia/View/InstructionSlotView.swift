@@ -51,37 +51,96 @@ struct InstructionSlotView: View {
                         }
                     }
                 HStack(spacing: 8) {
-                    ForEach(0..<3, id: \.self) { imageIndex in
-                        Button {
-                            selectedImageIndex = imageIndex
-                            isImagePickerPresented = true
-                        } label: {
-                            VStack(spacing: 8) {
-                                Image("image")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("Add image")
-                                    .foregroundStyle(Color("Greyscale500"))
-                                    .font(.custom("Urbanist-Regular", size: 10))
-                            }
-                            .frame(height: 72)
-                            .frame(maxWidth: .infinity)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .overlay {
-                                if imageIndex < images.count  {
-                                    GeometryReader { geometry in
-                                        Image(uiImage: images[imageIndex])
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(height: 72)
-                                            .frame(width: geometry.size.width, height: 72)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    }
+                    Button {
+                        selectedImageIndex = 0
+                        isImagePickerPresented = true
+                    } label: {
+                        VStack(spacing: 8) {
+                            Image("image")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Add image")
+                                .foregroundStyle(Color("Greyscale500"))
+                                .font(.custom("Urbanist-Regular", size: 10))
+                        }
+                        .frame(height: 72)
+                        .frame(maxWidth: .infinity)
+                        .background(Color("Dark2"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay {
+                            if images.indices.contains(0) {
+                                GeometryReader { geometry in
+                                    Image(uiImage: images[0])
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(height: 72)
+                                        .frame(width: geometry.size.width, height: 72)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
                             }
                         }
                     }
+                    
+                    Button {
+                        selectedImageIndex = 1
+                        isImagePickerPresented = true
+                    } label: {
+                        VStack(spacing: 8) {
+                            Image("image")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Add image")
+                                .foregroundStyle(Color("Greyscale500"))
+                                .font(.custom("Urbanist-Regular", size: 10))
+                        }
+                        .frame(height: 72)
+                        .frame(maxWidth: .infinity)
+                        .background(Color("Dark2"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay {
+                            if images.indices.contains(1) {
+                                GeometryReader { geometry in
+                                    Image(uiImage: images[1])
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(height: 72)
+                                        .frame(width: geometry.size.width, height: 72)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                            }
+                        }
+                    }
+                    
+                    Button {
+                        selectedImageIndex = 2
+                        isImagePickerPresented = true
+                    } label: {
+                        VStack(spacing: 8) {
+                            Image("image")
+                                .resizable()
+                                .frame(width: 20, height: 20)
+                            Text("Add image")
+                                .foregroundStyle(Color("Greyscale500"))
+                                .font(.custom("Urbanist-Regular", size: 10))
+                        }
+                        .frame(height: 72)
+                        .frame(maxWidth: .infinity)
+                        .background(Color("Dark2"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay {
+                            if images.indices.contains(2) {
+                                GeometryReader { geometry in
+                                    Image(uiImage: images[2])
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(height: 72)
+                                        .frame(width: geometry.size.width, height: 72)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                            }
+                        }
+                    }
+                    
                 }
                 
             }
@@ -97,14 +156,18 @@ struct InstructionSlotView: View {
                     if selectedIndex < images.count {
                         images[selectedIndex] = selectedImage
                     } else {
-                        images.append(selectedImage)
+                        //images.append(selectedImage)
+                        while images.count <= selectedIndex {
+                            images.append(UIImage())
+                        }
+                        images[selectedIndex] = selectedImage
                     }
                     // Generate unique name and assign it
-                    let fileName = generateUniqueImageName()
+                    let uniqueFileName = generateUniqueImageName()
                     switch selectedIndex {
-                    case 0: instructionPicture1 = "instruction_picture_1_\(fileName)"
-                    case 1: instructionPicture2 = "instruction_picture_2_\(fileName)"
-                    case 2: instructionPicture3 = "instruction_picture_3_\(fileName)"
+                    case 0: instructionPicture1 = "instruction_picture_1_\(uniqueFileName)"
+                    case 1: instructionPicture2 = "instruction_picture_2_\(uniqueFileName)"
+                    case 2: instructionPicture3 = "instruction_picture_3_\(uniqueFileName)"
                     default: break
                     }
                 }
