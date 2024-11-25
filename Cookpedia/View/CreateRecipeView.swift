@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import SwiftData
 
 struct CreateRecipeView: View {
     
@@ -34,13 +35,15 @@ struct CreateRecipeView: View {
         let id = UUID()
         var text: String = ""
         var images: [UIImage] = []
-        var instructionPicture1: String? = nil
-        var instructionPicture2: String? = nil
-        var instructionPicture3: String? = nil
+        var instructionPictureUrl1: String? = nil
+        var instructionPictureUrl2: String? = nil
+        var instructionPictureUrl3: String? = nil
     }
     
     @Binding var isCreateRecipeSelected: Bool
     @FocusState private var isOriginFocused: Bool
+    @State private var fieldsNotFilled: Bool = false
+    @Environment(\.modelContext) private var context: ModelContext
     
     var body: some View {
         GeometryReader { geometry in
@@ -63,51 +66,96 @@ struct CreateRecipeView: View {
                         }
                         Spacer()
                         HStack(spacing: 12) {
-                            Button {
-                                print("------ Instruction 1 ------")
-                                print("Text: \(instructions[0].text)")
-                                print("Image 1: \(instructions[0].instructionPicture1 ?? "None")")
-                                print("Image 2: \(instructions[0].instructionPicture2 ?? "None")")
-                                print("Image 3: \(instructions[0].instructionPicture3 ?? "None")")
-                                print("-------------------------------")
-                                
-                                print("------ Instruction 2 ------")
-                                print("Text: \(instructions[1].text)")
-                                print("Image 1: \(instructions[1].instructionPicture1 ?? "None")")
-                                print("Image 2: \(instructions[1].instructionPicture2 ?? "None")")
-                                print("Image 3: \(instructions[1].instructionPicture3 ?? "None")")
-                                print("-------------------------------")
-                            } label: {
-                                Text("Save")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Semibold", size: 16))
-                                    .frame(width: 77, height: 38)
-                                    .background(Color("Primary900"))
-                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                            }
-                            Button {
-                                print("------ Instruction 1 ------")
-                                print("Text: \(instructions[0].text)")
-                                print("Image 1: \(instructions[0].instructionPicture1 ?? "None")")
-                                print("Image 2: \(instructions[0].instructionPicture2 ?? "None")")
-                                print("Image 3: \(instructions[0].instructionPicture3 ?? "None")")
-                                print("-------------------------------")
-                                
-                                print("------ Instruction 2 ------")
-                                print("Text: \(instructions[1].text)")
-                                print("Image 1: \(instructions[1].instructionPicture1 ?? "None")")
-                                print("Image 2: \(instructions[1].instructionPicture2 ?? "None")")
-                                print("Image 3: \(instructions[1].instructionPicture3 ?? "None")")
-                                print("-------------------------------")
-                            } label: {
-                                Text("Publish")
-                                    .foregroundStyle(Color("Primary900"))
-                                    .font(.custom("Urbanist-Semibold", size: 16))
-                                    .frame(width: 91, height: 38)
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: .infinity)
-                                            .strokeBorder(Color("Primary900"), lineWidth: 2)
+                            if recipeCoverPictureUrl1 != "" && title != "" && description != "" && cookTime != "" && serves != "" && origin != "" && ingredients.count > 0 && ingredients[0] != "" && instructions.count > 0 && instructions[0].text != "" {
+                                Button {
+//                                    let ingredientsJSON = ingredients.enumerated().map { index, ingredient in
+//                                        ["index": index + 1, "ingredient": ingredient]
+//                                    }
+//                                    
+//                                    let instructionsJSON = instructions.enumerated().map { index, instruction in
+//                                        [
+//                                            "index": index + 1,
+//                                            "instruction": instruction.text,
+//                                            "instructionPictureUrl1": instruction.instructionPictureUrl1 ?? "",
+//                                            "instructionPictureUrl2": instruction.instructionPictureUrl2 ?? "",
+//                                            "instructionPictureUrl3": instruction.instructionPictureUrl3 ?? ""
+//                                        ]
+//                                    }
+
+                                } label: {
+                                    Text("Save")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Semibold", size: 16))
+                                        .frame(width: 77, height: 38)
+                                        .background(Color("Primary900"))
+                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                }
+                                Button {
+//                                    print("------ Instruction 1 ------")
+//                                    print("Text: \(instructions[0].text)")
+//                                    print("Image 1: \(instructions[0].instructionPictureUrl1 ?? "None")")
+//                                    print("Image 2: \(instructions[0].instructionPictureUrl2 ?? "None")")
+//                                    print("Image 3: \(instructions[0].instructionPictureUrl3 ?? "None")")
+//                                    print("-------------------------------")
+//                                    
+//                                    print("------ Instruction 2 ------")
+//                                    print("Text: \(instructions[1].text)")
+//                                    print("Image 1: \(instructions[1].instructionPictureUrl1 ?? "None")")
+//                                    print("Image 2: \(instructions[1].instructionPictureUrl2 ?? "None")")
+//                                    print("Image 3: \(instructions[1].instructionPictureUrl3 ?? "None")")
+//                                    print("-------------------------------")
+                                    fieldsNotFilled = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        fieldsNotFilled = false
                                     }
+                                    print("usersession", UserSession.schemaMetadata)
+
+                                } label: {
+                                    Text("Publish")
+                                        .foregroundStyle(Color("Primary900"))
+                                        .font(.custom("Urbanist-Semibold", size: 16))
+                                        .frame(width: 91, height: 38)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: .infinity)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                        }
+                                }
+                            } else {
+                                Button {
+                                    fieldsNotFilled = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        fieldsNotFilled = false
+                                    }
+                                    
+                                    guard let authToken = UserSession.shared?.authToken else {
+                                            print("No auth token found")
+                                            return
+                                        }
+
+                                } label: {
+                                    Text("Save")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Semibold", size: 16))
+                                        .frame(width: 77, height: 38)
+                                        .background(Color("Primary900"))
+                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                }
+                                Button {
+                                    fieldsNotFilled = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        fieldsNotFilled = false
+                                    }
+                                    print("usersession", UserSession.self)
+                                } label: {
+                                    Text("Publish")
+                                        .foregroundStyle(Color("Primary900"))
+                                        .font(.custom("Urbanist-Semibold", size: 16))
+                                        .frame(width: 91, height: 38)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: .infinity)
+                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                        }
+                                }
                             }
                             Button {
                                 //
@@ -118,6 +166,21 @@ struct CreateRecipeView: View {
                             }
                         }
                     }
+                    if fieldsNotFilled {
+                        HStack(spacing: 6) {
+                            Image("orange-alert")
+                                .padding(.leading, 12)
+                            Text("You must fill out all fields.")
+                                .foregroundStyle(Color("MyOrange"))
+                                .font(.custom("Urbanist-Regular", size: 12))
+                            Spacer()
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 34)
+                        .background(Color("TransparentRed"))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    
                     ScrollView(.horizontal) {
                         HStack(spacing: 12) {
                             Button {

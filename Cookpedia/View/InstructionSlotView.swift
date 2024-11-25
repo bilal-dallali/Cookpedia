@@ -11,9 +11,9 @@ struct InstructionSlotView: View {
     
     @Binding var instruction: String
     @Binding var images: [UIImage]
-    @Binding var instructionPicture1: String?
-    @Binding var instructionPicture2: String?
-    @Binding var instructionPicture3: String?
+    @Binding var instructionPictureUrl1: String?
+    @Binding var instructionPictureUrl2: String?
+    @Binding var instructionPictureUrl3: String?
     
     let onDelete: () -> Void
     let number: Int
@@ -165,9 +165,9 @@ struct InstructionSlotView: View {
                     // Generate unique name and assign it
                     let uniqueFileName = generateUniqueImageName()
                     switch selectedIndex {
-                    case 0: instructionPicture1 = "instruction_picture_1_\(uniqueFileName)"
-                    case 1: instructionPicture2 = "instruction_picture_2_\(uniqueFileName)"
-                    case 2: instructionPicture3 = "instruction_picture_3_\(uniqueFileName)"
+                    case 0: instructionPictureUrl1 = "instruction_picture_1_\(uniqueFileName)"
+                    case 1: instructionPictureUrl2 = "instruction_picture_2_\(uniqueFileName)"
+                    case 2: instructionPictureUrl3 = "instruction_picture_3_\(uniqueFileName)"
                     default: break
                     }
                 }
@@ -177,6 +177,6 @@ struct InstructionSlotView: View {
 }
 
 #Preview {
-    InstructionSlotView(instruction: .constant(""), images: .constant([UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!]), instructionPicture1: .constant(""), instructionPicture2: .constant(""), instructionPicture3: .constant(""), onDelete: {  print("Delete tapped") }, number: 0)
+    InstructionSlotView(instruction: .constant(""), images: .constant([UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!]), instructionPictureUrl1: .constant(""), instructionPictureUrl2: .constant(""), instructionPictureUrl3: .constant(""), onDelete: {  print("Delete tapped") }, number: 0)
         .padding(.horizontal, 24)
 }

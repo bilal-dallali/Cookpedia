@@ -185,8 +185,6 @@ struct CompleteProfileView: View {
                                             Spacer()
                                             Image(isDropDownMenuActivated ? "arrow-up" : "arrow-down")
                                         }
-                                        
-                                        
                                         Rectangle()
                                             .frame(height: 1)
                                             .foregroundStyle(Color("Primary900"))

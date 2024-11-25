@@ -48,6 +48,7 @@ struct SplashView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     print("Session trouvée - Redirection vers TabView")
+                    print("session desc: \(sessionDescriptor)")
                     redirectHomePage = true
                 } else {
                     print("Aucune session avec 'Se souvenir de moi' trouvée - Redirection vers WelcomeView")

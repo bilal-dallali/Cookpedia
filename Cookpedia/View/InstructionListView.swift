@@ -20,9 +20,9 @@ struct InstructionListView: View {
                     InstructionSlotView(
                         instruction: $instructions[index].text,
                         images: $instructions[index].images,
-                        instructionPicture1: $instructions[index].instructionPicture1,
-                        instructionPicture2: $instructions[index].instructionPicture2,
-                        instructionPicture3: $instructions[index].instructionPicture3,
+                        instructionPictureUrl1: $instructions[index].instructionPictureUrl1,
+                        instructionPictureUrl2: $instructions[index].instructionPictureUrl2,
+                        instructionPictureUrl3: $instructions[index].instructionPictureUrl3,
                         onDelete: {
                             instructions.remove(at: index)
                         },

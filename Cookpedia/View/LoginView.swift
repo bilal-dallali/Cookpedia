@@ -8,6 +8,25 @@
 import SwiftUI
 import SwiftData
 
+func decodeJWT(token: String) -> [String: Any]? {
+    let segments = token.split(separator: ".")
+    guard segments.count == 3 else { return nil }
+    
+    let base64String = String(segments[1])
+        .replacingOccurrences(of: "-", with: "+")
+        .replacingOccurrences(of: "_", with: "/")
+    
+    let paddedLength = 4 * ((base64String.count + 3) / 4)
+    let paddedString = base64String.padding(toLength: paddedLength, withPad: "=", startingAt: 0)
+    
+    guard let data = Data(base64Encoded: paddedString),
+          let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+          let payload = jsonObject as? [String: Any] else { return nil }
+    
+    return payload
+}
+
+
 struct LoginView: View {
     
     @FocusState private var emailFieldIsFocused: Bool
@@ -251,13 +270,14 @@ struct LoginView: View {
                                     switch result {
                                     case .success(let authToken):
                                         // Store session in SwiftData
-                                        let userSession = UserSession(userId: email, authToken: authToken, isRemembered: rememberMe)
+                                        let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         do {
                                             try context.save()
                                             print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
                                             print("usersession token: \(userSession.authToken)")
                                             print("usersession remember: \(userSession.isRemembered)")
+                                            print("usersession id: \(userSession.email)")
                                         } catch {
                                             print("Failed to save user session: \(error.localizedDescription)")
                                         }

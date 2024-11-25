@@ -225,7 +225,7 @@ struct CreateNewPasswordView: View {
                                     switch result {
                                     case .success(let authToken):
                                         // Store session in SwiftData
-                                        let userSession = UserSession(userId: email, authToken: authToken, isRemembered: rememberMe)
+                                        let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         do {
                                             try context.save()

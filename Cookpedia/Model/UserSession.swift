@@ -10,12 +10,14 @@ import SwiftData
 
 @Model
 final class UserSession {
-    @Attribute(.unique) var userId: String
+    static var shared: UserSession?
+    
+    @Attribute(.unique) var email: String
     var authToken: String
     var isRemembered: Bool
     
-    init(userId: String, authToken: String, isRemembered: Bool) {
-        self.userId = userId
+    init(email: String, authToken: String, isRemembered: Bool) {
+        self.email = email
         self.authToken = authToken
         self.isRemembered = isRemembered
     }

@@ -242,7 +242,7 @@ struct CreateAccountView: View {
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 34)
                                 .background(Color("TransparentRed"))
-                                .clipShape(.rect(cornerRadius: 10))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                             } else if password.count >= 8 && password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .decimalDigits) != nil {
                                 HStack(spacing: 6) {
                                     Image("green-alert")
@@ -367,7 +367,7 @@ struct CreateAccountView: View {
                                             switch result {
                                             case .success(let authToken):
                                                 print("User registered successfully")
-                                                let userSession = UserSession(userId: email, authToken: authToken, isRemembered: rememberMe)
+                                                let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
                                                 context.insert(userSession)
                                                 do {
                                                     try context.save()
