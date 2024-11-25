@@ -86,9 +86,9 @@ class APIPostRequest: ObservableObject {
                 // Décoder le token depuis la réponse
                 if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
                    let token = json["token"] as? String {
-                    completion(.success(token)) // Retourner le token en cas de succès
+                    completion(.success(token))
                 } else {
-                    completion(.failure(.invalidData)) // Si le token est manquant
+                    completion(.failure(.invalidData))
                 }
             case 400:
                 print("400 server error")
@@ -156,9 +156,9 @@ class APIPostRequest: ObservableObject {
                     // Decode the token from the response data
                     if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
                        let authToken = json["token"] as? String {
-                        completion(.success(authToken)) // Pass the token back on success
+                        completion(.success(authToken))
                     } else {
-                        completion(.failure(.invalidData)) // Handle case where token is missing
+                        completion(.failure(.invalidData))
                     }
                 case 401:
                     completion(.failure(.invalidCredentials))
