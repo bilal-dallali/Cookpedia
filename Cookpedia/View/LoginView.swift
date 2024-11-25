@@ -272,6 +272,7 @@ struct LoginView: View {
                                         // Store session in SwiftData
                                         let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
                                         context.insert(userSession)
+                                        UserSession.shared = userSession
                                         do {
                                             try context.save()
                                             print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")

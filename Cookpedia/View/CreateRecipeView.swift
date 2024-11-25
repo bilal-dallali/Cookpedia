@@ -44,6 +44,7 @@ struct CreateRecipeView: View {
     @FocusState private var isOriginFocused: Bool
     @State private var fieldsNotFilled: Bool = false
     @Environment(\.modelContext) private var context: ModelContext
+    @State private var test: String = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -108,7 +109,7 @@ struct CreateRecipeView: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         fieldsNotFilled = false
                                     }
-                                    print("usersession", UserSession.schemaMetadata)
+                                    
 
                                 } label: {
                                     Text("Publish")
@@ -126,11 +127,17 @@ struct CreateRecipeView: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         fieldsNotFilled = false
                                     }
+                                    if let authToken = UserSession.shared?.authToken {
+                                        print("Auth token found: \(authToken)")
+                                        test = authToken
+                                    } else {
+                                        print("No auth token found")
+                                    }
                                     
-                                    guard let authToken = UserSession.shared?.authToken else {
-                                            print("No auth token found")
-                                            return
-                                        }
+//                                    guard let authToken = UserSession.shared?.authToken else {
+//                                            print("No auth token found")
+//                                            return
+//                                        }
 
                                 } label: {
                                     Text("Save")
@@ -145,7 +152,6 @@ struct CreateRecipeView: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         fieldsNotFilled = false
                                     }
-                                    print("usersession", UserSession.self)
                                 } label: {
                                     Text("Publish")
                                         .foregroundStyle(Color("Primary900"))
@@ -275,6 +281,8 @@ struct CreateRecipeView: View {
                     .scrollIndicators(.hidden)
                     .scrollTargetBehavior(.paging)
                     VStack(alignment: .leading, spacing: 12) {
+                        Text("Token: \(test)")
+                            .foregroundStyle(Color("MyWhite"))
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 20))
