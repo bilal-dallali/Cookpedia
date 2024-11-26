@@ -9,8 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class UserSession {
-    static var shared: UserSession?
+class UserSession {
     
     @Attribute(.unique) var email: String
     var authToken: String

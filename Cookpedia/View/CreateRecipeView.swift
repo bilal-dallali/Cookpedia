@@ -44,6 +44,7 @@ struct CreateRecipeView: View {
     @FocusState private var isOriginFocused: Bool
     @State private var fieldsNotFilled: Bool = false
     @Environment(\.modelContext) private var context: ModelContext
+    @Query(sort: \UserSession.authToken) var userSession: [UserSession]
     @State private var test: String = ""
     
     var body: some View {
@@ -127,13 +128,13 @@ struct CreateRecipeView: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         fieldsNotFilled = false
                                     }
-                                    if let authToken = UserSession.shared?.authToken {
-                                        print("Auth token found: \(authToken)")
-                                        test = authToken
-                                    } else {
-                                        print("No auth token found")
-                                    }
-                                    
+//                                    if let authToken = UserSession.shared?.authToken {
+//                                        print("Auth token found: \(authToken)")
+//                                        test = authToken
+//                                    } else {
+//                                        print("No auth token found")
+//                                    }
+//                                    
 //                                    guard let authToken = UserSession.shared?.authToken else {
 //                                            print("No auth token found")
 //                                            return
@@ -281,8 +282,7 @@ struct CreateRecipeView: View {
                     .scrollIndicators(.hidden)
                     .scrollTargetBehavior(.paging)
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Token: \(test)")
-                            .foregroundStyle(Color("MyWhite"))
+                        Text("Token : \(test)")
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 20))
@@ -451,6 +451,12 @@ struct CreateRecipeView: View {
             }
             .scrollIndicators(.hidden)
             .background(Color("Dark1"))
+            .onAppear {
+                for user in userSession {
+                    print("user token : \(user.authToken)")
+                    test = user.authToken
+                }
+            }
         }
     }
 }

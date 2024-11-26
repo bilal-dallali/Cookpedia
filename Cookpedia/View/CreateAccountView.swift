@@ -369,7 +369,7 @@ struct CreateAccountView: View {
                                                 print("User registered successfully")
                                                 let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
                                                 context.insert(userSession)
-                                                UserSession.shared = userSession
+                                                //UserSession.shared = userSession
                                                 do {
                                                     try context.save()
                                                     print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")

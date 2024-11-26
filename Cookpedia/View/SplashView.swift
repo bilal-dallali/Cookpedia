@@ -48,13 +48,6 @@ struct SplashView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     print("Session trouvée - Redirection vers TabView")
-                    print("session desc: \(sessionDescriptor)")
-                    if let authToken = UserSession.shared?.authToken {
-                        print("Auth token found: \(authToken)")
-                    } else {
-                        print("No auth token found")
-                    }
-                    
                     redirectHomePage = true
                 } else {
                     print("Aucune session avec 'Se souvenir de moi' trouvée - Redirection vers WelcomeView")

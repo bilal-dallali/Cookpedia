@@ -44,8 +44,9 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State var rememberMe: Bool = false
-    @Environment(\.modelContext) private var context: ModelContext
-    @EnvironmentObject private var apiPostManager: APIPostRequest
+    //@Environment(\.modelContext) private var context: ModelContext
+    var apiPostManager = APIPostRequest()
+    @Environment(\.modelContext) var context
     
     var body: some View {
         ZStack {
@@ -272,13 +273,13 @@ struct LoginView: View {
                                         // Store session in SwiftData
                                         let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
                                         context.insert(userSession)
-                                        UserSession.shared = userSession
+                                        //UserSession.shared = userSession
                                         do {
                                             try context.save()
                                             print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
                                             print("usersession token: \(userSession.authToken)")
                                             print("usersession remember: \(userSession.isRemembered)")
-                                            print("usersession id: \(userSession.email)")
+                                            print("usersession email: \(userSession.email)")
                                         } catch {
                                             print("Failed to save user session: \(error.localizedDescription)")
                                         }
