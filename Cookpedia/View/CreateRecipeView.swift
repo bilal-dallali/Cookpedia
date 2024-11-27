@@ -9,6 +9,38 @@ import SwiftUI
 import Foundation
 import SwiftData
 
+func decodeJwt(from jwt: String) -> [String: Any]? {
+    let segments = jwt.components(separatedBy: ".")
+    
+    guard segments.count > 1 else {
+        print("Invalid JWT format")
+        return nil
+    }
+    
+    var base64String = segments[1]
+    
+    // Ajouter des paddings si nécessaire
+    let requiredLength = Int(4 * ceil(Float(base64String.count) / 4.0))
+    let nbrPaddings = requiredLength - base64String.count
+    if nbrPaddings > 0 {
+        let padding = String().padding(toLength: nbrPaddings, withPad: "=", startingAt: 0)
+        base64String = base64String.appending(padding)
+    }
+    base64String = base64String.replacingOccurrences(of: "-", with: "+")
+    base64String = base64String.replacingOccurrences(of: "_", with: "/")
+    
+    guard let decodedData = Data(base64Encoded: base64String, options: []),
+          let decodedString = String(data: decodedData, encoding: .utf8),
+          let jsonData = decodedString.data(using: .utf8),
+          let json = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+          let payload = json as? [String: Any] else {
+        print("Failed to decode JWT payload")
+        return nil
+    }
+    
+    return payload
+}
+
 struct CreateRecipeView: View {
     
     @State var title = ""
@@ -46,6 +78,7 @@ struct CreateRecipeView: View {
     @Environment(\.modelContext) private var context: ModelContext
     @Query(sort: \UserSession.authToken) var userSession: [UserSession]
     @State private var test: String = ""
+    @State private var userId: String = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -283,6 +316,8 @@ struct CreateRecipeView: View {
                     .scrollTargetBehavior(.paging)
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Token : \(test)")
+                        Text("User ID: \(userId)")
+                        
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 20))
@@ -455,6 +490,15 @@ struct CreateRecipeView: View {
                 for user in userSession {
                     print("user token : \(user.authToken)")
                     test = user.authToken
+                    
+                    if let decodedPayload = decodeJwt(from: user.authToken),
+                       let id = decodedPayload["id"] as? Int {
+                        print("User ID: \(id)")
+                        userId = String(id)
+                    } else {
+                        print("Failed to decode JWT or extract user ID")
+                    }
+
                 }
             }
         }

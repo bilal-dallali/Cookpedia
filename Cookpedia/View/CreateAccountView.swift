@@ -65,11 +65,10 @@ struct CreateAccountView: View {
     @State private var redirectHomePage: Bool = false
     @State private var loadingScreen = false
     @State private var alertUsersExists = false
-    
     @State var errorMessage: String?
-    //var apiPostManager = APIPostRequest()
-    @Environment(\.modelContext) private var context: ModelContext
-    @EnvironmentObject private var apiPostManager: APIPostRequest
+    
+    var apiPostManager = APIPostRequest()
+    @Environment(\.modelContext) var context
     
     var body: some View {
         ZStack {
@@ -369,7 +368,6 @@ struct CreateAccountView: View {
                                                 print("User registered successfully")
                                                 let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
                                                 context.insert(userSession)
-                                                //UserSession.shared = userSession
                                                 do {
                                                     try context.save()
                                                     print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")

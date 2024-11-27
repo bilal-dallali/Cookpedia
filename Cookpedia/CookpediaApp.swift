@@ -11,9 +11,6 @@ import SwiftData
 @main
 struct CookpediaApp: App {
     
-    //@StateObject private var apiPostManager = APIPostRequest()
-    //@Environment(\.modelContext) private var context: ModelContext
-    
     let container: ModelContainer = {
         let schema = Schema([UserSession.self])
         let config = ModelConfiguration()
@@ -27,9 +24,7 @@ struct CookpediaApp: App {
                 SplashView()
                     .modelContainer(for: [UserSession.self])
             }
-            //.environmentObject(apiPostManager)
         }
-        //.modelContainer(container)
         .modelContainer(for: [UserSession.self])
     }
 }

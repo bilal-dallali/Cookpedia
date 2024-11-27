@@ -28,8 +28,8 @@ struct CreateNewPasswordView: View {
     
     @State var errorMessage: String?
     
-    @Environment(\.modelContext) private var context: ModelContext
-    @EnvironmentObject private var apiPostManager: APIPostRequest
+    var apiPostManager = APIPostRequest()
+    @Environment(\.modelContext) var context
     
     var body: some View {
         ZStack {
