@@ -12,7 +12,7 @@ class APIPostRequest: ObservableObject {
     let baseUrl = "http://localhost:3000/api"
     
     func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
-        let endpoint = "/users"
+        let endpoint = "/users/registration"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
@@ -126,7 +126,7 @@ class APIPostRequest: ObservableObject {
     }
     
     func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
-        let endpoint = "/login"
+        let endpoint = "/users/login"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
@@ -175,7 +175,7 @@ class APIPostRequest: ObservableObject {
     
     // Function to send the reset code request
     func sendResetCode(email: String, completion: @escaping (Result<Void, APIError>) -> ()) {
-        let endpoint = "/send-reset-code"
+        let endpoint = "/users/send-reset-code"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
@@ -206,7 +206,7 @@ class APIPostRequest: ObservableObject {
     
     // Function to verify the reset code
     func verifyResetCode(email: String, code: String, completion: @escaping (Result<Void, APIError>) -> ()) {
-        let endpoint = "/verify-reset-code"
+        let endpoint = "/users/verify-reset-code"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
@@ -236,7 +236,7 @@ class APIPostRequest: ObservableObject {
     }
     
     func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
-        let endpoint = "/reset-password"
+        let endpoint = "/users/reset-password"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
             return
@@ -296,7 +296,7 @@ class APIPostRequest: ObservableObject {
     
     // Function to send the recipe to the backend
     func uploadRecipe(recipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [UIImage?], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
-            let endpoint = "recipes"
+            let endpoint = "/recipes/upload"
             guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
                 completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
                 return
