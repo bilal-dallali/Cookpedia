@@ -259,7 +259,7 @@ struct CreateRecipeView: View {
                             }
                             .sheet(isPresented: $isImagePickerPresented1) {
                                 ImagePicker(image: $selectedImage1) { fileName in
-                                    recipeCoverPictureUrl1 = "recipe_cover_1_\(fileName)"
+                                    recipeCoverPictureUrl1 = "recipe_cover_picture_url_1_\(fileName)"
                                 }
                             }
                             Button {
@@ -303,7 +303,7 @@ struct CreateRecipeView: View {
                             }
                             .sheet(isPresented: $isImagePickerPresented2) {
                                 ImagePicker(image: $selectedImage2) { fileName in
-                                    recipeCoverPictureUrl2 = "recipe_cover_2_\(fileName)"
+                                    recipeCoverPictureUrl2 = "recipe_cover_picture_url_2_\(fileName)"
                                 }
                             }
                         }

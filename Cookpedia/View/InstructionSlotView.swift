@@ -165,9 +165,9 @@ struct InstructionSlotView: View {
                     // Generate unique name and assign it
                     let uniqueFileName = generateUniqueImageName()
                     switch selectedIndex {
-                    case 0: instructionPictureUrl1 = "instruction_picture_1_\(uniqueFileName)"
-                    case 1: instructionPictureUrl2 = "instruction_picture_2_\(uniqueFileName)"
-                    case 2: instructionPictureUrl3 = "instruction_picture_3_\(uniqueFileName)"
+                    case 0: instructionPictureUrl1 = "instruction_picture_url_1_\(uniqueFileName)"
+                    case 1: instructionPictureUrl2 = "instruction_picture_url_2_\(uniqueFileName)"
+                    case 2: instructionPictureUrl3 = "instruction_picture_url_3_\(uniqueFileName)"
                     default: break
                     }
                 }
