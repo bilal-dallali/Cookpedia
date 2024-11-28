@@ -16,7 +16,7 @@ struct SplashView: View {
     @State private var redirectWelcomePage: Bool = false
     let sessionDescriptor = FetchDescriptor<UserSession>(predicate: #Predicate { $0.isRemembered == true })
     @Environment(\.modelContext) private var context
-    @Query(sort: \UserSession.authToken) var userSession: [UserSession]
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
     var body: some View {
         VStack(spacing: 184) {
@@ -48,7 +48,7 @@ struct SplashView: View {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     print("Session trouvée - Redirection vers TabView")
                     for user in userSession {
-                        print("user token : \(user.authToken)")
+                        print("user id : \(user.userId)")
                     }
                     redirectHomePage = true
                     

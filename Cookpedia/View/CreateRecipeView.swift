@@ -55,6 +55,7 @@ struct CreateRecipeView: View {
     @State private var selectedImage2: UIImage? = nil
     @State private var isImagePickerPresented1: Bool = false
     @State private var isImagePickerPresented2: Bool = false
+    @State private var isPublishedRecipe: Bool = false
     
     @State var ingredients: [String] = Array(repeating: "", count: 7)
     @State private var ingredientCounter: Int = 7
@@ -75,10 +76,10 @@ struct CreateRecipeView: View {
     @Binding var isCreateRecipeSelected: Bool
     @FocusState private var isOriginFocused: Bool
     @State private var fieldsNotFilled: Bool = false
-    @Environment(\.modelContext) private var context: ModelContext
+    @Environment(\.modelContext) var context
     @Query(sort: \UserSession.authToken) var userSession: [UserSession]
-    @State private var test: String = ""
-    @State private var userId: String = ""
+    @State var userId: String = ""
+    
     
     var body: some View {
         GeometryReader { geometry in
@@ -116,6 +117,17 @@ struct CreateRecipeView: View {
 //                                            "instructionPictureUrl3": instruction.instructionPictureUrl3 ?? ""
 //                                        ]
 //                                    }
+                                    for user in userSession {
+                                        print("user token : \(user.authToken)")
+                                        
+                                        if let decodedPayload = decodeJwt(from: user.authToken),
+                                           let id = decodedPayload["id"] as? String {
+                                            print("User ID: \(id)")
+                                            userId = id
+                                        } else {
+                                            print("Failed to decode JWT or extract user ID")
+                                        }
+                                    }
 
                                 } label: {
                                     Text("Save")
@@ -139,9 +151,16 @@ struct CreateRecipeView: View {
 //                                    print("Image 2: \(instructions[1].instructionPictureUrl2 ?? "None")")
 //                                    print("Image 3: \(instructions[1].instructionPictureUrl3 ?? "None")")
 //                                    print("-------------------------------")
-                                    fieldsNotFilled = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                        fieldsNotFilled = false
+                                    for user in userSession {
+                                        print("user token : \(user.authToken)")
+                                        
+                                        if let decodedPayload = decodeJwt(from: user.authToken),
+                                           let id = decodedPayload["id"] as? Int {
+                                            print("User ID: \(id)")
+                                            userId = String(id)
+                                        } else {
+                                            print("Failed to decode JWT or extract user ID")
+                                        }
                                     }
                                     
 
@@ -157,6 +176,17 @@ struct CreateRecipeView: View {
                                 }
                             } else {
                                 Button {
+                                    for user in userSession {
+                                        print("user token : \(user.authToken)")
+                                        
+                                        if let decodedPayload = decodeJwt(from: user.authToken),
+                                           let id = decodedPayload["id"] as? Int {
+                                            print("User ID: \(id)")
+                                            userId = String(id)
+                                        } else {
+                                            print("Failed to decode JWT or extract user ID")
+                                        }
+                                    }
                                     fieldsNotFilled = true
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         fieldsNotFilled = false
@@ -182,6 +212,17 @@ struct CreateRecipeView: View {
                                         .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                 }
                                 Button {
+                                    for user in userSession {
+                                        print("user token : \(user.authToken)")
+                                        
+                                        if let decodedPayload = decodeJwt(from: user.authToken),
+                                           let id = decodedPayload["id"] as? Int {
+                                            print("User ID: \(id)")
+                                            userId = String(id)
+                                        } else {
+                                            print("Failed to decode JWT or extract user ID")
+                                        }
+                                    }
                                     fieldsNotFilled = true
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         fieldsNotFilled = false
@@ -483,20 +524,19 @@ struct CreateRecipeView: View {
             }
             .scrollIndicators(.hidden)
             .background(Color("Dark1"))
-            .onAppear {
-                for user in userSession {
-                    print("user token : \(user.authToken)")
-                    test = user.authToken
-                    
-                    if let decodedPayload = decodeJwt(from: user.authToken),
-                       let id = decodedPayload["id"] as? Int {
-                        print("User ID: \(id)")
-                        userId = String(id)
-                    } else {
-                        print("Failed to decode JWT or extract user ID")
-                    }
-                }
-            }
+//            .onAppear {
+//                for user in userSession {
+//                    print("user token : \(user.authToken)")
+//                    
+//                    if let decodedPayload = decodeJwt(from: user.authToken),
+//                       let id = decodedPayload["id"] as? Int {
+//                        print("User ID: \(id)")
+//                        userId = String(id)
+//                    } else {
+//                        print("Failed to decode JWT or extract user ID")
+//                    }
+//                }
+//            }
         }
     }
 }
