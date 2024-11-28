@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RecipeRegistration: Codable {
+struct RecipeRegistration: Encodable {
     let userId: Int
     let title: String
     let recipeCoverPictureUrl1: String?
@@ -16,6 +16,19 @@ struct RecipeRegistration: Codable {
     let cookTime: String
     let serves: String
     let origin: String
-    let ingredients: [[String: String]]
-    let instructions: [[String: String]]
+    let ingredients: [Ingredients]
+    let instructions: [Instructions]
+}
+
+struct Ingredients: Encodable {
+    let index: Int
+    let ingredient: String
+}
+
+struct Instructions: Encodable {
+    let index: Int
+    let instruction: String
+    let instructionPictureUrl1: String?
+    let instructionPictureUrl2: String?
+    let instructionPictureUrl3: String?
 }

@@ -293,7 +293,71 @@ class APIPostRequest: ObservableObject {
             completion(.failure(.invalidData))
         }
     }
-
+    
+    // Function to send the recipe to the backend
+    func uploadRecipe(recipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [UIImage?], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+            let endpoint = "recipes"
+            guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+                completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+                return
+            }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            let boundary = UUID().uuidString
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            
+            // Construction du corps de la requête
+            var body = Data()
+            
+            // Ajouter les données JSON
+            if let jsonData = try? JSONEncoder().encode(recipe) {
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"recipe\"\r\n\r\n".data(using: .utf8)!)
+                body.append(jsonData)
+                body.append("\r\n".data(using: .utf8)!)
+            }
+            
+            // Ajouter une fonction pour insérer les images
+            func appendImage(_ image: UIImage?, withName name: String) {
+                guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+                body.append("--\(boundary)\r\n".data(using: .utf8)!)
+                body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(name).jpg\"\r\n".data(using: .utf8)!)
+                body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+                body.append(imageData)
+                body.append("\r\n".data(using: .utf8)!)
+            }
+            
+            // Ajouter les images de couverture
+            appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1")
+            appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2")
+            
+            // Ajouter les images des instructions
+            for (index, image) in instructionImages.enumerated() {
+                appendImage(image, withName: "instructionImage\(index + 1)")
+            }
+            
+            // Terminer le corps
+            body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+            request.httpBody = body
+            
+            // Exécuter la requête
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    completion(.failure(NSError(domain: "Invalid Response", code: -1, userInfo: nil)))
+                    return
+                }
+                
+                completion(.success("Recipe and images uploaded successfully!"))
+            }.resume()
+        }
+    
+    
 }
 
 enum APIError: Error {
