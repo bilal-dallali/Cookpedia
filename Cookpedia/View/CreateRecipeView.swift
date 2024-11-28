@@ -79,6 +79,7 @@ struct CreateRecipeView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.authToken) var userSession: [UserSession]
     @State var userId: Int = 0
+    var apiPostManager = APIPostRequest()
     
     var body: some View {
         GeometryReader { geometry in
@@ -129,7 +130,17 @@ struct CreateRecipeView: View {
                                         )
                                     }
                                     
+                                    let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
+                                    
                                     let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJSON, instructions: instructionsJSON)
+                                    apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
+                                        switch result {
+                                        case .success:
+                                            print("Recipe successfully uploaded")
+                                        case .failure(let error):
+                                            print("Error uploading recipe: \(error)")
+                                        }
+                                    }
                                     
                                 } label: {
                                     Text("Save")
