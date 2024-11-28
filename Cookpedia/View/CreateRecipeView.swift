@@ -315,9 +315,6 @@ struct CreateRecipeView: View {
                     .scrollIndicators(.hidden)
                     .scrollTargetBehavior(.paging)
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Token : \(test)")
-                        Text("User ID: \(userId)")
-                        
                         Text("Title")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 20))
@@ -498,7 +495,6 @@ struct CreateRecipeView: View {
                     } else {
                         print("Failed to decode JWT or extract user ID")
                     }
-
                 }
             }
         }

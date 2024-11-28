@@ -251,8 +251,19 @@ struct LoginView: View {
                                 apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
                                     switch result {
                                     case .success(let authToken):
+                                        print("Token: \(authToken)")
+                                        // Get the userId from the token
+                                        var userId: Int!
+                                        if let decodedPayload = decodeJwt(from: authToken),
+                                           let id = decodedPayload["id"] as? Int {
+                                            print("User ID: \(id)")
+                                            userId = id
+                                            print("User ID2: \(userId)")
+                                        } else {
+                                            print("Failed to decode JWT or extract user ID")
+                                        }
                                         // Store session in SwiftData
-                                        let userSession = UserSession(email: email, authToken: authToken, isRemembered: rememberMe)
+                                        let userSession = UserSession(userId: userId, email: email, authToken: authToken, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         //UserSession.shared = userSession
                                         do {
