@@ -253,11 +253,11 @@ struct LoginView: View {
                                     case .success(let authToken):
                                         print("Token: \(authToken)")
                                         // Get the userId from the token
-                                        var userId: Int!
+                                        var userId: String = ""
                                         if let decodedPayload = decodeJwt(from: authToken),
                                            let id = decodedPayload["id"] as? Int {
                                             print("User ID: \(id)")
-                                            userId = id
+                                            userId = String(id)
                                             print("User ID2: \(userId)")
                                         } else {
                                             print("Failed to decode JWT or extract user ID")

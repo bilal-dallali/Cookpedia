@@ -225,11 +225,11 @@ struct CreateNewPasswordView: View {
                                     switch result {
                                     case .success(let authToken):
                                         // Get the userId
-                                        var userId: Int!
+                                        var userId: String = ""
                                         if let decodedPayload = decodeJwt(from: authToken),
                                            let id = decodedPayload["id"] as? Int {
                                             print("User ID: \(id)")
-                                            userId = id
+                                            userId = String(id)
                                             print("User ID2: \(userId)")
                                         } else {
                                             print("Failed to decode JWT or extract user ID")

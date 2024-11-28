@@ -9,14 +9,14 @@ import Foundation
 import SwiftData
 
 @Model
-class UserSession {
+class UserSession: Identifiable {
     
-    @Attribute(.unique) var userId: Int
+    @Attribute(.unique) var userId: String
     @Attribute(.unique) var email: String
     var authToken: String
     var isRemembered: Bool
     
-    init(userId: Int, email: String, authToken: String, isRemembered: Bool) {
+    init(userId: String, email: String, authToken: String, isRemembered: Bool) {
         self.userId = userId
         self.email = email
         self.authToken = authToken

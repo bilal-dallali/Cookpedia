@@ -15,7 +15,7 @@ struct SplashView: View {
     @State private var redirectHomePage: Bool = false
     @State private var redirectWelcomePage: Bool = false
     let sessionDescriptor = FetchDescriptor<UserSession>(predicate: #Predicate { $0.isRemembered == true })
-    @Environment(\.modelContext) private var context: ModelContext
+    @Environment(\.modelContext) private var context
     @Query(sort: \UserSession.authToken) var userSession: [UserSession]
     
     var body: some View {
@@ -47,24 +47,15 @@ struct SplashView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     print("Session trouvée - Redirection vers TabView")
+                    for user in userSession {
+                        print("user token : \(user.authToken)")
+                    }
                     redirectHomePage = true
+                    
                 } else {
                     print("Aucune session avec 'Se souvenir de moi' trouvée - Redirection vers WelcomeView")
                     redirectWelcomePage = true
                 }
-//                for user in userSession {
-//                 
-//          
-//                        print("user session is empty \(user.authToken)")
-//               
-//                }
-//                if userSession.authToken {
-//                    redirectWelcomePage = true
-//                    print("user session is empty")
-//                } else {
-//                    redirectHomePage = true
-//                    print("user session is full")
-//                }
             }
         }
         .navigationDestination(isPresented: $redirectHomePage) {
