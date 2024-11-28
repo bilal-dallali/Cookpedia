@@ -514,7 +514,7 @@ class APIPostRequest: ObservableObject {
 
         var body = Data()
 
-        // Add JSON data
+        // Ajouter les champs JSON (recipe) en tant que données texte
         if let jsonData = try? JSONEncoder().encode(recipe) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"recipe\"\r\n\r\n".data(using: .utf8)!)
@@ -522,7 +522,20 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
 
-        // Add image names and files
+        // Ajouter les noms des images dans le corps de la requête
+        func appendField(_ name: String, value: String) {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
+            body.append(value.data(using: .utf8)!)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+
+        let recipeCoverName1 = "recipeCoverPicture1.jpg"
+        let recipeCoverName2 = "recipeCoverPicture2.jpg"
+        appendField("recipeCoverPictureUrl1", value: recipeCoverName1)
+        appendField("recipeCoverPictureUrl2", value: recipeCoverName2)
+
+        // Ajouter les images dans le corps de la requête
         func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -532,8 +545,6 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
 
-        let recipeCoverName1 = "recipeCoverPicture1.jpg"
-        let recipeCoverName2 = "recipeCoverPicture2.jpg"
         appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: recipeCoverName1)
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: recipeCoverName2)
 
@@ -559,6 +570,7 @@ class APIPostRequest: ObservableObject {
             completion(.success("Recipe uploaded successfully"))
         }.resume()
     }
+
 
 }
 
