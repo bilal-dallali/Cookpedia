@@ -116,45 +116,48 @@ struct CreateRecipeView: View {
                                         }
                                     }
                                     
+                                    let encoder = JSONEncoder()
+                                    encoder.outputFormatting = .sortedKeys
+                                    
                                     // Convertir les ingrédients en JSON
-                                        guard let ingredientsData = try? JSONEncoder().encode(
-                                            ingredients.enumerated().map { index, ingredient in
-                                                Ingredients(index: index + 1, ingredient: ingredient)
-                                            }
-                                        ) else {
-                                            print("Failed to encode ingredients to JSON")
-                                            return
+                                    guard let ingredientsData = try? encoder.encode(
+                                        ingredients.enumerated().map { index, ingredient in
+                                            Ingredients(index: index + 1, ingredient: ingredient)
                                         }
+                                    ) else {
+                                        print("Failed to encode ingredients to JSON")
+                                        return
+                                    }
                                     
                                     let ingredientsJSON = String(data: ingredientsData, encoding: .utf8) ?? ""
                                     
                                     print("ingredentsJSON: \(ingredientsJSON)")
-
+                                    
                                     // Convertir les instructions en JSON
-                                        guard let instructionsData = try? JSONEncoder().encode(
-                                            instructions.enumerated().map { index, instruction in
-                                                Instructions(
-                                                    index: index + 1,
-                                                    instruction: instruction.text,
-                                                    instructionPictureUrl1: instruction.instructionPictureUrl1,
-                                                    instructionPictureUrl2: instruction.instructionPictureUrl2,
-                                                    instructionPictureUrl3: instruction.instructionPictureUrl3
-                                                )
-                                            }
-                                        ) else {
-                                            print("Failed to encode instructions to JSON")
-                                            return
+                                    guard let instructionsData = try? encoder.encode(
+                                        instructions.enumerated().map { index, instruction in
+                                            Instructions(
+                                                index: index + 1,
+                                                instruction: instruction.text,
+                                                instructionPictureUrl1: instruction.instructionPictureUrl1,
+                                                instructionPictureUrl2: instruction.instructionPictureUrl2,
+                                                instructionPictureUrl3: instruction.instructionPictureUrl3
+                                            )
                                         }
-                                        let instructionsJSONString = String(data: instructionsData, encoding: .utf8) ?? ""
-
-                                        print("Ingredients JSON: \(ingredientsJSON)")
-                                        print("Instructions JSON: \(instructionsJSONString)")
+                                    ) else {
+                                        print("Failed to encode instructions to JSON")
+                                        return
+                                    }
+                                    let instructionsJSONString = String(data: instructionsData, encoding: .utf8) ?? ""
+                                    
+                                    print("Ingredients JSON: \(ingredientsJSON)")
+                                    print("Instructions JSON: \(instructionsJSONString)")
                                     
                                     
                                     let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
                                     
                                     
-                                    let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJSON, instructions: instructionsJSONString ?? "")
+                                    let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJSON, instructions: instructionsJSONString)
                                     apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                         switch result {
                                         case .success:
