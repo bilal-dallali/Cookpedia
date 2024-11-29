@@ -523,6 +523,8 @@ class APIPostRequest: ObservableObject {
         }
         
         appendField("title", value: recipe.title)
+        appendField("recipeCoverPictureUrl1", value: recipe.recipeCoverPictureUrl1 ?? "")
+        appendField("recipeCoverPictureUrl2", value: recipe.recipeCoverPictureUrl2 ?? "")
         appendField("description", value: recipe.description)
         appendField("cookTime", value: recipe.cookTime)
         appendField("serves", value: recipe.serves)
