@@ -501,7 +501,7 @@ class APIPostRequest: ObservableObject {
         isPublished: Bool,
         completion: @escaping (Result<String, Error>) -> Void
     ) {
-        let endpoint = "/recipes"
+        let endpoint = "/recipes/upload"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
             return
@@ -513,23 +513,40 @@ class APIPostRequest: ObservableObject {
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
         var body = Data()
-
-        // Ajouter les champs JSON (recipe) en tant que données texte
-        if let jsonData = try? JSONEncoder().encode(recipe) {
-            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"recipe\"\r\n\r\n".data(using: .utf8)!)
-            body.append(jsonData)
-            body.append("\r\n".data(using: .utf8)!)
-        }
-
-        // Ajouter les noms des images dans le corps de la requête
+        
+        // Ajouter les champs texte
         func appendField(_ name: String, value: String) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
             body.append(value.data(using: .utf8)!)
             body.append("\r\n".data(using: .utf8)!)
         }
-
+        
+        appendField("title", value: recipe.title)
+        appendField("description", value: recipe.description)
+        appendField("cookTime", value: recipe.cookTime)
+        appendField("serves", value: recipe.serves)
+        appendField("origin", value: recipe.origin)
+        appendField("isPublished", value: "\(isPublished)")
+        appendField("userId", value: "\(recipe.userId)")
+        
+        // Ajouter les ingrédients en JSON
+        if let ingredientsJSON = try? JSONEncoder().encode(recipe.ingredients) {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"ingredients\"\r\n\r\n".data(using: .utf8)!)
+            body.append(ingredientsJSON)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // Ajouter les instructions en JSON
+        if let instructionsJSON = try? JSONEncoder().encode(recipe.instructions) {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"instructions\"\r\n\r\n".data(using: .utf8)!)
+            body.append(instructionsJSON)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+        
+        // Ajouter les noms des images dans le corps de la requête
         let recipeCoverName1 = "recipeCoverPicture1.jpg"
         let recipeCoverName2 = "recipeCoverPicture2.jpg"
         appendField("recipeCoverPictureUrl1", value: recipeCoverName1)

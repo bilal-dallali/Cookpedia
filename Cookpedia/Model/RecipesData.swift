@@ -16,8 +16,8 @@ struct RecipeRegistration: Encodable {
     let cookTime: String
     let serves: String
     let origin: String
-    let ingredients: [Ingredients]
-    let instructions: [Instructions]
+    let ingredients: String
+    let instructions: String
 }
 
 struct Ingredients: Encodable {
