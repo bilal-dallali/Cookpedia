@@ -514,7 +514,7 @@ class APIPostRequest: ObservableObject {
 
         var body = Data()
         
-        // Ajouter les champs texte
+        // Ajouter les champs texte de base
         func appendField(_ name: String, value: String) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
@@ -530,7 +530,7 @@ class APIPostRequest: ObservableObject {
         appendField("isPublished", value: "\(isPublished)")
         appendField("userId", value: "\(recipe.userId)")
         
-        // Ajouter les ingrédients en JSON
+        // Ajouter les ingrédients et instructions JSON brut
         if let ingredientsJSON = try? JSONEncoder().encode(recipe.ingredients) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"ingredients\"\r\n\r\n".data(using: .utf8)!)
@@ -538,7 +538,6 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
-        // Ajouter les instructions en JSON
         if let instructionsJSON = try? JSONEncoder().encode(recipe.instructions) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"instructions\"\r\n\r\n".data(using: .utf8)!)
@@ -546,13 +545,7 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
-        // Ajouter les noms des images dans le corps de la requête
-        let recipeCoverName1 = "recipeCoverPicture1.jpg"
-        let recipeCoverName2 = "recipeCoverPicture2.jpg"
-        appendField("recipeCoverPictureUrl1", value: recipeCoverName1)
-        appendField("recipeCoverPictureUrl2", value: recipeCoverName2)
-
-        // Ajouter les images dans le corps de la requête
+        // Ajouter les images au corps de la requête
         func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -562,11 +555,13 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
 
-        appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: recipeCoverName1)
-        appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: recipeCoverName2)
+        // Ajout des images des couvertures (sans traitement des noms)
+        appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: "recipeCoverPicture1.jpg")
+        appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
 
+        // Ajout des images des instructions (chaque instruction peut avoir plusieurs images)
         for (index, image) in instructionImages.enumerated() {
-            let fileName = "instructionImage\(index + 1).jpg"
+            let fileName = "instructionImage\(index + 1).jpg" // Nom temporaire, renommé par le backend
             appendImage(image, withName: "instructionImages", fileName: fileName)
         }
 
@@ -587,6 +582,7 @@ class APIPostRequest: ObservableObject {
             completion(.success("Recipe uploaded successfully"))
         }.resume()
     }
+
 
 
 }
