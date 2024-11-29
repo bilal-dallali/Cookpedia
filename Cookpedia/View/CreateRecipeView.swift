@@ -129,9 +129,9 @@ struct CreateRecipeView: View {
                                         return
                                     }
                                     
-                                    let ingredientsJSON = String(data: ingredientsData, encoding: .utf8) ?? ""
+                                    let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
                                     
-                                    print("ingredentsJSON: \(ingredientsJSON)")
+                                    print("ingredentsJSON: \(ingredientsJson)")
                                     
                                     // Convertir les instructions en JSON
                                     guard let instructionsData = try? encoder.encode(
@@ -148,16 +148,16 @@ struct CreateRecipeView: View {
                                         print("Failed to encode instructions to JSON")
                                         return
                                     }
-                                    let instructionsJSONString = String(data: instructionsData, encoding: .utf8) ?? ""
+                                    let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
                                     
-                                    print("Ingredients JSON: \(ingredientsJSON)")
-                                    print("Instructions JSON: \(instructionsJSONString)")
+                                    print("Ingredients JSON: \(ingredientsJson)")
+                                    print("Instructions JSON: \(instructionsJson)")
                                     
                                     
                                     let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
                                     
                                     
-                                    let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJSON, instructions: instructionsJSONString)
+                                    let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                     apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                         switch result {
                                         case .success:
@@ -504,19 +504,6 @@ struct CreateRecipeView: View {
             }
             .scrollIndicators(.hidden)
             .background(Color("Dark1"))
-//            .onAppear {
-//                for user in userSession {
-//                    print("user token : \(user.authToken)")
-//                    
-//                    if let decodedPayload = decodeJwt(from: user.authToken),
-//                       let id = decodedPayload["id"] as? Int {
-//                        print("User ID: \(id)")
-//                        userId = String(id)
-//                    } else {
-//                        print("Failed to decode JWT or extract user ID")
-//                    }
-//                }
-//            }
         }
     }
 }
