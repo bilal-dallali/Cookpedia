@@ -74,12 +74,13 @@ struct CreateRecipeView: View {
         
         // Méthode pour renommer uniquement les fichiers images
         func getRenamedImages(instructionIndex: Int) -> [(UIImage, String)] {
-            images.enumerated().map { (imageIndex, image) in
+            images.enumerated().compactMap { (imageIndex, image) in
+                // Vérifie si l'image a une résolution valide (> 0 x 0)
+                guard image.size.width > 0 && image.size.height > 0 else { return nil }
                 let fileName = "instructionImage\(imageIndex + 1)Index\(instructionIndex + 1).jpg"
                 return (image, fileName)
             }
         }
-        
     }
     
     @Binding var isCreateRecipeSelected: Bool
