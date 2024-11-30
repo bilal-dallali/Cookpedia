@@ -77,7 +77,7 @@ struct CreateRecipeView: View {
             images.enumerated().compactMap { (imageIndex, image) in
                 // Vérifie si l'image a une résolution valide (> 0 x 0)
                 guard image.size.width > 0 && image.size.height > 0 else { return nil }
-                let fileName = "instructionImage\(imageIndex + 1)Index\(instructionIndex + 1).jpg"
+                let fileName = "instructionImage\(imageIndex + 1)Index\(instructionIndex + 1)"
                 return (image, fileName)
             }
         }

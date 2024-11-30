@@ -343,10 +343,11 @@ class APIPostRequest: ObservableObject {
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
         // Ajout des images des instructions (chaque instruction peut avoir plusieurs images)
-//        for (index, image) in instructionImages.enumerated() {
-//            let fileName = "instructionImage\(index + 1).jpg" // Nom temporaire, renommé par le backend
-//            appendImage(image, withName: "instructionImages", fileName: fileName)
-//        }
+        for (image, fileName) in instructionImages {
+            appendImage(image, withName: "instructionImages", fileName: fileName)
+            print("filename \(fileName)")
+            print("image \(image)")
+        }
         
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
