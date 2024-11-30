@@ -71,6 +71,15 @@ struct CreateRecipeView: View {
         var instructionPictureUrl1: String? = nil
         var instructionPictureUrl2: String? = nil
         var instructionPictureUrl3: String? = nil
+        
+        // Méthode pour renommer uniquement les fichiers images
+        func getRenamedImages(instructionIndex: Int) -> [(UIImage, String)] {
+            images.enumerated().map { (imageIndex, image) in
+                let fileName = "instructionImage\(imageIndex + 1)Index\(instructionIndex + 1).jpg"
+                return (image, fileName)
+            }
+        }
+        
     }
     
     @Binding var isCreateRecipeSelected: Bool
@@ -153,11 +162,19 @@ struct CreateRecipeView: View {
                                     print("Ingredients JSON: \(ingredientsJson)")
                                     print("Instructions JSON: \(instructionsJson)")
                                     
-                                    let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
+                                    //let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
+                                    var instructionImages: [(UIImage, String)] = []
+                                    
+                                    for (instructionIndex, instruction) in instructions.enumerated() {
+                                        instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
+                                    }
+                                    
                                     print("instruction images: \(instructionImages)")
                                     //print("instructins images 2 : \($instructions)")
                                     
                                     let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                    
+                                    
                                     apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
                                         switch result {
                                         case .success:

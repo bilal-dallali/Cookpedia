@@ -294,7 +294,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func uploadRecipe(recipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [UIImage?], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+    func uploadRecipe(recipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
         let endpoint = "/recipes/upload"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
@@ -343,10 +343,10 @@ class APIPostRequest: ObservableObject {
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
         // Ajout des images des instructions (chaque instruction peut avoir plusieurs images)
-        for (index, image) in instructionImages.enumerated() {
-            let fileName = "instructionImage\(index + 1).jpg" // Nom temporaire, renommé par le backend
-            appendImage(image, withName: "instructionImages", fileName: fileName)
-        }
+//        for (index, image) in instructionImages.enumerated() {
+//            let fileName = "instructionImage\(index + 1).jpg" // Nom temporaire, renommé par le backend
+//            appendImage(image, withName: "instructionImages", fileName: fileName)
+//        }
         
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
