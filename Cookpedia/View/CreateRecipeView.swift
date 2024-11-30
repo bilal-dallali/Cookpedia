@@ -153,12 +153,12 @@ struct CreateRecipeView: View {
                                     print("Ingredients JSON: \(ingredientsJson)")
                                     print("Instructions JSON: \(instructionsJson)")
                                     
-                                    
                                     let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
-                                    
+                                    print("instruction images: \(instructionImages)")
+                                    //print("instructins images 2 : \($instructions)")
                                     
                                     let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                    apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
+                                    apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
                                         switch result {
                                         case .success:
                                             print("Recipe successfully uploaded")
