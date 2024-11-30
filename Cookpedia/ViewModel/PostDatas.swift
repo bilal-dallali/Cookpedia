@@ -316,6 +316,7 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
+        appendField("userId", value: "\(recipe.userId)")
         appendField("title", value: recipe.title)
         appendField("recipeCoverPictureUrl1", value: recipe.recipeCoverPictureUrl1 ?? "")
         appendField("recipeCoverPictureUrl2", value: recipe.recipeCoverPictureUrl2 ?? "")
@@ -323,23 +324,9 @@ class APIPostRequest: ObservableObject {
         appendField("cookTime", value: recipe.cookTime)
         appendField("serves", value: recipe.serves)
         appendField("origin", value: recipe.origin)
+        appendField("ingredients", value: recipe.ingredients)
+        appendField("instructions", value: recipe.instructions)
         appendField("isPublished", value: "\(isPublished)")
-        appendField("userId", value: "\(recipe.userId)")
-        
-        // Ajouter les ingrédients et instructions JSON brut
-        if let ingredientsJSON = try? JSONEncoder().encode(recipe.ingredients) {
-            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"ingredients\"\r\n\r\n".data(using: .utf8)!)
-            body.append(ingredientsJSON)
-            body.append("\r\n".data(using: .utf8)!)
-        }
-        
-        if let instructionsJSON = try? JSONEncoder().encode(recipe.instructions) {
-            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"instructions\"\r\n\r\n".data(using: .utf8)!)
-            body.append(instructionsJSON)
-            body.append("\r\n".data(using: .utf8)!)
-        }
         
         // Ajouter les images au corps de la requête
         func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
