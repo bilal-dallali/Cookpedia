@@ -62,6 +62,8 @@ struct CreateRecipeView: View {
     @Binding var isDiscoverSelected: Bool
     @Binding var isMyRecipeSelected: Bool
     @Binding var isMyProfileSelected: Bool
+    @Binding var isDraftSelected: Bool
+    @Binding var isPublishedSelected: Bool
     
     @State var ingredients: [String] = Array(repeating: "", count: 7)
     @State private var ingredientCounter: Int = 7
@@ -183,18 +185,20 @@ struct CreateRecipeView: View {
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         
                                         
-                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
+                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                             switch result {
                                             case .success:
                                                 print("Recipe successfully uploaded")
                                                 isSavedRecipe = true
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                     isSavedRecipe = false
                                                     isCreateRecipeSelected = false
                                                     isHomeSelected = false
                                                     isDiscoverSelected = false
                                                     isMyRecipeSelected = true
                                                     isMyProfileSelected = false
+                                                    isDraftSelected = true
+                                                    isPublishedSelected = false
                                                 }
                                             case .failure(let error):
                                                 print("Error uploading recipe: \(error)")
@@ -210,7 +214,87 @@ struct CreateRecipeView: View {
                                             .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     }
                                     Button {
-                                        //
+                                        for user in userSession {
+                                            print("user token : \(user.authToken)")
+                                            
+                                            if let decodedPayload = decodeJwt(from: user.authToken),
+                                               let id = decodedPayload["id"] as? Int {
+                                                print("User ID: \(id)")
+                                                userId = id
+                                            } else {
+                                                print("Failed to decode JWT or extract user ID")
+                                            }
+                                        }
+                                        
+                                        let encoder = JSONEncoder()
+                                        encoder.outputFormatting = .sortedKeys
+                                        
+                                        // Put ingredients in JSON
+                                        guard let ingredientsData = try? encoder.encode(
+                                            ingredients.enumerated().map { index, ingredient in
+                                                Ingredients(index: index + 1, ingredient: ingredient)
+                                            }
+                                        ) else {
+                                            print("Failed to encode ingredients to JSON")
+                                            return
+                                        }
+                                        
+                                        let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
+                                        
+                                        print("ingredentsJSON: \(ingredientsJson)")
+                                        
+                                        // Convertir les instructions en JSON
+                                        guard let instructionsData = try? encoder.encode(
+                                            instructions.enumerated().map { index, instruction in
+                                                Instructions(
+                                                    index: index + 1,
+                                                    instruction: instruction.text,
+                                                    instructionPictureUrl1: instruction.instructionPictureUrl1,
+                                                    instructionPictureUrl2: instruction.instructionPictureUrl2,
+                                                    instructionPictureUrl3: instruction.instructionPictureUrl3
+                                                )
+                                            }
+                                        ) else {
+                                            print("Failed to encode instructions to JSON")
+                                            return
+                                        }
+                                        let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
+                                        
+                                        print("Ingredients JSON: \(ingredientsJson)")
+                                        print("Instructions JSON: \(instructionsJson)")
+                                        
+                                        //let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
+                                        var instructionImages: [(UIImage, String)] = []
+                                        
+                                        for (instructionIndex, instruction) in instructions.enumerated() {
+                                            instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
+                                        }
+                                        
+                                        print("instruction images: \(instructionImages)")
+                                        //print("instructins images 2 : \($instructions)")
+                                        
+                                        let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                        
+                                        
+                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
+                                            switch result {
+                                            case .success:
+                                                print("Recipe successfully uploaded")
+                                                isPublishedRecipe = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                    isPublishedRecipe = false
+                                                    isCreateRecipeSelected = false
+                                                    isHomeSelected = false
+                                                    isDiscoverSelected = false
+                                                    isMyRecipeSelected = true
+                                                    isMyProfileSelected = false
+                                                    isDraftSelected = false
+                                                    isPublishedSelected = true
+                                                }
+                                            case .failure(let error):
+                                                print("Error uploading recipe: \(error)")
+                                            }
+                                        }
                                         
                                     } label: {
                                         Text("Publish")
@@ -538,12 +622,14 @@ struct CreateRecipeView: View {
                     .padding(.horizontal, 24)
                 }
                 .scrollIndicators(.hidden)
-                .background(Color("Dark1"))
+                //.background(Color("Dark1"))
+                .background(Color(isSavedRecipe || isPublishedRecipe ? "BackgroundOpacity" : "Dark1"))
+                .blur(radius: isSavedRecipe || isPublishedRecipe ? 4 : 0)
             }
             if isSavedRecipe {
                 ModalView(title: "Recipe Successfully saved", message: "Your recipe has been added to your draft, it is not yet published.")
             } else if isPublishedRecipe {
-                ModalView(title: "Recipe Successfully published", message: "Your recipe has been published. Anyone can view it!")
+                ModalView(title: "Recipe Successfully published", message: "Your recipe has been published. Anyone can see it!")
             }
         }
     }
@@ -562,5 +648,5 @@ extension Array {
 }
 
 #Preview {
-    CreateRecipeView(isHomeSelected: .constant(false), isDiscoverSelected: .constant(false), isMyRecipeSelected: .constant(true), isMyProfileSelected: .constant(false), isCreateRecipeSelected: .constant(true))
+    CreateRecipeView(isHomeSelected: .constant(false), isDiscoverSelected: .constant(false), isMyRecipeSelected: .constant(true), isMyProfileSelected: .constant(false), isDraftSelected: .constant(false), isPublishedSelected: .constant(false), isCreateRecipeSelected: .constant(true))
 }

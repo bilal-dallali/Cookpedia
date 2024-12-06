@@ -43,7 +43,7 @@ struct MyProfilePageView: View {
                     VStack(alignment: .leading, spacing: 28) {
                         VStack(alignment: .leading, spacing: 16) {
                             HStack(spacing: 20) {
-                                Image("profile-picture")
+                                Image("ellipse")
                                     .resizable()
                                     .frame(width: 72, height: 72)
                                     .clipShape(RoundedRectangle(cornerRadius: .infinity))
