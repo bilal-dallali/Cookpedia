@@ -120,7 +120,7 @@ struct TabView: View {
             .edgesIgnoringSafeArea(.bottom)
         }
         .fullScreenCover(isPresented: $isCreateRecipeSelected) {
-            CreateRecipeView(isCreateRecipeSelected: $isCreateRecipeSelected)
+            CreateRecipeView(isHomeSelected: $isHomeSelected, isDiscoverSelected: $isDiscoverSelected, isMyRecipeSelected: $isMyRecipeSelected, isMyProfileSelected: $isMyProfileSelected, isCreateRecipeSelected: $isCreateRecipeSelected)
         }
     }
 }

@@ -397,7 +397,7 @@ struct LoginView: View {
                 }
             }
             if loadingScreen {
-                SignUpSuccessfulView(title: "Sign In Successful!", message: "Your informations are valid. Please wait a moment, we are preparing for you...")
+                ModalView(title: "Sign In Successful!", message: "Your informations are valid. Please wait a moment, we are preparing for you...")
             }
         }
     }

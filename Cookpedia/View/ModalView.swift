@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SignUpSuccessfulView: View {
+struct ModalView: View {
     
     @State private var isRotating: Bool = false
     
@@ -45,5 +45,5 @@ struct SignUpSuccessfulView: View {
 }
 
 #Preview {
-    SignUpSuccessfulView(title: "Sign Up Successful", message: "Your account has been created. Please wait a moment, we are preparing for you...")
+    ModalView(title: "Sign Up Successful", message: "Your account has been created. Please wait a moment, we are preparing for you...")
 }

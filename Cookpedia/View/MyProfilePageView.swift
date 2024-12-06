@@ -11,6 +11,7 @@ struct MyProfilePageView: View {
     
     @State private var isRecipeSelected: Bool = true
     @State private var isAboutSelected: Bool = false
+    
     var body: some View {
         VStack {
             ScrollView {

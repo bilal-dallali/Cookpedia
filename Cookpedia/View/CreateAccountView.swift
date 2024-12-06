@@ -542,7 +542,7 @@ struct CreateAccountView: View {
                 }
             }
             if loadingScreen {
-                SignUpSuccessfulView(title: "Sign Up Successful", message: "Your account has been created. Please wait a moment, we are preparing for you...")
+                ModalView(title: "Sign Up Successful", message: "Your account has been created. Please wait a moment, we are preparing for you...")
             }
         }
     }
