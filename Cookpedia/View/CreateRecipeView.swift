@@ -197,6 +197,7 @@ struct CreateRecipeView: View {
                                                     isDiscoverSelected = false
                                                     isMyRecipeSelected = true
                                                     isMyProfileSelected = false
+                                                    
                                                     isDraftSelected = true
                                                     isPublishedSelected = false
                                                 }
@@ -288,6 +289,7 @@ struct CreateRecipeView: View {
                                                     isDiscoverSelected = false
                                                     isMyRecipeSelected = true
                                                     isMyProfileSelected = false
+                                                    
                                                     isDraftSelected = false
                                                     isPublishedSelected = true
                                                 }
@@ -308,7 +310,6 @@ struct CreateRecipeView: View {
                                     }
                                 } else {
                                     Button {
-                                        
                                         fieldsNotFilled = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                             fieldsNotFilled = false

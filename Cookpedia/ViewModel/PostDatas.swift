@@ -11,7 +11,7 @@ import UIKit
 class APIPostRequest: ObservableObject {
     let baseUrl = "http://localhost:3000/api"
     
-    func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
+    func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIError>) -> ()) {
         let endpoint = "/users/registration"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -85,8 +85,9 @@ class APIPostRequest: ObservableObject {
             case 201:
                 // Décoder le token depuis la réponse
                 if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
-                   let token = json["token"] as? String {
-                    completion(.success(token))
+                   let token = json["token"] as? String, let id = json["userId"] as? Int {
+                    completion(.success((token: token, id: id)))
+                    
                 } else {
                     completion(.failure(.invalidData))
                 }

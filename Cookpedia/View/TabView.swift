@@ -15,6 +15,9 @@ struct TabView: View {
     @State private var isMyRecipeSelected: Bool = false
     @State private var isMyProfileSelected: Bool = false
     
+    @State private var isDraftSelected: Bool = true
+    @State private var isPublishedSelected: Bool = false
+    
     @State var isCreateRecipeSelected: Bool = false
     
     var body: some View {
@@ -24,7 +27,7 @@ struct TabView: View {
             } else if isDiscoverSelected {
                 DiscoverPageView()
             } else if isMyRecipeSelected {
-                MyRecipePageView()
+                MyRecipePageView(isDraftSelected: $isDraftSelected, isPublishedSelected: $isPublishedSelected)
             } else if isMyProfileSelected {
                 MyProfilePageView()
             }

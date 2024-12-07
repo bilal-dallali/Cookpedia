@@ -364,18 +364,11 @@ struct CreateAccountView: View {
                                         let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, salad: salad, egg: egg, soup: soup, meat: meat, chicken: chicken, seafood: seafood, burger: burger, pizza: pizza, sushi: sushi, rice: rice, bread: bread, fruit: fruit, vegetarian: vegetarian, vegan: vegan, glutenFree: glutenFree, nutFree: nutFree, dairyFree: dairyFree, lowCarb: lowCarb, peanutFree: peanutFree, keto: keto, soyFree: soyFree, rawFood: rawFood, lowFat: lowFat, halal: halal, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
                                         apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe) { result in
                                             switch result {
-                                            case .success(let authToken):
+                                            case .success(let (token, id)):
                                                 print("User registered successfully")
-                                                var userId: String = ""
-                                                if let decodedPayload = decodeJwt(from: authToken),
-                                                   let id = decodedPayload["id"] as? Int {
-                                                    print("User ID: \(id)")
-                                                    userId = String(id)
-                                                    print("User ID2: \(userId)")
-                                                } else {
-                                                    print("Failed to decode JWT or extract user ID")
-                                                }
-                                                let userSession = UserSession(userId: userId, email: email, authToken: authToken, isRemembered: rememberMe)
+                                                var userId: String = String(id)
+                                                print("Your user id is \(userId)")
+                                                let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                                 context.insert(userSession)
                                                 do {
                                                     try context.save()

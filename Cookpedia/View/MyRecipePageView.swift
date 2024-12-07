@@ -9,8 +9,8 @@ import SwiftUI
 
 struct MyRecipePageView: View {
     
-    @State private var isDraftSelected: Bool = true
-    @State private var isPublishedSelected: Bool = false
+    @Binding var isDraftSelected: Bool
+    @Binding var isPublishedSelected: Bool
     
     var body: some View {
         VStack {
@@ -130,5 +130,5 @@ struct MyRecipePageView: View {
 }
 
 #Preview {
-    MyRecipePageView()
+    MyRecipePageView(isDraftSelected: .constant(true), isPublishedSelected: .constant(false))
 }
