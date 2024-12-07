@@ -126,7 +126,7 @@ class APIPostRequest: ObservableObject {
         }.resume()
     }
     
-    func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
+    func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIError>) -> ()) {
         let endpoint = "/users/login"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -156,8 +156,8 @@ class APIPostRequest: ObservableObject {
                 case 200:
                     // Decode the token from the response data
                     if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
-                       let authToken = json["token"] as? String {
-                        completion(.success(authToken))
+                       let token = json["token"] as? String, let id = json["id"] as? Int {
+                        completion(.success((token: token, id: id)))
                     } else {
                         completion(.failure(.invalidData))
                     }
@@ -236,7 +236,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<String, APIError>) -> ()) {
+    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIError>) -> ()) {
         let endpoint = "/users/reset-password"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -267,8 +267,8 @@ class APIPostRequest: ObservableObject {
                 case 200:
                     // Décoder le token depuis la réponse
                     if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
-                       let authToken = json["token"] as? String {
-                        completion(.success(authToken))
+                       let token = json["token"] as? String, let id = json["id"] as? Int {
+                        completion(.success((token: token, id: id)))
                     } else {
                         completion(.failure(.invalidData))
                     }

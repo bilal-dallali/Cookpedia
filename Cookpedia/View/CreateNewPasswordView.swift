@@ -223,23 +223,17 @@ struct CreateNewPasswordView: View {
                             Button {
                                 apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined(), rememberMe: rememberMe) { result in
                                     switch result {
-                                    case .success(let authToken):
+                                    case .success(let (token, id)):
                                         // Get the userId
-                                        var userId: String = ""
-                                        if let decodedPayload = decodeJwt(from: authToken),
-                                           let id = decodedPayload["id"] as? Int {
-                                            print("User ID: \(id)")
-                                            userId = String(id)
-                                            print("User ID2: \(userId)")
-                                        } else {
-                                            print("Failed to decode JWT or extract user ID")
-                                        }
+                                        var userId: String = String(id)
                                         // Store session in SwiftData
-                                        let userSession = UserSession(userId: userId, email: email, authToken: authToken, isRemembered: rememberMe)
+                                        let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         do {
                                             try context.save()
                                             print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
+                                            print("usersession email: \(userSession.email)")
+                                            print("usersession id: \(userSession.userId)")
                                             print("usersession token: \(userSession.authToken)")
                                             print("usersession remember: \(userSession.isRemembered)")
                                         } catch {

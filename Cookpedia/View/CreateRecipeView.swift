@@ -9,38 +9,6 @@ import SwiftUI
 import Foundation
 import SwiftData
 
-func decodeJwt(from jwt: String) -> [String: Any]? {
-    let segments = jwt.components(separatedBy: ".")
-    
-    guard segments.count > 1 else {
-        print("Invalid JWT format")
-        return nil
-    }
-    
-    var base64String = segments[1]
-    
-    // Ajouter des paddings si nécessaire
-    let requiredLength = Int(4 * ceil(Float(base64String.count) / 4.0))
-    let nbrPaddings = requiredLength - base64String.count
-    if nbrPaddings > 0 {
-        let padding = String().padding(toLength: nbrPaddings, withPad: "=", startingAt: 0)
-        base64String = base64String.appending(padding)
-    }
-    base64String = base64String.replacingOccurrences(of: "-", with: "+")
-    base64String = base64String.replacingOccurrences(of: "_", with: "/")
-    
-    guard let decodedData = Data(base64Encoded: base64String, options: []),
-          let decodedString = String(data: decodedData, encoding: .utf8),
-          let jsonData = decodedString.data(using: .utf8),
-          let json = try? JSONSerialization.jsonObject(with: jsonData, options: []),
-          let payload = json as? [String: Any] else {
-        print("Failed to decode JWT payload")
-        return nil
-    }
-    
-    return payload
-}
-
 struct CreateRecipeView: View {
     
     @State private var title = ""
@@ -95,8 +63,7 @@ struct CreateRecipeView: View {
     @FocusState private var isOriginFocused: Bool
     @State private var fieldsNotFilled: Bool = false
     @Environment(\.modelContext) var context
-    @Query(sort: \UserSession.authToken) var userSession: [UserSession]
-    @State var userId: Int = 0
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiPostManager = APIPostRequest()
     
     var body: some View {
@@ -123,18 +90,6 @@ struct CreateRecipeView: View {
                             HStack(spacing: 12) {
                                 if recipeCoverPictureUrl1 != "" && title != "" && description != "" && cookTime != "" && serves != "" && origin != "" && ingredients.count > 0 && ingredients[0] != "" && instructions.count > 0 && instructions[0].text != "" {
                                     Button {
-                                        for user in userSession {
-                                            print("user token : \(user.authToken)")
-                                            
-                                            if let decodedPayload = decodeJwt(from: user.authToken),
-                                               let id = decodedPayload["id"] as? Int {
-                                                print("User ID: \(id)")
-                                                userId = id
-                                            } else {
-                                                print("Failed to decode JWT or extract user ID")
-                                            }
-                                        }
-                                        
                                         let encoder = JSONEncoder()
                                         encoder.outputFormatting = .sortedKeys
                                         
@@ -172,7 +127,6 @@ struct CreateRecipeView: View {
                                         print("Ingredients JSON: \(ingredientsJson)")
                                         print("Instructions JSON: \(instructionsJson)")
                                         
-                                        //let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
                                         var instructionImages: [(UIImage, String)] = []
                                         
                                         for (instructionIndex, instruction) in instructions.enumerated() {
@@ -180,7 +134,17 @@ struct CreateRecipeView: View {
                                         }
                                         
                                         print("instruction images: \(instructionImages)")
-                                        //print("instructins images 2 : \($instructions)")
+                                        guard let currentUser = userSession.first else {
+                                            print("Failed to decode userId")
+                                            return
+                                        }
+                                        
+                                        guard let userId = Int(currentUser.userId) else {
+                                            print("Failed to convert userId to Int")
+                                            return
+                                        }
+                                        
+                                        print("User id: \(userId)")
                                         
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         
@@ -215,18 +179,6 @@ struct CreateRecipeView: View {
                                             .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     }
                                     Button {
-                                        for user in userSession {
-                                            print("user token : \(user.authToken)")
-                                            
-                                            if let decodedPayload = decodeJwt(from: user.authToken),
-                                               let id = decodedPayload["id"] as? Int {
-                                                print("User ID: \(id)")
-                                                userId = id
-                                            } else {
-                                                print("Failed to decode JWT or extract user ID")
-                                            }
-                                        }
-                                        
                                         let encoder = JSONEncoder()
                                         encoder.outputFormatting = .sortedKeys
                                         
@@ -264,7 +216,6 @@ struct CreateRecipeView: View {
                                         print("Ingredients JSON: \(ingredientsJson)")
                                         print("Instructions JSON: \(instructionsJson)")
                                         
-                                        //let instructionImages: [UIImage?] = instructions.flatMap { $0.images }
                                         var instructionImages: [(UIImage, String)] = []
                                         
                                         for (instructionIndex, instruction) in instructions.enumerated() {
@@ -272,7 +223,17 @@ struct CreateRecipeView: View {
                                         }
                                         
                                         print("instruction images: \(instructionImages)")
-                                        //print("instructins images 2 : \($instructions)")
+                                        
+                                        guard let currentUser = userSession.first else {
+                                            print("Failed to decode userId")
+                                            return
+                                        }
+                                        
+                                        guard let userId = Int(currentUser.userId) else {
+                                            print("Failed to convert userId to Int")
+                                            return
+                                        }
+                                        print("userId: \(userId)")
                                         
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         

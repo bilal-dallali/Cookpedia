@@ -250,25 +250,19 @@ struct LoginView: View {
                                 isLoading = true
                                 apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
                                     switch result {
-                                    case .success(let authToken):
-                                        print("Token: \(authToken)")
+                                    case .success(let (token, id)):
+                                        print("Token: \(token)")
                                         // Get the userId from the token
-                                        var userId: String = ""
-                                        if let decodedPayload = decodeJwt(from: authToken),
-                                           let id = decodedPayload["id"] as? Int {
-                                            print("User ID: \(id)")
-                                            userId = String(id)
-                                            print("User ID2: \(userId)")
-                                        } else {
-                                            print("Failed to decode JWT or extract user ID")
-                                        }
+                                        var userId: String = String(id)
+                                        print("Your userId is: \(id)")
                                         // Store session in SwiftData
-                                        let userSession = UserSession(userId: userId, email: email, authToken: authToken, isRemembered: rememberMe)
+                                        let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         //UserSession.shared = userSession
                                         do {
                                             try context.save()
                                             print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
+                                            print("userssession id: \(userSession.userId)")
                                             print("usersession token: \(userSession.authToken)")
                                             print("usersession remember: \(userSession.isRemembered)")
                                             print("usersession email: \(userSession.email)")
