@@ -69,7 +69,7 @@ class APIGetRequest: ObservableObject {
             
             do {
                 let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase // Conversion automatique snake_case -> camelCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 let user = try decoder.decode(User.self, from: data)
                 print("user decoded successfully \(user)")
                 completion(.success(user))

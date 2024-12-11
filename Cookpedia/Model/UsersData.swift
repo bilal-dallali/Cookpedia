@@ -55,7 +55,7 @@ struct User: Decodable {
     let phoneNumber: String
     let gender: String
     let dateOfBirth: String
-    let profilePictureUrl: String
+    let profilePictureUrl: String?
     let country: String
     let city: String
     let cookingLevel: String
