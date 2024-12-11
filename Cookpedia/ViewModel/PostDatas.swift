@@ -8,10 +8,11 @@
 import Foundation
 import UIKit
 
+let baseUrl = "http://localhost:3000/api"
+
 class APIPostRequest: ObservableObject {
-    let baseUrl = "http://localhost:3000/api"
     
-    func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIError>) -> ()) {
+    func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIPostError>) -> ()) {
         let endpoint = "/users/registration"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -72,7 +73,7 @@ class APIPostRequest: ObservableObject {
         // Execute the request
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                completion(.failure(APIError.serverError))
+                completion(.failure(APIPostError.serverError))
                 return
             }
             
@@ -126,7 +127,7 @@ class APIPostRequest: ObservableObject {
         }.resume()
     }
     
-    func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIError>) -> ()) {
+    func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIPostError>) -> ()) {
         let endpoint = "/users/login"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -175,7 +176,7 @@ class APIPostRequest: ObservableObject {
     }
     
     // Function to send the reset code request
-    func sendResetCode(email: String, completion: @escaping (Result<Void, APIError>) -> ()) {
+    func sendResetCode(email: String, completion: @escaping (Result<Void, APIPostError>) -> ()) {
         let endpoint = "/users/send-reset-code"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -206,7 +207,7 @@ class APIPostRequest: ObservableObject {
     }
     
     // Function to verify the reset code
-    func verifyResetCode(email: String, code: String, completion: @escaping (Result<Void, APIError>) -> ()) {
+    func verifyResetCode(email: String, code: String, completion: @escaping (Result<Void, APIPostError>) -> ()) {
         let endpoint = "/users/verify-reset-code"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -236,7 +237,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIError>) -> ()) {
+    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIPostError>) -> ()) {
         let endpoint = "/users/reset-password"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(.invalidUrl))
@@ -369,7 +370,7 @@ class APIPostRequest: ObservableObject {
     }
 }
 
-enum APIError: Error {
+enum APIPostError: Error {
     case invalidUrl
     case invalidData
     case invalidCredentials

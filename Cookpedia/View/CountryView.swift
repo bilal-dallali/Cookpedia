@@ -20,6 +20,10 @@ extension View {
     }
 }
 
+func dismissKeyboard() {
+    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+}
+
 struct CountryView: View {
     
     @State private var selectedCountry: Country?
@@ -82,6 +86,7 @@ struct CountryView: View {
             }
             .scrollIndicators(.hidden)
             .padding(.horizontal, 24)
+            
             
             Divider()
                 .overlay {
@@ -149,6 +154,9 @@ struct CountryView: View {
                             .frame(width: 48)
                     }
             }
+        }
+        .onTapGesture {
+            dismissKeyboard()
         }
     }
 }
