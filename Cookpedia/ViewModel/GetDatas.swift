@@ -40,7 +40,7 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }*/
     
-    func getUserData(userId: Int, completion: @escaping (Result<User, Error>) -> Void) {
+    func getConnectedUserUserData(userId: Int, completion: @escaping (Result<User, Error>) -> Void) {
         let endpoint = "/users/profile/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))
@@ -61,11 +61,6 @@ class APIGetRequest: ObservableObject {
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
-            
-            // Debug : Imprimez le JSON brut
-//            if let jsonString = String(data: data, encoding: .utf8) {
-//                print("Received JSON: \(jsonString)")
-//            }
             
             do {
                 let decoder = JSONDecoder()

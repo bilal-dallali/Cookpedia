@@ -230,7 +230,28 @@ struct MyProfilePageView: View {
                             .frame(maxWidth: .infinity)
                         }
                         if isRecipeSelected {
-                            Text("Recipe")
+                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 0)], spacing: 16) {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .foregroundStyle(Color("MyBlue"))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                                RoundedRectangle(cornerRadius: 20)
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                                RoundedRectangle(cornerRadius: 20)
+                                    .foregroundStyle(Color("MyRed"))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                                RoundedRectangle(cornerRadius: 20)
+                                    .foregroundStyle(Color("MyOrange"))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                                RoundedRectangle(cornerRadius: 20)
+                                    .foregroundStyle(Color("MyGreen"))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                            }
                         } else if isAboutSelected {
                             Text("About")
                         }
@@ -252,7 +273,7 @@ struct MyProfilePageView: View {
                     return
                 }
                 print("user id 2000 \(userId)")
-                apiGetManager.getUserData(userId: userId) { result in
+                apiGetManager.getConnectedUserUserData(userId: userId) { result in
                     switch result {
                     case .success(let user):
                         DispatchQueue.main.async {
