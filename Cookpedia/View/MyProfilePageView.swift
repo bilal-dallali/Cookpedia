@@ -231,27 +231,57 @@ struct MyProfilePageView: View {
                         }
                         if isRecipeSelected {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 0)], spacing: 16) {
-                                RoundedRectangle(cornerRadius: 20)
-                                    .foregroundStyle(Color("MyBlue"))
+                                Button {
+                                    print("card")
+                                } label: {
+                                    ZStack {
+                                        Image("original-pizza")
+                                            .resizable()
+                                        VStack(alignment: .leading) {
+                                            HStack {
+                                                Spacer()
+                                                Button {
+                                                    print("bookmark")
+                                                } label: {
+                                                    Circle()
+                                                        .foregroundStyle(Color("Primary900"))
+                                                        .frame(width: 36, height: 36)
+                                                    
+                                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                                        .overlay {
+                                                            Image("bookmark-unselected")
+                                                                .resizable()
+                                                                .frame(width: 20, height: 20)
+                                                        }
+                                                        
+                                                }
+                                                .padding(.top, 12)
+                                                .padding(.trailing, 12)
+                                            }
+                                            Spacer()
+                                            Text("Vegetable Fruit Salad Simple Rec...zjhbbjhbdczhjbdhjqbjhdbxhjqbdxhjqbhjdbhjbjh")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 18))
+                                                .multilineTextAlignment(.leading)
+                                                .lineLimit(2)
+                                                .truncationMode(.tail)
+                                                .padding(.horizontal, 12)
+                                                .padding(.bottom, 10)
+                                                .background {
+                                                    RoundedRectangle(cornerRadius: 0)
+                                                        .fill(LinearGradient(gradient: Gradient(colors: [Color(red: 0.13, green: 0.13, blue: 0.13, opacity: 0), Color(red: 0.13, green: 0.13, blue: 0.13, opacity: 0.5), Color(red: 0.08, green: 0.08, blue: 0.08, opacity: 0.8), Color(red: 0.09, green: 0.09, blue: 0.09, opacity: 1), Color(red: 0.1, green: 0.1, blue: 0.1, opacity: 1)]), startPoint: .top, endPoint: .bottom))
+                                                        .frame(height: 183)
+                                                }
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                    }
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 260)
-                                RoundedRectangle(cornerRadius: 20)
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 260)
-                                RoundedRectangle(cornerRadius: 20)
-                                    .foregroundStyle(Color("MyRed"))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 260)
-                                RoundedRectangle(cornerRadius: 20)
-                                    .foregroundStyle(Color("MyOrange"))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 260)
-                                RoundedRectangle(cornerRadius: 20)
-                                    .foregroundStyle(Color("MyGreen"))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 260)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                }
+                                
                             }
+                           
                         } else if isAboutSelected {
                             Text("About")
                         }

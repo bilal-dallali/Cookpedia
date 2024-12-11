@@ -52,6 +52,7 @@ struct RecipeCardNameView: View {
                         Text(title)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 18))
+                            .multilineTextAlignment(.leading)
                         HStack(spacing: 6) {
                             Image(avatarImage)
                                 .resizable()
