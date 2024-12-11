@@ -253,7 +253,7 @@ struct MyProfilePageView: View {
                     switch result {
                     case .success(let user):
                         DispatchQueue.main.async {
-                            self.profilePictureUrl = user.profilePictureUrl
+                            self.profilePictureUrl = user.profilePictureUrl ?? ""
                             self.fullName = user.fullName
                             self.username = user.username
                         }
