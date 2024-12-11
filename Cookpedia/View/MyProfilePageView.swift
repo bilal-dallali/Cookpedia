@@ -6,11 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MyProfilePageView: View {
     
     @State private var isRecipeSelected: Bool = true
     @State private var isAboutSelected: Bool = false
+    
+    @Environment(\.modelContext) var context
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    var apiGetManager = APIGetRequest()
+    
+    @State private var profilePictureUrl: String = ""
+    @State private var fullName: String = "Andrew Ainsley"
+    @State private var username: String = "andrew_ainsley"
     
     var body: some View {
         VStack {
@@ -43,15 +52,25 @@ struct MyProfilePageView: View {
                     VStack(alignment: .leading, spacing: 28) {
                         VStack(alignment: .leading, spacing: 16) {
                             HStack(spacing: 20) {
-                                Image("ellipse")
-                                    .resizable()
-                                    .frame(width: 72, height: 72)
-                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                if profilePictureUrl.isEmpty {
+                                    Image("ellipse")
+                                        .resizable()
+                                        .frame(width: 72, height: 72)
+                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                } else {
+                                    AsyncImage(url: URL(string: profilePictureUrl)) { image in
+                                        image
+                                    } placeholder: {
+                                        ProgressView()
+                                        //Text(profilePictureUrl)
+                                    }
+
+                                }
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Andrew Ainsley")
+                                    Text(fullName)
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 20))
-                                    Text("@andrew_ainsley")
+                                    Text("@\(username)")
                                         .foregroundStyle(Color("Greyscale300"))
                                         .font(.custom("Urbanist-Medium", size: 14))
                                 }
@@ -219,6 +238,30 @@ struct MyProfilePageView: View {
             .padding(.top, 16)
             .padding(.horizontal, 24)
             .background(Color("Dark1"))
+            .onAppear {
+                guard let currentUser = userSession.first else {
+                    print("Failed to decode userId")
+                    return
+                }
+                
+                guard let userId = Int(currentUser.userId) else {
+                    print("Failed to convert userId to Int")
+                    return
+                }
+                print("user id 2000 \(userId)")
+                apiGetManager.getUserData(userId: userId) { result in
+                    switch result {
+                    case .success(let user):
+                        DispatchQueue.main.async {
+                            self.profilePictureUrl = user.profilePictureUrl
+                            self.fullName = user.fullName
+                            self.username = user.username
+                        }
+                    case .failure(let error):
+                        print("Failed to fetch user data: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
         .navigationBarBackButtonHidden(true)
     }

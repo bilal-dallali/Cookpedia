@@ -45,7 +45,7 @@ struct UserRegistration: Codable {
     let profilePictureUrl: String
 }
 
-struct User: Codable, Identifiable {
+struct User: Decodable {
     let id: Int
     let username: String
     let email: String
