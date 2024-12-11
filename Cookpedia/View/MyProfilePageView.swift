@@ -18,8 +18,8 @@ struct MyProfilePageView: View {
     var apiGetManager = APIGetRequest()
     
     @State private var profilePictureUrl: String = ""
-    @State private var fullName: String = "Andrew Ainsley"
-    @State private var username: String = "andrew_ainsley"
+    @State private var fullName: String = "unkwnown"
+    @State private var username: String = "unknwon"
     
     var body: some View {
         VStack {
@@ -58,11 +58,14 @@ struct MyProfilePageView: View {
                                         .frame(width: 72, height: 72)
                                         .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                 } else {
-                                    AsyncImage(url: URL(string: profilePictureUrl)) { image in
+                                    AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
                                         image
+                                            .resizable()
+                                            .frame(width: 72, height: 72)
+                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     } placeholder: {
                                         ProgressView()
-                                        //Text(profilePictureUrl)
+                                            .frame(width: 72, height: 72)
                                     }
 
                                 }

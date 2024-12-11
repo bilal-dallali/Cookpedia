@@ -63,9 +63,9 @@ class APIGetRequest: ObservableObject {
             }
             
             // Debug : Imprimez le JSON brut
-                if let jsonString = String(data: data, encoding: .utf8) {
-                    print("Received JSON: \(jsonString)")
-                }
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//                print("Received JSON: \(jsonString)")
+//            }
             
             do {
                 let decoder = JSONDecoder()
