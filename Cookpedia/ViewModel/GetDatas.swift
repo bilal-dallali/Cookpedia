@@ -56,9 +56,9 @@ class APIGetRequest: ObservableObject {
                 return
             }
             
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
                 completion(.failure(APIGetError.invalidResponse))
+                print("datas \(data)")
                 return
             }
             
@@ -73,7 +73,7 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
-    func getConnectedUserRecipes(userId: Int, completion: @escaping (Result<[Recipe], Error>) -> Void) {
+    func getConnectedUserRecipes(userId: Int, completion: @escaping (Result<[RecipeConnectedUser], Error>) -> Void) {
         let endpoint = "/recipes/recipes-connected-user/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))
@@ -98,10 +98,25 @@ class APIGetRequest: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let recipes = try decoder.decode([Recipe].self, from: data)
-                
+                let recipes = try decoder.decode([RecipeConnectedUser].self, from: data)
                 completion(.success(recipes))
             } catch {
+                if let decodingError = error as? DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let type, let context):
+                        print("Type mismatch for type \(type). Context: \(context)")
+                    case .valueNotFound(let type, let context):
+                        print("Value not found for type \(type). Context: \(context)")
+                    case .keyNotFound(let key, let context):
+                        print("Key '\(key)' not found. Context: \(context)")
+                    case .dataCorrupted(let context):
+                        print("Data corrupted. Context: \(context)")
+                    @unknown default:
+                        print("Unknown decoding error: \(error)")
+                    }
+                } else {
+                    print("Unexpected error: \(error)")
+                }
                 completion(.failure(error))
             }
         }.resume()

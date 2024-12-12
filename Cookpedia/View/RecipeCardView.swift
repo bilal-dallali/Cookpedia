@@ -9,22 +9,16 @@ import SwiftUI
 
 struct RecipeCardView: View {
     
-    let recipe: Recipe
+    let recipe: RecipeConnectedUser
     
     var body: some View {
         ZStack {
-//            Image("original-pizza")
-//                .resizable()
             AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipe.recipeCoverPictureUrl1).jpg")) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .clipped()
             } placeholder: {
-//                Rectangle()
-//                    .fill(Color("MyOrange"))
-//                    .frame(maxWidth: .infinity)
-//                    .frame(height: 260)
                 Image("original-pizza")
                     .resizable()
             }
@@ -74,25 +68,6 @@ struct RecipeCardView: View {
 }
 
 #Preview {
-    RecipeCardView(recipe: Recipe(
-        id: 1,
-        userId: 1,
-        title: "Vegetable Fruit SaladVegetable Fruit SaladVegetable Fruit Salad",
-        recipeCoverPictureUrl1: "recipe_cover_picture_url_1_example.jpg",
-        recipeCoverPictureUrl2: nil,
-        description: "A fresh and healthy salad.",
-        cookTime: "10 mins",
-        serves: "2 people",
-        origin: "France",
-        ingredients: [
-            Ingredient(index: 1, ingredient: "Lettuce"),
-            Ingredient(index: 2, ingredient: "Tomatoes")
-        ],
-        instructions: [
-            Instruction(index: 1, instruction: "Mix ingredients", instructionPictureUrl1: nil, instructionPictureUrl2: nil, instructionPictureUrl3: nil)
-        ],
-        isPublished: true,
-        createdAt: "2024-12-07"
-    ))
+    RecipeCardView(recipe: RecipeConnectedUser(id: 1, title: "Vegetable Fruit SaladVegetable Fruit SaladVegetable Fruit Salad", recipeCoverPictureUrl1:  "recipe_cover_picture_url_1_example.jpg"))
     .frame(width: 183)
 }

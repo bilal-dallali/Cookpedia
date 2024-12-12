@@ -10,7 +10,7 @@ import SwiftData
 
 struct MyProfilePageView: View {
     
-    @State private var recipes: [Recipe] = []
+    @State private var recipes: [RecipeConnectedUser] = []
     @State private var isRecipeSelected: Bool = true
     @State private var isAboutSelected: Bool = false
     
@@ -258,6 +258,7 @@ struct MyProfilePageView: View {
                                     apiGetManager.getConnectedUserRecipes(userId: userId) { result in
                                         switch result {
                                         case .success(let recipes):
+                                            print("recipes fetched successfull")
                                             DispatchQueue.main.async {
                                                 self.recipes = recipes
                                             }
