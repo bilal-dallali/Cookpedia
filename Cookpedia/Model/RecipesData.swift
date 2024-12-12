@@ -32,3 +32,32 @@ struct Instructions: Encodable {
     let instructionPictureUrl2: String?
     let instructionPictureUrl3: String?
 }
+
+struct Recipe: Identifiable, Codable {
+    let id: Int
+    let userId: Int
+    let title: String
+    let recipeCoverPictureUrl1: String
+    let recipeCoverPictureUrl2: String?
+    let description: String
+    let cookTime: String
+    let serves: String
+    let origin: String
+    let ingredients: [Ingredient]
+    let instructions: [Instruction]
+    let isPublished: Bool
+    let createdAt: String
+}
+
+struct Ingredient: Codable {
+    let index: Int
+    let ingredient: String
+}
+
+struct Instruction: Codable {
+    let index: Int
+    let instruction: String
+    let instructionPictureUrl1: String?
+    let instructionPictureUrl2: String?
+    let instructionPictureUrl3: String?
+}
