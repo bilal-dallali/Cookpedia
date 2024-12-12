@@ -16,8 +16,7 @@ struct RecipeCardView: View {
             AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipe.recipeCoverPictureUrl1).jpg")) { image in
                 image
                     .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
             } placeholder: {
                 Image("original-pizza")
                     .resizable()
@@ -64,10 +63,14 @@ struct RecipeCardView: View {
         .frame(maxWidth: .infinity)
         .frame(height: 260)
         .clipShape(RoundedRectangle(cornerRadius: 20))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20)
+                .strokeBorder(Color("Dark3"), lineWidth: 1)
+        }
     }
 }
 
 #Preview {
-    RecipeCardView(recipe: RecipeConnectedUser(id: 1, title: "Vegetable Fruit SaladVegetable Fruit SaladVegetable Fruit Salad", recipeCoverPictureUrl1:  "recipe_cover_picture_url_1_example.jpg"))
+    RecipeCardView(recipe: RecipeConnectedUser(id: 1, title: "Vegetable Fruit SaladVegetable Fruit SaladVegetable Fruit Salad", recipeCoverPictureUrl1:  "recipe_cover_picture_url_1_20241206213130_CCD6CA1F-2E34-4D4F-8BCC-BB5723EA52AF"))
     .frame(width: 183)
 }
