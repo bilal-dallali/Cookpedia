@@ -23,6 +23,12 @@ struct MyProfilePageView: View {
     @State private var username: String = "unknwon"
     
     var body: some View {
+        
+        let columns = [
+                    GridItem(.flexible(), spacing: 16), // Colonnes flexibles avec espacement
+                    GridItem(.flexible(), spacing: 16)
+                ]
+        
         NavigationStack {
             VStack {
                 ScrollView {
@@ -232,7 +238,7 @@ struct MyProfilePageView: View {
                                 .frame(maxWidth: .infinity)
                             }
                             if isRecipeSelected {
-                                LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 0)], spacing: 16) {
+                                LazyVGrid(columns: columns, spacing: 16) {
                                     
                                     ForEach(recipes, id: \.id) { recipe in
                                         Button {
@@ -240,11 +246,14 @@ struct MyProfilePageView: View {
                                             print("ghbj \(recipe.id)")
                                         } label: {
                                             RecipeCardView(recipe: recipe)
+                                                .frame(height: 260) // Hauteur fixe pour éviter les superpositions
+                                                .clipShape(RoundedRectangle(cornerRadius: 20))
                                         }
-
+                                        
                                     }
                                     
                                 }
+                                //.padding(.horizontal, 16)
                                 .onAppear {
                                     guard let currentUser = userSession.first else {
                                         print("Failed to decode userId")
