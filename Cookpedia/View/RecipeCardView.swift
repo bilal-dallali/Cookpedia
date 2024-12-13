@@ -14,16 +14,18 @@ struct RecipeCardView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipe.recipeCoverPictureUrl1).")) { image in
+                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipe.recipeCoverPictureUrl1).jpg")) { image in
                     image
-                        .resizable()
-                    //.clipShape(RoundedRectangle(cornerRadius: 20))
-                } placeholder: {
-                    Image("vegetable-fruit-salad")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .clipped()
-                        .frame(width: geometry.size.width)
+                        .frame(width: geometry.size.width, height: 260)
+                } placeholder: {
+                    Image("original-pizza")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipped()
+                        .frame(width: geometry.size.width, height: 260)
                 }
                 
                 
@@ -70,7 +72,7 @@ struct RecipeCardView: View {
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay {
                 RoundedRectangle(cornerRadius: 20)
-                    .strokeBorder(Color("MyOrange"), lineWidth: 3)
+                    .strokeBorder(Color("Dark3"), lineWidth: 1)
             }
         }
     }

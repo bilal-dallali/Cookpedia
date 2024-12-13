@@ -24,10 +24,7 @@ struct MyProfilePageView: View {
     
     var body: some View {
         
-        let columns = [
-                    GridItem(.flexible(), spacing: 16), // Colonnes flexibles avec espacement
-                    GridItem(.flexible(), spacing: 16)
-                ]
+        let columns = [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)]
         
         NavigationStack {
             VStack {
@@ -232,28 +229,22 @@ struct MyProfilePageView: View {
                                             }
                                         }
                                     }
-                                    
                                 }
                                 .frame(height: 41)
                                 .frame(maxWidth: .infinity)
                             }
                             if isRecipeSelected {
-                                LazyVGrid(columns: columns, spacing: 16) {
-                                    
+                                LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                     ForEach(recipes, id: \.id) { recipe in
                                         Button {
                                             //WelcomeView()
                                             print("ghbj \(recipe.id)")
                                         } label: {
                                             RecipeCardView(recipe: recipe)
-                                                .frame(height: 260) // Hauteur fixe pour éviter les superpositions
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                .frame(height: 260)
                                         }
-                                        
                                     }
-                                    
                                 }
-                                //.padding(.horizontal, 16)
                                 .onAppear {
                                     guard let currentUser = userSession.first else {
                                         print("Failed to decode userId")
