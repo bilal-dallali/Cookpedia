@@ -238,7 +238,7 @@ struct MyProfilePageView: View {
                                     ForEach(recipes, id: \.id) { recipe in
                                         Button {
                                             //WelcomeView()
-                                            print("ghbj \(recipe.id)")
+                                            print("recipe id: \(recipe.id)")
                                         } label: {
                                             RecipeCardView(recipe: recipe)
                                                 .frame(height: 260)

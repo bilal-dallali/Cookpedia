@@ -21,10 +21,8 @@ struct RecipeCardView: View {
                         .clipped()
                         .frame(width: geometry.size.width, height: 260)
                 } placeholder: {
-                    Image("original-pizza")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipped()
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color("Greyscale400"))
                         .frame(width: geometry.size.width, height: 260)
                 }
                 
@@ -33,7 +31,7 @@ struct RecipeCardView: View {
                     HStack {
                         Spacer()
                         Button {
-                            print("bookmark")
+                            print("bookmark \(recipe.id)")
                         } label: {
                             Circle()
                                 .foregroundStyle(Color("Primary900"))
