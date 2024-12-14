@@ -57,7 +57,7 @@ struct HomePageView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .lineSpacing(7)
                                         Button {
-                                            print("test123")
+                                            //
                                         } label: {
                                             Text("Read more")
                                                 .foregroundStyle(Color("Primary900"))

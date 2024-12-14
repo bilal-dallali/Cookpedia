@@ -31,7 +31,7 @@ struct RecipeCardView: View {
                     HStack {
                         Spacer()
                         Button {
-                            print("bookmark \(recipe.id)")
+                            //print("bookmark \(recipe.id)")
                         } label: {
                             Circle()
                                 .foregroundStyle(Color("Primary900"))

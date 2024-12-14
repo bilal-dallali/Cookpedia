@@ -99,15 +99,13 @@ struct CreateRecipeView: View {
                                                 Ingredients(index: index + 1, ingredient: ingredient)
                                             }
                                         ) else {
-                                            print("Failed to encode ingredients to JSON")
                                             return
                                         }
                                         
                                         let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
                                         
-                                        print("ingredentsJSON: \(ingredientsJson)")
                                         
-                                        // Convertir les instructions en JSON
+                                        // Put instruction JSON
                                         guard let instructionsData = try? encoder.encode(
                                             instructions.enumerated().map { index, instruction in
                                                 Instructions(
@@ -119,13 +117,9 @@ struct CreateRecipeView: View {
                                                 )
                                             }
                                         ) else {
-                                            print("Failed to encode instructions to JSON")
                                             return
                                         }
                                         let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
-                                        
-                                        print("Ingredients JSON: \(ingredientsJson)")
-                                        print("Instructions JSON: \(instructionsJson)")
                                         
                                         var instructionImages: [(UIImage, String)] = []
                                         
@@ -133,18 +127,13 @@ struct CreateRecipeView: View {
                                             instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
                                         }
                                         
-                                        print("instruction images: \(instructionImages)")
                                         guard let currentUser = userSession.first else {
-                                            print("Failed to decode userId")
                                             return
                                         }
                                         
                                         guard let userId = Int(currentUser.userId) else {
-                                            print("Failed to convert userId to Int")
                                             return
                                         }
-                                        
-                                        print("User id: \(userId)")
                                         
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         
@@ -152,7 +141,6 @@ struct CreateRecipeView: View {
                                         apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                             switch result {
                                             case .success:
-                                                print("Recipe successfully uploaded")
                                                 isSavedRecipe = true
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                     isSavedRecipe = false
@@ -188,15 +176,12 @@ struct CreateRecipeView: View {
                                                 Ingredients(index: index + 1, ingredient: ingredient)
                                             }
                                         ) else {
-                                            print("Failed to encode ingredients to JSON")
                                             return
                                         }
                                         
                                         let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
                                         
-                                        print("ingredentsJSON: \(ingredientsJson)")
-                                        
-                                        // Convertir les instructions en JSON
+                                        // Put instructions JSON
                                         guard let instructionsData = try? encoder.encode(
                                             instructions.enumerated().map { index, instruction in
                                                 Instructions(
@@ -208,13 +193,9 @@ struct CreateRecipeView: View {
                                                 )
                                             }
                                         ) else {
-                                            print("Failed to encode instructions to JSON")
                                             return
                                         }
                                         let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
-                                        
-                                        print("Ingredients JSON: \(ingredientsJson)")
-                                        print("Instructions JSON: \(instructionsJson)")
                                         
                                         var instructionImages: [(UIImage, String)] = []
                                         
@@ -222,18 +203,14 @@ struct CreateRecipeView: View {
                                             instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
                                         }
                                         
-                                        print("instruction images: \(instructionImages)")
                                         
                                         guard let currentUser = userSession.first else {
-                                            print("Failed to decode userId")
                                             return
                                         }
                                         
                                         guard let userId = Int(currentUser.userId) else {
-                                            print("Failed to convert userId to Int")
                                             return
                                         }
-                                        print("userId: \(userId)")
                                         
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         
@@ -241,7 +218,6 @@ struct CreateRecipeView: View {
                                         apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
                                             switch result {
                                             case .success:
-                                                print("Recipe successfully uploaded")
                                                 isPublishedRecipe = true
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                     isPublishedRecipe = false

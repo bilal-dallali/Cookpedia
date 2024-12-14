@@ -98,8 +98,6 @@ struct CountryView: View {
             VStack {
                 if selectedCountry != nil {
                     NavigationLink {
-                        //print("Selected country: \(selectedCountry?.name ?? "No country selected")")
-                        //CookingLevelView(country: $country)
                         CookingLevelView(country: $country)
                     } label: {
                         Text("Continue")
@@ -115,17 +113,13 @@ struct CountryView: View {
                         country = selectedCountry?.name ?? ""
                     }
                 } else {
-                    Button {
-                        print("Selected country: \(selectedCountry?.name ?? "No country selected")")
-                    } label: {
-                        Text("Continue")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 58)
-                            .background(Color("DisabledButton"))
-                            .clipShape(.rect(cornerRadius: .infinity))
-                    }
+                    Text("Continue")
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 16))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 58)
+                        .background(Color("DisabledButton"))
+                        .clipShape(.rect(cornerRadius: .infinity))
                 }
                 Spacer()
             }

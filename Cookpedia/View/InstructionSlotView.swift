@@ -177,6 +177,6 @@ struct InstructionSlotView: View {
 }
 
 #Preview {
-    InstructionSlotView(instruction: .constant(""), images: .constant([UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!]), instructionPictureUrl1: .constant(""), instructionPictureUrl2: .constant(""), instructionPictureUrl3: .constant(""), onDelete: {  print("Delete tapped") }, number: 0)
+    InstructionSlotView(instruction: .constant(""), images: .constant([UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!, UIImage(named: "sweet-spicy-beef-soup-recipe")!]), instructionPictureUrl1: .constant(""), instructionPictureUrl2: .constant(""), instructionPictureUrl3: .constant(""), onDelete: { }, number: 0)
         .padding(.horizontal, 24)
 }

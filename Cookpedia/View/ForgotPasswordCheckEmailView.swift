@@ -117,12 +117,10 @@ struct ForgotPasswordCheckEmailView: View {
                         apiPostManager.verifyResetCode(email: email, code: code.joined()) { result in
                             switch result {
                             case .success:
-                                print("OTP Verified!")
                                 isVerified = true
                                 // Handle successful verification, e.g., navigate to reset password screen
                             case .failure(let error):
                                 errorMessage = error.localizedDescription
-                                print("OTP not verified!")
                             }
                         }
                     } label: {

@@ -246,86 +246,68 @@ struct LoginView: View {
                     if email != "" && password != "" {
                         if isValidEmail(email) {
                             Button {
-                                print("\(email)\n\(password)")
                                 isLoading = true
                                 apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
                                     switch result {
                                     case .success(let (token, id)):
-                                        print("Token: \(token)")
                                         // Get the userId from the token
                                         var userId: String = String(id)
-                                        print("Your userId is: \(id)")
                                         // Store session in SwiftData
                                         let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         //UserSession.shared = userSession
                                         do {
                                             try context.save()
-                                            print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
-                                            print("userssession id: \(userSession.userId)")
-                                            print("usersession token: \(userSession.authToken)")
-                                            print("usersession remember: \(userSession.isRemembered)")
-                                            print("usersession email: \(userSession.email)")
                                         } catch {
                                             print("Failed to save user session: \(error.localizedDescription)")
                                         }
-                                        print("USER SUCCESSFULLY CONNECTED!!!")
                                         loadingScreen = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                             self.redirectHomePage = true
                                             loadingScreen = false
                                         }
                                     case .failure(let error):
-                                        print("Registration failed: \(error.localizedDescription)")
                                         switch error {
                                         case .invalidUrl:
                                             // afficher un message d'erreur pour une URL invalide
                                             errorMessage = "URL invalid"
                                             alertUsersExists = true
-                                            print("URL INVALIDE !!!!!")
                                             break
                                         case .invalidData:
                                             // afficher un message d'erreur pour des données invalides
                                             errorMessage = "Your datas are invalid, please try again later!"
                                             alertUsersExists = true
-                                            print("DATA INVALID !!!")
                                             break
                                         case .invalidCredentials:
                                             // afficher un message d'erreur pour un mot de passe invalide
                                             errorMessage = "Incorrect password"
                                             alertUsersExists = true
-                                            print("INVALID PASSWORD!!!")
                                             break
                                         case .userNotFound:
                                             // Afficher un message d'erreur pour un utilisateur non trouvé
                                             errorMessage = "User not found"
                                             alertUsersExists = true
-                                            print("USER NOT FOUND!!!")
                                             break
                                             
                                         case .emailAlreadyExists:
                                             // afficher un message d'erreur pour un e-mail déjà existant
                                             errorMessage = "This email address is already registered"
                                             alertUsersExists = true
-                                            print("EMAIL EXISTS !!!")
                                             break
                                         case .usernameAlreadyExists:
                                             // afficher un message d'erreur pour un nom d'utilisateur déjà existant
                                             errorMessage = "This username is already registered"
                                             alertUsersExists = true
-                                            print("USERNAME EXISTS !!!!")
                                             break
                                         case .phoneNumberAlreadyExists:
                                             // afficher un message d'erreur pour un numéro de téléphone déjà existant
                                             errorMessage = "This phone number is already registered"
                                             alertUsersExists = true
-                                            print("PHONE NUMBER EXISTS !!!!")
                                             break
                                         case .serverError:
                                             // afficher un message d'erreur pour une erreur du serveur
                                             errorMessage = "Server error"
                                             alertUsersExists = true
-                                            print("SERVER ERROR!!!!")
                                             break
                                         }
                                     }

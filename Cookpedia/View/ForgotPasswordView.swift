@@ -98,7 +98,6 @@ struct ForgotPasswordView: View {
                                     showOTPScreen = true
                                 case .failure(let error):
                                     errorMessage = error.localizedDescription
-                                    print(errorMessage ?? "")
                                     if error.localizedDescription.contains("User not found") {
                                         emailDoesntExist = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {

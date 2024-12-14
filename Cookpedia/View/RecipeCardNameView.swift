@@ -17,7 +17,7 @@ struct RecipeCardNameView: View {
     
     var body: some View {
         Button {
-            print("pol")
+            //
         } label: {
             ZStack {
                 Image(image)

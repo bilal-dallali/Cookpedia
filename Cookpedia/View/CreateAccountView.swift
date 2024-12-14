@@ -365,16 +365,11 @@ struct CreateAccountView: View {
                                         apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe) { result in
                                             switch result {
                                             case .success(let (token, id)):
-                                                print("User registered successfully")
                                                 var userId: String = String(id)
-                                                print("Your user id is \(userId)")
                                                 let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                                 context.insert(userSession)
                                                 do {
                                                     try context.save()
-                                                    print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
-                                                    print("usersession token: \(userSession.authToken)")
-                                                    print("usersession remember: \(userSession.isRemembered)")
                                                 } catch {
                                                     print("Failed to save user session: \(error.localizedDescription)")
                                                 }
@@ -384,56 +379,47 @@ struct CreateAccountView: View {
                                                     loadingScreen = false
                                                 }
                                             case .failure(let error):
-                                                print("Registration failed: \(error.localizedDescription)")
                                                 switch error {
                                                 case .invalidUrl:
                                                     // afficher un message d'erreur pour une URL invalide
                                                     errorMessage = "URL invalid"
                                                     alertUsersExists = true
-                                                    print("URL INVALIDE !!!!!")
                                                     break
                                                 case .invalidData:
                                                     // afficher un message d'erreur pour des données invalides
                                                     errorMessage = "Your datas are invalid, please try again later!"
                                                     alertUsersExists = true
-                                                    print("DATA INVALID !!!")
                                                     break
                                                 case .invalidCredentials:
                                                     // afficher un message d'erreur pour un mot de passe invalide
                                                     errorMessage = "Incorrect password"
                                                     alertUsersExists = true
-                                                    print("INVALID CREDENTIALS!!!")
                                                     break
                                                 case .userNotFound:
                                                     // Afficher un message d'erreur pour un utilisateur non trouvé
                                                     errorMessage = "User not found"
                                                     alertUsersExists = true
-                                                    print("USER NOT FOUND!!!")
                                                     break
                                                     
                                                 case .emailAlreadyExists:
                                                     // afficher un message d'erreur pour un e-mail déjà existant
                                                     errorMessage = "This email address is already registered"
                                                     alertUsersExists = true
-                                                    print("EMAIL EXISTS !!!")
                                                     break
                                                 case .usernameAlreadyExists:
                                                     // afficher un message d'erreur pour un nom d'utilisateur déjà existant
                                                     errorMessage = "This username is already registered"
                                                     alertUsersExists = true
-                                                    print("USERNAME EXISTS !!!!")
                                                     break
                                                 case .phoneNumberAlreadyExists:
                                                     // afficher un message d'erreur pour un numéro de téléphone déjà existant
                                                     errorMessage = "This phone number is already registered"
                                                     alertUsersExists = true
-                                                    print("PHONE NUMBER EXISTS !!!!")
                                                     break
                                                 case .serverError:
                                                     // afficher un message d'erreur pour une erreur du serveur
                                                     errorMessage = "Server error"
                                                     alertUsersExists = true
-                                                    print("SERVER ERROR!!!!")
                                                     break
                                                 }
                                             }

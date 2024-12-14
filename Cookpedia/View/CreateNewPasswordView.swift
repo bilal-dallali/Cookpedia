@@ -231,15 +231,9 @@ struct CreateNewPasswordView: View {
                                         context.insert(userSession)
                                         do {
                                             try context.save()
-                                            print("USER SESSION SUCCESSFULLY SAVED TO SWIFTDATA")
-                                            print("usersession email: \(userSession.email)")
-                                            print("usersession id: \(userSession.userId)")
-                                            print("usersession token: \(userSession.authToken)")
-                                            print("usersession remember: \(userSession.isRemembered)")
                                         } catch {
                                             print("Failed to save user session: \(error.localizedDescription)")
                                         }
-                                        print("Password reset successfully!")
                                         withAnimation(.smooth) {
                                             loadingScreen = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
@@ -248,9 +242,7 @@ struct CreateNewPasswordView: View {
                                             }
                                         }
                                     case .failure(let error):
-                                        print("password didn't reset")
                                         errorMessage = error.localizedDescription
-                                        print(errorMessage ?? "error")
                                     }
                                 }
                             } label: {

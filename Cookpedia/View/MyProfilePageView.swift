@@ -23,9 +23,6 @@ struct MyProfilePageView: View {
     @State private var username: String = "unknwon"
     
     var body: some View {
-        
-        let columns = [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)]
-        
         NavigationStack {
             VStack {
                 ScrollView {
@@ -84,7 +81,7 @@ struct MyProfilePageView: View {
                                     }
                                     Spacer()
                                     Button {
-                                        print("test")
+                                        //
                                     } label: {
                                         HStack(spacing: 8) {
                                             Image("edit")
@@ -109,7 +106,7 @@ struct MyProfilePageView: View {
                                     }
                                 HStack(spacing: 16) {
                                     Button {
-                                        print("recipes")
+                                        //
                                     } label: {
                                         VStack(spacing: 4) {
                                             Text("125")
@@ -128,7 +125,7 @@ struct MyProfilePageView: View {
                                                 .frame(width: 1)
                                         }
                                     Button {
-                                        print("following")
+                                        //
                                     } label: {
                                         VStack(spacing: 4) {
                                             Text("104")
@@ -147,7 +144,7 @@ struct MyProfilePageView: View {
                                                 .frame(width: 1)
                                         }
                                     Button {
-                                        print("followers")
+                                        //
                                     } label: {
                                         VStack(spacing: 4) {
                                             Text("5,278")
@@ -247,19 +244,16 @@ struct MyProfilePageView: View {
                                 }
                                 .onAppear {
                                     guard let currentUser = userSession.first else {
-                                        print("Failed to decode userId")
                                         return
                                     }
                                     
                                     guard let userId = Int(currentUser.userId) else {
-                                        print("Failed to convert userId to Int")
                                         return
                                     }
                                     
                                     apiGetManager.getConnectedUserRecipes(userId: userId) { result in
                                         switch result {
                                         case .success(let recipes):
-                                            print("recipes fetched successfull")
                                             DispatchQueue.main.async {
                                                 self.recipes = recipes
                                             }
@@ -281,15 +275,13 @@ struct MyProfilePageView: View {
                 .background(Color("Dark1"))
                 .onAppear {
                     guard let currentUser = userSession.first else {
-                        print("Failed to decode userId")
                         return
                     }
                     
                     guard let userId = Int(currentUser.userId) else {
-                        print("Failed to convert userId to Int")
                         return
                     }
-                    print("user id 2000 \(userId)")
+
                     apiGetManager.getConnectedUserUserData(userId: userId) { result in
                         switch result {
                         case .success(let user):

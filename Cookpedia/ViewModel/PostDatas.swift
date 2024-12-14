@@ -93,29 +93,22 @@ class APIPostRequest: ObservableObject {
                     completion(.failure(.invalidData))
                 }
             case 400:
-                print("400 server error")
                 // Decode the error message from the backend
                 if let data = data,
                    let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                    let errorMessage = json["error"] as? String {
-                    print("errorMessage :\(errorMessage)")
                     if errorMessage.contains("Email") {
                         completion(.failure(.emailAlreadyExists))
-                        print("email exist")
                     } else if errorMessage.contains("Username") {
                         completion(.failure(.usernameAlreadyExists))
-                        print("username exists")
                     } else if errorMessage.contains("Phone number") {
                         completion(.failure(.phoneNumberAlreadyExists))
-                        print("phone exists")
                     } else {
                         completion(.failure(.invalidData))
-                        print("failure invalid data1")
                         // Default case for unknown errors
                     }
                 } else {
                     completion(.failure(.invalidData))
-                    print("failure invalid data2")
                 }
                 
             case 500:
@@ -347,8 +340,6 @@ class APIPostRequest: ObservableObject {
         // Ajout des images des instructions (chaque instruction peut avoir plusieurs images)
         for (image, fileName) in instructionImages {
             appendImage(image, withName: "instructionImages", fileName: fileName)
-            print("filename \(fileName)")
-            print("image \(image)")
         }
         
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
