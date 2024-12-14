@@ -109,7 +109,7 @@ struct MyProfilePageView: View {
                                         //
                                     } label: {
                                         VStack(spacing: 4) {
-                                            Text("125")
+                                            Text("\(recipes.count)")
                                                 .foregroundStyle(Color("MyWhite"))
                                                 .font(.custom("Urbanist-Bold", size: 24))
                                             Text("recipes")
