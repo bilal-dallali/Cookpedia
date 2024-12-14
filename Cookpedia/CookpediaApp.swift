@@ -10,14 +10,6 @@ import SwiftData
 
 @main
 struct CookpediaApp: App {
-    
-//    let container: ModelContainer = {
-//        let schema = Schema([UserSession.self])
-//        let config = ModelConfiguration()
-//        let container = try! ModelContainer(for: schema, configurations: [])
-//        return container
-//    }()
-    
     var body: some Scene {
         WindowGroup {
             NavigationStack {

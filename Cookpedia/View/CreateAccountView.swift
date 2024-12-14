@@ -381,43 +381,35 @@ struct CreateAccountView: View {
                                             case .failure(let error):
                                                 switch error {
                                                 case .invalidUrl:
-                                                    // afficher un message d'erreur pour une URL invalide
                                                     errorMessage = "URL invalid"
                                                     alertUsersExists = true
                                                     break
                                                 case .invalidData:
-                                                    // afficher un message d'erreur pour des données invalides
                                                     errorMessage = "Your datas are invalid, please try again later!"
                                                     alertUsersExists = true
                                                     break
                                                 case .invalidCredentials:
-                                                    // afficher un message d'erreur pour un mot de passe invalide
                                                     errorMessage = "Incorrect password"
                                                     alertUsersExists = true
                                                     break
                                                 case .userNotFound:
-                                                    // Afficher un message d'erreur pour un utilisateur non trouvé
                                                     errorMessage = "User not found"
                                                     alertUsersExists = true
                                                     break
                                                     
                                                 case .emailAlreadyExists:
-                                                    // afficher un message d'erreur pour un e-mail déjà existant
                                                     errorMessage = "This email address is already registered"
                                                     alertUsersExists = true
                                                     break
                                                 case .usernameAlreadyExists:
-                                                    // afficher un message d'erreur pour un nom d'utilisateur déjà existant
                                                     errorMessage = "This username is already registered"
                                                     alertUsersExists = true
                                                     break
                                                 case .phoneNumberAlreadyExists:
-                                                    // afficher un message d'erreur pour un numéro de téléphone déjà existant
                                                     errorMessage = "This phone number is already registered"
                                                     alertUsersExists = true
                                                     break
                                                 case .serverError:
-                                                    // afficher un message d'erreur pour une erreur du serveur
                                                     errorMessage = "Server error"
                                                     alertUsersExists = true
                                                     break

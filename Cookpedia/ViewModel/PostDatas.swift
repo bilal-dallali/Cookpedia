@@ -33,7 +33,7 @@ class APIPostRequest: ObservableObject {
             if let key = key {
                 var fieldValue: String
 
-                // Convertir les types spécifiques avant de les ajouter au corps
+                // Convert specific types before adding it to the body
                 if let boolValue = value as? Bool {
                     fieldValue = boolValue ? "1" : "0"
                 } else if let value = value as? CustomStringConvertible {
@@ -42,7 +42,7 @@ class APIPostRequest: ObservableObject {
                     continue
                 }
 
-                // Ajouter au corps
+                // Add to body
                 body.append("--\(boundary)\r\n".data(using: .utf8)!)
                 body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
                 body.append(fieldValue.data(using: .utf8)!)
@@ -50,7 +50,7 @@ class APIPostRequest: ObservableObject {
             }
         }
         
-        // Ajouter le paramètre rememberMe
+        // Add rememberMe parameter
         body.append("--\(boundary)\r\n".data(using: .utf8)!)
         body.append("Content-Disposition: form-data; name=\"rememberMe\"\r\n\r\n".data(using: .utf8)!)
         body.append("\(rememberMe ? "true" : "false")\r\n".data(using: .utf8)!)
@@ -84,7 +84,7 @@ class APIPostRequest: ObservableObject {
             
             switch httpResponse.statusCode {
             case 201:
-                // Décoder le token depuis la réponse
+                // Decode token from response
                 if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
                    let token = json["token"] as? String, let id = json["userId"] as? Int {
                     completion(.success((token: token, id: id)))
@@ -241,7 +241,7 @@ class APIPostRequest: ObservableObject {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        // Ajouter le paramètre rememberMe dans le corps
+        // Add the parameters in the body
         let body = ["email": email, "newPassword": newPassword, "resetCode": resetCode, "rememberMe": rememberMe] as [String: Any]
         
         do {
@@ -259,7 +259,7 @@ class APIPostRequest: ObservableObject {
                 
                 switch httpResponse.statusCode {
                 case 200:
-                    // Décoder le token depuis la réponse
+                    // Decode JSON for response
                     if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
                        let token = json["token"] as? String, let id = json["id"] as? Int {
                         completion(.success((token: token, id: id)))
@@ -303,7 +303,7 @@ class APIPostRequest: ObservableObject {
         
         var body = Data()
         
-        // Ajouter les champs texte de base
+        // Add fields for text
         func appendField(_ name: String, value: String) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
@@ -323,7 +323,7 @@ class APIPostRequest: ObservableObject {
         appendField("instructions", value: recipe.instructions)
         appendField("isPublished", value: "\(isPublished)")
         
-        // Ajouter les images au corps de la requête
+        // Add images to the body request
         func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -333,11 +333,11 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
-        // Ajout des images des couvertures (sans traitement des noms)
+        // Add cover images
         appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: "recipeCoverPicture1.jpg")
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
-        // Ajout des images des instructions (chaque instruction peut avoir plusieurs images)
+        // Add instructions images
         for (image, fileName) in instructionImages {
             appendImage(image, withName: "instructionImages", fileName: fileName)
         }
