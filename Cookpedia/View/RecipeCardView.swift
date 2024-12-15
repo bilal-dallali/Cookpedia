@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RecipeCardView: View {
     
     let recipe: RecipeConnectedUser
+    @State private var isBookmarkSelected: Bool = false
+    var apiPostManager = APIPostRequest()
+    var apiGetManager = APIGetRequest()
+    @Environment(\.modelContext) var context
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
     var body: some View {
         GeometryReader { geometry in
@@ -31,18 +37,34 @@ struct RecipeCardView: View {
                     HStack {
                         Spacer()
                         Button {
-                            //print("bookmark \(recipe.id)")
+                            print("bookmark \(recipe.id)")
+                            guard let currentUser = userSession.first else {
+                                return
+                            }
+                            
+                            guard let userId = Int(currentUser.userId) else {
+                                return
+                            }
+                            print("userId \(userId)")
+                            print("bookmark selected \(isBookmarkSelected)")
+                            apiPostManager.toggleBookmark(userId: userId, recipeId: recipe.id, isBookmarked: isBookmarkSelected) { result in
+                                switch result {
+                                case .success:
+                                    isBookmarkSelected.toggle()
+                                case .failure:
+                                    print("failure")
+                                }
+                            }
                         } label: {
                             Circle()
                                 .foregroundStyle(Color("Primary900"))
                                 .frame(width: 36, height: 36)
                                 .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                 .overlay {
-                                    Image("bookmark-unselected")
+                                    Image(isBookmarkSelected ? "bookmark-selected" : "bookmark-unselected")
                                         .resizable()
                                         .frame(width: 20, height: 20)
                                 }
-                            
                         }
                         .padding(.top, 12)
                         .padding(.trailing, 12)
@@ -72,11 +94,33 @@ struct RecipeCardView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .strokeBorder(Color("Dark3"), lineWidth: 1)
             }
+            .onAppear {
+                
+                guard let currentUser = userSession.first else {
+                    return
+                }
+                
+                guard let userId = Int(currentUser.userId) else {
+                    return
+                }
+                
+                apiGetManager.getBookmark(userId: userId, recipeId: recipe.id) { result in
+                    switch result {
+                    case .success(let jsonResult):
+                        if jsonResult {
+                            print("bref \(userId) \(recipe.id) \(jsonResult)")
+                            isBookmarkSelected = true
+                        }
+                    case .failure(let error):
+                        print("failure \(error.localizedDescription)")
+                    }
+                }
+            }
         }
     }
 }
 
 #Preview {
     RecipeCardView(recipe: RecipeConnectedUser(id: 1, title: "Vegetable Fruit SaladVegetable Fruit SaladVegetable Fruit Salad", recipeCoverPictureUrl1:  "recipe_cover_picture_url_1_20241206213130_CCD6CA1F-2E34-4D4F-8BCC-BB5723EA52AF"))
-    .frame(width: 183)
+        .frame(width: 183)
 }

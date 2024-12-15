@@ -359,6 +359,32 @@ class APIPostRequest: ObservableObject {
             completion(.success("Recipe uploaded successfully"))
         }.resume()
     }
+    
+    func toggleBookmark(userId: Int, recipeId: Int, isBookmarked: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        let endpoint = isBookmarked ? "/recipes/bookmark" : "/recipes/bookmark"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isBookmarked ? "DELETE" : "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: Any] = [
+            "userId": userId,
+            "recipeId": recipeId
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }.resume()
+    }
 }
 
 enum APIPostError: Error {

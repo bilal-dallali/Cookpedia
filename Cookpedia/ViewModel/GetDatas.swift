@@ -47,16 +47,16 @@ class APIGetRequest: ObservableObject {
             completion(.failure(APIGetError.invalidUrl))
             return
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
                 return
             }
-
+            
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
                   let data = data else {
                 completion(.failure(APIGetError.invalidResponse))
@@ -69,6 +69,47 @@ class APIGetRequest: ObservableObject {
                 let recipes = try decoder.decode([RecipeConnectedUser].self, from: data)
                 completion(.success(recipes))
             } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    func getBookmark(userId: Int, recipeId: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+        let endpoint = "/recipes/bookmark/\(userId)/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error while fetching bookmark:", error.localizedDescription)
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]]
+                
+                // Check result
+                if let jsonResult = jsonResult, !jsonResult.isEmpty {
+                    print("Bookmark exists:", jsonResult)
+                    completion(.success(true))
+                } else {
+                    print("No bookmark found for userId \(userId) and recipeId \(recipeId)")
+                    completion(.success(false))
+                }
+            } catch {
+                print("Failed to parse JSON:", error.localizedDescription)
                 completion(.failure(error))
             }
         }.resume()
