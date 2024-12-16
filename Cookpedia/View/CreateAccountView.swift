@@ -296,7 +296,7 @@ struct CreateAccountView: View {
                                             
                                         }
                                     } else {
-                                        TextField(text: $password) {
+                                        TextField(text: $confirmPassword) {
                                             Text("Confirm Password")
                                                 .foregroundStyle(Color("Dark4"))
                                                 .font(.custom("Urbanist-Bold", size: 20))

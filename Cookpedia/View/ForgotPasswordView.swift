@@ -20,7 +20,7 @@ struct ForgotPasswordView: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                VStack(alignment:.leading, spacing: 32) {
+                VStack(alignment: .leading, spacing: 32) {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Forgot Password 🔑")
                             .foregroundStyle(Color("MyWhite"))
@@ -31,8 +31,8 @@ struct ForgotPasswordView: View {
                     }
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Email")
-                        TextField("", text: $email)
-                            .placeholder(when: email.isEmpty) {
+                        VStack(spacing: 8) {
+                            TextField(text: $email) {
                                 Text("Email")
                                     .foregroundStyle(Color("Dark4"))
                                     .font(.custom("Urbanist-Bold", size: 20))
@@ -41,13 +41,15 @@ struct ForgotPasswordView: View {
                             .keyboardType(.default)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 41)
-                            .overlay {
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundStyle(Color("Primary900"))
-                                    .padding(.top, 33)
+                            .frame(height: 32)
+                            .onSubmit {
+                                
                             }
+                            Rectangle()
+                                .foregroundStyle(Color("Primary900"))
+                                .frame(height: 1)
+                        }
+
                         if emailInvalid {
                             HStack(spacing: 6) {
                                 Image("red-alert")

@@ -49,8 +49,8 @@ struct LoginView: View {
                                 Text("Email")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
-                                TextField("", text: $email)
-                                    .placeholder(when: email.isEmpty) {
+                                VStack(spacing: 8) {
+                                    TextField(text: $email) {
                                         Text("Email")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -59,13 +59,14 @@ struct LoginView: View {
                                     .keyboardType(.default)
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
-                                    .frame(height: 41)
-                                    .overlay {
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 33)
+                                    .frame(height: 32)
+                                    .onSubmit {
+                                        
                                     }
+                                    Rectangle()
+                                        .foregroundStyle(Color("Primary900"))
+                                        .frame(height: 1)
+                                }
                                 if emailInvalid {
                                     HStack(spacing: 6) {
                                         Image("red-alert")
@@ -86,10 +87,10 @@ struct LoginView: View {
                                 Text("Password")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
-                                HStack {
-                                    if isPasswordHidden {
-                                        SecureField("", text: $password)
-                                            .placeholder(when: password.isEmpty) {
+                                VStack(spacing: 8) {
+                                    HStack {
+                                        if isPasswordHidden {
+                                            SecureField(text: $password) {
                                                 Text("Password")
                                                     .foregroundStyle(Color("Dark4"))
                                                     .font(.custom("Urbanist-Bold", size: 20))
@@ -98,9 +99,12 @@ struct LoginView: View {
                                             .keyboardType(.default)
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
-                                    } else {
-                                        TextField("", text: $password)
-                                            .placeholder(when: password.isEmpty) {
+                                            .frame(height: 32)
+                                            .onSubmit {
+                                                
+                                            }
+                                        } else {
+                                            TextField(text: $password) {
                                                 Text("Password")
                                                     .foregroundStyle(Color("Dark4"))
                                                     .font(.custom("Urbanist-Bold", size: 20))
@@ -109,23 +113,21 @@ struct LoginView: View {
                                             .keyboardType(.default)
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
+                                            .frame(height: 32)
+                                            .onSubmit {
+                                                
+                                            }
+                                        }
+                                        Button {
+                                            isPasswordHidden.toggle()
+                                        } label: {
+                                            Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                        }
+
                                     }
-                                    Spacer()
-                                    Button {
-                                        isPasswordHidden.toggle()
-                                    } label: {
-                                        Image(isPasswordHidden ? "hidden-eye" : "eye")
-                                            .resizable()
-                                            .frame(width: 28, height: 28)
-                                    }
-                                    
-                                }
-                                .frame(height: 41)
-                                .overlay {
                                     Rectangle()
-                                        .frame(height: 1)
                                         .foregroundStyle(Color("Primary900"))
-                                        .padding(.top, 33)
+                                        .frame(height: 1)
                                 }
                             }
                             
