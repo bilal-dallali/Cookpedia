@@ -109,23 +109,6 @@ struct CompleteProfileView: View {
                                 Text("Full Name")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
-//                                TextField("", text: $fullName)
-//                                    .placeholder(when: fullName.isEmpty) {
-//                                        Text("Full Name")
-//                                            .foregroundStyle(Color("Dark4"))
-//                                            .font(.custom("Urbanist-Bold", size: 20))
-//                                    }
-//                                    .textInputAutocapitalization(.never)
-//                                    .keyboardType(.default)
-//                                    .font(.custom("Urbanist-Bold", size: 20))
-//                                    .foregroundStyle(Color("MyWhite"))
-//                                    .frame(height: 41)
-//                                    .overlay {
-//                                        Rectangle()
-//                                            .frame(height: 1)
-//                                            .foregroundStyle(Color("Primary900"))
-//                                            .padding(.top, 40)
-//                                    }
                                 VStack(spacing: 8) {
                                     TextField(text: $fullName) {
                                         Text("Full Name")
@@ -137,34 +120,34 @@ struct CompleteProfileView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .frame(height: 32)
+                                    .onSubmit {
+                                        
+                                    }
                                     Rectangle()
                                         .foregroundStyle(Color("Primary900"))
                                         .frame(height: 1)
                                 }
                             }
                             
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 16) {
                                 Text("Phone Number")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
-                                TextField("", text: $phoneNumber)
-                                    .placeholder(when: phoneNumber.isEmpty) {
+                                VStack(spacing: 8) {
+                                    TextField(text: $phoneNumber) {
                                         Text("Phone Number")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .textInputAutocapitalization(.never)
                                     .keyboardType(.numberPad)
-                                    .scrollDismissesKeyboard(.immediately)
-                                    .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundStyle(Color("MyWhite"))
-                                    .frame(height: 41)
-                                    .overlay {
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 40)
-                                    }
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                    .frame(height: 32)
+                                    Rectangle()
+                                        .foregroundStyle(Color("Primary900"))
+                                        .frame(height: 1)
+                                }
                                 if phoneNumberInvalid {
                                     HStack(spacing: 6) {
                                         Image("red-alert")
@@ -181,7 +164,7 @@ struct CompleteProfileView: View {
                                 }
                             }
                             
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 16) {
                                 Text("Gender")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
@@ -196,6 +179,7 @@ struct CompleteProfileView: View {
                                             Spacer()
                                             Image(isDropDownMenuActivated ? "arrow-up" : "arrow-down")
                                         }
+                                        .frame(height: 32)
                                         Rectangle()
                                             .frame(height: 1)
                                             .foregroundStyle(Color("Primary900"))
@@ -204,7 +188,7 @@ struct CompleteProfileView: View {
                             }
                             
                             
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 16) {
                                 Text("Date of Birth")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
@@ -219,6 +203,7 @@ struct CompleteProfileView: View {
                                             Spacer()
                                             Image("calendar")
                                         }
+                                        .frame(height: 32)
                                     }
                                     .sheet(isPresented: $showDatePicker) {
                                         VStack(spacing: 0) {
@@ -251,27 +236,26 @@ struct CompleteProfileView: View {
                                 }
                             }
                             
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 16) {
                                 Text("City")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
-                                TextField("", text: $city)
-                                    .placeholder(when: city.isEmpty) {
+                                VStack(spacing: 8) {
+                                    TextField(text: $city) {
                                         Text("City")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .textInputAutocapitalization(.never)
                                     .keyboardType(.default)
-                                    .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundStyle(Color("MyWhite"))
-                                    .frame(height: 41)
-                                    .overlay {
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 40)
-                                    }
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                    .frame(height: 32)
+                                    .onSubmit {}
+                                    Rectangle()
+                                        .foregroundStyle(Color("Primary900"))
+                                        .frame(height: 1)
+                                }
                             }
                         }
                     }
@@ -350,6 +334,7 @@ struct CompleteProfileView: View {
             }
             .onTapGesture {
                 isDropDownMenuActivated = false
+                dismissKeyboard()
             }
             
             if isDropDownMenuActivated {

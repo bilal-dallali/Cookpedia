@@ -88,8 +88,8 @@ struct CreateAccountView: View {
                             Text("Username")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("", text: $username)
-                                .placeholder(when: username.isEmpty) {
+                            VStack(spacing: 8) {
+                                TextField(text: $username) {
                                     Text("Username")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
@@ -98,36 +98,38 @@ struct CreateAccountView: View {
                                 .keyboardType(.default)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                                .frame(height: 41)
-                                .overlay {
-                                    Rectangle()
-                                        .frame(height: 1)
-                                        .foregroundStyle(Color("Primary900"))
-                                        .padding(.top, 33)
+                                .frame(height: 32)
+                                .onSubmit {
+                                    
                                 }
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
                         }
                         
                         VStack(alignment: .leading, spacing: 16) {
                             Text("Email")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("", text: $email)
-                                .placeholder(when: email.isEmpty) {
+                            VStack(spacing: 8) {
+                                TextField(text: $email) {
                                     Text("Email")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
                                 .textInputAutocapitalization(.never)
-                                .keyboardType(.emailAddress)
+                                .keyboardType(.default)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                                .frame(height: 41)
-                                .overlay {
-                                    Rectangle()
-                                        .frame(height: 1)
-                                        .foregroundStyle(Color("Primary900"))
-                                        .padding(.top, 33)
+                                .frame(height: 32)
+                                .onSubmit {
+                                    
                                 }
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
                             
                             if emailInvalid {
                                 HStack(spacing: 6) {
@@ -149,23 +151,24 @@ struct CreateAccountView: View {
                             Text("Confirm Email")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            TextField("", text: $confirmEmail)
-                                .placeholder(when: confirmEmail.isEmpty) {
+                            VStack(spacing: 8) {
+                                TextField(text: $confirmEmail) {
                                     Text("Confirm Email")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
                                 .textInputAutocapitalization(.never)
-                                .keyboardType(.emailAddress)
+                                .keyboardType(.default)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                                .frame(height: 41)
-                                .overlay {
-                                    Rectangle()
-                                        .frame(height: 1)
-                                        .foregroundStyle(Color("Primary900"))
-                                        .padding(.top, 33)
+                                .frame(height: 32)
+                                .onSubmit {
+                                    
                                 }
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
                             
                             if emailNotIdentical {
                                 HStack(spacing: 6) {
@@ -187,10 +190,10 @@ struct CreateAccountView: View {
                             Text("Password")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            HStack {
-                                if isPasswordHidden {
-                                    SecureField("", text: $password)
-                                        .placeholder(when: password.isEmpty) {
+                            VStack(spacing: 8) {
+                                HStack {
+                                    if isPasswordHidden {
+                                        SecureField(text: $password) {
                                             Text("Password")
                                                 .foregroundStyle(Color("Dark4"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
@@ -199,9 +202,12 @@ struct CreateAccountView: View {
                                         .keyboardType(.default)
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 20))
-                                } else {
-                                    TextField("", text: $password)
-                                        .placeholder(when: password.isEmpty) {
+                                        .frame(height: 32)
+                                        .onSubmit {
+                                            
+                                        }
+                                    } else {
+                                        TextField(text: $password) {
                                             Text("Password")
                                                 .foregroundStyle(Color("Dark4"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
@@ -210,23 +216,21 @@ struct CreateAccountView: View {
                                         .keyboardType(.default)
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 20))
+                                        .frame(height: 32)
+                                        .onSubmit {
+                                            
+                                        }
+                                    }
+                                    Button {
+                                        isPasswordHidden.toggle()
+                                    } label: {
+                                        Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                    }
+
                                 }
-                                Spacer()
-                                Button {
-                                    isPasswordHidden.toggle()
-                                } label: {
-                                    Image(isPasswordHidden ? "hidden-eye" : "eye")
-                                        .resizable()
-                                        .frame(width: 28, height: 28)
-                                }
-                                
-                            }
-                            .frame(height: 41)
-                            .overlay {
                                 Rectangle()
-                                    .frame(height: 1)
                                     .foregroundStyle(Color("Primary900"))
-                                    .padding(.top, 33)
+                                    .frame(height: 1)
                             }
                             
                             if password != "" && password.count <= 8 {
@@ -275,10 +279,10 @@ struct CreateAccountView: View {
                             Text("Confirm Password")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
-                            HStack {
-                                if isConfirmPasswordHidden {
-                                    SecureField("", text: $confirmPassword)
-                                        .placeholder(when: confirmPassword.isEmpty) {
+                            VStack(spacing: 8) {
+                                HStack {
+                                    if isConfirmPasswordHidden {
+                                        SecureField(text: $confirmPassword) {
                                             Text("Confirm Password")
                                                 .foregroundStyle(Color("Dark4"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
@@ -287,9 +291,12 @@ struct CreateAccountView: View {
                                         .keyboardType(.default)
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 20))
-                                } else {
-                                    TextField("", text: $confirmPassword)
-                                        .placeholder(when: confirmPassword.isEmpty) {
+                                        .frame(height: 32)
+                                        .onSubmit {
+                                            
+                                        }
+                                    } else {
+                                        TextField(text: $password) {
                                             Text("Confirm Password")
                                                 .foregroundStyle(Color("Dark4"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
@@ -298,23 +305,21 @@ struct CreateAccountView: View {
                                         .keyboardType(.default)
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 20))
+                                        .frame(height: 32)
+                                        .onSubmit {
+                                            
+                                        }
+                                    }
+                                    Button {
+                                        isConfirmPasswordHidden.toggle()
+                                    } label: {
+                                        Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
+                                    }
+
                                 }
-                                Spacer()
-                                Button {
-                                    isConfirmPasswordHidden.toggle()
-                                } label: {
-                                    Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
-                                        .resizable()
-                                        .frame(width: 28, height: 28)
-                                }
-                                
-                            }
-                            .frame(height: 41)
-                            .overlay {
                                 Rectangle()
-                                    .frame(height: 1)
                                     .foregroundStyle(Color("Primary900"))
-                                    .padding(.top, 33)
+                                    .frame(height: 1)
                             }
                             
                             if passwordNotIdentical {
@@ -511,6 +516,9 @@ struct CreateAccountView: View {
                 ToolbarItem(placement: .principal) {
                     Image("progress-bar-100")
                 }
+            }
+            .onTapGesture {
+                dismissKeyboard()
             }
             if loadingScreen {
                 ModalView(title: "Sign Up Successful", message: "Your account has been created. Please wait a moment, we are preparing for you...")

@@ -29,7 +29,6 @@ struct CountryView: View {
     @State private var selectedCountry: Country?
     @State private var searchText: String = ""
     @State var country: String = ""
-    @FocusState private var isTextFieldFocused: Bool
     
     var filteredCountries: [Country] {
         if searchText.isEmpty {
@@ -53,30 +52,23 @@ struct CountryView: View {
                     }
                     
                     HStack(spacing: 12) {
-                        if isTextFieldFocused {
-                            Image("magnifying-glass-focused")
-                                .padding(.leading, 20)
-                        } else {
-                            Image("magnifying-glass-inactive")
-                                .padding(.leading, 20)
+                        Image(searchText.isEmpty ? "magnifying-glass-inactive" : "magnifying-glass-focused")
+                            .padding(.leading, 20)
+                        TextField(text: $searchText) {
+                            Text("Search Country")
+                                .foregroundStyle(Color("Greyscale600"))
+                                .font(.custom("Urbanist-Regular", size: 16))
                         }
-                        TextField("", text: $searchText)
-                            .padding(.trailing, 20)
-                            .autocapitalization(.none)
-                            .autocorrectionDisabled(true)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Regular", size: 18))
-                            .focused($isTextFieldFocused)
-                            .overlay(alignment: .bottomLeading) {
-                                Text(isTextFieldFocused == false && searchText.isEmpty ? "Search Country" : "")
-                                    .foregroundStyle(Color("Greyscale600"))
-                                    .font(.custom("Urbanist-Regular", size: 16))
-                            }
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled(true)
+                        .keyboardType(.default)
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Regular", size: 18))
+                        .padding(.trailing, 20)
                     }
                     .frame(height: 58)
                     .background(Color("Dark2"))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    
                     VStack(spacing: 20) {
                         ForEach(filteredCountries, id: \.name) { country in
                             CountryDetailsView(country: country, selectedCountry: $selectedCountry)

@@ -39,26 +39,6 @@ struct WelcomeView: View {
                                 .foregroundStyle(Color("Dark4"))
                         }
                     VStack(spacing: 24) {
-                        Button {
-                            //
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image("google-logo")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                Text("Continue with Google")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("urbanist-SemiBold", size: 16))
-                                    .frame(height: 60)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: .infinity)
-                                    .stroke(Color("Dark4"), lineWidth: 1)
-                            }
-                        }
                         NavigationLink {
                             CountryView()
                         } label: {
@@ -81,8 +61,6 @@ struct WelcomeView: View {
                                 .background(Color("Dark4"))
                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
                         }
-
-
                     }
                 }
                 .padding(.horizontal, 48)
