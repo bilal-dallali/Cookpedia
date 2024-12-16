@@ -80,8 +80,8 @@ struct MyProfilePageView: View {
                                             .font(.custom("Urbanist-Medium", size: 14))
                                     }
                                     Spacer()
-                                    Button {
-                                        //
+                                    NavigationLink {
+                                        EditProfileView()
                                     } label: {
                                         HStack(spacing: 8) {
                                             Image("edit")

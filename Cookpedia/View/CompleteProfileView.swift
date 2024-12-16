@@ -79,27 +79,23 @@ struct CompleteProfileView: View {
                                 Button {
                                     isImagePickerPresented = true
                                 } label: {
-                                    ZStack {
-                                        if let selectedImage {
-                                            Image(uiImage: selectedImage)
-                                                .resizable()
-                                                .frame(width: 120, height: 120)
-                                                .clipShape(.rect(cornerRadius: .infinity))
-                                        } else {
-                                            Image("ellipse")
-                                                .resizable()
-                                                .frame(width: 120, height: 120)
-                                                .clipShape(.rect(cornerRadius: .infinity))
-                                        }
-                                        VStack {
-                                            Spacer()
-                                            HStack {
-                                                Spacer()
+                                    if let selectedImage {
+                                        Image(uiImage: selectedImage)
+                                            .resizable()
+                                            .frame(width: 120, height: 120)
+                                            .clipShape(.rect(cornerRadius: .infinity))
+                                            .overlay(alignment: .trailingLastTextBaseline) {
                                                 Image("edit-square")
                                             }
-                                        }
+                                    } else {
+                                        Image("ellipse")
+                                            .resizable()
+                                            .frame(width: 120, height: 120)
+                                            .clipShape(.rect(cornerRadius: .infinity))
+                                            .overlay(alignment: .trailingLastTextBaseline) {
+                                                Image("edit-square")
+                                            }
                                     }
-                                    .frame(width: 120, height: 120)
                                 }
                                 .sheet(isPresented: $isImagePickerPresented) {
                                     ImagePicker(image: $selectedImage) { filename in
@@ -109,27 +105,42 @@ struct CompleteProfileView: View {
                                 Spacer()
                             }
                             
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: 16) {
                                 Text("Full Name")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
-                                TextField("", text: $fullName)
-                                    .placeholder(when: fullName.isEmpty) {
+//                                TextField("", text: $fullName)
+//                                    .placeholder(when: fullName.isEmpty) {
+//                                        Text("Full Name")
+//                                            .foregroundStyle(Color("Dark4"))
+//                                            .font(.custom("Urbanist-Bold", size: 20))
+//                                    }
+//                                    .textInputAutocapitalization(.never)
+//                                    .keyboardType(.default)
+//                                    .font(.custom("Urbanist-Bold", size: 20))
+//                                    .foregroundStyle(Color("MyWhite"))
+//                                    .frame(height: 41)
+//                                    .overlay {
+//                                        Rectangle()
+//                                            .frame(height: 1)
+//                                            .foregroundStyle(Color("Primary900"))
+//                                            .padding(.top, 40)
+//                                    }
+                                VStack(spacing: 8) {
+                                    TextField(text: $fullName) {
                                         Text("Full Name")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                     }
                                     .textInputAutocapitalization(.never)
                                     .keyboardType(.default)
-                                    .font(.custom("Urbanist-Bold", size: 20))
                                     .foregroundStyle(Color("MyWhite"))
-                                    .frame(height: 41)
-                                    .overlay {
-                                        Rectangle()
-                                            .frame(height: 1)
-                                            .foregroundStyle(Color("Primary900"))
-                                            .padding(.top, 40)
-                                    }
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                    .frame(height: 32)
+                                    Rectangle()
+                                        .foregroundStyle(Color("Primary900"))
+                                        .frame(height: 1)
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 8) {

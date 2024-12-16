@@ -62,16 +62,16 @@ struct CountryView: View {
                         }
                         TextField("", text: $searchText)
                             .padding(.trailing, 20)
-                            .placeholder(when: searchText.isEmpty) {
-                                Text("Search Country")
-                                    .foregroundStyle(Color("Greyscale600"))
-                                    .font(.custom("Urbanist-Regular", size: 16))
-                            }
                             .autocapitalization(.none)
                             .autocorrectionDisabled(true)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Regular", size: 18))
                             .focused($isTextFieldFocused)
+                            .overlay(alignment: .bottomLeading) {
+                                Text(isTextFieldFocused == false && searchText.isEmpty ? "Search Country" : "")
+                                    .foregroundStyle(Color("Greyscale600"))
+                                    .font(.custom("Urbanist-Regular", size: 16))
+                            }
                     }
                     .frame(height: 58)
                     .background(Color("Dark2"))
@@ -139,14 +139,7 @@ struct CountryView: View {
                 BackButtonView()
             }
             ToolbarItem(placement: .principal) {
-                RoundedRectangle(cornerRadius: .infinity)
-                    .foregroundStyle(Color("Dark4"))
-                    .frame(width: 216, height: 12)
-                    .overlay(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: .infinity)
-                            .foregroundStyle(Color("Primary900"))
-                            .frame(width: 48)
-                    }
+                Image("progress-bar-22")
             }
         }
         .onTapGesture {
