@@ -158,6 +158,9 @@ struct ForgotPasswordView: View {
                 BackButtonView()
             }
         }
+        .onTapGesture {
+            dismissKeyboard()
+        }
         .navigationDestination(isPresented: $showOTPScreen) {
             ForgotPasswordCheckEmailView(email: $email)
         }

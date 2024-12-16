@@ -365,6 +365,9 @@ struct LoginView: View {
                     BackButtonView()
                 }
             }
+            .onTapGesture {
+                dismissKeyboard()
+            }
             if loadingScreen {
                 ModalView(title: "Sign In Successful!", message: "Your informations are valid. Please wait a moment, we are preparing for you...")
             }

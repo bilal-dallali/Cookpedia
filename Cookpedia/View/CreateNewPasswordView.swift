@@ -227,7 +227,7 @@ struct CreateNewPasswordView: View {
                                     switch result {
                                     case .success(let (token, id)):
                                         // Get the userId
-                                        var userId: String = String(id)
+                                        let userId: String = String(id)
                                         // Store session in SwiftData
                                         let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                         context.insert(userSession)
@@ -238,7 +238,7 @@ struct CreateNewPasswordView: View {
                                         }
                                         withAnimation(.smooth) {
                                             loadingScreen = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                                 loadingScreen = false
                                                 loadedScreen = true
                                             }
@@ -303,6 +303,9 @@ struct CreateNewPasswordView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     BackButtonView()
                 }
+            }
+            .onTapGesture {
+                dismissKeyboard()
             }
             if loadingScreen {
                 VStack(spacing: 32) {

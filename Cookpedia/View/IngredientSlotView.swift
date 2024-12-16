@@ -26,20 +26,20 @@ struct IngredientSlotView: View {
                         .foregroundStyle(Color("Primary900"))
                         .font(.custom("Urbanist-Semibold", size: 16))
                 }
-            TextField("", text: $ingredient)
-                .placeholder(when: ingredient.isEmpty) {
-                    Text("Ingredients \(index + 1)")
-                        .foregroundStyle(Color("Greyscale500"))
-                        .font(.custom("Urbanist-Regular", size: 16))
-                }
-                .foregroundStyle(Color("MyWhite"))
-                .font(.custom("Urbanist-Semibold", size: 16))
-                .padding(.leading, 20)
-                .frame(height: 58)
-                .background {
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(Color("Dark2"))
-                }
+            TextField(text: $ingredient) {
+                Text("Ingredients \(index + 1)")
+                    .foregroundStyle(Color("Greyscale500"))
+                    .font(.custom("Urbanist-Regular", size: 16))
+                    
+            }
+            .keyboardType(.default)
+            .foregroundStyle(Color("MyWhite"))
+            .font(.custom("Urbanist-Semibold", size: 16))
+            .padding(.horizontal, 20)
+            .padding(.vertical, 18)
+            .frame(minHeight: 58)
+            .background(Color("Dark2"))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
             Button {
                 onDelete()
             } label: {

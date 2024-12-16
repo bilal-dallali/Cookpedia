@@ -161,6 +161,9 @@ struct ForgotPasswordCheckEmailView: View {
                 BackButtonView()
             }
         }
+        .onTapGesture {
+            dismissKeyboard()
+        }
         .onAppear {
             focusedIndex = 0
             timerActive = true

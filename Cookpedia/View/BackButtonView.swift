@@ -19,7 +19,6 @@ struct BackButtonView: View {
                 .resizable()
                 .frame(width: 28, height: 28)
         }
-
     }
 }
 

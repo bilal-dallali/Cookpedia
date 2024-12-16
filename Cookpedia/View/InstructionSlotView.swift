@@ -38,18 +38,22 @@ struct InstructionSlotView: View {
                     }
             }
             VStack(spacing: 8) {
-                CustomTextEditor(text: $instruction, backgroundColor: UIColor(named: "Dark2") ?? .gray, textColor: UIColor(named: "MyWhite") ?? .white, font: UIFont(name: "Urbanist-Semibold", size: 16) ?? .systemFont(ofSize: 16), textPadding: UIEdgeInsets(top: 18, left: 15, bottom: 18, right: 15))
-                    .frame(height: 100)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .overlay(alignment: .topLeading) {
-                        if instruction.isEmpty {
-                            Text("Instructions \(number)")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 16))
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 18)
-                        }
+                VStack(alignment: .leading, spacing: 0) {
+                    TextField(text: $instruction, axis: .vertical) {
+                        Text("Instructions \(number)")
+                            .foregroundStyle(Color("Greyscale500"))
+                            .font(.custom("Urbanist-Regular", size: 16))
                     }
+                    .keyboardType(.default)
+                    .foregroundStyle(Color("MyWhite"))
+                    .font(.custom("Urbanist-Semibold", size: 16))
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 18)
+                    Spacer()
+                }
+                .frame(minHeight: 100)
+                .background(Color("Dark2"))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
                 HStack(spacing: 8) {
                     Button {
                         selectedImageIndex = 0

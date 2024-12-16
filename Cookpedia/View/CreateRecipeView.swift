@@ -104,7 +104,6 @@ struct CreateRecipeView: View {
                                         
                                         let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
                                         
-                                        
                                         // Put instruction JSON
                                         guard let instructionsData = try? encoder.encode(
                                             instructions.enumerated().map { index, instruction in
@@ -136,7 +135,6 @@ struct CreateRecipeView: View {
                                         }
                                         
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                        
                                         
                                         apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                             switch result {
@@ -396,112 +394,107 @@ struct CreateRecipeView: View {
                             Text("Title")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                            TextField("", text: $title)
-                                .placeholder(when: title.isEmpty) {
-                                    Text("Recipe Title")
-                                        .foregroundStyle(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Regular", size: 16))
-                                }
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Semibold", size: 16))
-                                .padding(.leading, 20)
-                                .frame(height: 58)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color("Dark2"))
-                                }
+                            TextField(text: $title) {
+                                Text("Recipe Title")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 16))
+                                    
+                            }
+                            .keyboardType(.default)
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Semibold", size: 16))
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 18)
+                            .frame(minHeight: 58)
+                            .background(Color("Dark2"))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
                         
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Description")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                            CustomTextEditor(text: $description, backgroundColor: UIColor(named: "Dark2") ?? .gray, textColor: UIColor(named: "MyWhite") ?? .white, font: UIFont(name: "Urbanist-Semibold", size: 16) ?? .systemFont(ofSize: 16), textPadding: UIEdgeInsets(top: 18, left: 15, bottom: 18, right: 15))
-                                .frame(height: 140)
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .overlay {
-                                    if description.isEmpty {
-                                        VStack {
-                                            HStack {
-                                                Text("Lorem ipsum dolor sit amet ...")
-                                                    .foregroundStyle(Color("Greyscale500"))
-                                                    .font(.custom("Urbanist-Regular", size: 16))
-                                                    .padding(.horizontal, 20)
-                                                    .padding(.vertical, 18)
-                                                Spacer()
-                                            }
-                                            Spacer()
-                                        }
-                                    }
+                            VStack(alignment: .leading, spacing: 0) {
+                                TextField(text: $description, axis: .vertical) {
+                                    Text("Lorem ipsum dolor sit amet ...")
+                                        .foregroundStyle(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Regular", size: 16))
                                 }
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Semibold", size: 16))
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 18)
+                                Spacer()
+                            }
+                            .frame(minHeight: 140)
+                            .background(Color("Dark2"))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            
                         }
                         
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Cook Time")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                            TextField("", text: $cookTime)
-                                .placeholder(when: cookTime.isEmpty) {
-                                    Text("1 hour, 30 mins, etc")
-                                        .foregroundStyle(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Regular", size: 16))
-                                }
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Semibold", size: 16))
-                                .padding(.leading, 20)
-                                .frame(height: 58)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color("Dark2"))
-                                }
+                            TextField(text: $cookTime) {
+                                Text("1 hour, 30 mins, etc")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 16))
+                                    
+                            }
+                            .keyboardType(.default)
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Semibold", size: 16))
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 18)
+                            .frame(minHeight: 58)
+                            .background(Color("Dark2"))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
                         
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Serves")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                            TextField("", text: $serves)
-                                .placeholder(when: serves.isEmpty) {
-                                    Text("3 people")
-                                        .foregroundStyle(Color("Greyscale500"))
-                                        .font(.custom("Urbanist-Regular", size: 16))
-                                }
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Semibold", size: 16))
-                                .padding(.leading, 20)
-                                .frame(height: 58)
-                                .background {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color("Dark2"))
-                                }
+                            TextField(text: $serves) {
+                                Text("3 people")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 16))
+                                    
+                            }
+                            .keyboardType(.default)
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Semibold", size: 16))
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 18)
+                            .frame(minHeight: 58)
+                            .background(Color("Dark2"))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
                         
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Origin")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
-                            HStack(spacing: 12) {
-                                TextField("", text: $origin)
-                                    .placeholder(when: origin.isEmpty) {
-                                        Text("Location")
-                                            .foregroundStyle(Color("Greyscale500"))
-                                            .font(.custom("Urbanist-Regular", size: 16))
-                                    }
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Semibold", size: 16))
-                                    .focused($isOriginFocused)
-                                if isOriginFocused {
-                                    Image("location-focused")
-                                } else {
-                                    Image("location-unfocused")
+                            HStack {
+                                TextField(text: $origin) {
+                                    Text("Location")
+                                        .foregroundStyle(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Regular", size: 16))
+                                        
                                 }
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Semibold", size: 16))
+                                .padding(.vertical, 18)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                Image(origin.isEmpty ? "location-unfocused" : "location-focused")
                             }
-                            .frame(height: 58)
                             .padding(.horizontal, 20)
-                            .background {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color("Dark2"))
-                            }
+                            .frame(height: 58)
+                            .background(Color("Dark2"))
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
                         Divider()
                             .overlay {
@@ -558,11 +551,14 @@ struct CreateRecipeView: View {
                     }
                     .padding(.top, 16)
                     .padding(.horizontal, 24)
+                    
                 }
                 .scrollIndicators(.hidden)
-                //.background(Color("Dark1"))
                 .background(Color(isSavedRecipe || isPublishedRecipe ? "BackgroundOpacity" : "Dark1"))
                 .blur(radius: isSavedRecipe || isPublishedRecipe ? 4 : 0)
+                .onTapGesture {
+                    dismissKeyboard()
+                }
             }
             if isSavedRecipe {
                 ModalView(title: "Recipe Successfully saved", message: "Your recipe has been added to your draft, it is not yet published.")
