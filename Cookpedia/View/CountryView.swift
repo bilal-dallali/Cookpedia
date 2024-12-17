@@ -7,19 +7,6 @@
 
 import SwiftUI
 
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content) -> some View {
-
-        ZStack(alignment: alignment) {
-            placeholder().opacity(shouldShow ? 1 : 0)
-            self
-        }
-    }
-}
-
 func dismissKeyboard() {
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
 }
@@ -29,6 +16,7 @@ struct CountryView: View {
     @State private var selectedCountry: Country?
     @State private var searchText: String = ""
     @State var country: String = ""
+    @FocusState private var isTextFocused: Bool
     
     var filteredCountries: [Country] {
         if searchText.isEmpty {
@@ -65,6 +53,7 @@ struct CountryView: View {
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Regular", size: 18))
                         .padding(.trailing, 20)
+                        .focused($isTextFocused)
                     }
                     .frame(height: 58)
                     .background(Color("Dark2"))
@@ -80,14 +69,14 @@ struct CountryView: View {
             .padding(.horizontal, 24)
             
             
-            Divider()
-                .overlay {
-                    Rectangle()
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-                        .foregroundStyle(Color("Dark4"))
-                }
-            VStack {
+            
+            VStack(spacing: 0) {
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(Color("Dark4"))
+                    }
                 if selectedCountry != nil {
                     NavigationLink {
                         CookingLevelView(country: $country)
@@ -100,6 +89,10 @@ struct CountryView: View {
                             .background(Color("Primary900"))
                             .clipShape(.rect(cornerRadius: .infinity))
                             .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                            .padding(.horizontal, 24)
+                            .padding(.top, 24)
+                            .padding(.bottom, 36)
+                        
                     }
                     .onAppear {
                         country = selectedCountry?.name ?? ""
@@ -112,19 +105,18 @@ struct CountryView: View {
                         .frame(height: 58)
                         .background(Color("DisabledButton"))
                         .clipShape(.rect(cornerRadius: .infinity))
+                        .padding(.horizontal, 24)
+                        .padding(.top, 24)
+                        .padding(.bottom, 36)
                 }
-                Spacer()
             }
-            .padding(.top, 24)
-            .padding(.horizontal, 24)
-            .frame(height: 84)
-            .frame(maxWidth: .infinity)
-            .background(Color("Dark1"))
+            
         }
         .onAppear {
             country = selectedCountry?.name ?? ""
         }
         .background(Color("Dark1"))
+        .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
