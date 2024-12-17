@@ -64,11 +64,9 @@ struct CountryView: View {
                         }
                     }
                 }
+                .padding(.horizontal, 24)
             }
             .scrollIndicators(.hidden)
-            .padding(.horizontal, 24)
-            
-            
             
             VStack(spacing: 0) {
                 Divider()

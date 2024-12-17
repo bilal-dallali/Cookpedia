@@ -49,6 +49,7 @@ struct CompleteProfileView: View {
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
     @State private var isShowingDate = false
+    @FocusState private var isTextFocused: Bool
     
     private var localDate: String {
         let formatter = DateFormatter()
@@ -120,6 +121,7 @@ struct CompleteProfileView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .frame(height: 32)
+                                    .focused($isTextFocused)
                                     .onSubmit {
                                         
                                     }
@@ -144,6 +146,7 @@ struct CompleteProfileView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .frame(height: 32)
+                                    .focused($isTextFocused)
                                     Rectangle()
                                         .foregroundStyle(Color("Primary900"))
                                         .frame(height: 1)
@@ -251,6 +254,7 @@ struct CompleteProfileView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .frame(height: 32)
+                                    .focused($isTextFocused)
                                     .onSubmit {}
                                     Rectangle()
                                         .foregroundStyle(Color("Primary900"))
@@ -259,18 +263,17 @@ struct CompleteProfileView: View {
                             }
                         }
                     }
+                    .padding(.horizontal, 24)
                 }
                 .scrollIndicators(.hidden)
-                .padding(.horizontal, 24)
                 
-                Divider()
-                    .overlay {
-                        Rectangle()
-                            .frame(height: 1)
-                            .frame(maxWidth: .infinity)
-                            .foregroundStyle(Color("Dark4"))
-                    }
-                VStack {
+                VStack(spacing: 0) {
+                    Divider()
+                        .overlay {
+                            Rectangle()
+                                .frame(height: 1)
+                                .foregroundStyle(Color("Dark4"))
+                        }
                     if fullName != "" && phoneNumber != "" && isShowingDate && city != "" {
                         if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
                             NavigationLink {
@@ -284,6 +287,9 @@ struct CompleteProfileView: View {
                                     .background(Color("Primary900"))
                                     .clipShape(.rect(cornerRadius: .infinity))
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                    .padding(.horizontal, 24)
+                                    .padding(.top, 24)
+                                    .padding(.bottom, 36)
                             }
                             .onAppear {
                                 date = localDate
@@ -303,6 +309,9 @@ struct CompleteProfileView: View {
                                     .background(Color("Primary900"))
                                     .clipShape(.rect(cornerRadius: .infinity))
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                    .padding(.horizontal, 24)
+                                    .padding(.top, 24)
+                                    .padding(.bottom, 36)
                             }
                         }
                     } else {
@@ -313,16 +322,15 @@ struct CompleteProfileView: View {
                             .frame(height: 58)
                             .background(Color("DisabledButton"))
                             .clipShape(.rect(cornerRadius: .infinity))
+                            .padding(.horizontal, 24)
+                            .padding(.top, 24)
+                            .padding(.bottom, 36)
                     }
-                    Spacer()
                 }
-                .padding(.top, 24)
-                .padding(.horizontal, 24)
-                .frame(height: 84)
-                .frame(maxWidth: .infinity)
-                .background(Color("Dark1"))
+                .frame(height: 118)
             }
             .background(Color("Dark1"))
+            .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {

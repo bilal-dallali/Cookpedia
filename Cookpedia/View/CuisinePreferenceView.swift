@@ -363,18 +363,16 @@ struct CuisinePreferenceView: View {
             .scrollIndicators(.hidden)
             .padding(.horizontal, 24)
             
-            Divider()
-                .overlay {
-                    Rectangle()
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-                        .foregroundStyle(Color("Dark4"))
-                }
-            
-            VStack {
+            VStack(spacing: 0) {
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(Color("Dark4"))
+                    }
                 HStack(spacing: 16) {
                     NavigationLink {
-                        //DietaryPreferencesView()
                         DietaryPreferencesView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit)
                     } label: {
                         Text("Skip")
@@ -387,7 +385,6 @@ struct CuisinePreferenceView: View {
                     }
                     if salad == true || egg == true || soup == true || meat == true || chicken == true || seafood == true || burger == true || pizza == true || sushi == true || rice == true || bread == true || fruit == true {
                         NavigationLink {
-                            //DietaryPreferencesView()
                             DietaryPreferencesView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit)
                         } label: {
                             Text("Continue")
@@ -409,15 +406,13 @@ struct CuisinePreferenceView: View {
                             .clipShape(.rect(cornerRadius: .infinity))
                     }
                 }
-                Spacer()
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 36)
             }
-            .padding(.top, 24)
-            .padding(.horizontal, 24)
-            .frame(height: 84)
-            .frame(maxWidth: .infinity)
-            .background(Color("Dark1"))
         }
         .background(Color("Dark1"))
+        .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

@@ -352,19 +352,17 @@ struct DietaryPreferencesView: View {
                         }
                     }
                 }
+                .padding(.horizontal, 24)
             }
             .scrollIndicators(.hidden)
-            .padding(.horizontal, 24)
             
-            Divider()
-                .overlay {
-                    Rectangle()
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-                        .foregroundStyle(Color("Dark4"))
-                }
-            
-            VStack {
+            VStack(spacing: 0) {
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(Color("Dark4"))
+                    }
                 HStack(spacing: 16) {
                     NavigationLink {
                         CompleteProfileView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal)
@@ -402,15 +400,14 @@ struct DietaryPreferencesView: View {
                             .clipShape(.rect(cornerRadius: .infinity))
                     }
                 }
-                Spacer()
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 36)
             }
-            .padding(.top, 24)
-            .padding(.horizontal, 24)
-            .frame(height: 84)
-            .frame(maxWidth: .infinity)
-            .background(Color("Dark1"))
+            .frame(height: 118)
         }
         .background(Color("Dark1"))
+        .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
