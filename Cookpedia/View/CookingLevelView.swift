@@ -236,7 +236,6 @@ struct CookingLevelView: View {
                     }
                 }
             }
-            .frame(height: 118)
         }
         .background(Color("Dark1"))
         .ignoresSafeArea(edges: .bottom)

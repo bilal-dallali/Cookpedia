@@ -404,7 +404,6 @@ struct DietaryPreferencesView: View {
                 .padding(.top, 24)
                 .padding(.bottom, 36)
             }
-            .frame(height: 118)
         }
         .background(Color("Dark1"))
         .ignoresSafeArea(edges: .bottom)

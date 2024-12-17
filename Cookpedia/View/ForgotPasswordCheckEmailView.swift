@@ -12,6 +12,7 @@ struct ForgotPasswordCheckEmailView: View {
     @Binding var email: String
     @State var code: [String] = Array(repeating: "", count: 4)
     @FocusState private var focusedIndex: Int?
+    @FocusState private var isTextFocused: Bool
     @State private var isVerified: Bool = false
     @State private var errorMessage: String?
     
@@ -43,6 +44,7 @@ struct ForgotPasswordCheckEmailView: View {
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .focused($focusedIndex, equals: index)
+                                .focused($isTextFocused)
                                 .background {
                                     RoundedRectangle(cornerRadius: 16)
                                         .fill(Color("Dark2"))
@@ -103,15 +105,14 @@ struct ForgotPasswordCheckEmailView: View {
             }
             .padding(.horizontal, 24)
             
-            Divider()
-                .overlay {
-                    Rectangle()
-                        .frame(height: 1)
-                        .frame(maxWidth: .infinity)
-                        .foregroundStyle(Color("Dark4"))
-                }
-            
-            VStack {
+            VStack(spacing: 0) {
+                Divider()
+                    .overlay {
+                        Rectangle()
+                            .frame(height: 1)
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(Color("Dark4"))
+                    }
                 if code.joined().count == 4 {
                     Button {
                         apiPostManager.verifyResetCode(email: email, code: code.joined()) { result in
@@ -132,6 +133,9 @@ struct ForgotPasswordCheckEmailView: View {
                             .background(Color("Primary900"))
                             .clipShape(RoundedRectangle(cornerRadius: .infinity))
                             .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                            .padding(.horizontal, 24)
+                            .padding(.top, 24)
+                            .padding(.bottom, 36)
                     }
 
                 } else {
@@ -142,19 +146,17 @@ struct ForgotPasswordCheckEmailView: View {
                         .frame(height: 58)
                         .background(Color("DisabledButton"))
                         .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                        .padding(.horizontal, 24)
+                        .padding(.top, 24)
+                        .padding(.bottom, 36)
                 }
-                Spacer()
             }
-            .padding(.top, 24)
-            .padding(.horizontal, 24)
-            .frame(height: 84)
-            .frame(maxWidth: .infinity)
-            .background(Color("Dark1"))
         }
         .navigationDestination(isPresented: $isVerified) {
             CreateNewPasswordView(email: $email, code: $code)
         }
         .background(Color("Dark1"))
+        .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

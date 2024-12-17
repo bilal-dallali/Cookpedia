@@ -327,7 +327,6 @@ struct CompleteProfileView: View {
                             .padding(.bottom, 36)
                     }
                 }
-                .frame(height: 118)
             }
             .background(Color("Dark1"))
             .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])

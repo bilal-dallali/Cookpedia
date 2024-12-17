@@ -12,6 +12,7 @@ struct CreateNewPasswordView: View {
     
     @Binding var email: String
     @Binding var code: [String]
+    @FocusState private var isTextFocused: Bool
     
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
@@ -63,6 +64,7 @@ struct CreateNewPasswordView: View {
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .frame(height: 32)
+                                            .focused($isTextFocused)
                                             .onSubmit {
                                                 
                                             }
@@ -77,6 +79,7 @@ struct CreateNewPasswordView: View {
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .frame(height: 32)
+                                            .focused($isTextFocused)
                                             .onSubmit {
                                                 
                                             }
@@ -151,6 +154,7 @@ struct CreateNewPasswordView: View {
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .frame(height: 32)
+                                            .focused($isTextFocused)
                                             .onSubmit {
                                                 
                                             }
@@ -165,6 +169,7 @@ struct CreateNewPasswordView: View {
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .frame(height: 32)
+                                            .focused($isTextFocused)
                                             .onSubmit {
                                                 
                                             }
@@ -208,18 +213,18 @@ struct CreateNewPasswordView: View {
                             }
                         }
                     }
+                    .padding(.horizontal, 24)
                 }
                 .scrollIndicators(.hidden)
-                .padding(.horizontal, 24)
                 
-                Divider()
-                    .overlay {
-                        Rectangle()
-                            .frame(height: 1)
-                            .frame(maxWidth: .infinity)
-                            .foregroundStyle(Color("Dark4"))
-                    }
-                VStack {
+                VStack(spacing: 0) {
+                    Divider()
+                        .overlay {
+                            Rectangle()
+                                .frame(height: 1)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(Color("Dark4"))
+                        }
                     if password != "" && confirmPassword != "" {
                         if password == confirmPassword {
                             Button {
@@ -256,6 +261,9 @@ struct CreateNewPasswordView: View {
                                     .background(Color("Primary900"))
                                     .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                    .padding(.horizontal, 24)
+                                    .padding(.top, 24)
+                                    .padding(.bottom, 36)
                             }
                             .navigationDestination(isPresented: $redirectHomePage) {
                                 TabView()
@@ -275,6 +283,9 @@ struct CreateNewPasswordView: View {
                                     .background(Color("Primary900"))
                                     .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                    .padding(.horizontal, 24)
+                                    .padding(.top, 24)
+                                    .padding(.bottom, 36)
                             }
                             
                         }
@@ -286,17 +297,14 @@ struct CreateNewPasswordView: View {
                             .frame(height: 58)
                             .background(Color("DisabledButton"))
                             .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                            .padding(.horizontal, 24)
+                            .padding(.top, 24)
+                            .padding(.bottom, 36)
                     }
-                    
-                    Spacer()
                 }
-                .padding(.top, 24)
-                .padding(.horizontal, 24)
-                .frame(height: 84)
-                .frame(maxWidth: .infinity)
-                .background(Color("Dark1"))
             }
             .background(Color(loadingScreen || loadedScreen ? "BackgroundOpacity" : "Dark1"))
+            .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
             .blur(radius: loadingScreen || loadedScreen ? 4 : 0)
             .navigationBarBackButtonHidden(true)
             .toolbar {

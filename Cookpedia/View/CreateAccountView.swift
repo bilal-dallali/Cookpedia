@@ -121,7 +121,7 @@ struct CreateAccountView: View {
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
                                 .textInputAutocapitalization(.never)
-                                .keyboardType(.default)
+                                .keyboardType(.emailAddress)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .frame(height: 32)
@@ -161,7 +161,7 @@ struct CreateAccountView: View {
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
                                 .textInputAutocapitalization(.never)
-                                .keyboardType(.default)
+                                .keyboardType(.emailAddress)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .frame(height: 32)
@@ -298,6 +298,7 @@ struct CreateAccountView: View {
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                         .frame(height: 32)
+                                        .focused($isTextFocused)
                                         .onSubmit {
                                             
                                         }
@@ -519,8 +520,6 @@ struct CreateAccountView: View {
                             .padding(.bottom, 36)
                     }
                 }
-                .frame(height: 118)
-                
             }
             .background(Color(loadingScreen ? "BackgroundOpacity" : "Dark1"))
             .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
