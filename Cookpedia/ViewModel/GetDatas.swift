@@ -86,7 +86,6 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error while fetching bookmark:", error.localizedDescription)
                 completion(.failure(error))
                 return
             }
@@ -102,14 +101,11 @@ class APIGetRequest: ObservableObject {
                 
                 // Check result
                 if let jsonResult = jsonResult, !jsonResult.isEmpty {
-                    print("Bookmark exists:", jsonResult)
                     completion(.success(true))
                 } else {
-                    print("No bookmark found for userId \(userId) and recipeId \(recipeId)")
                     completion(.success(false))
                 }
             } catch {
-                print("Failed to parse JSON:", error.localizedDescription)
                 completion(.failure(error))
             }
         }.resume()
@@ -128,14 +124,12 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error fetching user recipes:", error.localizedDescription)
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
                   let data = data else {
-                print("Invalid response or no data received")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -144,10 +138,8 @@ class APIGetRequest: ObservableObject {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
                 let recipes = try decoder.decode([RecipeConnectedUser].self, from: data)
-                print("User recipes fetched successfully:", recipes)
                 completion(.success(recipes))
             } catch {
-                print("Failed to decode user recipes:", error.localizedDescription)
                 completion(.failure(APIGetError.decodingError))
             }
         }.resume()
@@ -165,14 +157,12 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error while fetching published recipes count:", error.localizedDescription)
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
                   let data = data else {
-                print("Invalid response or no data received")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -181,14 +171,11 @@ class APIGetRequest: ObservableObject {
                 let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                 
                 if let count = jsonResult?["count"] as? Int {
-                    print("Published recipes count:", count)
                     completion(.success(count))
                 } else {
-                    print("No count field found in response")
-                    completion(.success(0)) // Return 0 if the count field is missing
+                    completion(.success(0))
                 }
             } catch {
-                print("Failed to parse JSON:", error.localizedDescription)
                 completion(.failure(error))
             }
         }.resume()
@@ -206,14 +193,12 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Error while fetching published recipes count:", error.localizedDescription)
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
                   let data = data else {
-                print("Invalid response or no data received")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -222,14 +207,11 @@ class APIGetRequest: ObservableObject {
                 let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                 
                 if let count = jsonResult?["count"] as? Int {
-                    print("Published recipes count:", count)
                     completion(.success(count))
                 } else {
-                    print("No count field found in response")
-                    completion(.success(0)) // Return 0 if the count field is missing
+                    completion(.success(0))
                 }
             } catch {
-                print("Failed to parse JSON:", error.localizedDescription)
                 completion(.failure(error))
             }
         }.resume()

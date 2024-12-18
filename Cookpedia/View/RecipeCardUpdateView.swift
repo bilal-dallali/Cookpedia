@@ -11,8 +11,6 @@ import SwiftData
 struct RecipeCardUpdateView: View {
     
     let recipe: RecipeConnectedUser
-//    @State private var isBookmarkSelected: Bool = false
-//    var apiPostManager = APIPostRequest()
     var apiGetManager = APIGetRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
@@ -36,7 +34,7 @@ struct RecipeCardUpdateView: View {
                     HStack {
                         Spacer()
                         Button {
-                            print("update recipe \(recipe.id)")
+                            //print("update recipe \(recipe.id)")
                         } label: {
                             Circle()
                                 .foregroundStyle(Color("Primary900"))

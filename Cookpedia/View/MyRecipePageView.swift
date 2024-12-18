@@ -128,7 +128,7 @@ struct MyRecipePageView: View {
                                 ForEach(recipes, id: \.id) { recipe in
                                     Button {
                                         //WelcomeView()
-                                        print("recipe id: \(recipe.id)")
+                                        //print("recipe id: \(recipe.id)")
                                     } label: {
                                         RecipeCardUpdateView(recipe: recipe)
                                             .frame(height: 260)
@@ -143,13 +143,11 @@ struct MyRecipePageView: View {
                                 guard let userId = Int(currentUser.userId) else {
                                     return
                                 }
-                                print("userId: \(userId)")
                                 
                                 apiGetManager.getConnectedPublishedUserRecipes(userId: userId, published: false) { result in
                                     switch result {
                                         case .success(let recipes):
                                             DispatchQueue.main.async {
-                                                print("Published recipes:", recipes)
                                                 self.recipes = recipes
                                             }
                                         case .failure(let error):
@@ -164,7 +162,7 @@ struct MyRecipePageView: View {
                                 ForEach(recipes, id: \.id) { recipe in
                                     Button {
                                         //WelcomeView()
-                                        print("recipe id: \(recipe.id)")
+                                        //print("recipe id: \(recipe.id)")
                                     } label: {
                                         RecipeCardUpdateView(recipe: recipe)
                                             .frame(height: 260)
@@ -179,13 +177,11 @@ struct MyRecipePageView: View {
                                 guard let userId = Int(currentUser.userId) else {
                                     return
                                 }
-                                print("userId: \(userId)")
                                 
                                 apiGetManager.getConnectedPublishedUserRecipes(userId: userId, published: true) { result in
                                     switch result {
                                         case .success(let recipes):
                                             DispatchQueue.main.async {
-                                                print("Published recipes:", recipes)
                                                 self.recipes = recipes
                                             }
                                         case .failure(let error):
@@ -212,7 +208,6 @@ struct MyRecipePageView: View {
             guard let userId = Int(currentUser.userId) else {
                 return
             }
-            print("userId: \(userId)")
             
             apiGetManager.getPublishedRecipesCount(userId: userId) { result in
                 switch result {
