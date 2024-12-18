@@ -152,6 +152,88 @@ class APIGetRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func getPublishedRecipesCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+        let endpoint = "/recipes/published-recipes-count/\(userId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error while fetching published recipes count:", error.localizedDescription)
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                print("Invalid response or no data received")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                
+                if let count = jsonResult?["count"] as? Int {
+                    print("Published recipes count:", count)
+                    completion(.success(count))
+                } else {
+                    print("No count field found in response")
+                    completion(.success(0)) // Return 0 if the count field is missing
+                }
+            } catch {
+                print("Failed to parse JSON:", error.localizedDescription)
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    func getDraftRecipesCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+        let endpoint = "/recipes/draft-recipes-count/\(userId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error while fetching published recipes count:", error.localizedDescription)
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                print("Invalid response or no data received")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                
+                if let count = jsonResult?["count"] as? Int {
+                    print("Published recipes count:", count)
+                    completion(.success(count))
+                } else {
+                    print("No count field found in response")
+                    completion(.success(0)) // Return 0 if the count field is missing
+                }
+            } catch {
+                print("Failed to parse JSON:", error.localizedDescription)
+                completion(.failure(error))
+            }
+        }.resume()
+    }
 }
 
 enum APIGetError: Error {

@@ -15,6 +15,10 @@ struct MyRecipePageView: View {
     @State private var isDraftSelected: Bool = true
     @State private var isPublishedSelected: Bool = false
     
+    @State private var publishedRecipesCount: Int = 0
+    
+    @State private var draftRecipesCount: Int = 0
+    
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiGetManager = APIGetRequest()
@@ -59,7 +63,7 @@ struct MyRecipePageView: View {
                             } label: {
                                 VStack(spacing: 12) {
                                     if isDraftSelected {
-                                        Text("Draft (\(recipes.count))")
+                                        Text("Draft (\(draftRecipesCount))")
                                             .foregroundStyle(Color("Primary900"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -70,7 +74,7 @@ struct MyRecipePageView: View {
                                                     .clipShape(.rect(cornerRadius: 100))
                                             }
                                     } else {
-                                        Text("Draft (\(recipes.count))")
+                                        Text("Draft (\(draftRecipesCount))")
                                             .foregroundStyle(Color("Greyscale700"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -90,7 +94,7 @@ struct MyRecipePageView: View {
                             } label: {
                                 VStack(spacing: 12) {
                                     if isPublishedSelected {
-                                        Text("Published (\(recipes.count))")
+                                        Text("Published (\(publishedRecipesCount))")
                                             .foregroundStyle(Color("Primary900"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -101,7 +105,7 @@ struct MyRecipePageView: View {
                                                     .clipShape(.rect(cornerRadius: 100))
                                             }
                                     } else {
-                                        Text("Published (\(recipes.count))")
+                                        Text("Published (\(publishedRecipesCount))")
                                             .foregroundStyle(Color("Greyscale700"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -199,6 +203,38 @@ struct MyRecipePageView: View {
             .padding(.top, 16)
             .padding(.horizontal, 24)
             .background(Color("Dark1"))
+        }
+        .onAppear {
+            guard let currentUser = userSession.first else {
+                return
+            }
+            
+            guard let userId = Int(currentUser.userId) else {
+                return
+            }
+            print("userId: \(userId)")
+            
+            apiGetManager.getPublishedRecipesCount(userId: userId) { result in
+                switch result {
+                    case .success(let count):
+                        DispatchQueue.main.async {
+                            self.publishedRecipesCount = count
+                        }
+                    case .failure(let error):
+                        print("Error fetching published recipes count:", error.localizedDescription)
+                }
+            }
+            
+            apiGetManager.getDraftRecipesCount(userId: userId) { result in
+                switch result {
+                    case .success(let count):
+                        DispatchQueue.main.async {
+                            self.draftRecipesCount = count
+                        }
+                    case .failure(let error):
+                        print("Error fetching published recipes count:", error.localizedDescription)
+                }
+            }
         }
         .navigationBarBackButtonHidden(true)
     }
