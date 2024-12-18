@@ -32,8 +32,8 @@ struct HomePageView: View {
                             }
                             .padding(.trailing, 20)
                             
-                            Button {
-                                //
+                            NavigationLink {
+                                MyBookmarkView()
                             } label: {
                                 Image("bookmark-unselected")
                                     .resizable()
