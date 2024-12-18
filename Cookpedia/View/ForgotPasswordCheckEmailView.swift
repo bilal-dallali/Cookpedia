@@ -16,7 +16,7 @@ struct ForgotPasswordCheckEmailView: View {
     @State private var isVerified: Bool = false
     @State private var errorMessage: String?
     
-    @State private var timeRemaining = 60
+    @State private var timeRemaining = 30
     @State private var timerActive = false
     @State private var timer: Timer?
     

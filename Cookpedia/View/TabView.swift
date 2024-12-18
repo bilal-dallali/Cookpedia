@@ -27,7 +27,7 @@ struct TabView: View {
             } else if isDiscoverSelected {
                 DiscoverPageView()
             } else if isMyRecipeSelected {
-                MyRecipePageView(isDraftSelected: $isDraftSelected, isPublishedSelected: $isPublishedSelected)
+                MyRecipePageView()
             } else if isMyProfileSelected {
                 MyProfilePageView()
             }

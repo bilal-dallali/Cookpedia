@@ -42,7 +42,7 @@ class APIGetRequest: ObservableObject {
     }
     
     func getConnectedUserRecipes(userId: Int, completion: @escaping (Result<[RecipeConnectedUser], Error>) -> Void) {
-        let endpoint = "/recipes/recipes-connected-user/\(userId)"
+        let endpoint = "/recipes/fetch-all-recipes-from-user/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))
             return
@@ -111,6 +111,44 @@ class APIGetRequest: ObservableObject {
             } catch {
                 print("Failed to parse JSON:", error.localizedDescription)
                 completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    func getConnectedPublishedUserRecipes(userId: Int, published: Bool, completion: @escaping (Result<[RecipeConnectedUser], Error>) -> Void) {
+        let publishedValue = published ? 1 : 0
+        let endpoint = "/recipes/fetch-user-published-recipes/\(userId)/\(publishedValue)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error fetching user recipes:", error.localizedDescription)
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                print("Invalid response or no data received")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let recipes = try decoder.decode([RecipeConnectedUser].self, from: data)
+                print("User recipes fetched successfully:", recipes)
+                completion(.success(recipes))
+            } catch {
+                print("Failed to decode user recipes:", error.localizedDescription)
+                completion(.failure(APIGetError.decodingError))
             }
         }.resume()
     }

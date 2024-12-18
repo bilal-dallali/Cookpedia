@@ -6,11 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MyRecipePageView: View {
     
-    @Binding var isDraftSelected: Bool
-    @Binding var isPublishedSelected: Bool
+    @State private var recipes: [RecipeConnectedUser] = []
+    
+    @State private var isDraftSelected: Bool = true
+    @State private var isPublishedSelected: Bool = false
+    
+    @Environment(\.modelContext) var context
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    var apiGetManager = APIGetRequest()
     
     var body: some View {
         VStack {
@@ -52,7 +59,7 @@ struct MyRecipePageView: View {
                             } label: {
                                 VStack(spacing: 12) {
                                     if isDraftSelected {
-                                        Text("Draft (24)")
+                                        Text("Draft (\(recipes.count))")
                                             .foregroundStyle(Color("Primary900"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -63,7 +70,7 @@ struct MyRecipePageView: View {
                                                     .clipShape(.rect(cornerRadius: 100))
                                             }
                                     } else {
-                                        Text("Draft (24)")
+                                        Text("Draft (\(recipes.count))")
                                             .foregroundStyle(Color("Greyscale700"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -83,7 +90,7 @@ struct MyRecipePageView: View {
                             } label: {
                                 VStack(spacing: 12) {
                                     if isPublishedSelected {
-                                        Text("Published (125)")
+                                        Text("Published (\(recipes.count))")
                                             .foregroundStyle(Color("Primary900"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -94,7 +101,7 @@ struct MyRecipePageView: View {
                                                     .clipShape(.rect(cornerRadius: 100))
                                             }
                                     } else {
-                                        Text("Published (125)")
+                                        Text("Published (\(recipes.count))")
                                             .foregroundStyle(Color("Greyscale700"))
                                             .font(.custom("Urbanist-SemiBold", size: 18))
                                         Divider()
@@ -113,9 +120,77 @@ struct MyRecipePageView: View {
                         .frame(maxWidth: .infinity)
                         
                         if isDraftSelected {
-                            Text("Draft")
+                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+                                ForEach(recipes, id: \.id) { recipe in
+                                    Button {
+                                        //WelcomeView()
+                                        print("recipe id: \(recipe.id)")
+                                    } label: {
+                                        RecipeCardUpdateView(recipe: recipe)
+                                            .frame(height: 260)
+                                    }
+                                }
+                            }
+                            .onAppear {
+                                guard let currentUser = userSession.first else {
+                                    return
+                                }
+                                
+                                guard let userId = Int(currentUser.userId) else {
+                                    return
+                                }
+                                print("userId: \(userId)")
+                                
+                                apiGetManager.getConnectedPublishedUserRecipes(userId: userId, published: false) { result in
+                                    switch result {
+                                        case .success(let recipes):
+                                            DispatchQueue.main.async {
+                                                print("Published recipes:", recipes)
+                                                self.recipes = recipes
+                                            }
+                                        case .failure(let error):
+                                            DispatchQueue.main.async {
+                                                print("Error fetching recipes:", error.localizedDescription)
+                                            }
+                                    }
+                                }
+                            }
                         } else if isPublishedSelected {
-                            Text("Published")
+                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+                                ForEach(recipes, id: \.id) { recipe in
+                                    Button {
+                                        //WelcomeView()
+                                        print("recipe id: \(recipe.id)")
+                                    } label: {
+                                        RecipeCardUpdateView(recipe: recipe)
+                                            .frame(height: 260)
+                                    }
+                                }
+                            }
+                            .onAppear {
+                                guard let currentUser = userSession.first else {
+                                    return
+                                }
+                                
+                                guard let userId = Int(currentUser.userId) else {
+                                    return
+                                }
+                                print("userId: \(userId)")
+                                
+                                apiGetManager.getConnectedPublishedUserRecipes(userId: userId, published: true) { result in
+                                    switch result {
+                                        case .success(let recipes):
+                                            DispatchQueue.main.async {
+                                                print("Published recipes:", recipes)
+                                                self.recipes = recipes
+                                            }
+                                        case .failure(let error):
+                                            DispatchQueue.main.async {
+                                                print("Error fetching recipes:", error.localizedDescription)
+                                            }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -130,5 +205,5 @@ struct MyRecipePageView: View {
 }
 
 #Preview {
-    MyRecipePageView(isDraftSelected: .constant(true), isPublishedSelected: .constant(false))
+    MyRecipePageView()
 }
