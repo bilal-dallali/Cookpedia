@@ -10,6 +10,11 @@ import SwiftData
 
 struct MyProfilePageView: View {
     
+    @Binding var isHomeSelected: Bool
+    @Binding var isDiscoverSelected: Bool
+    @Binding var isMyRecipeSelected: Bool
+    @Binding var isMyProfileSelected: Bool
+    
     @State private var recipes: [RecipeTitleCover] = []
     @State private var isRecipeSelected: Bool = true
     @State private var isAboutSelected: Bool = false
@@ -107,6 +112,10 @@ struct MyProfilePageView: View {
                                 HStack(spacing: 16) {
                                     Button {
                                         //
+                                        isHomeSelected = false
+                                        isDiscoverSelected = false
+                                        isMyRecipeSelected = true
+                                        isMyProfileSelected = false
                                     } label: {
                                         VStack(spacing: 4) {
                                             Text("\(recipes.count)")
@@ -303,5 +312,5 @@ struct MyProfilePageView: View {
 }
 
 #Preview {
-    MyProfilePageView()
+    MyProfilePageView(isHomeSelected: .constant(false), isDiscoverSelected: .constant(false), isMyRecipeSelected: .constant(false), isMyProfileSelected: .constant(true))
 }

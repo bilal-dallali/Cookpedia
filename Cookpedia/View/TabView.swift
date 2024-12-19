@@ -29,7 +29,7 @@ struct TabView: View {
             } else if isMyRecipeSelected {
                 MyRecipePageView()
             } else if isMyProfileSelected {
-                MyProfilePageView()
+                MyProfilePageView(isHomeSelected: $isHomeSelected, isDiscoverSelected: $isDiscoverSelected, isMyRecipeSelected: $isMyRecipeSelected, isMyProfileSelected: $isMyProfileSelected)
             }
             VStack {
                 Spacer()
