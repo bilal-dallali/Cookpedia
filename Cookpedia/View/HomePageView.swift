@@ -109,7 +109,7 @@ struct HomePageView: View {
                                         //RecipeCardNameView(title: "Original Italian Pizza Recipe for ...", avatarImage: "jane-cooper", image: "original-pizza", name: "Jane Cooper")
                                         //RecipeCardNameView(title: "Special Blueberry & Banana Sandw...", avatarImage: "rayford-chenail", image: "blueberry-banana-sandwich", name: "Rayford Chenail")
                                         //RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "pancakes", name: "Jean-Philippe Hubert")
-                                        ForEach(recentRecipes.prefix(3), id: \.id) { recipe in
+                                        ForEach(recentRecipes, id: \.id) { recipe in
                                             Button {
                                                 // Navigation logic for recipe details
                                                 print("recipe ID: \(recipe.id)")

@@ -217,6 +217,36 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
+//    func getSavedRecipes(userId: Int, completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
+//        let endpoint = "/recipes/bookmarked-recipes/\(userId)"
+//        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+//            completion(.failure(APIGetError.invalidUrl))
+//            return
+//        }
+//        
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//        
+//        URLSession.shared.dataTask(with: request) { data, response, error in
+//            if let error = error {
+//                completion(.failure(error))
+//                return
+//            }
+//            
+//            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+//                  let data = data else {
+//                completion(.failure(APIGetError.invalidResponse))
+//                return
+//            }
+//            
+//            do {
+//                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+//                completion(.success(recipes))
+//            } catch {
+//                completion(.failure(error))
+//            }
+//        }.resume()
+//    }
     func getSavedRecipes(userId: Int, completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
         let endpoint = "/recipes/bookmarked-recipes/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
@@ -240,8 +270,10 @@ class APIGetRequest: ObservableObject {
             }
             
             do {
-                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
-                completion(.success(recipes))
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let savedRecipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
+                completion(.success(savedRecipes))
             } catch {
                 completion(.failure(error))
             }
@@ -271,8 +303,12 @@ class APIGetRequest: ObservableObject {
             }
             
             do {
-                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
-                completion(.success(recipes))
+//                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+//                completion(.success(recipes))
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let recentRecipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
+                completion(.success(recentRecipes))
             } catch {
                 completion(.failure(error))
             }
