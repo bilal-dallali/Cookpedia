@@ -23,7 +23,7 @@ struct TabView: View {
     var body: some View {
         ZStack {
             if isHomeSelected {
-                HomePageView()
+                HomePageView(isHomeSelected: $isHomeSelected, isDiscoverSelected: $isDiscoverSelected, isMyRecipeSelected: $isMyRecipeSelected, isMyProfileSelected: $isMyProfileSelected)
             } else if isDiscoverSelected {
                 DiscoverPageView()
             } else if isMyRecipeSelected {

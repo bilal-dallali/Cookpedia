@@ -18,20 +18,6 @@ struct MyBookmarkView: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-//                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-//                    ForEach(recipes, id: \.id) { recipe in
-//                        ForEach(recipes, id: \.id) { recipe in
-//                            Button {
-//                                //WelcomeView()
-//                                //print("recipe id: \(recipe.id)")
-//                            } label: {
-//                                RecipeCardNameView(recipe: recipe)
-//                                    .frame(height: 260)
-//                            }
-//                        }
-//                    }
-//                }
-//                .padding(.top, 16)
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
                     ForEach(recipes, id: \.id) { recipe in
                         Button {
@@ -82,41 +68,12 @@ struct MyBookmarkView: View {
                 return
             }
             
-//            apiGetManager.getSavedRecipes(userId: userId) { result in
-//                switch result {
-//                    case .success(let recipesData):
-//                        DispatchQueue.main.async {
-//                            do {
-//                                let jsonData = try JSONSerialization.data(withJSONObject: recipesData, options: [])
-//                                let decodedRecipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: jsonData)
-//                                self.recipes = decodedRecipes
-//                                print("Fetched recipes:", recipes)
-//                            } catch {
-//                                print("Error decoding saved recipes:", error.localizedDescription)
-//                            }
-//                        }
-//                    case .failure(let error):
-//                        print("Error fetching saved recipes:", error.localizedDescription)
-//                }
-//            }
-//            apiGetManager.getSavedRecipes(userId: userId) { result in
-//                switch result {
-//                    case .success(let fetchedRecipes):
-//                        DispatchQueue.main.async {
-//                            self.recipes = fetchedRecipes
-//                            print("Fetched recipes:", fetchedRecipes)
-//                        }
-//                    case .failure(let error):
-//                        print("Error fetching saved recipes:", error.localizedDescription)
-//                }
-//            }
             apiGetManager.getSavedRecipes(userId: userId) { result in
                 switch result {
                     case .success(let fetchedRecipes):
                         DispatchQueue.main.async {
                             // Update only with the fetched saved recipes
                             self.recipes = fetchedRecipes
-                            print("Fetched saved recipes:", self.recipes)
                         }
                     case .failure(let error):
                         print("Error fetching saved recipes:", error.localizedDescription)

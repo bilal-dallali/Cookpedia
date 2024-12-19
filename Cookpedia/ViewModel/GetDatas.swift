@@ -217,46 +217,6 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
-    /*func getSavedRecipes(userId: Int, completion: @escaping (Result<[[String: Any]], Error>) -> Void) {
-        let endpoint = "/recipes/bookmarked-recipes/\(userId)"
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Error while fetching saved recipes:", error.localizedDescription)
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                // Parse the JSON data
-                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]]
-                if let jsonResult = jsonResult {
-                    print("Saved recipes fetched successfully:", jsonResult)
-                    completion(.success(jsonResult))
-                } else {
-                    print("No saved recipes found for userId \(userId)")
-                    completion(.success([]))
-                }
-            } catch {
-                print("Failed to parse JSON:", error.localizedDescription)
-                completion(.failure(error))
-            }
-        }.resume()
-    }*/
-    
     func getSavedRecipes(userId: Int, completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
         let endpoint = "/recipes/bookmarked-recipes/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {

@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct HomePageView: View {
+    
+    @Binding var isHomeSelected: Bool
+    @Binding var isDiscoverSelected: Bool
+    @Binding var isMyRecipeSelected: Bool
+    @Binding var isMyProfileSelected: Bool
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -107,7 +113,10 @@ struct HomePageView: View {
                                         .font(.custom("Urbanist-Bold", size: 24))
                                     Spacer()
                                     Button {
-                                        //
+                                        isHomeSelected = false
+                                        isDiscoverSelected = false
+                                        isMyRecipeSelected = true
+                                        isMyProfileSelected = false
                                     } label: {
                                         Image("arrow-right")
                                             .resizable()
@@ -131,8 +140,8 @@ struct HomePageView: View {
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 24))
                                     Spacer()
-                                    Button {
-                                        //
+                                    NavigationLink {
+                                        MyBookmarkView()
                                     } label: {
                                         Image("arrow-right")
                                             .resizable()
@@ -163,5 +172,5 @@ struct HomePageView: View {
 }
 
 #Preview {
-    HomePageView()
+    HomePageView(isHomeSelected: .constant(true), isDiscoverSelected: .constant(false), isMyRecipeSelected: .constant(false), isMyProfileSelected: .constant(false))
 }
