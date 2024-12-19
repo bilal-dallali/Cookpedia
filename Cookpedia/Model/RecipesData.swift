@@ -46,13 +46,4 @@ struct RecipeTitleCoverUser: Identifiable, Codable {
     let recipeCoverPictureUrl1: String
     let fullName: String
     let profilePictureUrl: String
-    
-//    enum CodingKeys: String, CodingKey {
-//        case id
-//        case userId = "user_id"
-//        case title
-//        case recipeCoverPictureUrl1 = "recipe_cover_picture_url_1"
-//        case fullName = "full_name"
-//        case profilePictureUrl = "profile_picture_url"
-//    }
 }

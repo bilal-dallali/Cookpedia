@@ -16,6 +16,7 @@ struct HomePageView: View {
     @Binding var isMyProfileSelected: Bool
     
     @State private var recentRecipes: [RecipeTitleCoverUser] = []
+    @State private var yourRecipes: [RecipeTitleCoverUser] = []
     @State private var bookmarkedRecipes: [RecipeTitleCoverUser] = []
     
     @Environment(\.modelContext) var context
@@ -109,7 +110,7 @@ struct HomePageView: View {
                                         //RecipeCardNameView(title: "Original Italian Pizza Recipe for ...", avatarImage: "jane-cooper", image: "original-pizza", name: "Jane Cooper")
                                         //RecipeCardNameView(title: "Special Blueberry & Banana Sandw...", avatarImage: "rayford-chenail", image: "blueberry-banana-sandwich", name: "Rayford Chenail")
                                         //RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "pancakes", name: "Jean-Philippe Hubert")
-                                        ForEach(recentRecipes, id: \.id) { recipe in
+                                        ForEach(recentRecipes.prefix(3), id: \.id) { recipe in
                                             Button {
                                                 // Navigation logic for recipe details
                                                 print("recipe ID: \(recipe.id)")
@@ -146,6 +147,15 @@ struct HomePageView: View {
                                         //RecipeCardNameView(title: "Vegetable & Fruit Vegetarian Recip...", avatarImage: "tanner-stafford", image: "vegetable-and-fruit", name: "Tanner Stafford")
                                         //RecipeCardNameView(title: "Delicious & Easy Mexican Taco Re...", avatarImage: "lauralee-quintero", image: "mexican-taco", name: "Lauralee Qintero")
                                         //RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "vegetable-salad", name: "Jean-Philippe Hubert")
+                                        ForEach(yourRecipes.prefix(3), id: \.id) { recipe in
+                                            Button {
+                                                // Navigation logic for recipe details
+                                                print("recipe ID: \(recipe.id)")
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe)
+                                                    .frame(width: 183, height: 260)
+                                            }
+                                        }
                                     }
                                 }
                                 .scrollIndicators(.hidden)
@@ -210,6 +220,17 @@ struct HomePageView: View {
                             }
                         case .failure(let error):
                             print("Error fetching recipes:", error.localizedDescription)
+                    }
+                }
+                
+                apiGetManager.getConnectedUserRecipesWithDetails(userId: userId) { result in
+                    DispatchQueue.main.async {
+                        switch result {
+                            case .success(let recipes):
+                                self.yourRecipes = recipes // Mettez à jour la variable de votre vue
+                            case .failure(let error):
+                                print("Failed to fetch user recipes: \(error.localizedDescription)")
+                        }
                     }
                 }
                 
