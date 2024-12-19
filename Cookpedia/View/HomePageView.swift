@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct HomePageView: View {
     
@@ -13,6 +14,13 @@ struct HomePageView: View {
     @Binding var isDiscoverSelected: Bool
     @Binding var isMyRecipeSelected: Bool
     @Binding var isMyProfileSelected: Bool
+    
+    @State private var recentRecipes: [RecipeTitleCoverUser] = []
+    @State private var bookmarkedRecipes: [RecipeTitleCoverUser] = []
+    
+    @Environment(\.modelContext) var context
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    var apiGetManager = APIGetRequest()
     
     var body: some View {
         NavigationStack {
@@ -101,6 +109,15 @@ struct HomePageView: View {
                                         //RecipeCardNameView(title: "Original Italian Pizza Recipe for ...", avatarImage: "jane-cooper", image: "original-pizza", name: "Jane Cooper")
                                         //RecipeCardNameView(title: "Special Blueberry & Banana Sandw...", avatarImage: "rayford-chenail", image: "blueberry-banana-sandwich", name: "Rayford Chenail")
                                         //RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "pancakes", name: "Jean-Philippe Hubert")
+                                        ForEach(recentRecipes.prefix(3), id: \.id) { recipe in
+                                            Button {
+                                                // Navigation logic for recipe details
+                                                print("recipe ID: \(recipe.id)")
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe)
+                                                    .frame(width: 183, height: 260)
+                                            }
+                                        }
                                     }
                                 }
                                 .scrollIndicators(.hidden)
@@ -154,6 +171,15 @@ struct HomePageView: View {
                                         //RecipeCardNameView(title: "Meat, Noodle and Seafood Recipes ...", avatarImage: "clinton-mcclure", image: "meat-noodles-recipe", name: "Clinton Mcclure")
                                         //RecipeCardNameView(title: "Scrambled Eggs & French Bread ...", avatarImage: "charolette-hanlin", image: "scrambled-eggs", name: "Charolette Hanlin")
                                         //RecipeCardNameView(title: "Your Recipes Title Write Here ...", avatarImage: "profile-picture", image: "egg-salad", name: "Jean-Philippe Hubert")
+                                        ForEach(bookmarkedRecipes.prefix(3), id: \.id) { recipe in
+                                            Button {
+                                                // Navigation logic for recipe details
+                                                print("recipe ID: \(recipe.id)")
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe)
+                                                    .frame(width: 183, height: 260)
+                                            }
+                                        }
                                     }
                                 }
                                 .scrollIndicators(.hidden)
@@ -167,6 +193,38 @@ struct HomePageView: View {
                 .background(Color("Dark1"))
             }
             .navigationBarBackButtonHidden(true)
+            .onAppear {
+                guard let currentUser = userSession.first else {
+                    return
+                }
+                
+                guard let userId = Int(currentUser.userId) else {
+                    return
+                }
+                
+                apiGetManager.getAllRecentRecipes { result in
+                    switch result {
+                        case .success(let recipes):
+                            DispatchQueue.main.async {
+                                self.recentRecipes = recipes
+                            }
+                        case .failure(let error):
+                            print("Error fetching recipes:", error.localizedDescription)
+                    }
+                }
+                
+                apiGetManager.getSavedRecipes(userId: userId) { result in
+                    switch result {
+                        case .success(let fetchedRecipes):
+                            DispatchQueue.main.async {
+                                // Update only with the fetched saved recipes
+                                self.bookmarkedRecipes = fetchedRecipes
+                            }
+                        case .failure(let error):
+                            print("Error fetching saved recipes:", error.localizedDescription)
+                    }
+                }
+            }
         }
     }
 }

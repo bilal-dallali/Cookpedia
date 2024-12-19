@@ -247,6 +247,37 @@ class APIGetRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func getAllRecentRecipes(completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
+        let endpoint = "/recipes/recent-recipes"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+                completion(.success(recipes))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
 }
 
 enum APIGetError: Error {
