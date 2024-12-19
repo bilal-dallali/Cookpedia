@@ -10,7 +10,7 @@ import SwiftData
 
 struct RecipeCardView: View {
     
-    let recipe: RecipeConnectedUser
+    let recipe: RecipeTitleCover
     @State private var isBookmarkSelected: Bool = false
     var apiPostManager = APIPostRequest()
     var apiGetManager = APIGetRequest()
@@ -73,18 +73,15 @@ struct RecipeCardView: View {
                     RoundedRectangle(cornerRadius: 0)
                         .fill(LinearGradient(gradient: Gradient(colors: [Color(red: 0.13, green: 0.13, blue: 0.13, opacity: 0), Color(red: 0.13, green: 0.13, blue: 0.13, opacity: 0.5), Color(red: 0.08, green: 0.08, blue: 0.08, opacity: 0.8), Color(red: 0.09, green: 0.09, blue: 0.09, opacity: 1), Color(red: 0.1, green: 0.1, blue: 0.1, opacity: 1)]), startPoint: .top, endPoint: .bottom))
                         .frame(height: 140)
-                        .overlay {
-                            VStack {
-                                Spacer()
-                                Text(recipe.title)
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 18))
-                                    .multilineTextAlignment(.leading)
-                                    .lineLimit(2)
-                                    .truncationMode(.tail)
-                                    .padding(.horizontal, 12)
-                                    .padding(.bottom, 10)
-                            }
+                        .overlay(alignment: .bottomLeading) {
+                            Text(recipe.title)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 18))
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(2)
+                                .truncationMode(.tail)
+                                .padding(.horizontal, 12)
+                                .padding(.bottom, 10)
                         }
                 }
             }
@@ -120,6 +117,6 @@ struct RecipeCardView: View {
 }
 
 #Preview {
-    RecipeCardView(recipe: RecipeConnectedUser(id: 1, title: "Vegetable Fruit SaladVegetable Fruit SaladVegetable Fruit Salad", recipeCoverPictureUrl1:  "recipe_cover_picture_url_1_20241206213130_CCD6CA1F-2E34-4D4F-8BCC-BB5723EA52AF"))
+    RecipeCardView(recipe: RecipeTitleCover(id: 1, title: "Vegetable Fruit Salad", recipeCoverPictureUrl1:  "recipe_cover_picture_url_1_20241206213130_CCD6CA1F-2E34-4D4F-8BCC-BB5723EA52AF"))
         .frame(width: 183)
 }

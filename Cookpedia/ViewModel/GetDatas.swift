@@ -41,7 +41,7 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
-    func getConnectedUserRecipes(userId: Int, completion: @escaping (Result<[RecipeConnectedUser], Error>) -> Void) {
+    func getConnectedUserRecipes(userId: Int, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {
         let endpoint = "/recipes/fetch-all-recipes-from-user/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))
@@ -66,7 +66,7 @@ class APIGetRequest: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let recipes = try decoder.decode([RecipeConnectedUser].self, from: data)
+                let recipes = try decoder.decode([RecipeTitleCover].self, from: data)
                 completion(.success(recipes))
             } catch {
                 completion(.failure(error))
@@ -111,7 +111,7 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
-    func getConnectedPublishedUserRecipes(userId: Int, published: Bool, completion: @escaping (Result<[RecipeConnectedUser], Error>) -> Void) {
+    func getConnectedPublishedUserRecipes(userId: Int, published: Bool, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {
         let publishedValue = published ? 1 : 0
         let endpoint = "/recipes/fetch-user-published-recipes/\(userId)/\(publishedValue)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
@@ -137,7 +137,7 @@ class APIGetRequest: ObservableObject {
             do {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let recipes = try decoder.decode([RecipeConnectedUser].self, from: data)
+                let recipes = try decoder.decode([RecipeTitleCover].self, from: data)
                 completion(.success(recipes))
             } catch {
                 completion(.failure(APIGetError.decodingError))

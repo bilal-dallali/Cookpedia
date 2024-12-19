@@ -10,7 +10,7 @@ import SwiftData
 
 struct MyRecipePageView: View {
     
-    @State private var recipes: [RecipeConnectedUser] = []
+    @State private var recipes: [RecipeTitleCover] = []
     
     @State private var isDraftSelected: Bool = true
     @State private var isPublishedSelected: Bool = false

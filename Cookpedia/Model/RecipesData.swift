@@ -33,13 +33,13 @@ struct Instructions: Encodable {
     let instructionPictureUrl3: String?
 }
 
-struct RecipeConnectedUser: Codable {
+struct RecipeTitleCover: Codable {
     let id: Int
     let title: String
     let recipeCoverPictureUrl1: String
 }
 
-struct SavedRecipe: Identifiable, Codable {
+struct RecipeTitleCoverUser: Identifiable, Codable {
     let id: Int
     let userId: Int
     let title: String
