@@ -1,14 +1,14 @@
 //
-//  MyBookmarkView.swift
+//  RecentRecipeView.swift
 //  Cookpedia
 //
-//  Created by Bilal Dallali on 18/12/2024.
+//  Created by Bilal Dallali on 19/12/2024.
 //
 
 import SwiftUI
 import SwiftData
 
-struct MyBookmarkView: View {
+struct RecentRecipeView: View {
     
     @State private var recipes: [RecipeTitleCoverUser] = []
     @Environment(\.modelContext) var context
@@ -42,7 +42,7 @@ struct MyBookmarkView: View {
             }
             ToolbarItem(placement: .principal) {
                 HStack {
-                    Text("My Bookmark")
+                    Text("Recent recipes")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 24))
                         .padding(.leading, 16)
@@ -60,29 +60,21 @@ struct MyBookmarkView: View {
             }
         }
         .onAppear {
-            guard let currentUser = userSession.first else {
-                return
-            }
-            
-            guard let userId = Int(currentUser.userId) else {
-                return
-            }
-            
-            apiGetManager.getSavedRecipes(userId: userId) { result in
+            apiGetManager.getAllRecentRecipes { result in
                 switch result {
-                    case .success(let fetchedRecipes):
+                    case .success(let recipes):
                         DispatchQueue.main.async {
-                            // Update only with the fetched saved recipes
-                            self.recipes = fetchedRecipes
+                            self.recipes = recipes
                         }
                     case .failure(let error):
-                        print("Error fetching saved recipes:", error.localizedDescription)
+                        print("Error fetching recipes:", error.localizedDescription)
                 }
             }
         }
     }
 }
 
+
 #Preview {
-    MyBookmarkView()
+    RecentRecipeView()
 }
