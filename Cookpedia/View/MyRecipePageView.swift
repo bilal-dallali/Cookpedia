@@ -10,7 +10,8 @@ import SwiftData
 
 struct MyRecipePageView: View {
     
-    @State private var recipes: [RecipeTitleCover] = []
+    @State private var draftRecipes: [RecipeTitleCover] = []
+    @State private var publishedRecipes: [RecipeTitleCover] = []
     
     @State private var isDraftSelected: Bool = true
     @State private var isPublishedSelected: Bool = false
@@ -124,7 +125,7 @@ struct MyRecipePageView: View {
                         
                         if isDraftSelected {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                                ForEach(recipes, id: \.id) { recipe in
+                                ForEach(draftRecipes, id: \.id) { recipe in
                                     Button {
                                         //WelcomeView()
                                         //print("recipe id: \(recipe.id)")
@@ -147,7 +148,7 @@ struct MyRecipePageView: View {
                                     switch result {
                                         case .success(let recipes):
                                             DispatchQueue.main.async {
-                                                self.recipes = recipes
+                                                self.draftRecipes = recipes
                                             }
                                         case .failure(let error):
                                             DispatchQueue.main.async {
@@ -158,7 +159,7 @@ struct MyRecipePageView: View {
                             }
                         } else if isPublishedSelected {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                                ForEach(recipes, id: \.id) { recipe in
+                                ForEach(publishedRecipes, id: \.id) { recipe in
                                     Button {
                                         //WelcomeView()
                                         //print("recipe id: \(recipe.id)")
@@ -181,7 +182,7 @@ struct MyRecipePageView: View {
                                     switch result {
                                         case .success(let recipes):
                                             DispatchQueue.main.async {
-                                                self.recipes = recipes
+                                                self.publishedRecipes = recipes
                                             }
                                         case .failure(let error):
                                             DispatchQueue.main.async {
