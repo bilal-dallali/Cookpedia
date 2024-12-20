@@ -54,6 +54,67 @@ struct RecipeDetailsView: View {
                 }
                 
                 Text("\(recipeDetails.title)")
+                
+                AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
+                    image
+                        .resizable()
+                        .frame(width: 72, height: 72)
+                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                } placeholder: {
+                    ProgressView()
+                        .frame(width: 72, height: 72)
+                }
+                
+                Text(recipeDetails.fullName)
+                Text(recipeDetails.username)
+                Text(recipeDetails.description)
+                ForEach(recipeDetails.ingredients, id: \.index) { ingredient in
+                    HStack {
+                        Text("\(ingredient.index)")
+                        Text("\(ingredient.ingredient)")
+                    }
+                }
+                
+                ForEach(recipeDetails.instructions, id: \.index) { instruction in
+                    VStack {
+                        HStack {
+                            Text("\(instruction.index)")
+                            Text("\(instruction.instruction)")
+                        }
+                        HStack {
+                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl1 ?? "").jpg")) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: 72, height: 72)
+                            } placeholder: {
+                                Image("ellipse")
+                                    .resizable()
+                                    .frame(width: 72, height: 72)
+                            }
+                            
+                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl2 ?? "").jpg")) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: 72, height: 72)
+                            } placeholder: {
+                                Image("ellipse")
+                                    .resizable()
+                                    .frame(width: 72, height: 72)
+                            }
+                            
+                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl3 ?? "").jpg")) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: 72, height: 72)
+                            } placeholder: {
+                                Image("ellipse")
+                                    .resizable()
+                                    .frame(width: 72, height: 72)
+                            }
+                        }
+                    }
+                }
+
             }
         }
         .navigationBarBackButtonHidden(false)
