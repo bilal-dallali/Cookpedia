@@ -111,7 +111,6 @@ struct MyProfilePageView: View {
                                     }
                                 HStack(spacing: 16) {
                                     Button {
-                                        //
                                         isHomeSelected = false
                                         isDiscoverSelected = false
                                         isMyRecipeSelected = true

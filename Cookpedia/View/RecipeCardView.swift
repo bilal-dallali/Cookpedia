@@ -37,7 +37,6 @@ struct RecipeCardView: View {
                     HStack {
                         Spacer()
                         Button {
-                            //print("bookmark \(recipe.id)")
                             guard let currentUser = userSession.first else {
                                 return
                             }
@@ -46,7 +45,6 @@ struct RecipeCardView: View {
                                 return
                             }
                             
-                            //print("bookmark selected \(isBookmarkSelected)")
                             apiPostManager.toggleBookmark(userId: userId, recipeId: recipe.id, isBookmarked: isBookmarkSelected) { result in
                                 switch result {
                                 case .success:

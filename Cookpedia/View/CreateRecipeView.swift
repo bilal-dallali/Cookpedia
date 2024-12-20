@@ -136,7 +136,7 @@ struct CreateRecipeView: View {
                                         
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         
-                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
+                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
                                             switch result {
                                             case .success:
                                                 isSavedRecipe = true
@@ -213,7 +213,7 @@ struct CreateRecipeView: View {
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         
                                         
-                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
+                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                             switch result {
                                             case .success:
                                                 isPublishedRecipe = true
@@ -305,6 +305,8 @@ struct CreateRecipeView: View {
                                     if let selectedImage1 = selectedImage1 {
                                         Image(uiImage: selectedImage1)
                                             .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .clipped()
                                             .frame(width: max(geometry.size.width - 48, 0), height: 382)
                                             .clipShape(RoundedRectangle(cornerRadius: 20))
                                             .overlay(alignment: .trailingLastTextBaseline) {
@@ -348,6 +350,8 @@ struct CreateRecipeView: View {
                                     if let selectedImage2 = selectedImage2 {
                                         Image(uiImage: selectedImage2)
                                             .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .clipped()
                                             .frame(width: max(geometry.size.width - 48, 0), height: 382)
                                             .clipShape(RoundedRectangle(cornerRadius: 20))
                                             .overlay(alignment: .trailingLastTextBaseline) {

@@ -118,7 +118,6 @@ struct MyRecipePageView: View {
                                     }
                                 }
                             }
-                            
                         }
                         .frame(height: 41)
                         .frame(maxWidth: .infinity)
