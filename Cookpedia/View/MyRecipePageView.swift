@@ -126,9 +126,10 @@ struct MyRecipePageView: View {
                         if isDraftSelected {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                 ForEach(draftRecipes, id: \.id) { recipe in
-                                    Button {
+                                    NavigationLink {
                                         //WelcomeView()
                                         //print("recipe id: \(recipe.id)")
+                                        RecipeDetailsView(recipeId: recipe.id)
                                     } label: {
                                         RecipeCardUpdateView(recipe: recipe)
                                             .frame(height: 260)
@@ -160,9 +161,10 @@ struct MyRecipePageView: View {
                         } else if isPublishedSelected {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                 ForEach(publishedRecipes, id: \.id) { recipe in
-                                    Button {
+                                    NavigationLink {
                                         //WelcomeView()
                                         //print("recipe id: \(recipe.id)")
+                                        RecipeDetailsView(recipeId: recipe.id)
                                     } label: {
                                         RecipeCardUpdateView(recipe: recipe)
                                             .frame(height: 260)

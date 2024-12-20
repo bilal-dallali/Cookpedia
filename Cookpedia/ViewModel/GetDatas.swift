@@ -315,6 +315,79 @@ class APIGetRequest: ObservableObject {
             }
         }.resume()
     }
+    
+//    func getRecipeDetails(recipeId: Int, completion: @escaping (Result<RecipeDetails, Error>) -> Void) {
+//        let endpoint = "/recipes/recipe-details/\(recipeId)"
+//        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+//            completion(.failure(APIGetError.invalidUrl))
+//            return
+//        }
+//        
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            if let error = error {
+//                completion(.failure(error))
+//                print("error1")
+//                return
+//            }
+//            
+//            guard let data = data,
+//                  let recipeDetails = try? JSONDecoder().decode(RecipeDetails.self, from: data) else {
+//                completion(.failure(APIGetError.invalidResponse))
+//                print("double WTF")
+//                return
+//            }
+//            
+//            do {
+//                let decoder = JSONDecoder()
+//                decoder.keyDecodingStrategy = .convertFromSnakeCase
+//                let recipeDetails = try decoder.decode(RecipeDetails.self, from: data)
+//                completion(.success(recipeDetails))
+//                print("WTF")
+//            } catch {
+//                completion(.failure(error))
+//                print("fdcghjk")
+//            }
+//        }.resume()
+//    }
+    
+    func getRecipeDetails(recipeId: Int, completion: @escaping (Result<RecipeDetails, Error>) -> Void) {
+        let endpoint = "/recipes/recipe-details/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Request error: \(error)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            if let rawJSON = String(data: data, encoding: .utf8) {
+                print("Raw JSON response: \(rawJSON)")
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let recipeDetails = try decoder.decode(RecipeDetails.self, from: data)
+                completion(.success(recipeDetails))
+            } catch {
+                print("Decoding error: \(error)")
+                completion(.failure(APIGetError.invalidResponse))
+            }
+        }.resume()
+    }
 }
 
 enum APIGetError: Error {
