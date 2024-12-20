@@ -230,49 +230,58 @@ struct RecipeDetailsView: View {
                                                     .foregroundStyle(Color("Primary900"))
                                                     .font(.custom("Urbanist-Semibold", size: 16))
                                             }
-                                        VStack(spacing: 12) {
+                                        VStack(alignment: .leading, spacing: 12) {
                                             Text("\(instruction.instruction)")
                                                 .foregroundStyle(Color("MyWhite"))
                                                 .font(.custom("Urbanist-Medium", size: 18))
                                             HStack(spacing: 8) {
-                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl1).jpg")) { image in
+                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl1 ?? "").jpg")) { image in
                                                     image
                                                         .resizable()
                                                         .frame(maxWidth: .infinity)
                                                         .frame(height: 80)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 } placeholder: {
                                                     RoundedRectangle(cornerRadius: 12)
-                                                        .resizable()
                                                         .frame(maxWidth: .infinity)
                                                         .frame(height: 80)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 }
-                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl2).jpg")) { image in
+                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl2 ?? "").jpg")) { image in
                                                     image
                                                         .resizable()
                                                         .frame(maxWidth: .infinity)
                                                         .frame(height: 80)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 } placeholder: {
                                                     RoundedRectangle(cornerRadius: 12)
-                                                        .resizable()
                                                         .frame(maxWidth: .infinity)
                                                         .frame(height: 80)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 }
-                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl3).jpg")) { image in
+                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl3 ?? "").jpg")) { image in
                                                     image
                                                         .resizable()
                                                         .frame(maxWidth: .infinity)
                                                         .frame(height: 80)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 } placeholder: {
                                                     RoundedRectangle(cornerRadius: 12)
-                                                        .resizable()
                                                         .frame(maxWidth: .infinity)
                                                         .frame(height: 80)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+                            Divider()
+                                .overlay {
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundStyle(Color("Dark4"))
+                                }
                         }
                         .padding(.horizontal, 24)
                     }
