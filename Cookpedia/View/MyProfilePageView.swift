@@ -241,9 +241,8 @@ struct MyProfilePageView: View {
                             if isRecipeSelected {
                                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                     ForEach(recipes, id: \.id) { recipe in
-                                        Button {
-                                            //WelcomeView()
-                                            print("recipe id: \(recipe.id)")
+                                        NavigationLink {
+                                            RecipeDetailsView(recipeId: recipe.id)
                                         } label: {
                                             RecipeCardView(recipe: recipe)
                                                 .frame(height: 260)

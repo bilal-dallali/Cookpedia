@@ -20,9 +20,8 @@ struct RecentRecipeView: View {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                     ForEach(recipes, id: \.id) { recipe in
-                        Button {
-                            // Navigation logic for recipe details
-                            print("recipe ID: \(recipe.id)")
+                        NavigationLink {
+                            RecipeDetailsView(recipeId: recipe.id)
                         } label: {
                             RecipeCardNameView(recipe: recipe)
                                 .frame(height: 260)
