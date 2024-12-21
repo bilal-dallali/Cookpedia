@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RecipeDetailsView: View {
     
     @State private var recipeDetails: RecipeDetails
     let recipeId: Int
+    @State private var isBookmarkSelected: Bool = false
     var apiGetManager = APIGetRequest()
+    var apiPostManager = APIPostRequest()
+    @Environment(\.modelContext) var context
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
     // Private initializer for internal use only
     private init(recipeDetails: RecipeDetails, recipeId: Int) {
@@ -301,7 +306,7 @@ struct RecipeDetailsView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 20) {
                         Button {
-                            //
+                            isBookmarkSelected.toggle()
                         } label: {
                             Image("bookmark-unselected")
                                 .resizable()
