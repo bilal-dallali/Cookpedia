@@ -243,8 +243,9 @@ struct RecipeDetailsView: View {
                                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 } placeholder: {
                                                     RoundedRectangle(cornerRadius: 12)
+                                                        .foregroundStyle(Color("Dark1"))
                                                         .frame(maxWidth: .infinity)
-                                                        .frame(height: 80)
+                                                        .frame(height: 0)
                                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 }
                                                 AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl2 ?? "").jpg")) { image in
@@ -255,8 +256,9 @@ struct RecipeDetailsView: View {
                                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 } placeholder: {
                                                     RoundedRectangle(cornerRadius: 12)
+                                                        .foregroundStyle(Color("Dark1"))
                                                         .frame(maxWidth: .infinity)
-                                                        .frame(height: 80)
+                                                        .frame(height: 0)
                                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 }
                                                 AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl3 ?? "").jpg")) { image in
@@ -267,8 +269,9 @@ struct RecipeDetailsView: View {
                                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 } placeholder: {
                                                     RoundedRectangle(cornerRadius: 12)
+                                                        .foregroundStyle(Color("Dark1"))
                                                         .frame(maxWidth: .infinity)
-                                                        .frame(height: 80)
+                                                        .frame(height: 0)
                                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                                 }
                                             }

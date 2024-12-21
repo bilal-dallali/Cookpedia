@@ -447,7 +447,7 @@ struct CreateRecipeView: View {
                                     .font(.custom("Urbanist-Regular", size: 16))
                                     
                             }
-                            .keyboardType(.default)
+                            .keyboardType(.numberPad)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Semibold", size: 16))
                             .padding(.horizontal, 20)
@@ -467,7 +467,7 @@ struct CreateRecipeView: View {
                                     .font(.custom("Urbanist-Regular", size: 16))
                                     
                             }
-                            .keyboardType(.default)
+                            .keyboardType(.numberPad)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Semibold", size: 16))
                             .padding(.horizontal, 20)
