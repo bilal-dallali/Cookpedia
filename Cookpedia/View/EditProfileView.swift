@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct EditProfileView: View {
     
@@ -18,7 +19,15 @@ struct EditProfileView: View {
     @State private var website: String = ""
     @State private var city: String = ""
     @State private var country: String = ""
+    @State private var selectedImage: UIImage?
+    @State private var profilePictureUrl: String = ""
+    
     @FocusState private var isTextFocused: Bool
+    
+    var apiGetManager = APIGetRequest()
+    var apiPostManager = APIPostRequest()
+    @Environment(\.modelContext) var context
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -29,16 +38,47 @@ struct EditProfileView: View {
                         Button {
                             //
                         } label: {
-                            Image("Ellipse")
-                                .resizable()
-                                .frame(width: 120, height: 120)
-                                .clipShape(.rect(cornerRadius: .infinity))
-                                .overlay(alignment: .trailingLastTextBaseline) {
-                                    Image("Edit Square - Regular - Bold")
+                            if let selectedImage {
+                                Image(uiImage: selectedImage)
+                                    .resizable()
+                                    .frame(width: 120, height: 120)
+                                    .clipShape(.rect(cornerRadius: .infinity))
+                                    .overlay(alignment: .trailingLastTextBaseline) {
+                                        Image("Edit Square - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 30, height: 30)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
+                            } else {
+                                if profilePictureUrl.isEmpty {
+                                    Image("Ellipse")
                                         .resizable()
-                                        .frame(width: 30, height: 30)
-                                        .foregroundStyle(Color("Primary900"))
+                                        .frame(width: 120, height: 120)
+                                        .clipShape(.rect(cornerRadius: .infinity))
+                                        .overlay(alignment: .trailingLastTextBaseline) {
+                                            Image("Edit Square - Regular - Bold")
+                                                .resizable()
+                                                .frame(width: 30, height: 30)
+                                                .foregroundStyle(Color("Primary900"))
+                                        }
+                                } else {
+                                    AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
+                                        image
+                                            .resizable()
+                                            .frame(width: 120, height: 120)
+                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                    } placeholder: {
+                                        ProgressView()
+                                            .frame(width: 120, height: 120)
+                                    }
+                                    .overlay(alignment: .trailingLastTextBaseline) {
+                                        Image("Edit Square - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 30, height: 30)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
                                 }
+                            }
                         }
                         Spacer()
                     }
@@ -167,7 +207,7 @@ struct EditProfileView: View {
                                 .frame(height: 1)
                                 .foregroundStyle(Color("Dark4"))
                         }
-                    Text("Website")
+                    Text("More Info")
                         .foregroundStyle(Color("Greyscale300"))
                         .font(.custom("Urbanist-Bold", size: 18))
                     VStack(alignment: .leading, spacing: 16) {
@@ -260,6 +300,35 @@ struct EditProfileView: View {
                     .resizable()
                     .frame(width: 28, height: 28)
                     .foregroundStyle(Color("MyWhite"))
+            }
+        }
+        .onAppear {
+            guard let currentUser = userSession.first else {
+                return
+            }
+            
+            guard let userId = Int(currentUser.userId) else {
+                return
+            }
+            
+            apiGetManager.getConnectedUserUserData(userId: userId) { result in
+                switch result {
+                    case .success(let user):
+                        DispatchQueue.main.async {
+                            self.profilePictureUrl = user.profilePictureUrl ?? ""
+                            self.fullName = user.fullName
+                            self.username = user.username
+                            self.description = user.description ?? ""
+                            self.facebook = user.facebookUrl ?? ""
+                            self.twitter = user.twitterUrl ?? ""
+                            self.instagram = user.instagramUrl ?? ""
+                            self.website = user.websiteUrl ?? ""
+                            self.city = user.city
+                            self.country = user.country
+                        }
+                    case .failure(let error):
+                        print("Failed to fetch user data: \(error.localizedDescription)")
+                }
             }
         }
     }

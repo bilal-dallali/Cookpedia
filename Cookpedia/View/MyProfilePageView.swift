@@ -306,7 +306,6 @@ struct MyProfilePageView: View {
                             print("Failed to fetch user data: \(error.localizedDescription)")
                         }
                     }
-                   
                 }
             }
             .navigationBarBackButtonHidden(true)
