@@ -40,7 +40,9 @@ struct CountryView: View {
                     }
                     
                     HStack(spacing: 12) {
-                        Image(searchText.isEmpty ? "magnifying-glass-inactive" : "magnifying-glass-focused")
+                        Image("Search - Regular - Light - Outline")
+                            .foregroundStyle(Color(searchText.isEmpty ? "Greyscale600" : "MyWhite"))
+                            .frame(width: 20, height: 20)
                             .padding(.leading, 20)
                         TextField(text: $searchText) {
                             Text("Search Country")
@@ -121,7 +123,14 @@ struct CountryView: View {
                 BackButtonView()
             }
             ToolbarItem(placement: .principal) {
-                Image("progress-bar-22")
+                RoundedRectangle(cornerRadius: .infinity)
+                    .foregroundStyle(Color("Dark4"))
+                    .frame(width: 216, height: 12)
+                    .overlay(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: .infinity)
+                            .foregroundStyle(Color("Primary900"))
+                            .frame(width: 48, height: 12)
+                    }
             }
         }
         .onTapGesture {

@@ -1,0 +1,16 @@
+{
+  "images" : [
+    {
+      "filename" : "Style=None, Theme=Default, State=Unchecked, Component=Checkbox.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true,
+    "template-rendering-intent" : "original"
+  }
+}

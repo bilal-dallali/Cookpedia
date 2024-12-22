@@ -29,7 +29,7 @@ struct SplashView: View {
                     .foregroundStyle(Color("MyWhite"))
                     .font(.custom("Urbanist-Bold", size: 48))
             }
-            Image("modal-loader")
+            Image("loader")
                 .resizable()
                 .frame(width: 60, height: 60)
                 .rotationEffect(.degrees(isRotating ? 360 : 0))

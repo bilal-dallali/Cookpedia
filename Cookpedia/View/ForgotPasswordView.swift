@@ -80,6 +80,7 @@ struct ForgotPasswordView: View {
                         }
                     }
                 }
+                .padding(.top, 24)
                 .padding(.horizontal, 24)
             }
             .scrollIndicators(.hidden)

@@ -16,7 +16,9 @@ struct ModalView: View {
     
     var body: some View {
         VStack(spacing: 32) {
-            Image("modal-icon")
+            Image("modal")
+                .resizable()
+                .frame(width: 186, height: 180)
             Text(title)
                 .foregroundStyle(Color("Primary900"))
                 .font(.custom("Urbanist-Bold", size: 24))
@@ -25,7 +27,7 @@ struct ModalView: View {
                 .font(.custom("Urbanist-Regular", size: 16))
                 .frame(width: 276)
                 .multilineTextAlignment(.center)
-            Image("modal-loader")
+            Image("loader")
                 .resizable()
                 .frame(width: 60, height: 60)
                 .rotationEffect(.degrees(isRotating ? 360 : 0))

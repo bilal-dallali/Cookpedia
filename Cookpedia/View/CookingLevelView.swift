@@ -245,7 +245,14 @@ struct CookingLevelView: View {
                 BackButtonView()
             }
             ToolbarItem(placement: .principal) {
-                Image("progress-bar-33")
+                RoundedRectangle(cornerRadius: .infinity)
+                    .foregroundStyle(Color("Dark4"))
+                    .frame(width: 216, height: 12)
+                    .overlay(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: .infinity)
+                            .foregroundStyle(Color("Primary900"))
+                            .frame(width: 72, height: 12)
+                    }
             }
         }
     }

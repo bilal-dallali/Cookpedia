@@ -86,15 +86,21 @@ struct CompleteProfileView: View {
                                             .frame(width: 120, height: 120)
                                             .clipShape(.rect(cornerRadius: .infinity))
                                             .overlay(alignment: .trailingLastTextBaseline) {
-                                                Image("edit-square")
+                                                Image("Edit Square - Regular - Bold")
+                                                    .resizable()
+                                                    .frame(width: 30, height: 30)
+                                                    .foregroundStyle(Color("Primary900"))
                                             }
                                     } else {
-                                        Image("ellipse")
+                                        Image("Ellipse")
                                             .resizable()
                                             .frame(width: 120, height: 120)
                                             .clipShape(.rect(cornerRadius: .infinity))
                                             .overlay(alignment: .trailingLastTextBaseline) {
-                                                Image("edit-square")
+                                                Image("Edit Square - Regular - Bold")
+                                                    .resizable()
+                                                    .frame(width: 30, height: 30)
+                                                    .foregroundStyle(Color("Primary900"))
                                             }
                                     }
                                 }
@@ -153,7 +159,10 @@ struct CompleteProfileView: View {
                                 }
                                 if phoneNumberInvalid {
                                     HStack(spacing: 6) {
-                                        Image("red-alert")
+                                        Image("Info Circle - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundStyle(Color("Error"))
                                             .padding(.leading, 12)
                                         Text("Phone number invalid")
                                             .foregroundStyle(Color("Error"))
@@ -180,7 +189,10 @@ struct CompleteProfileView: View {
                                                 .foregroundStyle(gender == "" ? Color("Dark4") : Color("MyWhite"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
                                             Spacer()
-                                            Image(isDropDownMenuActivated ? "arrow-up" : "arrow-down")
+                                            Image(isDropDownMenuActivated ? "Arrow - Up 2 - Regular - Light - Outline" : "Arrow - Down 2 - Regular - Light - Outline")
+                                                .resizable()
+                                                .frame(width: 28, height: 28)
+                                                .foregroundStyle(Color("Primary900"))
                                         }
                                         .frame(height: 32)
                                         Rectangle()
@@ -204,7 +216,10 @@ struct CompleteProfileView: View {
                                                 .foregroundStyle(Color(isShowingDate ? "MyWhite" : "Dark4"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
                                             Spacer()
-                                            Image("calendar")
+                                            Image("Calendar - Regular - Bold")
+                                                .resizable()
+                                                .frame(width: 28, height: 28)
+                                                .foregroundStyle(Color("Primary900"))
                                         }
                                         .frame(height: 32)
                                     }
@@ -336,7 +351,14 @@ struct CompleteProfileView: View {
                     BackButtonView()
                 }
                 ToolbarItem(placement: .principal) {
-                    Image("progress-bar-80")
+                    RoundedRectangle(cornerRadius: .infinity)
+                        .foregroundStyle(Color("Dark4"))
+                        .frame(width: 216, height: 12)
+                        .overlay(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: .infinity)
+                                .foregroundStyle(Color("Primary900"))
+                                .frame(width: 168, height: 12)
+                        }
                 }
             }
             .onTapGesture {
@@ -350,9 +372,10 @@ struct CompleteProfileView: View {
                         gender = "Male"
                         isDropDownMenuActivated = false
                     } label: {
-                        Image(gender == "Male" ? "radio-selected" : "radio-unselected")
+                        Image(gender == "Male" ? "selected-radio" : "unselected-radio")
                             .resizable()
                             .frame(width: 20, height: 20)
+                        
                         Text("Male")
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Semibold", size: 14))
@@ -369,7 +392,7 @@ struct CompleteProfileView: View {
                         gender = "Female"
                         isDropDownMenuActivated = false
                     } label: {
-                        Image(gender == "Female" ? "radio-selected" : "radio-unselected")
+                        Image(gender == "Female" ? "selected-radio" : "unselected-radio")
                             .resizable()
                             .frame(width: 20, height: 20)
                         Text("Female")

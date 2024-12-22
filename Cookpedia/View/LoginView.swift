@@ -124,7 +124,10 @@ struct LoginView: View {
                                         Button {
                                             isPasswordHidden.toggle()
                                         } label: {
-                                            Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                            Image(isPasswordHidden ? "Hide - Regular - Bold" : "Show - Regular - Bold")
+                                                .resizable()
+                                                .frame(width: 28, height: 28)
+                                                .foregroundStyle(Color("Primary900"))
                                         }
 
                                     }
@@ -138,7 +141,10 @@ struct LoginView: View {
                                 rememberMe.toggle()
                             } label: {
                                 HStack(spacing: 16) {
-                                    Image(rememberMe ? "checkbox-checked" : "checkbox-unchecked")
+                                    Image(rememberMe ? "checked-checkbox" : "unchecked-checkbox")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                        .foregroundStyle(Color("Primary900"))
                                     Text("Remember me")
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Semibold", size: 18))
@@ -160,83 +166,9 @@ struct LoginView: View {
                                     .font(.custom("Urbanist-Bold", size: 18))
                             }
                         }
-                        
-                        
-                        VStack(spacing: 24) {
-                            HStack(spacing: 16) {
-                                Rectangle()
-                                    .foregroundStyle(Color("Dark4"))
-                                    .frame(height: 1)
-                                    .frame(maxWidth: .infinity)
-                                Text("or continue with")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Medium", size: 18))
-                                    .frame(width: 130)
-                                Rectangle()
-                                    .foregroundStyle(Color("Dark4"))
-                                    .frame(height: 1)
-                                    .frame(maxWidth: .infinity)
-                            }
-                            
-                            HStack(spacing: 16) {
-                                Button {
-                                    //
-                                } label: {
-                                    VStack {
-                                        Image("google-logo")
-                                            .resizable()
-                                            .frame(width: 24, height: 24)
-                                            .frame(maxWidth: .infinity)
-                                    }
-                                    .frame(height: 60)
-                                    .background(Color("Dark2"))
-                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: .infinity)
-                                            .stroke(Color("Dark4"), lineWidth: 1)
-                                    }
-                                }
-                                
-                                Button {
-                                    //
-                                } label: {
-                                    VStack {
-                                        Image("apple-logo")
-                                            .resizable()
-                                            .frame(width: 24, height: 24)
-                                            .frame(maxWidth: .infinity)
-                                    }
-                                    .frame(height: 60)
-                                    .background(Color("Dark2"))
-                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: .infinity)
-                                            .stroke(Color("Dark4"), lineWidth: 1)
-                                    }
-                                }
-                                
-                                Button {
-                                    //
-                                } label: {
-                                    VStack {
-                                        Image("facebook-logo")
-                                            .resizable()
-                                            .frame(width: 24, height: 24)
-                                            .frame(maxWidth: .infinity)
-                                    }
-                                    .frame(height: 60)
-                                    .background(Color("Dark2"))
-                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: .infinity)
-                                            .stroke(Color("Dark4"), lineWidth: 1)
-                                    }
-                                }
-                                
-                            }
-                        }
                     }
                     .padding(.horizontal, 24)
+                    .padding(.top, 24)
                 }
                 .scrollIndicators(.hidden)
                 

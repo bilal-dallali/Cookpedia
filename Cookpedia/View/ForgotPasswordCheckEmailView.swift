@@ -103,6 +103,7 @@ struct ForgotPasswordCheckEmailView: View {
                 }
                 Spacer()
             }
+            .padding(.top, 24)
             .padding(.horizontal, 24)
             
             VStack(spacing: 0) {

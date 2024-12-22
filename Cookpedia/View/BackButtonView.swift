@@ -15,9 +15,10 @@ struct BackButtonView: View {
         Button {
             presentationMode.wrappedValue.dismiss()
         } label: {
-            Image("arrow-left")
+            Image("Arrow - Left - Regular - Light - Outline")
                 .resizable()
                 .frame(width: 28, height: 28)
+                .foregroundStyle(Color("MyWhite"))
         }
     }
 }

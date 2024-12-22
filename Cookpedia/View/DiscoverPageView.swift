@@ -9,7 +9,12 @@ import SwiftUI
 
 struct DiscoverPageView: View {
     var body: some View {
-        Text("Discover")
+        VStack {
+            Text("Discover")
+        }
+        .navigationBarBackButtonHidden(true)
+        .frame(maxWidth: .infinity)
+        .frame(maxHeight: .infinity)
     }
 }
 

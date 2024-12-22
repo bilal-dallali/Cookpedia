@@ -87,7 +87,10 @@ struct CreateNewPasswordView: View {
                                         Button {
                                             isPasswordHidden.toggle()
                                         } label: {
-                                            Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                            Image(isPasswordHidden ? "Hide - Regular - Bold" : "Show - Regular - Bold")
+                                                .resizable()
+                                                .frame(width: 28, height: 28)
+                                                .foregroundStyle(Color("Primary900"))
                                         }
 
                                     }
@@ -97,7 +100,10 @@ struct CreateNewPasswordView: View {
                                 }
                                 if password != "" && password.count <= 8 {
                                     HStack(spacing: 6) {
-                                        Image("red-alert")
+                                        Image("Info Circle - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundStyle(Color("Error"))
                                             .padding(.leading, 12)
                                         Text("Your password is weak, try a better one!")
                                             .foregroundStyle(Color("Error"))
@@ -110,7 +116,10 @@ struct CreateNewPasswordView: View {
                                     .clipShape(.rect(cornerRadius: 10))
                                 } else if password.count >= 8 && password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .decimalDigits) != nil {
                                     HStack(spacing: 6) {
-                                        Image("green-alert")
+                                        Image("Info Circle - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundStyle(Color("MyGreen"))
                                             .padding(.leading, 12)
                                         Text("Your password is strong enough.")
                                             .foregroundStyle(Color("MyGreen"))
@@ -123,7 +132,10 @@ struct CreateNewPasswordView: View {
                                     .clipShape(.rect(cornerRadius: 10))
                                 } else if password.count >= 8 {
                                     HStack(spacing: 6) {
-                                        Image("yellow-alert")
+                                        Image("Info Circle - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 15, height: 15)
+                                            .foregroundStyle(Color("MyOrange"))
                                             .padding(.leading, 12)
                                         Text("Your password is correct, but you can do better")
                                             .foregroundStyle(Color("MyOrange"))
@@ -177,7 +189,10 @@ struct CreateNewPasswordView: View {
                                         Button {
                                             isConfirmPasswordHidden.toggle()
                                         } label: {
-                                            Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
+                                            Image(isConfirmPasswordHidden ? "Hide - Regular - Bold" : "Show - Regular - Bold")
+                                                .resizable()
+                                                .frame(width: 28, height: 28)
+                                                .foregroundStyle(Color("Primary900"))
                                         }
 
                                     }
@@ -205,7 +220,7 @@ struct CreateNewPasswordView: View {
                                 rememberMe.toggle()
                             } label: {
                                 HStack(spacing: 16) {
-                                    Image(rememberMe ? "checkbox-checked" : "checkbox-unchecked")
+                                    Image(rememberMe ? "checked-checkbox" : "unchecked-checkbox")
                                     Text("Remember me")
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Semibold", size: 18))
@@ -213,6 +228,7 @@ struct CreateNewPasswordView: View {
                             }
                         }
                     }
+                    .padding(.top, 24)
                     .padding(.horizontal, 24)
                 }
                 .scrollIndicators(.hidden)
@@ -287,7 +303,6 @@ struct CreateNewPasswordView: View {
                                     .padding(.top, 24)
                                     .padding(.bottom, 36)
                             }
-                            
                         }
                     } else {
                         Text("Continue")
@@ -317,7 +332,9 @@ struct CreateNewPasswordView: View {
             }
             if loadingScreen {
                 VStack(spacing: 32) {
-                    Image("modal-icon")
+                    Image("modal")
+                        .resizable()
+                        .frame(width: 186, height: 180)
                     VStack(spacing: 16) {
                         Text("Reseting password")
                             .foregroundStyle(Color("Primary900"))
@@ -328,7 +345,7 @@ struct CreateNewPasswordView: View {
                             .font(.custom("Urbanist-Regular", size: 16))
                             .multilineTextAlignment(.center)
                     }
-                    Image("modal-loader")
+                    Image("loader")
                         .resizable()
                         .frame(width: 60, height: 60)
                         .rotationEffect(.degrees(isRotating ? 360 : 0))
@@ -347,7 +364,9 @@ struct CreateNewPasswordView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 40))
             } else if loadedScreen {
                 VStack(spacing: 32) {
-                    Image("modal-icon-successful")
+                    Image("modal-successful")
+                        .resizable()
+                        .frame(width: 186, height: 180)
                     VStack(spacing: 16) {
                         Text("Reset Password\nSuccessful!")
                             .foregroundStyle(Color("Primary900"))

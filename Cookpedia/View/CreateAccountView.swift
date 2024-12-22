@@ -176,7 +176,10 @@ struct CreateAccountView: View {
                             
                             if emailNotIdentical {
                                 HStack(spacing: 6) {
-                                    Image("red-alert")
+                                    Image("Info Circle - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 15, height: 15)
+                                        .foregroundStyle(Color("Error"))
                                         .padding(.leading, 12)
                                     Text("Confirm email must be identical to email")
                                         .foregroundStyle(Color("Error"))
@@ -230,7 +233,10 @@ struct CreateAccountView: View {
                                     Button {
                                         isPasswordHidden.toggle()
                                     } label: {
-                                        Image(isPasswordHidden ? "hidden-eye" : "eye")
+                                        Image(isPasswordHidden ? "Hide - Regular - Bold" : "Show - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 28, height: 28)
+                                            .foregroundStyle(Color("Primary900"))
                                     }
 
                                 }
@@ -241,7 +247,10 @@ struct CreateAccountView: View {
                             
                             if password != "" && password.count <= 8 {
                                 HStack(spacing: 6) {
-                                    Image("red-alert")
+                                    Image("Info Circle - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 15, height: 15)
+                                        .foregroundStyle(Color("Error"))
                                         .padding(.leading, 12)
                                     Text("Your password is weak, try a better one!")
                                         .foregroundStyle(Color("Error"))
@@ -254,7 +263,10 @@ struct CreateAccountView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                             } else if password.count >= 8 && password.rangeOfCharacter(from: .uppercaseLetters) != nil && password.rangeOfCharacter(from: .lowercaseLetters) != nil && password.rangeOfCharacter(from: .decimalDigits) != nil {
                                 HStack(spacing: 6) {
-                                    Image("green-alert")
+                                    Image("Info Circle - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 15, height: 15)
+                                        .foregroundStyle(Color("MyGreen"))
                                         .padding(.leading, 12)
                                     Text("Your password is strong enough.")
                                         .foregroundStyle(Color("MyGreen"))
@@ -267,7 +279,10 @@ struct CreateAccountView: View {
                                 .clipShape(.rect(cornerRadius: 10))
                             } else if password.count >= 8 {
                                 HStack(spacing: 6) {
-                                    Image("yellow-alert")
+                                    Image("Info Circle - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 15, height: 15)
+                                        .foregroundStyle(Color("MyOrange"))
                                         .padding(.leading, 12)
                                     Text("Your password is correct, but you can do better")
                                         .foregroundStyle(Color("MyOrange"))
@@ -321,7 +336,10 @@ struct CreateAccountView: View {
                                     Button {
                                         isConfirmPasswordHidden.toggle()
                                     } label: {
-                                        Image(isConfirmPasswordHidden ? "hidden-eye" : "eye")
+                                        Image(isConfirmPasswordHidden ? "Hide - Regular - Bold" : "Show - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 28, height: 28)
+                                            .foregroundStyle(Color("Primary900"))
                                     }
 
                                 }
@@ -332,7 +350,10 @@ struct CreateAccountView: View {
                             
                             if passwordNotIdentical {
                                 HStack(spacing: 6) {
-                                    Image("red-alert")
+                                    Image("Info Circle - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 15, height: 15)
+                                        .foregroundStyle(Color("Error"))
                                         .padding(.leading, 12)
                                     Text("Confirm password and password must be identical!")
                                         .foregroundStyle(Color("Error"))
@@ -349,7 +370,10 @@ struct CreateAccountView: View {
                             rememberMe.toggle()
                         } label: {
                             HStack(spacing: 16) {
-                                Image(rememberMe ? "checkbox-checked" : "checkbox-unchecked")
+                                Image(rememberMe ? "checked-checkbox" : "unchecked-checkbox")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundStyle(Color("Primary900"))
                                 Text("Remember me")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Semibold", size: 18))
@@ -408,7 +432,6 @@ struct CreateAccountView: View {
                                                     errorMessage = "User not found"
                                                     alertUsersExists = true
                                                     break
-                                                    
                                                 case .emailAlreadyExists:
                                                     errorMessage = "This email address is already registered"
                                                     alertUsersExists = true
@@ -530,7 +553,14 @@ struct CreateAccountView: View {
                     BackButtonView()
                 }
                 ToolbarItem(placement: .principal) {
-                    Image("progress-bar-100")
+                    RoundedRectangle(cornerRadius: .infinity)
+                        .foregroundStyle(Color("Dark4"))
+                        .frame(width: 216, height: 12)
+                        .overlay(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: .infinity)
+                                .foregroundStyle(Color("Primary900"))
+                                .frame(width: 216, height: 12)
+                        }
                 }
             }
             .onTapGesture {
