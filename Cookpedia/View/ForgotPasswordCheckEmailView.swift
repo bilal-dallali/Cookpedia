@@ -53,13 +53,14 @@ struct ForgotPasswordCheckEmailView: View {
                                                 .strokeBorder(Color(index == focusedIndex ? "Primary900" : "Dark4"), lineWidth: 1)
                                         }
                                 }
-                                .onChange(of: code[index]) { newValue in
-                                    if newValue.count > 1 {
-                                        code[index] = String(newValue.prefix(1))
-                                    } else if !newValue.isEmpty && index < 3 {
+                                .onChange(of: code[index]) {
+                                    if code[index].count > 1 {
+                                        code[index] = String(code[index].prefix(1))
+                                    } else if !code[index].isEmpty && index < 3 {
                                         focusedIndex = index + 1
                                     }
                                 }
+                                
                         }
                     }
                     VStack(spacing: 16) {

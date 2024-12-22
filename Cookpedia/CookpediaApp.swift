@@ -13,7 +13,7 @@ struct CookpediaApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                SplashView()
+                ForgotPasswordCheckEmailView(email: .constant("x"))
             }
         }
         .modelContainer(for: [UserSession.self])
