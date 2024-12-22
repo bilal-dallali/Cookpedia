@@ -33,9 +33,9 @@ struct InstructionListView: View {
                     instructions.append(CreateRecipeView.Instruction())
                 } label: {
                     HStack {
-                        Image(systemName: "plus")
+                        Image("Icon=plus, Component=Additional Icons")
                             .resizable()
-                            .frame(width: 15, height: 15)
+                            .frame(width: 20, height: 20)
                             .foregroundStyle(Color("MyWhite"))
                         Text("Add Instructions")
                             .foregroundStyle(Color("MyWhite"))

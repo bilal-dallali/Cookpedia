@@ -44,15 +44,20 @@ struct MyProfilePageView: View {
                             Button {
                                 //
                             } label: {
-                                Image("send")
-                                
+                                Image("Send - Curved - Light - Outline")
+                                    .resizable()
+                                    .frame(width: 28, height: 28)
+                                    .foregroundStyle(Color("MyWhite"))
                             }
                             .padding(.trailing, 20)
                             
                             Button {
                                 //
                             } label: {
-                                Image("setting")
+                                Image("Setting - Curved - Light - Outline")
+                                    .resizable()
+                                    .frame(width: 28, height: 28)
+                                    .foregroundStyle(Color("MyWhite"))
                             }
                         }
                         
@@ -60,7 +65,7 @@ struct MyProfilePageView: View {
                             VStack(alignment: .leading, spacing: 16) {
                                 HStack(spacing: 20) {
                                     if profilePictureUrl.isEmpty {
-                                        Image("ellipse")
+                                        Image("Ellipse")
                                             .resizable()
                                             .frame(width: 72, height: 72)
                                             .clipShape(RoundedRectangle(cornerRadius: .infinity))
@@ -89,9 +94,10 @@ struct MyProfilePageView: View {
                                         EditProfileView()
                                     } label: {
                                         HStack(spacing: 8) {
-                                            Image("edit")
+                                            Image("Edit - Curved - Bold")
                                                 .resizable()
                                                 .frame(width: 16, height: 16)
+                                                .foregroundStyle(Color("Primary900"))
                                             Text("Edit")
                                                 .foregroundStyle(Color("Primary900"))
                                                 .font(.custom("Urbanist-Semibold", size: 16))

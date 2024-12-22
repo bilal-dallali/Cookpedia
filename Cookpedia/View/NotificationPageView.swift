@@ -82,7 +82,7 @@ struct NotificationPageView: View {
             .frame(maxWidth: .infinity)
             ScrollView {
                 VStack(spacing: 60) {
-                    Image("empty")
+                    Image("Empty")
                         .resizable()
                         .frame(width: 280, height: 273)
                     VStack(spacing: 12) {
@@ -120,9 +120,10 @@ struct NotificationPageView: View {
                 Button {
                     //
                 } label: {
-                    Image("setting")
+                    Image("Setting - Regular - Light - Outline")
                         .resizable()
                         .frame(width: 28, height: 28)
+                        .foregroundStyle(Color("MyWhite"))
                 }
 
             }

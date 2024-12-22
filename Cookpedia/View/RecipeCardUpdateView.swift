@@ -41,9 +41,10 @@ struct RecipeCardUpdateView: View {
                                 .frame(width: 36, height: 36)
                                 .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                 .overlay {
-                                    Image("edit-white")
+                                    Image("Edit - Curved - Bold")
                                         .resizable()
                                         .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color("MyWhite"))
                                 }
                         }
                         .padding(.top, 12)

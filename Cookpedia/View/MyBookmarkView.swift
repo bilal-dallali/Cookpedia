@@ -52,9 +52,10 @@ struct MyBookmarkView: View {
                 Button {
                     //
                 } label: {
-                    Image("magnifying-glass-focused")
+                    Image("Search - Regular - Light - Outline")
                         .resizable()
                         .frame(width: 28, height: 28)
+                        .foregroundStyle(Color("MyWhite"))
                 }
             }
         }

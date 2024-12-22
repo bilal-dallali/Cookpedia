@@ -131,9 +131,10 @@ struct RecipeDetailsView: View {
                                 HStack(spacing: 12) {
                                     VStack(spacing: 6) {
                                         HStack(spacing: 6) {
-                                            Image("time-circle")
+                                            Image("Time Circle - Regular - Light - Outline")
                                                 .resizable()
                                                 .frame(width: 16, height: 16)
+                                                .foregroundStyle(Color("Primary900"))
                                             Text("\(recipeDetails.cookTime) mins")
                                                 .foregroundStyle(Color("Primary900"))
                                                 .font(.custom("Urbanist-Semibold", size: 14))
@@ -149,9 +150,10 @@ struct RecipeDetailsView: View {
                                     
                                     VStack(spacing: 6) {
                                         HStack(spacing: 6) {
-                                            Image("profile-unselected")
+                                            Image("Profile - Regular - Light - Outline")
                                                 .resizable()
                                                 .frame(width: 16, height: 16)
+                                                .foregroundStyle(Color("Primary900"))
                                             Text("\(recipeDetails.serves) serving")
                                                 .foregroundStyle(Color("Primary900"))
                                                 .font(.custom("Urbanist-Semibold", size: 14))
@@ -167,9 +169,10 @@ struct RecipeDetailsView: View {
                                     
                                     VStack(spacing: 6) {
                                         HStack(spacing: 6) {
-                                            Image("location-primary")
+                                            Image("Location - Regular - Light - Outline")
                                                 .resizable()
                                                 .frame(width: 16, height: 16)
+                                                .foregroundStyle(Color("Primary900"))
                                             Text(recipeDetails.origin)
                                                 .foregroundStyle(Color("Primary900"))
                                                 .font(.custom("Urbanist-Semibold", size: 14))
@@ -308,23 +311,26 @@ struct RecipeDetailsView: View {
                         Button {
                             isBookmarkSelected.toggle()
                         } label: {
-                            Image("bookmark-unselected")
+                            Image("Bookmark - Regular - Light - Outline")
                                 .resizable()
                                 .frame(width: 28, height: 28)
+                                .foregroundStyle(Color("MyWhite"))
                         }
                         Button {
                             //
                         } label: {
-                            Image("send")
+                            Image("Send - Curved - Light - Outline")
                                 .resizable()
                                 .frame(width: 28, height: 28)
+                                .foregroundStyle(Color("MyWhite"))
                         }
                         Button {
                             //
                         } label: {
-                            Image("more-circle")
+                            Image("More Circle - Regular - Light - Outline")
                                 .resizable()
                                 .frame(width: 28, height: 28)
+                                .foregroundStyle(Color("MyWhite"))
                         }
                     }
                 }

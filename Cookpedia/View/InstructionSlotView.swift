@@ -25,9 +25,10 @@ struct InstructionSlotView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack(spacing: 4) {
-                Image("drag-drop")
+                Image("Icon=drag-drop, Component=Additional Icons")
                     .resizable()
                     .frame(width: 24, height: 24)
+                    .foregroundStyle(Color("MyWhite"))
                 Circle()
                     .foregroundStyle(Color("Dark3"))
                     .frame(width: 32, height: 32)
@@ -60,9 +61,10 @@ struct InstructionSlotView: View {
                         isImagePickerPresented = true
                     } label: {
                         VStack(spacing: 8) {
-                            Image("image")
+                            Image("Image - Regular - Bold")
                                 .resizable()
                                 .frame(width: 20, height: 20)
+                                .foregroundStyle(Color("Greyscale500"))
                             Text("Add image")
                                 .foregroundStyle(Color("Greyscale500"))
                                 .font(.custom("Urbanist-Regular", size: 10))
@@ -90,9 +92,10 @@ struct InstructionSlotView: View {
                         isImagePickerPresented = true
                     } label: {
                         VStack(spacing: 8) {
-                            Image("image")
+                            Image("Image - Regular - Bold")
                                 .resizable()
                                 .frame(width: 20, height: 20)
+                                .foregroundStyle(Color("Greyscale500"))
                             Text("Add image")
                                 .foregroundStyle(Color("Greyscale500"))
                                 .font(.custom("Urbanist-Regular", size: 10))
@@ -120,9 +123,10 @@ struct InstructionSlotView: View {
                         isImagePickerPresented = true
                     } label: {
                         VStack(spacing: 8) {
-                            Image("image")
+                            Image("Image - Regular - Bold")
                                 .resizable()
                                 .frame(width: 20, height: 20)
+                                .foregroundStyle(Color("Greyscale500"))
                             Text("Add image")
                                 .foregroundStyle(Color("Greyscale500"))
                                 .font(.custom("Urbanist-Regular", size: 10))
@@ -144,14 +148,15 @@ struct InstructionSlotView: View {
                             }
                         }
                     }
-                    
                 }
-                
             }
             Button {
                 onDelete()
             } label: {
-                Image("delete")
+                Image("Delete - Regular - Light - Outline")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .foregroundStyle(Color("Error"))
             }
         }
         .sheet(isPresented: $isImagePickerPresented) {

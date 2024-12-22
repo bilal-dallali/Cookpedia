@@ -15,9 +15,10 @@ struct IngredientSlotView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            Image("drag-drop")
+            Image("Icon=drag-drop, Component=Additional Icons")
                 .resizable()
                 .frame(width: 24, height: 24)
+                .foregroundStyle(Color("MyWhite"))
             Circle()
                 .foregroundStyle(Color("Dark3"))
                 .frame(width: 32, height: 32)
@@ -43,7 +44,10 @@ struct IngredientSlotView: View {
             Button {
                 onDelete()
             } label: {
-                Image("delete")
+                Image("Delete - Regular - Light - Outline")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .foregroundStyle(Color("Error"))
             }
             
         }

@@ -41,18 +41,20 @@ struct HomePageView: View {
                             NavigationLink {
                                 NotificationPageView()
                             } label: {
-                                Image("notifications")
+                                Image("Notification - Regular - Light - Outline")
                                     .resizable()
                                     .frame(width: 28, height: 28)
+                                    .foregroundStyle(Color("MyWhite"))
                             }
                             .padding(.trailing, 20)
                             
                             NavigationLink {
                                 MyBookmarkView()
                             } label: {
-                                Image("bookmark-unselected")
+                                Image("Bookmark - Regular - Light - Outline")
                                     .resizable()
                                     .frame(width: 28, height: 28)
+                                    .foregroundStyle(Color("MyWhite"))
                             }
 
                         }
@@ -98,9 +100,10 @@ struct HomePageView: View {
                                     NavigationLink {
                                         RecentRecipeView()
                                     } label: {
-                                        Image("arrow-right")
+                                        Image("Arrow - Right - Regular - Light - Outline")
                                             .resizable()
                                             .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
                                     }
                                     
                                 }
@@ -132,9 +135,10 @@ struct HomePageView: View {
                                         isMyRecipeSelected = true
                                         isMyProfileSelected = false
                                     } label: {
-                                        Image("arrow-right")
+                                        Image("Arrow - Right - Regular - Light - Outline")
                                             .resizable()
                                             .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
                                     }
                                 }
                                 
@@ -162,9 +166,10 @@ struct HomePageView: View {
                                     NavigationLink {
                                         MyBookmarkView()
                                     } label: {
-                                        Image("arrow-right")
+                                        Image("Arrow - Right - Regular - Light - Outline")
                                             .resizable()
                                             .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
                                     }
                                 }
                                 

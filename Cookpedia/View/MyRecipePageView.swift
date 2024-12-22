@@ -42,17 +42,19 @@ struct MyRecipePageView: View {
                             Button {
                                 //
                             } label: {
-                                Image("search-icon")
+                                Image("Search - Regular - Light - Outline")
                                     .resizable()
                                     .frame(width: 28, height: 28)
+                                    .foregroundStyle(Color("MyWhite"))
                             }
                             
                             Button {
                                 //
                             } label: {
-                                Image("more-circle")
+                                Image("More Circle - Regular - Light - Outline")
                                     .resizable()
                                     .frame(width: 28, height: 28)
+                                    .foregroundStyle(Color("MyWhite"))
                             }
                         }
                     }

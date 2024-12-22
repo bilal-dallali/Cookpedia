@@ -76,9 +76,10 @@ struct CreateRecipeView: View {
                                 Button {
                                     isCreateRecipeSelected = false
                                 } label: {
-                                    Image("mark")
+                                    Image("Icon=times, Component=Additional Icons")
                                         .resizable()
                                         .frame(width: 28, height: 28)
+                                        .foregroundStyle(Color("MyWhite"))
                                 }
                                 Text("Create Recipe")
                                     .foregroundStyle(Color("MyWhite"))
@@ -276,9 +277,10 @@ struct CreateRecipeView: View {
                                 Button {
                                     //
                                 } label: {
-                                    Image("more-circle")
+                                    Image("More Circle - Regular - Light - Outline")
                                         .resizable()
                                         .frame(width: 24, height: 24)
+                                        .foregroundStyle(Color("MyWhite"))
                                 }
                             }
                         }
@@ -315,17 +317,19 @@ struct CreateRecipeView: View {
                                                     .frame(width: 52, height: 52)
                                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                                     .overlay {
-                                                        Image("edit-white")
+                                                        Image("Edit - Curved - Bold")
                                                             .resizable()
                                                             .frame(width: 28, height: 28)
+                                                            .foregroundStyle(Color("MyWhite"))
                                                     }
                                                     .padding(12)
                                             }
                                     } else {
                                         VStack(spacing: 32) {
-                                            Image("image")
+                                            Image("Image - Regular - Bold")
                                                 .resizable()
                                                 .frame(width: 60, height: 60)
+                                                .foregroundStyle(Color("Greyscale500"))
                                             Text("Add recipe cover image")
                                                 .foregroundStyle(Color("Greyscale500"))
                                                 .font(.custom("Urbanist-Regular", size: 16))
@@ -360,18 +364,20 @@ struct CreateRecipeView: View {
                                                     .frame(width: 52, height: 52)
                                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                                     .overlay {
-                                                        Image("edit-white")
+                                                        Image("Edit - Curved - Bold")
                                                             .resizable()
                                                             .frame(width: 28, height: 28)
+                                                            .foregroundStyle(Color("MyWhite"))
                                                     }
                                                     .padding(12)
                                             }
                                         
                                     } else {
                                         VStack(spacing: 32) {
-                                            Image("image")
+                                            Image("Image - Regular - Bold")
                                                 .resizable()
                                                 .frame(width: 60, height: 60)
+                                                .foregroundStyle(Color("Greyscale500"))
                                             Text("Add recipe cover image")
                                                 .foregroundStyle(Color("Greyscale500"))
                                                 .font(.custom("Urbanist-Regular", size: 16))
@@ -493,7 +499,10 @@ struct CreateRecipeView: View {
                                 .font(.custom("Urbanist-Semibold", size: 16))
                                 .padding(.vertical, 18)
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                                Image(origin.isEmpty ? "location-unfocused" : "location-focused")
+                                Image("Location - Regular - Light - Outline")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundStyle(Color(origin.isEmpty ? "Greyscale500" : "MyWhite"))
                             }
                             .padding(.horizontal, 20)
                             .frame(height: 58)
@@ -526,9 +535,9 @@ struct CreateRecipeView: View {
                             ingredients.append("")
                         } label: {
                             HStack {
-                                Image(systemName: "plus")
+                                Image("Icon=plus, Component=Additional Icons")
                                     .resizable()
-                                    .frame(width: 15, height: 15)
+                                    .frame(width: 20, height: 20)
                                     .foregroundStyle(Color("MyWhite"))
                                 Text("Add Ingredients")
                                     .foregroundStyle(Color("MyWhite"))
