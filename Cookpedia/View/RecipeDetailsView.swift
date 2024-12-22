@@ -50,31 +50,43 @@ struct RecipeDetailsView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
-                        ScrollView(.horizontal) {
-                            HStack(spacing: 0) {
-                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
-                                    image
-                                        .resizable()
-                                        .frame(width: geometry.size.width, height: 430)
-                                } placeholder: {
-                                    Rectangle()
-                                        .fill(Color("Greyscale400"))
-                                        .frame(width: geometry.size.width, height: 430)
-                                }
-                                
-                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl2).jpg")) { image in
-                                    image
-                                        .resizable()
-                                        .frame(width: geometry.size.width, height: 430)
-                                } placeholder: {
-                                    Rectangle()
-                                        .fill(Color("Greyscale400"))
-                                        .frame(width: geometry.size.width, height: 430)
+                        if recipeDetails.recipeCoverPictureUrl2.isEmpty {
+                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
+                                image
+                                    .resizable()
+                                    .frame(width: geometry.size.width, height: 430)
+                            } placeholder: {
+                                Rectangle()
+                                    .fill(Color("Greyscale400"))
+                                    .frame(width: geometry.size.width, height: 430)
+                            }
+                        } else {
+                            ScrollView(.horizontal) {
+                                HStack(spacing: 0) {
+                                    AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
+                                        image
+                                            .resizable()
+                                            .frame(width: geometry.size.width, height: 430)
+                                    } placeholder: {
+                                        Rectangle()
+                                            .fill(Color("Greyscale400"))
+                                            .frame(width: geometry.size.width, height: 430)
+                                    }
+                                    
+                                    AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl2).jpg")) { image in
+                                        image
+                                            .resizable()
+                                            .frame(width: geometry.size.width, height: 430)
+                                    } placeholder: {
+                                        Rectangle()
+                                            .fill(Color("Greyscale400"))
+                                            .frame(width: geometry.size.width, height: 430)
+                                    }
                                 }
                             }
+                            .scrollIndicators(.hidden)
+                            .scrollTargetBehavior(.paging)
                         }
-                        .scrollIndicators(.hidden)
-                        .scrollTargetBehavior(.paging)
                         
                         VStack(alignment: .leading, spacing: 24) {
                             VStack(alignment: .leading, spacing: 16) {

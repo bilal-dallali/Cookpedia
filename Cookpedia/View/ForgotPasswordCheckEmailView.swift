@@ -66,24 +66,19 @@ struct ForgotPasswordCheckEmailView: View {
                                           let currentIndex = focusedIndex else { return }
                                     
                                     if text.isEmpty {
-                                        // Passe au champ précédent si possible et efface son contenu
                                         if currentIndex > 0 {
-                                            code[currentIndex] = "" // Efface le champ actuel
-                                            focusedIndex = currentIndex - 1 // Déplace le focus au champ précédent
-                                            code[focusedIndex!] = "" // Efface le champ précédent
+                                            code[currentIndex] = ""
+                                            focusedIndex = currentIndex - 1
+                                            code[focusedIndex!] = ""
                                         } else {
-                                            // Si c'est le premier champ, efface uniquement son contenu
                                             code[currentIndex] = ""
                                         }
                                     } else if text.count > 1 {
-                                        // Limite à un seul caractère
                                         code[currentIndex] = String(text.prefix(1))
                                     } else if currentIndex < code.count - 1 {
-                                        // Passe au champ suivant si possible
                                         focusedIndex = currentIndex + 1
                                     }
                                 }
-                                
                         }
                     }
                     VStack(spacing: 16) {
