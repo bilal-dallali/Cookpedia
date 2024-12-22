@@ -275,7 +275,6 @@ struct MyProfilePageView: View {
                                         }
                                     }
                                 }
-                                
                             } else if isAboutSelected {
                                 Text("About")
                             }
