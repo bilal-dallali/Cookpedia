@@ -91,7 +91,7 @@ struct MyProfilePageView: View {
                                     }
                                     Spacer()
                                     NavigationLink {
-                                        EditProfileView()
+                                        EditProfileView(isHomeSelected: $isHomeSelected, isDiscoverSelected: $isDiscoverSelected, isMyRecipeSelected: $isMyRecipeSelected, isMyProfileSelected: $isMyProfileSelected)
                                     } label: {
                                         HStack(spacing: 8) {
                                             Image("Edit - Curved - Bold")

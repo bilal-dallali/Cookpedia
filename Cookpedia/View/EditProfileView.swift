@@ -10,6 +10,9 @@ import SwiftData
 
 struct EditProfileView: View {
     
+    @State private var redirectHomePage: Bool = false
+    @State private var profileUpdated: Bool = false
+    
     @State private var isImagePickerPresented = false
     
     @State private var fullName: String = ""
@@ -24,6 +27,11 @@ struct EditProfileView: View {
     @State private var selectedImage: UIImage?
     @State private var profilePictureUrl: String = ""
     
+    @Binding var isHomeSelected: Bool
+    @Binding var isDiscoverSelected: Bool
+    @Binding var isMyRecipeSelected: Bool
+    @Binding var isMyProfileSelected: Bool
+    
     @FocusState private var isTextFocused: Bool
     
     var apiGetManager = APIGetRequest()
@@ -32,62 +40,18 @@ struct EditProfileView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
-    private func editProfile() {
-        guard let currentUser = userSession.first else {
-            return
-        }
-        
-        guard let userId = Int(currentUser.userId) else {
-            return
-        }
-        
-        let updatedUser = EditUser(
-            id: userId,
-            fullName: fullName,
-            username: username,
-            description: description,
-            facebookUrl: facebook,
-            twitterUrl: twitter,
-            instagramUrl: instagram,
-            websiteUrl: website,
-            city: city,
-            country: country,
-            profilePictureUrl: profilePictureUrl
-        )
-        
-        apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
-            switch result {
-                case .success(let message):
-                    print(message)
-                case .failure(let error):
-                    print("Failed to update profile: \(error.localizedDescription)")
-            }
-        }
-    }
-    
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    HStack {
-                        Spacer()
-                        Button {
-                            isImagePickerPresented = true
-                        } label: {
-                            if let selectedImage {
-                                Image(uiImage: selectedImage)
-                                    .resizable()
-                                    .frame(width: 120, height: 120)
-                                    .clipShape(.rect(cornerRadius: .infinity))
-                                    .overlay(alignment: .trailingLastTextBaseline) {
-                                        Image("Edit Square - Regular - Bold")
-                                            .resizable()
-                                            .frame(width: 30, height: 30)
-                                            .foregroundStyle(Color("Primary900"))
-                                    }
-                            } else {
-                                if profilePictureUrl.isEmpty {
-                                    Image("Ellipse")
+        ZStack {
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 24) {
+                        HStack {
+                            Spacer()
+                            Button {
+                                isImagePickerPresented = true
+                            } label: {
+                                if let selectedImage {
+                                    Image(uiImage: selectedImage)
                                         .resizable()
                                         .frame(width: 120, height: 120)
                                         .clipShape(.rect(cornerRadius: .infinity))
@@ -98,289 +62,345 @@ struct EditProfileView: View {
                                                 .foregroundStyle(Color("Primary900"))
                                         }
                                 } else {
-                                    AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
-                                        image
+                                    if profilePictureUrl.isEmpty {
+                                        Image("Ellipse")
                                             .resizable()
                                             .frame(width: 120, height: 120)
-                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(width: 120, height: 120)
-                                    }
-                                    .overlay(alignment: .trailingLastTextBaseline) {
-                                        Image("Edit Square - Regular - Bold")
-                                            .resizable()
-                                            .frame(width: 30, height: 30)
-                                            .foregroundStyle(Color("Primary900"))
+                                            .clipShape(.rect(cornerRadius: .infinity))
+                                            .overlay(alignment: .trailingLastTextBaseline) {
+                                                Image("Edit Square - Regular - Bold")
+                                                    .resizable()
+                                                    .frame(width: 30, height: 30)
+                                                    .foregroundStyle(Color("Primary900"))
+                                            }
+                                    } else {
+                                        AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
+                                            image
+                                                .resizable()
+                                                .frame(width: 120, height: 120)
+                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                        } placeholder: {
+                                            ProgressView()
+                                                .frame(width: 120, height: 120)
+                                        }
+                                        .overlay(alignment: .trailingLastTextBaseline) {
+                                            Image("Edit Square - Regular - Bold")
+                                                .resizable()
+                                                .frame(width: 30, height: 30)
+                                                .foregroundStyle(Color("Primary900"))
+                                        }
                                     }
                                 }
                             }
+                            .sheet(isPresented: $isImagePickerPresented) {
+                                ImagePicker(image: $selectedImage) { filename in
+                                    profilePictureUrl = "profile_picture_\(filename)"
+                                }
+                            }
+                            Spacer()
                         }
-                        .sheet(isPresented: $isImagePickerPresented) {
-                            ImagePicker(image: $selectedImage) { filename in
-                                profilePictureUrl = "profile_picture_\(filename)"
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Full Name")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $fullName) {
+                                    Text("Full Name")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
                             }
                         }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Username")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $username) {
+                                    Text("Username")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Description")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $description, axis: .vertical) {
+                                    Text("Description")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(minHeight: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        Divider()
+                            .overlay {
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundStyle(Color("Dark4"))
+                            }
+                        Text("Social Media")
+                            .foregroundStyle(Color("Greyscale300"))
+                            .font(.custom("Urbanist-Bold", size: 18))
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Facebook")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $facebook) {
+                                    Text("facebook")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Instagram")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $instagram) {
+                                    Text("Instagram")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        Divider()
+                            .overlay {
+                                Rectangle()
+                                    .frame(height: 1)
+                                    .foregroundStyle(Color("Dark4"))
+                            }
+                        Text("More Info")
+                            .foregroundStyle(Color("Greyscale300"))
+                            .font(.custom("Urbanist-Bold", size: 18))
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Website")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $website) {
+                                    Text("website")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("City")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $city) {
+                                    Text("City")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Country")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $country) {
+                                    Text("Country")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.top, 24)
+                }
+            }
+            .background(Color("Dark1"))
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    BackButtonView()
+                }
+                ToolbarItem(placement: .principal) {
+                    HStack {
+                        Text("Edit Profile")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 24))
                         Spacer()
                     }
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Full Name")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $fullName) {
-                                Text("Full Name")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Username")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $username) {
-                                Text("Username")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Description")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $description, axis: .vertical) {
-                                Text("Description")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    Divider()
-                        .overlay {
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundStyle(Color("Dark4"))
-                        }
-                    Text("Social Media")
-                        .foregroundStyle(Color("Greyscale300"))
-                        .font(.custom("Urbanist-Bold", size: 18))
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Facebook")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $facebook) {
-                                Text("facebook")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Instagram")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $instagram) {
-                                Text("Instagram")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    Divider()
-                        .overlay {
-                            Rectangle()
-                                .frame(height: 1)
-                                .foregroundStyle(Color("Dark4"))
-                        }
-                    Text("More Info")
-                        .foregroundStyle(Color("Greyscale300"))
-                        .font(.custom("Urbanist-Bold", size: 18))
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Website")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $website) {
-                                Text("website")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("City")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $city) {
-                                Text("City")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Country")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                        VStack(spacing: 8) {
-                            TextField(text: $country) {
-                                Text("Country")
-                                    .foregroundStyle(Color("Dark4"))
-                                    .font(.custom("Urbanist-Bold", size: 20))
-                            }
-                            .textInputAutocapitalization(.never)
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 20))
-                            .frame(height: 32)
-                            .focused($isTextFocused)
-                            Rectangle()
-                                .foregroundStyle(Color("Primary900"))
-                                .frame(height: 1)
-                        }
-                    }
-                    
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 24)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        guard let currentUser = userSession.first else {
+                            return
+                        }
+                        
+                        guard let userId = Int(currentUser.userId) else {
+                            return
+                        }
+                        
+                        let updatedUser = EditUser(
+                            id: userId,
+                            fullName: fullName,
+                            username: username,
+                            description: description,
+                            facebookUrl: facebook,
+                            twitterUrl: twitter,
+                            instagramUrl: instagram,
+                            websiteUrl: website,
+                            city: city,
+                            country: country,
+                            profilePictureUrl: profilePictureUrl
+                        )
+                        
+                        apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
+                            switch result {
+                                case .success(let message):
+                                    print(message)
+                                    profileUpdated = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        self.redirectHomePage = true
+                                        isHomeSelected = false
+                                        isDiscoverSelected = false
+                                        isMyRecipeSelected = false
+                                        isMyProfileSelected = true
+                                        profileUpdated = false
+                                    }
+                                case .failure(let error):
+                                    print("Failed to update profile: \(error.localizedDescription)")
+                            }
+                        }
+                    } label: {
+                        Image("Edit - Regular - Light - Outline")
+                            .resizable()
+                            .frame(width: 28, height: 28)
+                            .foregroundStyle(Color("MyWhite"))
+                    }
+                    .navigationDestination(isPresented: $redirectHomePage) {
+                        TabView()
+                    }
+                }
+                
             }
-        }
-        .background(Color("Dark1"))
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                BackButtonView()
-            }
-            ToolbarItem(placement: .principal) {
-                HStack {
-                    Text("Edit Profile")
-                        .foregroundStyle(Color("MyWhite"))
-                        .font(.custom("Urbanist-Bold", size: 24))
-                    Spacer()
+            .onAppear {
+                guard let currentUser = userSession.first else {
+                    return
+                }
+                
+                guard let userId = Int(currentUser.userId) else {
+                    return
+                }
+                
+                apiGetManager.getConnectedUserUserData(userId: userId) { result in
+                    switch result {
+                        case .success(let user):
+                            DispatchQueue.main.async {
+                                self.profilePictureUrl = user.profilePictureUrl ?? ""
+                                self.fullName = user.fullName
+                                self.username = user.username
+                                self.description = user.description ?? ""
+                                self.facebook = user.facebookUrl ?? ""
+                                self.twitter = user.twitterUrl ?? ""
+                                self.instagram = user.instagramUrl ?? ""
+                                self.website = user.websiteUrl ?? ""
+                                self.city = user.city
+                                self.country = user.country
+                            }
+                        case .failure(let error):
+                            print("Failed to fetch user data: \(error.localizedDescription)")
+                    }
                 }
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    //
-                    editProfile()
-                } label: {
-                    Image("Edit - Regular - Light - Outline")
-                        .resizable()
-                        .frame(width: 28, height: 28)
-                        .foregroundStyle(Color("MyWhite"))
-                }
-            }
-            
-        }
-        .onAppear {
-            guard let currentUser = userSession.first else {
-                return
-            }
-            
-            guard let userId = Int(currentUser.userId) else {
-                return
-            }
-            
-            apiGetManager.getConnectedUserUserData(userId: userId) { result in
-                switch result {
-                    case .success(let user):
-                        DispatchQueue.main.async {
-                            self.profilePictureUrl = user.profilePictureUrl ?? ""
-                            self.fullName = user.fullName
-                            self.username = user.username
-                            self.description = user.description ?? ""
-                            self.facebook = user.facebookUrl ?? ""
-                            self.twitter = user.twitterUrl ?? ""
-                            self.instagram = user.instagramUrl ?? ""
-                            self.website = user.websiteUrl ?? ""
-                            self.city = user.city
-                            self.country = user.country
-                        }
-                    case .failure(let error):
-                        print("Failed to fetch user data: \(error.localizedDescription)")
-                }
+            if profileUpdated {
+                ModalView(title: "Profile infos updated", message: "Your infos have been updated successfully")
             }
         }
     }
 }
 
 #Preview {
-    EditProfileView()
+    EditProfileView(isHomeSelected: .constant(false), isDiscoverSelected: .constant(false), isMyRecipeSelected: .constant(false), isMyProfileSelected: .constant(true))
 }

@@ -11,7 +11,6 @@ import SwiftData
 struct SplashView: View {
     
     @State private var isRotating: Bool = false
-    
     @State private var redirectHomePage: Bool = false
     @State private var redirectWelcomePage: Bool = false
     let sessionDescriptor = FetchDescriptor<UserSession>(predicate: #Predicate { $0.isRemembered == true })
