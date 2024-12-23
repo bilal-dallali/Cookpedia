@@ -286,7 +286,10 @@ struct CreateRecipeView: View {
                         }
                         if fieldsNotFilled {
                             HStack(spacing: 6) {
-                                Image("orange-alert")
+                                Image("Info Circle - Regular - Bold")
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
+                                    .foregroundStyle(Color("MyOrange"))
                                     .padding(.leading, 12)
                                 Text("You must fill out all fields.")
                                     .foregroundStyle(Color("MyOrange"))

@@ -48,7 +48,6 @@ struct UserRegistration: Codable {
 struct User: Decodable {
     let id: Int
     let username: String
-    let slug: String
     let email: String
     let password: String
     let fullName: String
@@ -64,4 +63,18 @@ struct User: Decodable {
     let twitterUrl: String?
     let instagramUrl: String?
     let websiteUrl: String?
+}
+
+struct EditUser: Decodable {
+    let id: Int
+    let fullName: String
+    let username: String
+    let description: String?
+    let facebookUrl: String?
+    let twitterUrl: String?
+    let instagramUrl: String?
+    let websiteUrl: String?
+    let city: String
+    let country: String
+    let profilePictureUrl: String?
 }

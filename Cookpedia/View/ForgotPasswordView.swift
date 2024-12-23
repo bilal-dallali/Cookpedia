@@ -31,6 +31,8 @@ struct ForgotPasswordView: View {
                     }
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Email")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
                         VStack(spacing: 8) {
                             TextField(text: $email) {
                                 Text("Email")
@@ -53,7 +55,10 @@ struct ForgotPasswordView: View {
 
                         if emailInvalid {
                             HStack(spacing: 6) {
-                                Image("red-alert")
+                                Image("Info Circle - Regular - Bold")
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
+                                    .foregroundStyle(Color("Error"))
                                     .padding(.leading, 12)
                                 Text("You must enter a valid email")
                                     .foregroundStyle(Color("Error"))
@@ -66,7 +71,10 @@ struct ForgotPasswordView: View {
                             .clipShape(.rect(cornerRadius: 10))
                         } else if emailDoesntExist {
                             HStack(spacing: 6) {
-                                Image("red-alert")
+                                Image("Info Circle - Regular - Bold")
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
+                                    .foregroundStyle(Color("Error"))
                                     .padding(.leading, 12)
                                 Text("This email address isn't used by one of our client")
                                     .foregroundStyle(Color("Error"))

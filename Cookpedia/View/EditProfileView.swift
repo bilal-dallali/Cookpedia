@@ -10,6 +10,8 @@ import SwiftData
 
 struct EditProfileView: View {
     
+    @State private var isImagePickerPresented = false
+    
     @State private var fullName: String = ""
     @State private var username: String = ""
     @State private var description: String = ""
@@ -25,9 +27,43 @@ struct EditProfileView: View {
     @FocusState private var isTextFocused: Bool
     
     var apiGetManager = APIGetRequest()
+    var apiPutManager = APIPutRequest()
     var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    
+    private func editProfile() {
+        guard let currentUser = userSession.first else {
+            return
+        }
+        
+        guard let userId = Int(currentUser.userId) else {
+            return
+        }
+        
+        let updatedUser = EditUser(
+            id: userId,
+            fullName: fullName,
+            username: username,
+            description: description,
+            facebookUrl: facebook,
+            twitterUrl: twitter,
+            instagramUrl: instagram,
+            websiteUrl: website,
+            city: city,
+            country: country,
+            profilePictureUrl: profilePictureUrl
+        )
+        
+        apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
+            switch result {
+                case .success(let message):
+                    print(message)
+                case .failure(let error):
+                    print("Failed to update profile: \(error.localizedDescription)")
+            }
+        }
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -36,7 +72,7 @@ struct EditProfileView: View {
                     HStack {
                         Spacer()
                         Button {
-                            //
+                            isImagePickerPresented = true
                         } label: {
                             if let selectedImage {
                                 Image(uiImage: selectedImage)
@@ -78,6 +114,11 @@ struct EditProfileView: View {
                                             .foregroundStyle(Color("Primary900"))
                                     }
                                 }
+                            }
+                        }
+                        .sheet(isPresented: $isImagePickerPresented) {
+                            ImagePicker(image: $selectedImage) { filename in
+                                profilePictureUrl = "profile_picture_\(filename)"
                             }
                         }
                         Spacer()
@@ -132,7 +173,7 @@ struct EditProfileView: View {
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Bold", size: 16))
                         VStack(spacing: 8) {
-                            TextField(text: $description) {
+                            TextField(text: $description, axis: .vertical) {
                                 Text("Description")
                                     .foregroundStyle(Color("Dark4"))
                                     .font(.custom("Urbanist-Bold", size: 20))
@@ -296,11 +337,17 @@ struct EditProfileView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Image("More Circle - Regular - Light - Outline")
-                    .resizable()
-                    .frame(width: 28, height: 28)
-                    .foregroundStyle(Color("MyWhite"))
+                Button {
+                    //
+                    editProfile()
+                } label: {
+                    Image("Edit - Regular - Light - Outline")
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .foregroundStyle(Color("MyWhite"))
+                }
             }
+            
         }
         .onAppear {
             guard let currentUser = userSession.first else {

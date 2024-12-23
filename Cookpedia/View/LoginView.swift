@@ -70,7 +70,10 @@ struct LoginView: View {
                                 }
                                 if emailInvalid {
                                     HStack(spacing: 6) {
-                                        Image("red-alert")
+                                        Image("Info Circle - Regular - Bold")
+                                            .resizable()
+                                            .frame(width: 18, height: 18)
+                                            .foregroundStyle(Color("Error"))
                                             .padding(.leading, 12)
                                         Text("You must enter a valid email")
                                             .foregroundStyle(Color("Error"))
