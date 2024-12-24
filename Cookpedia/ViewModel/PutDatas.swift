@@ -42,6 +42,7 @@ class APIPutRequest: ObservableObject {
         appendField("fullName", value: user.fullName)
         appendField("username", value: user.username)
         appendField("description", value: user.description)
+        appendField("youtube", value: user.youtubeUrl)
         appendField("facebook", value: user.facebookUrl)
         appendField("twitter", value: user.twitterUrl)
         appendField("instagram", value: user.instagramUrl)

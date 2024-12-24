@@ -85,6 +85,8 @@ struct RecipeCardNameView: View {
                                     AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipe.profilePictureUrl).jpg")) { image in
                                         image
                                             .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .clipped()
                                             .frame(width: 16, height: 16)
                                             .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     } placeholder: {

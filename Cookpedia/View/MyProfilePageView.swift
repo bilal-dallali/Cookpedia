@@ -16,8 +16,8 @@ struct MyProfilePageView: View {
     @Binding var isMyProfileSelected: Bool
     
     @State private var recipes: [RecipeTitleCover] = []
-    @State private var isRecipeSelected: Bool = true
-    @State private var isAboutSelected: Bool = false
+    @State private var isRecipeSelected: Bool = false
+    @State private var isAboutSelected: Bool = true
     
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
@@ -25,7 +25,15 @@ struct MyProfilePageView: View {
     
     @State private var profilePictureUrl: String = ""
     @State private var fullName: String = "unkwnown"
-    @State private var username: String = "unknwon"
+    @State private var username: String = "unknown"
+    @State private var description: String = "The user hasn't filled out their profile yet"
+    @State private var youtube: String = ""
+    @State private var facebook: String = ""
+    @State private var twitter: String = ""
+    @State private var instagram: String = ""
+    @State private var website: String = ""
+    @State private var city: String = ""
+    @State private var country: String = ""
     
     var body: some View {
         NavigationStack {
@@ -73,6 +81,8 @@ struct MyProfilePageView: View {
                                         AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
                                             image
                                                 .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .clipped()
                                                 .frame(width: 72, height: 72)
                                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                         } placeholder: {
@@ -91,7 +101,7 @@ struct MyProfilePageView: View {
                                     }
                                     Spacer()
                                     NavigationLink {
-                                        EditProfileView(isHomeSelected: $isHomeSelected, isDiscoverSelected: $isDiscoverSelected, isMyRecipeSelected: $isMyRecipeSelected, isMyProfileSelected: $isMyProfileSelected)
+                                        EditProfileView()
                                     } label: {
                                         HStack(spacing: 8) {
                                             Image("Edit - Curved - Bold")
@@ -255,28 +265,142 @@ struct MyProfilePageView: View {
                                         }
                                     }
                                 }
-                                .onAppear {
-                                    guard let currentUser = userSession.first else {
-                                        return
+                            } else if isAboutSelected {
+                                VStack(spacing: 16) {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            Text("Description")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 18))
+                                            Text(description)
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Medium", size: 16))
+                                        }
+                                        Spacer()
                                     }
-                                    
-                                    guard let userId = Int(currentUser.userId) else {
-                                        return
-                                    }
-                                    
-                                    apiGetManager.getConnectedUserRecipes(userId: userId) { result in
-                                        switch result {
-                                        case .success(let recipes):
-                                            DispatchQueue.main.async {
-                                                self.recipes = recipes
+                                    Divider()
+                                        .overlay {
+                                            Rectangle()
+                                                .foregroundStyle(Color("Dark4"))
+                                                .frame(height: 1)
+                                        }
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("Social Media")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 18))
+                                        VStack(alignment: .leading, spacing: 14) {
+                                            if !youtube.isEmpty {
+                                                Link(destination: URL(string: "https://\(youtube)")!) {
+                                                    HStack(spacing: 12) {
+                                                        Image("Youtube")
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text("Youtube")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Medium", size: 16))
+                                                        Spacer()
+                                                    }
+                                                }
                                             }
-                                        case .failure(let error):
-                                            print("Failed to fetch user recipes: \(error.localizedDescription)")
+                                            
+                                            if !facebook.isEmpty {
+                                                Link(destination: URL(string: "https://\(facebook)")!) {
+                                                    HStack(spacing: 12) {
+                                                        Image("Facebook")
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text("Facebook")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Medium", size: 16))
+                                                        Spacer()
+                                                    }
+                                                }
+                                            }
+                                            
+                                            if !twitter.isEmpty {
+                                                Link(destination: URL(string: "https://\(twitter)")!) {
+                                                    HStack(spacing: 12) {
+                                                        Image("Twitter")
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text("Twitter")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Medium", size: 16))
+                                                        Spacer()
+                                                    }
+                                                }
+                                            }
+                                            
+                                            if !instagram.isEmpty {
+                                                Link(destination: URL(string: "https://\(instagram)")!) {
+                                                    HStack(spacing: 12) {
+                                                        Image("Instagram")
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text("Instagram")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Medium", size: 16))
+                                                        Spacer()
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Divider()
+                                        .overlay {
+                                            Rectangle()
+                                                .foregroundStyle(Color("Dark4"))
+                                                .frame(height: 1)
+                                        }
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("More Info")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 18))
+                                        VStack(alignment: .leading, spacing: 14) {
+                                            if !website.isEmpty {
+                                                Link(destination: URL(string: "https://\(website)")!) {
+                                                    HStack(spacing: 12) {
+                                                        Image("World")
+                                                            .resizable()
+                                                            .frame(width: 24, height: 24)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text("www.exampledomain.com")
+                                                            .tint(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Medium", size: 16))
+                                                        Spacer()
+                                                    }
+                                                }
+                                            }
+
+                                            HStack(spacing: 12) {
+                                                Image("Location - Regular - Light - Outline")
+                                                    .resizable()
+                                                    .frame(width: 24, height: 24)
+                                                    .foregroundStyle(Color("Greyscale300"))
+                                                Text("\(city), \(country)")
+                                                    .foregroundStyle(Color("Greyscale300"))
+                                                    .font(.custom("Urbanist-Medium", size: 16))
+                                                Spacer()
+                                            }
+                                            
+//                                            HStack(spacing: 12) {
+//                                                Image("Info Square - Regular - Light - Outline")
+//                                                    .resizable()
+//                                                    .frame(width: 24, height: 24)
+//                                                    .foregroundStyle(Color("Greyscale300"))
+//                                                Text("Joined since Aug 24, 2020")
+//                                                    .foregroundStyle(Color("Greyscale300"))
+//                                                    .font(.custom("Urbanist-Medium", size: 16))
+//                                                //2024-12-20 14:27:34
+//                                                Spacer()
+//                                            }
                                         }
                                     }
                                 }
-                            } else if isAboutSelected {
-                                Text("About")
                             }
                         }
                     }
@@ -293,6 +417,17 @@ struct MyProfilePageView: View {
                     guard let userId = Int(currentUser.userId) else {
                         return
                     }
+                    
+                    apiGetManager.getConnectedUserRecipes(userId: userId) { result in
+                        switch result {
+                            case .success(let recipes):
+                                DispatchQueue.main.async {
+                                    self.recipes = recipes
+                                }
+                            case .failure(let error):
+                                print("Failed to fetch user recipes: \(error.localizedDescription)")
+                        }
+                    }
 
                     apiGetManager.getConnectedUserUserData(userId: userId) { result in
                         switch result {
@@ -301,6 +436,14 @@ struct MyProfilePageView: View {
                                 self.profilePictureUrl = user.profilePictureUrl ?? ""
                                 self.fullName = user.fullName
                                 self.username = user.username
+                                self.description = user.description
+                                self.youtube = user.youtubeUrl
+                                self.facebook = user.facebookUrl
+                                self.twitter = user.twitterUrl
+                                self.instagram = user.instagramUrl
+                                self.website = user.websiteUrl
+                                self.city = user.city
+                                self.country = user.country
                             }
                         case .failure(let error):
                             print("Failed to fetch user data: \(error.localizedDescription)")

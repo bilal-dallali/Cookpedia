@@ -19,6 +19,7 @@ struct EditProfileView: View {
     @State private var username: String = ""
     @State private var description: String = ""
     @State private var facebook: String = ""
+    @State private var youtube: String = ""
     @State private var twitter: String = ""
     @State private var instagram: String = ""
     @State private var website: String = ""
@@ -27,16 +28,10 @@ struct EditProfileView: View {
     @State private var selectedImage: UIImage?
     @State private var profilePictureUrl: String = ""
     
-    @Binding var isHomeSelected: Bool
-    @Binding var isDiscoverSelected: Bool
-    @Binding var isMyRecipeSelected: Bool
-    @Binding var isMyProfileSelected: Bool
-    
     @FocusState private var isTextFocused: Bool
     
     var apiGetManager = APIGetRequest()
     var apiPutManager = APIPutRequest()
-    var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
@@ -53,6 +48,8 @@ struct EditProfileView: View {
                                 if let selectedImage {
                                     Image(uiImage: selectedImage)
                                         .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .clipped()
                                         .frame(width: 120, height: 120)
                                         .clipShape(.rect(cornerRadius: .infinity))
                                         .overlay(alignment: .trailingLastTextBaseline) {
@@ -77,6 +74,8 @@ struct EditProfileView: View {
                                         AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
                                             image
                                                 .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .clipped()
                                                 .frame(width: 120, height: 120)
                                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                         } placeholder: {
@@ -176,12 +175,56 @@ struct EditProfileView: View {
                             .font(.custom("Urbanist-Bold", size: 18))
                         
                         VStack(alignment: .leading, spacing: 16) {
+                            Text("Youtube")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $youtube) {
+                                    Text("Youtube")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
                             Text("Facebook")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 16))
                             VStack(spacing: 8) {
                                 TextField(text: $facebook) {
-                                    Text("facebook")
+                                    Text("Facebook")
+                                        .foregroundStyle(Color("Dark4"))
+                                        .font(.custom("Urbanist-Bold", size: 20))
+                                }
+                                .textInputAutocapitalization(.never)
+                                .keyboardType(.default)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 20))
+                                .frame(height: 32)
+                                .focused($isTextFocused)
+                                Rectangle()
+                                    .foregroundStyle(Color("Primary900"))
+                                    .frame(height: 1)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Twitter")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                            VStack(spacing: 8) {
+                                TextField(text: $twitter) {
+                                    Text("Twitter")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
@@ -233,7 +276,7 @@ struct EditProfileView: View {
                                 .font(.custom("Urbanist-Bold", size: 16))
                             VStack(spacing: 8) {
                                 TextField(text: $website) {
-                                    Text("website")
+                                    Text("Website")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
@@ -298,7 +341,8 @@ struct EditProfileView: View {
                     .padding(.top, 24)
                 }
             }
-            .background(Color("Dark1"))
+            .background(Color(profileUpdated ? "BackgroundOpacity" : "Dark1"))
+            .blur(radius: profileUpdated ? 4 : 0)
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -327,6 +371,7 @@ struct EditProfileView: View {
                             fullName: fullName,
                             username: username,
                             description: description,
+                            youtubeUrl: youtube,
                             facebookUrl: facebook,
                             twitterUrl: twitter,
                             instagramUrl: instagram,
@@ -343,10 +388,6 @@ struct EditProfileView: View {
                                     profileUpdated = true
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         self.redirectHomePage = true
-                                        isHomeSelected = false
-                                        isDiscoverSelected = false
-                                        isMyRecipeSelected = false
-                                        isMyProfileSelected = true
                                         profileUpdated = false
                                     }
                                 case .failure(let error):
@@ -381,11 +422,12 @@ struct EditProfileView: View {
                                 self.profilePictureUrl = user.profilePictureUrl ?? ""
                                 self.fullName = user.fullName
                                 self.username = user.username
-                                self.description = user.description ?? ""
-                                self.facebook = user.facebookUrl ?? ""
-                                self.twitter = user.twitterUrl ?? ""
-                                self.instagram = user.instagramUrl ?? ""
-                                self.website = user.websiteUrl ?? ""
+                                self.description = user.description
+                                self.youtube = user.youtubeUrl
+                                self.facebook = user.facebookUrl
+                                self.twitter = user.twitterUrl
+                                self.instagram = user.instagramUrl
+                                self.website = user.websiteUrl
                                 self.city = user.city
                                 self.country = user.country
                             }
@@ -402,5 +444,5 @@ struct EditProfileView: View {
 }
 
 #Preview {
-    EditProfileView(isHomeSelected: .constant(false), isDiscoverSelected: .constant(false), isMyRecipeSelected: .constant(false), isMyProfileSelected: .constant(true))
+    EditProfileView()
 }

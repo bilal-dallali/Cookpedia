@@ -57,6 +57,8 @@ struct RecipeDetailsView: View {
                                     AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
                                         image
                                             .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .clipped()
                                             .frame(width: geometry.size.width, height: 430)
                                     } placeholder: {
                                         Rectangle()
@@ -69,6 +71,8 @@ struct RecipeDetailsView: View {
                                             AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
                                                 image
                                                     .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .clipped()
                                                     .frame(width: geometry.size.width, height: 430)
                                             } placeholder: {
                                                 Rectangle()
@@ -79,6 +83,8 @@ struct RecipeDetailsView: View {
                                             AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl2).jpg")) { image in
                                                 image
                                                     .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .clipped()
                                                     .frame(width: geometry.size.width, height: 430)
                                             } placeholder: {
                                                 Rectangle()
@@ -106,6 +112,8 @@ struct RecipeDetailsView: View {
                                             AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
                                                 image
                                                     .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .clipped()
                                                     .frame(width: 72, height: 72)
                                                     .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                             } placeholder: {
