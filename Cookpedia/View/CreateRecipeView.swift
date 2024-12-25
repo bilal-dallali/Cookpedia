@@ -12,7 +12,7 @@ import SwiftData
 struct CreateRecipeView: View {
     
     @State private var title = ""
-    @State private  var description = ""
+    @State private var description = ""
     @State private var cookTime = ""
     @State private var serves = ""
     @State private var origin = ""

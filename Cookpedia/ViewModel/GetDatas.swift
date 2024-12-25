@@ -9,7 +9,7 @@ import Foundation
 
 class APIGetRequest: ObservableObject {
     
-    func getConnectedUserUserData(userId: Int, completion: @escaping (Result<User, Error>) -> Void) {
+    func getUserDataFromUserId(userId: Int, completion: @escaping (Result<User, Error>) -> Void) {
         let endpoint = "/users/profile/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))

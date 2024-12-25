@@ -16,8 +16,8 @@ struct MyProfilePageView: View {
     @Binding var isMyProfileSelected: Bool
     
     @State private var recipes: [RecipeTitleCover] = []
-    @State private var isRecipeSelected: Bool = false
-    @State private var isAboutSelected: Bool = true
+    @State private var isRecipeSelected: Bool = true
+    @State private var isAboutSelected: Bool = false
     
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
@@ -34,6 +34,7 @@ struct MyProfilePageView: View {
     @State private var website: String = ""
     @State private var city: String = ""
     @State private var country: String = ""
+    @State private var createdAt: String = ""
     
     var body: some View {
         NavigationStack {
@@ -89,7 +90,6 @@ struct MyProfilePageView: View {
                                             ProgressView()
                                                 .frame(width: 72, height: 72)
                                         }
-                                        
                                     }
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(fullName)
@@ -387,17 +387,18 @@ struct MyProfilePageView: View {
                                                 Spacer()
                                             }
                                             
-//                                            HStack(spacing: 12) {
-//                                                Image("Info Square - Regular - Light - Outline")
-//                                                    .resizable()
-//                                                    .frame(width: 24, height: 24)
-//                                                    .foregroundStyle(Color("Greyscale300"))
-//                                                Text("Joined since Aug 24, 2020")
-//                                                    .foregroundStyle(Color("Greyscale300"))
-//                                                    .font(.custom("Urbanist-Medium", size: 16))
-//                                                //2024-12-20 14:27:34
-//                                                Spacer()
-//                                            }
+                                            HStack(spacing: 12) {
+                                                Image("Info Square - Regular - Light - Outline")
+                                                    .resizable()
+                                                    .frame(width: 24, height: 24)
+                                                    .foregroundStyle(Color("Greyscale300"))
+                                                Text("Joined since Aug 24, 2020")
+                                                    .foregroundStyle(Color("Greyscale300"))
+                                                    .font(.custom("Urbanist-Medium", size: 16))
+                                                Text("\(createdAt)")
+                                                //2024-12-20 14:27:34
+                                                Spacer()
+                                            }
                                         }
                                     }
                                 }
@@ -406,7 +407,7 @@ struct MyProfilePageView: View {
                     }
                 }
                 .scrollIndicators(.hidden)
-                .padding(.top, 16)
+                .padding(.top, 24)
                 .padding(.horizontal, 24)
                 .background(Color("Dark1"))
                 .onAppear {
@@ -429,7 +430,7 @@ struct MyProfilePageView: View {
                         }
                     }
 
-                    apiGetManager.getConnectedUserUserData(userId: userId) { result in
+                    apiGetManager.getUserDataFromUserId(userId: userId) { result in
                         switch result {
                         case .success(let user):
                             DispatchQueue.main.async {
@@ -444,6 +445,7 @@ struct MyProfilePageView: View {
                                 self.website = user.websiteUrl
                                 self.city = user.city
                                 self.country = user.country
+                                self.createdAt = createdAt
                             }
                         case .failure(let error):
                             print("Failed to fetch user data: \(error.localizedDescription)")

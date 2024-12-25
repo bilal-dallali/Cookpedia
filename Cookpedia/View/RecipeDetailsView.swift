@@ -18,6 +18,7 @@ struct RecipeDetailsView: View {
     var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    @State private var connectedUserId: Int? = nil
     
     // Private initializer for internal use only
     private init(recipeDetails: RecipeDetails, recipeId: Int) {
@@ -45,6 +46,7 @@ struct RecipeDetailsView: View {
             username: ""
         )
     }
+    
     
     var body: some View {
         NavigationStack {
@@ -108,38 +110,73 @@ struct RecipeDetailsView: View {
                                                     .frame(height: 1)
                                                     .foregroundStyle(Color("Dark4"))
                                             }
-                                        HStack(spacing: 12) {
-                                            AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
-                                                image
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .clipped()
-                                                    .frame(width: 72, height: 72)
-                                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                            } placeholder: {
-                                                Rectangle()
-                                                    .fill(Color("Greyscale400"))
-                                                    .frame(width: 72, height: 72)
-                                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                        
+                                        if connectedUserId != recipeDetails.userId {
+                                            HStack(spacing: 20) {
+                                                NavigationLink {
+                                                    ProfilePageView(userId: recipeDetails.userId)
+                                                } label: {
+                                                    HStack(spacing: 20) {
+                                                        AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
+                                                            image
+                                                                .resizable()
+                                                                .aspectRatio(contentMode: .fill)
+                                                                .clipped()
+                                                                .frame(width: 72, height: 72)
+                                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                        } placeholder: {
+                                                            Rectangle()
+                                                                .fill(Color("Greyscale400"))
+                                                                .frame(width: 72, height: 72)
+                                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                        }
+                                                        VStack(alignment: .leading, spacing: 4) {
+                                                            Text(recipeDetails.fullName)
+                                                                .foregroundStyle(Color("MyWhite"))
+                                                                .font(.custom("Urbanist-Bold", size: 20))
+                                                            Text("@\(recipeDetails.username)")
+                                                                .foregroundStyle(Color("MyWhite"))
+                                                                .font(.custom("Urbanist-Medium", size: 16))
+                                                        }
+                                                    }
+                                                }
+                                                Spacer()
+                                                Button {
+                                                    print("Follow")
+                                                    print("Follow profile id: \(recipeDetails.userId)")
+                                                } label: {
+                                                    Text("Follow")
+                                                        .foregroundStyle(Color("MyWhite"))
+                                                        .font(.custom("Urbanist-Semibold", size: 16))
+                                                        .frame(width: 86, height: 38)
+                                                        .background(Color("Primary900"))
+                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                }
                                             }
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text(recipeDetails.fullName)
-                                                    .foregroundStyle(Color("MyWhite"))
-                                                    .font(.custom("Urbanist-Bold", size: 20))
-                                                Text("@\(recipeDetails.username)")
-                                                    .foregroundStyle(Color("MyWhite"))
-                                                    .font(.custom("Urbanist-Medium", size: 16))
-                                            }
-                                            Spacer()
-                                            Button {
-                                                //
-                                            } label: {
-                                                Text("Follow")
-                                                    .foregroundStyle(Color("MyWhite"))
-                                                    .font(.custom("Urbanist-Semibold", size: 16))
-                                                    .frame(width: 86, height: 38)
-                                                    .background(Color("Primary900"))
-                                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                        } else {
+                                            HStack(spacing: 20) {
+                                                AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .clipped()
+                                                        .frame(width: 72, height: 72)
+                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                } placeholder: {
+                                                    Rectangle()
+                                                        .fill(Color("Greyscale400"))
+                                                        .frame(width: 72, height: 72)
+                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                }
+                                                VStack(alignment: .leading, spacing: 4) {
+                                                    Text(recipeDetails.fullName)
+                                                        .foregroundStyle(Color("MyWhite"))
+                                                        .font(.custom("Urbanist-Bold", size: 20))
+                                                    Text("@\(recipeDetails.username)")
+                                                        .foregroundStyle(Color("MyWhite"))
+                                                        .font(.custom("Urbanist-Medium", size: 16))
+                                                }
+                                                Spacer()
                                             }
                                         }
                                         Divider()
@@ -387,6 +424,9 @@ struct RecipeDetailsView: View {
                         guard let userId = Int(currentUser.userId) else {
                             return
                         }
+                        
+                        connectedUserId = userId
+                        print("connected user id \(connectedUserId)")
                         
                         apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id) { result in
                             switch result {

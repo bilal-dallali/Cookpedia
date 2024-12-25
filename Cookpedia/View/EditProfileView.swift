@@ -415,7 +415,7 @@ struct EditProfileView: View {
                     return
                 }
                 
-                apiGetManager.getConnectedUserUserData(userId: userId) { result in
+                apiGetManager.getUserDataFromUserId(userId: userId) { result in
                     switch result {
                         case .success(let user):
                             DispatchQueue.main.async {
