@@ -8,10 +8,16 @@
 import SwiftUI
 import SwiftData
 
+func isValidWebsiteURL(_ url: String) -> Bool {
+    let regex = #"^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"#
+    return url.range(of: regex, options: .regularExpression) != nil
+}
+
 struct EditProfileView: View {
     
     @State private var redirectHomePage: Bool = false
     @State private var profileUpdated: Bool = false
+    @State private var isUrlInvalid: Bool = false
     
     @State private var isImagePickerPresented = false
     
@@ -40,6 +46,23 @@ struct EditProfileView: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
+                        if isUrlInvalid {
+                            HStack(spacing: 6) {
+                                Image("Info Circle - Regular - Bold")
+                                    .resizable()
+                                    .frame(width: 15, height: 15)
+                                    .foregroundStyle(Color("Error"))
+                                    .padding(.leading, 12)
+                                Text("Invalid format for the website! The URL must follow this pattern exampledomain.com")
+                                    .foregroundStyle(Color("Error"))
+                                    .font(.custom("Urbanist-Semibold", size: 12))
+                                Spacer()
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 34)
+                            .background(Color("TransparentRed"))
+                            .clipShape(.rect(cornerRadius: 10))
+                        }
                         HStack {
                             Spacer()
                             Button {
@@ -180,7 +203,7 @@ struct EditProfileView: View {
                                 .font(.custom("Urbanist-Bold", size: 16))
                             VStack(spacing: 8) {
                                 TextField(text: $youtube) {
-                                    Text("Youtube")
+                                    Text("Pseudonym")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
@@ -202,7 +225,7 @@ struct EditProfileView: View {
                                 .font(.custom("Urbanist-Bold", size: 16))
                             VStack(spacing: 8) {
                                 TextField(text: $facebook) {
-                                    Text("Facebook")
+                                    Text("firstname.lastname")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
@@ -224,7 +247,7 @@ struct EditProfileView: View {
                                 .font(.custom("Urbanist-Bold", size: 16))
                             VStack(spacing: 8) {
                                 TextField(text: $twitter) {
-                                    Text("Twitter")
+                                    Text("Pseudonym")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
@@ -246,7 +269,7 @@ struct EditProfileView: View {
                                 .font(.custom("Urbanist-Bold", size: 16))
                             VStack(spacing: 8) {
                                 TextField(text: $instagram) {
-                                    Text("Instagram")
+                                    Text("Pseudonym")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
@@ -276,7 +299,7 @@ struct EditProfileView: View {
                                 .font(.custom("Urbanist-Bold", size: 16))
                             VStack(spacing: 8) {
                                 TextField(text: $website) {
-                                    Text("Website")
+                                    Text("exampledomain.com")
                                         .foregroundStyle(Color("Dark4"))
                                         .font(.custom("Urbanist-Bold", size: 20))
                                 }
@@ -289,6 +312,7 @@ struct EditProfileView: View {
                                 Rectangle()
                                     .foregroundStyle(Color("Primary900"))
                                     .frame(height: 1)
+            
                             }
                         }
                         
@@ -357,52 +381,68 @@ struct EditProfileView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        guard let currentUser = userSession.first else {
-                            return
-                        }
-                        
-                        guard let userId = Int(currentUser.userId) else {
-                            return
-                        }
-                        
-                        let updatedUser = EditUser(
-                            id: userId,
-                            fullName: fullName,
-                            username: username,
-                            description: description,
-                            youtubeUrl: youtube,
-                            facebookUrl: facebook,
-                            twitterUrl: twitter,
-                            instagramUrl: instagram,
-                            websiteUrl: website,
-                            city: city,
-                            country: country,
-                            profilePictureUrl: profilePictureUrl
-                        )
-                        
-                        apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
-                            switch result {
-                                case .success(let message):
-                                    print(message)
-                                    profileUpdated = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                        self.redirectHomePage = true
-                                        profileUpdated = false
-                                    }
-                                case .failure(let error):
-                                    print("Failed to update profile: \(error.localizedDescription)")
+                    if !website.isEmpty && !isValidWebsiteURL(website) {
+                        Button {
+                            //
+                            isUrlInvalid = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                isUrlInvalid = false
                             }
+                        } label: {
+                            Image("Edit - Regular - Light - Outline")
+                                .resizable()
+                                .frame(width: 28, height: 28)
+                                .foregroundStyle(Color("MyWhite"))
                         }
-                    } label: {
-                        Image("Edit - Regular - Light - Outline")
-                            .resizable()
-                            .frame(width: 28, height: 28)
-                            .foregroundStyle(Color("MyWhite"))
+                    } else {
+                        Button {
+                            guard let currentUser = userSession.first else {
+                                return
+                            }
+                            
+                            guard let userId = Int(currentUser.userId) else {
+                                return
+                            }
+                            
+                            let updatedUser = EditUser(
+                                id: userId,
+                                fullName: fullName,
+                                username: username,
+                                description: description,
+                                youtube: youtube,
+                                facebook: facebook,
+                                twitter: twitter,
+                                instagram: instagram,
+                                website: website,
+                                city: city,
+                                country: country,
+                                profilePictureUrl: profilePictureUrl
+                            )
+                            
+                            apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
+                                switch result {
+                                    case .success(let message):
+                                        print(message)
+                                        profileUpdated = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                            self.redirectHomePage = true
+                                            profileUpdated = false
+                                        }
+                                    case .failure(let error):
+                                        print("Failed to update profile: \(error.localizedDescription)")
+                                }
+                            }
+                        } label: {
+                            Image("Edit - Regular - Light - Outline")
+                                .resizable()
+                                .frame(width: 28, height: 28)
+                                .foregroundStyle(Color("MyWhite"))
+                        }
+                        .navigationDestination(isPresented: $redirectHomePage) {
+                            TabView()
+                        }
                     }
-                    .navigationDestination(isPresented: $redirectHomePage) {
-                        TabView()
-                    }
+                    
                 }
                 
             }
@@ -423,11 +463,11 @@ struct EditProfileView: View {
                                 self.fullName = user.fullName
                                 self.username = user.username
                                 self.description = user.description ?? ""
-                                self.youtube = user.youtubeUrl ?? ""
-                                self.facebook = user.facebookUrl ?? ""
-                                self.twitter = user.twitterUrl ?? ""
-                                self.instagram = user.instagramUrl ?? ""
-                                self.website = user.websiteUrl ?? ""
+                                self.youtube = user.youtube ?? ""
+                                self.facebook = user.facebook ?? ""
+                                self.twitter = user.twitter ?? ""
+                                self.instagram = user.instagram ?? ""
+                                self.website = user.website ?? ""
                                 self.city = user.city
                                 self.country = user.country
                             }

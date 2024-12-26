@@ -429,11 +429,11 @@ struct MyProfilePageView: View {
                                 self.fullName = user.fullName
                                 self.username = user.username
                                 self.description = user.description ?? ""
-                                self.youtube = user.youtubeUrl ?? ""
-                                self.facebook = user.facebookUrl ?? ""
-                                self.twitter = user.twitterUrl ?? ""
-                                self.instagram = user.instagramUrl ?? ""
-                                self.website = user.websiteUrl ?? ""
+                                self.youtube = user.youtube ?? ""
+                                self.facebook = user.facebook ?? ""
+                                self.twitter = user.twitter ?? ""
+                                self.instagram = user.instagram ?? ""
+                                self.website = user.website ?? ""
                                 self.city = user.city
                                 self.country = user.country
                                 //self.createdAt = createdAt

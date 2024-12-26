@@ -264,7 +264,7 @@ struct ProfilePageView: View {
                                         .font(.custom("Urbanist-Bold", size: 18))
                                     VStack(alignment: .leading, spacing: 14) {
                                         if !youtube.isEmpty {
-                                            Link(destination: URL(string: "https://\(youtube)")!) {
+                                            Link(destination: URL(string: "https://youtube.com/@\(youtube)")!) {
                                                 HStack(spacing: 12) {
                                                     Image("Youtube")
                                                         .resizable()
@@ -279,7 +279,7 @@ struct ProfilePageView: View {
                                         }
                                         
                                         if !facebook.isEmpty {
-                                            Link(destination: URL(string: "https://\(facebook)")!) {
+                                            Link(destination: URL(string: "https://facebook.com/\(facebook)")!) {
                                                 HStack(spacing: 12) {
                                                     Image("Facebook")
                                                         .resizable()
@@ -294,7 +294,7 @@ struct ProfilePageView: View {
                                         }
                                         
                                         if !twitter.isEmpty {
-                                            Link(destination: URL(string: "https://\(twitter)")!) {
+                                            Link(destination: URL(string: "https://x.com/\(twitter)")!) {
                                                 HStack(spacing: 12) {
                                                     Image("Twitter")
                                                         .resizable()
@@ -309,7 +309,7 @@ struct ProfilePageView: View {
                                         }
                                         
                                         if !instagram.isEmpty {
-                                            Link(destination: URL(string: "https://\(instagram)")!) {
+                                            Link(destination: URL(string: "https://instagram.com/\(instagram)")!) {
                                                 HStack(spacing: 12) {
                                                     Image("Instagram")
                                                         .resizable()
@@ -384,11 +384,11 @@ struct ProfilePageView: View {
                                 self.fullName = user.fullName
                                 self.username = user.username
                                 self.description = user.description ?? ""
-                                self.youtube = user.youtubeUrl ?? ""
-                                self.facebook = user.facebookUrl ?? ""
-                                self.twitter = user.twitterUrl ?? ""
-                                self.instagram = user.instagramUrl ?? ""
-                                self.website = user.websiteUrl ?? ""
+                                self.youtube = user.youtube ?? ""
+                                self.facebook = user.facebook ?? ""
+                                self.twitter = user.twitter ?? ""
+                                self.instagram = user.instagram ?? ""
+                                self.website = user.website ?? ""
                                 self.city = user.city
                                 self.country = user.country
                                 //self.createdAt = createdAt

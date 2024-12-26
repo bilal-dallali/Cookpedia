@@ -59,11 +59,11 @@ struct User: Decodable {
     let city: String
     let cookingLevel: String
     let description: String?
-    let youtubeUrl: String?
-    let facebookUrl: String?
-    let twitterUrl: String?
-    let instagramUrl: String?
-    let websiteUrl: String?
+    let youtube: String?
+    let facebook: String?
+    let twitter: String?
+    let instagram: String?
+    let website: String?
 }
 
 struct EditUser: Decodable {
@@ -71,11 +71,11 @@ struct EditUser: Decodable {
     let fullName: String
     let username: String
     let description: String?
-    let youtubeUrl: String?
-    let facebookUrl: String?
-    let twitterUrl: String?
-    let instagramUrl: String?
-    let websiteUrl: String?
+    let youtube: String?
+    let facebook: String?
+    let twitter: String?
+    let instagram: String?
+    let website: String?
     let city: String
     let country: String
     let profilePictureUrl: String?
