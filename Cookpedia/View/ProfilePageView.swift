@@ -11,8 +11,8 @@ import SwiftData
 struct ProfilePageView: View {
     
     let userId: Int
-    @State private var isRecipeSelected: Bool = false
-    @State private var isAboutSelected: Bool = true
+    @State private var isRecipeSelected: Bool = true
+    @State private var isAboutSelected: Bool = false
     @State private var publishedRecipes: [RecipeTitleCover] = []
     
     @State private var following: Bool = false
@@ -20,6 +20,8 @@ struct ProfilePageView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiGetManager = APIGetRequest()
+    var apiPostManager = APIPostRequest()
+    var apiDeleteManager = APIDeleteRequest()
     @State private var profilePictureUrl: String = ""
     @State private var fullName: String = "unkwnown"
     @State private var username: String = "unknown"
@@ -69,7 +71,37 @@ struct ProfilePageView: View {
                             }
                             Spacer()
                             Button {
-                                following.toggle()
+                                guard let currentUser = userSession.first else {
+                                    return
+                                }
+                                
+                                guard let connectedUserId = Int(currentUser.userId) else {
+                                    return
+                                }
+                                
+                                if following == true {
+                                    print("following true")
+                                    apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId) { result in
+                                        switch result {
+                                            case .success(let message):
+                                                print("Success: \(message)")
+                                                following = false
+                                            case .failure(let error):
+                                                print("Failed to unfollow user: \(error.localizedDescription)")
+                                        }
+                                    }
+                                } else if following == false {
+                                    print("following false")
+                                    apiPostManager.followUser(followerId: connectedUserId, followedId: userId) { result in
+                                        switch result {
+                                            case .success(let message):
+                                                print("message \(message)")
+                                                following = true
+                                            case .failure(let error):
+                                                print("Failed to follow user : \(error.localizedDescription)")
+                                        }
+                                    }
+                                }
                             } label: {
                                 if following {
                                     Text("Following")
@@ -102,7 +134,7 @@ struct ProfilePageView: View {
                                 //
                             } label: {
                                 VStack(spacing: 4) {
-                                    Text("245")
+                                    Text("\(publishedRecipes.count)")
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 24))
                                     Text("recipes")
@@ -229,8 +261,6 @@ struct ProfilePageView: View {
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                             ForEach(publishedRecipes, id: \.id) { recipe in
                                 NavigationLink {
-                                    //WelcomeView()
-                                    //print("recipe id: \(recipe.id)")
                                     RecipeDetailsView(recipeId: recipe.id)
                                 } label: {
                                     RecipeCardView(recipe: recipe)
@@ -345,7 +375,7 @@ struct ProfilePageView: View {
                                                     .resizable()
                                                     .frame(width: 24, height: 24)
                                                     .foregroundStyle(Color("Primary900"))
-                                                Text("www.exampledomain.com")
+                                                Text(website)
                                                     .tint(Color("Primary900"))
                                                     .font(.custom("Urbanist-Medium", size: 16))
                                                 Spacer()
@@ -374,7 +404,28 @@ struct ProfilePageView: View {
             .padding(.horizontal, 24)
             .background(Color("Dark1"))
             .onAppear {
-                print("userid \(userId)")
+                guard let currentUser = userSession.first else {
+                    return
+                }
+                
+                guard let connectedUserId = Int(currentUser.userId) else {
+                    return
+                }
+                
+                apiGetManager.isFollowing(followerId: connectedUserId, followedId: userId) { result in
+                    switch result {
+                        case .success(let isFollowing):
+                            if isFollowing {
+                                print("User is following the other user.")
+                                following = true
+                            } else {
+                                print("User is not following the other user.")
+                                following = false
+                            }
+                        case .failure(let error):
+                            print("Failed to check follow status: \(error.localizedDescription)")
+                    }
+                }
                 
                 apiGetManager.getUserDataFromUserId(userId: userId) { result in
                     switch result {

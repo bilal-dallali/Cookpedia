@@ -351,6 +351,43 @@ class APIGetRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func isFollowing(followerId: Int, followedId: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+        let endpoint = "/users/is-following/\(followerId)/\(followedId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                print("Invalid response: \(response.debugDescription)")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                if let isFollowing = jsonResponse?["isFollowing"] as? Bool {
+                    completion(.success(isFollowing))
+                } else {
+                    completion(.failure(APIGetError.invalidResponse))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
 }
 
 enum APIGetError: Error {

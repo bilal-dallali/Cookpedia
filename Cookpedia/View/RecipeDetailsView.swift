@@ -16,9 +16,11 @@ struct RecipeDetailsView: View {
     @State private var addedToBookmarks: Bool = false
     var apiGetManager = APIGetRequest()
     var apiPostManager = APIPostRequest()
+    var apiDeleteManager = APIDeleteRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     @State private var connectedUserId: Int? = nil
+    @State private var following: Bool = false
     
     // Private initializer for internal use only
     private init(recipeDetails: RecipeDetails, recipeId: Int) {
@@ -144,13 +146,55 @@ struct RecipeDetailsView: View {
                                                 Button {
                                                     print("Follow")
                                                     print("Follow profile id: \(recipeDetails.userId)")
+                                                    guard let currentUser = userSession.first else {
+                                                        return
+                                                    }
+                                                    
+                                                    guard let userId = Int(currentUser.userId) else {
+                                                        return
+                                                    }
+
+                                                    if following == true {
+                                                        print("following true")
+                                                        apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
+                                                            switch result {
+                                                                case .success(let message):
+                                                                    print("Success: \(message)")
+                                                                    following = false
+                                                                case .failure(let error):
+                                                                    print("Failed to unfollow user: \(error.localizedDescription)")
+                                                            }
+                                                        }
+                                                    } else if following == false {
+                                                        print("following false")
+                                                        apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId) { result in
+                                                            switch result {
+                                                                case .success(let message):
+                                                                    print("message \(message)")
+                                                                    following = true
+                                                                case .failure(let error):
+                                                                    print("Failed to follow user : \(error.localizedDescription)")
+                                                            }
+                                                        }
+                                                    }
                                                 } label: {
-                                                    Text("Follow")
-                                                        .foregroundStyle(Color("MyWhite"))
-                                                        .font(.custom("Urbanist-Semibold", size: 16))
-                                                        .frame(width: 86, height: 38)
-                                                        .background(Color("Primary900"))
-                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                    if following {
+                                                        Text("Following")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Semibold", size: 16))
+                                                            .frame(width: 108, height: 38)
+                                                            .overlay {
+                                                                RoundedRectangle(cornerRadius: .infinity)
+                                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                                            }
+                                                    } else {
+                                                        Text("Follow")
+                                                            .foregroundStyle(Color("MyWhite"))
+                                                            .font(.custom("Urbanist-Semibold", size: 16))
+                                                            .frame(width: 86, height: 38)
+                                                            .background(Color("Primary900"))
+                                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                    }
                                                 }
                                             }
                                         } else {
@@ -426,6 +470,21 @@ struct RecipeDetailsView: View {
                         }
                         
                         connectedUserId = userId
+                        
+                        apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId) { result in
+                            switch result {
+                                case .success(let isFollowing):
+                                    if isFollowing {
+                                        print("User is following the other user.")
+                                        following = true
+                                    } else {
+                                        print("User is not following the other user.")
+                                        following = false
+                                    }
+                                case .failure(let error):
+                                    print("Failed to check follow status: \(error.localizedDescription)")
+                            }
+                        }
                         
                         apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id) { result in
                             switch result {

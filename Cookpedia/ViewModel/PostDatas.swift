@@ -385,6 +385,54 @@ class APIPostRequest: ObservableObject {
             completion(.success(()))
         }.resume()
     }
+    
+    func followUser(followerId: Int, followedId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+        let endpoint = "/users/follow"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: Any] = [
+            "followerId": followerId,
+            "followedId": followedId
+        ]
+        
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(error))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201,
+                  let data = data else {
+                print("Invalid response: \(response.debugDescription)")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                let message = jsonResponse?["message"] as? String ?? "Followed successfully"
+                completion(.success(message))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
 }
 
 enum APIPostError: Error {

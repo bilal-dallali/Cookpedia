@@ -372,7 +372,7 @@ struct MyProfilePageView: View {
                                                             .resizable()
                                                             .frame(width: 24, height: 24)
                                                             .foregroundStyle(Color("Primary900"))
-                                                        Text("www.exampledomain.com")
+                                                        Text(website)
                                                             .tint(Color("Primary900"))
                                                             .font(.custom("Urbanist-Medium", size: 16))
                                                         Spacer()
