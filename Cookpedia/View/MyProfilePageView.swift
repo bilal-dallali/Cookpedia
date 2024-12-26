@@ -267,7 +267,7 @@ struct MyProfilePageView: View {
                                 }
                             } else if isAboutSelected {
                                 VStack(spacing: 16) {
-                                    HStack {
+                                    if !description.isEmpty {
                                         VStack(alignment: .leading, spacing: 8) {
                                             Text("Description")
                                                 .foregroundStyle(Color("MyWhite"))
@@ -276,86 +276,90 @@ struct MyProfilePageView: View {
                                                 .foregroundStyle(Color("MyWhite"))
                                                 .font(.custom("Urbanist-Medium", size: 16))
                                         }
-                                        Spacer()
+                                        Divider()
+                                            .overlay {
+                                                Rectangle()
+                                                    .foregroundStyle(Color("Dark4"))
+                                                    .frame(height: 1)
+                                            }
                                     }
-                                    Divider()
-                                        .overlay {
-                                            Rectangle()
-                                                .foregroundStyle(Color("Dark4"))
-                                                .frame(height: 1)
-                                        }
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        Text("Social Media")
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 18))
-                                        VStack(alignment: .leading, spacing: 14) {
-                                            if !youtube.isEmpty {
-                                                Link(destination: URL(string: "https://\(youtube)")!) {
-                                                    HStack(spacing: 12) {
-                                                        Image("Youtube")
-                                                            .resizable()
-                                                            .frame(width: 24, height: 24)
-                                                            .foregroundStyle(Color("Primary900"))
-                                                        Text("Youtube")
-                                                            .foregroundStyle(Color("Primary900"))
-                                                            .font(.custom("Urbanist-Medium", size: 16))
-                                                        Spacer()
+                                    
+                                    if !youtube.isEmpty || !facebook.isEmpty || !twitter.isEmpty || !instagram.isEmpty {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            Text("Social Media")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 18))
+                                            VStack(alignment: .leading, spacing: 14) {
+                                                if !youtube.isEmpty {
+                                                    Link(destination: URL(string: "https://\(youtube)")!) {
+                                                        HStack(spacing: 12) {
+                                                            Image("Youtube")
+                                                                .resizable()
+                                                                .frame(width: 24, height: 24)
+                                                                .foregroundStyle(Color("Primary900"))
+                                                            Text("Youtube")
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .font(.custom("Urbanist-Medium", size: 16))
+                                                            Spacer()
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            
-                                            if !facebook.isEmpty {
-                                                Link(destination: URL(string: "https://\(facebook)")!) {
-                                                    HStack(spacing: 12) {
-                                                        Image("Facebook")
-                                                            .resizable()
-                                                            .frame(width: 24, height: 24)
-                                                            .foregroundStyle(Color("Primary900"))
-                                                        Text("Facebook")
-                                                            .foregroundStyle(Color("Primary900"))
-                                                            .font(.custom("Urbanist-Medium", size: 16))
-                                                        Spacer()
+                                                
+                                                if !facebook.isEmpty {
+                                                    Link(destination: URL(string: "https://facebook.com/\(facebook)")!) {
+                                                        HStack(spacing: 12) {
+                                                            Image("Facebook")
+                                                                .resizable()
+                                                                .frame(width: 24, height: 24)
+                                                                .foregroundStyle(Color("Primary900"))
+                                                            Text("Facebook")
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .font(.custom("Urbanist-Medium", size: 16))
+                                                            Spacer()
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            
-                                            if !twitter.isEmpty {
-                                                Link(destination: URL(string: "https://\(twitter)")!) {
-                                                    HStack(spacing: 12) {
-                                                        Image("Twitter")
-                                                            .resizable()
-                                                            .frame(width: 24, height: 24)
-                                                            .foregroundStyle(Color("Primary900"))
-                                                        Text("Twitter")
-                                                            .foregroundStyle(Color("Primary900"))
-                                                            .font(.custom("Urbanist-Medium", size: 16))
-                                                        Spacer()
+                                                
+                                                if !twitter.isEmpty {
+                                                    Link(destination: URL(string: "https://x.com/\(twitter)")!) {
+                                                        HStack(spacing: 12) {
+                                                            Image("Twitter")
+                                                                .resizable()
+                                                                .frame(width: 24, height: 24)
+                                                                .foregroundStyle(Color("Primary900"))
+                                                            Text("Twitter")
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .font(.custom("Urbanist-Medium", size: 16))
+                                                            Spacer()
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            
-                                            if !instagram.isEmpty {
-                                                Link(destination: URL(string: "https://\(instagram)")!) {
-                                                    HStack(spacing: 12) {
-                                                        Image("Instagram")
-                                                            .resizable()
-                                                            .frame(width: 24, height: 24)
-                                                            .foregroundStyle(Color("Primary900"))
-                                                        Text("Instagram")
-                                                            .foregroundStyle(Color("Primary900"))
-                                                            .font(.custom("Urbanist-Medium", size: 16))
-                                                        Spacer()
+                                                
+                                                if !instagram.isEmpty {
+                                                    Link(destination: URL(string: "https://instagram.com/\(instagram)")!) {
+                                                        HStack(spacing: 12) {
+                                                            Image("Instagram")
+                                                                .resizable()
+                                                                .frame(width: 24, height: 24)
+                                                                .foregroundStyle(Color("Primary900"))
+                                                            Text("Instagram")
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .font(.custom("Urbanist-Medium", size: 16))
+                                                            Spacer()
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
+                                        Divider()
+                                            .overlay {
+                                                Rectangle()
+                                                    .foregroundStyle(Color("Dark4"))
+                                                    .frame(height: 1)
+                                            }
                                     }
-                                    Divider()
-                                        .overlay {
-                                            Rectangle()
-                                                .foregroundStyle(Color("Dark4"))
-                                                .frame(height: 1)
-                                        }
+                                    
+                                    
                                     VStack(alignment: .leading, spacing: 8) {
                                         Text("More Info")
                                             .foregroundStyle(Color("MyWhite"))
@@ -375,7 +379,7 @@ struct MyProfilePageView: View {
                                                     }
                                                 }
                                             }
-
+                                            
                                             HStack(spacing: 12) {
                                                 Image("Location - Regular - Light - Outline")
                                                     .resizable()
@@ -384,19 +388,6 @@ struct MyProfilePageView: View {
                                                 Text("\(city), \(country)")
                                                     .foregroundStyle(Color("Greyscale300"))
                                                     .font(.custom("Urbanist-Medium", size: 16))
-                                                Spacer()
-                                            }
-                                            
-                                            HStack(spacing: 12) {
-                                                Image("Info Square - Regular - Light - Outline")
-                                                    .resizable()
-                                                    .frame(width: 24, height: 24)
-                                                    .foregroundStyle(Color("Greyscale300"))
-                                                Text("Joined since Aug 24, 2020")
-                                                    .foregroundStyle(Color("Greyscale300"))
-                                                    .font(.custom("Urbanist-Medium", size: 16))
-                                                Text("\(createdAt)")
-                                                //2024-12-20 14:27:34
                                                 Spacer()
                                             }
                                         }
@@ -419,7 +410,7 @@ struct MyProfilePageView: View {
                         return
                     }
                     
-                    apiGetManager.getConnectedUserRecipes(userId: userId) { result in
+                    apiGetManager.getRecipesFromUserId(userId: userId) { result in
                         switch result {
                             case .success(let recipes):
                                 DispatchQueue.main.async {
@@ -437,15 +428,15 @@ struct MyProfilePageView: View {
                                 self.profilePictureUrl = user.profilePictureUrl ?? ""
                                 self.fullName = user.fullName
                                 self.username = user.username
-                                self.description = user.description
-                                self.youtube = user.youtubeUrl
-                                self.facebook = user.facebookUrl
-                                self.twitter = user.twitterUrl
-                                self.instagram = user.instagramUrl
-                                self.website = user.websiteUrl
+                                self.description = user.description ?? ""
+                                self.youtube = user.youtubeUrl ?? ""
+                                self.facebook = user.facebookUrl ?? ""
+                                self.twitter = user.twitterUrl ?? ""
+                                self.instagram = user.instagramUrl ?? ""
+                                self.website = user.websiteUrl ?? ""
                                 self.city = user.city
                                 self.country = user.country
-                                self.createdAt = createdAt
+                                //self.createdAt = createdAt
                             }
                         case .failure(let error):
                             print("Failed to fetch user data: \(error.localizedDescription)")

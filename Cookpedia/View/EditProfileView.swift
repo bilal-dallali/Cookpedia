@@ -422,12 +422,12 @@ struct EditProfileView: View {
                                 self.profilePictureUrl = user.profilePictureUrl ?? ""
                                 self.fullName = user.fullName
                                 self.username = user.username
-                                self.description = user.description
-                                self.youtube = user.youtubeUrl
-                                self.facebook = user.facebookUrl
-                                self.twitter = user.twitterUrl
-                                self.instagram = user.instagramUrl
-                                self.website = user.websiteUrl
+                                self.description = user.description ?? ""
+                                self.youtube = user.youtubeUrl ?? ""
+                                self.facebook = user.facebookUrl ?? ""
+                                self.twitter = user.twitterUrl ?? ""
+                                self.instagram = user.instagramUrl ?? ""
+                                self.website = user.websiteUrl ?? ""
                                 self.city = user.city
                                 self.country = user.country
                             }

@@ -426,7 +426,6 @@ struct RecipeDetailsView: View {
                         }
                         
                         connectedUserId = userId
-                        print("connected user id \(connectedUserId)")
                         
                         apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id) { result in
                             switch result {

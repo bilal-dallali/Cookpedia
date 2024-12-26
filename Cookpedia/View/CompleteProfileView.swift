@@ -83,6 +83,8 @@ struct CompleteProfileView: View {
                                     if let selectedImage {
                                         Image(uiImage: selectedImage)
                                             .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .clipped()
                                             .frame(width: 120, height: 120)
                                             .clipShape(.rect(cornerRadius: .infinity))
                                             .overlay(alignment: .trailingLastTextBaseline) {

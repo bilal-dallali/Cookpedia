@@ -17,7 +17,6 @@ struct MyRecipePageView: View {
     @State private var isPublishedSelected: Bool = false
     
     @State private var publishedRecipesCount: Int = 0
-    
     @State private var draftRecipesCount: Int = 0
     
     @Environment(\.modelContext) var context
@@ -145,7 +144,7 @@ struct MyRecipePageView: View {
                                     return
                                 }
                                 
-                                apiGetManager.getConnectedPublishedUserRecipes(userId: userId, published: false) { result in
+                                apiGetManager.getPublishedRecipesFromUserId(userId: userId, published: false) { result in
                                     switch result {
                                         case .success(let recipes):
                                             DispatchQueue.main.async {
@@ -180,7 +179,7 @@ struct MyRecipePageView: View {
                                     return
                                 }
                                 
-                                apiGetManager.getConnectedPublishedUserRecipes(userId: userId, published: true) { result in
+                                apiGetManager.getPublishedRecipesFromUserId(userId: userId, published: true) { result in
                                     switch result {
                                         case .success(let recipes):
                                             DispatchQueue.main.async {

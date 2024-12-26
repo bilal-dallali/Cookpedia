@@ -58,13 +58,12 @@ struct User: Decodable {
     let country: String
     let city: String
     let cookingLevel: String
-    let description: String
-    let youtubeUrl: String
-    let facebookUrl: String
-    let twitterUrl: String
-    let instagramUrl: String
-    let websiteUrl: String
-    let createdAt: String
+    let description: String?
+    let youtubeUrl: String?
+    let facebookUrl: String?
+    let twitterUrl: String?
+    let instagramUrl: String?
+    let websiteUrl: String?
 }
 
 struct EditUser: Decodable {

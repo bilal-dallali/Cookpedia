@@ -21,11 +21,13 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
+                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
+                print("Invalid response: \(response.debugDescription)")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -37,11 +39,12 @@ class APIGetRequest: ObservableObject {
                 completion(.success(user))
             } catch {
                 completion(.failure(APIGetError.decodingError))
+                print("decoding error: \(error.localizedDescription)")
             }
         }.resume()
     }
     
-    func getConnectedUserRecipes(userId: Int, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {
+    func getRecipesFromUserId(userId: Int, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {
         let endpoint = "/recipes/fetch-all-recipes-from-user/\(userId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))
@@ -111,7 +114,7 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
-    func getConnectedPublishedUserRecipes(userId: Int, published: Bool, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {
+    func getPublishedRecipesFromUserId(userId: Int, published: Bool, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {
         let publishedValue = published ? 1 : 0
         let endpoint = "/recipes/fetch-user-published-recipes/\(userId)/\(publishedValue)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
