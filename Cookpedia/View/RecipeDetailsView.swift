@@ -114,7 +114,7 @@ struct RecipeDetailsView: View {
                                             }
                                         
                                         if connectedUserId != recipeDetails.userId {
-                                            HStack(spacing: 20) {
+                                            HStack {
                                                 NavigationLink {
                                                     ProfilePageView(userId: recipeDetails.userId)
                                                 } label: {
@@ -144,8 +144,6 @@ struct RecipeDetailsView: View {
                                                 }
                                                 Spacer()
                                                 Button {
-                                                    print("Follow")
-                                                    print("Follow profile id: \(recipeDetails.userId)")
                                                     guard let currentUser = userSession.first else {
                                                         return
                                                     }
@@ -471,21 +469,6 @@ struct RecipeDetailsView: View {
                         
                         connectedUserId = userId
                         
-                        apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId) { result in
-                            switch result {
-                                case .success(let isFollowing):
-                                    if isFollowing {
-                                        print("User is following the other user.")
-                                        following = true
-                                    } else {
-                                        print("User is not following the other user.")
-                                        following = false
-                                    }
-                                case .failure(let error):
-                                    print("Failed to check follow status: \(error.localizedDescription)")
-                            }
-                        }
-                        
                         apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id) { result in
                             switch result {
                                 case .success(let jsonResult):
@@ -502,6 +485,21 @@ struct RecipeDetailsView: View {
                                 switch result {
                                     case .success(let details):
                                         self.recipeDetails = details
+                                        
+                                        apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId) { result in
+                                            switch result {
+                                                case .success(let isFollowing):
+                                                    if isFollowing {
+                                                        print("User is following the other user.")
+                                                        following = true
+                                                    } else {
+                                                        print("User is not following the other user.")
+                                                        following = false
+                                                    }
+                                                case .failure(let error):
+                                                    print("Failed to check follow status: \(error.localizedDescription)")
+                                            }
+                                        }
                                     case .failure(let error):
                                         print("error \(error.localizedDescription)")
                                 }

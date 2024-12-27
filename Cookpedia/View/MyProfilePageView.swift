@@ -23,6 +23,8 @@ struct MyProfilePageView: View {
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiGetManager = APIGetRequest()
     
+    @State private var followingCount: Int = 0
+    @State private var followersCount: Int = 0
     @State private var profilePictureUrl: String = ""
     @State private var fullName: String = "unkwnown"
     @State private var username: String = "unknown"
@@ -152,7 +154,7 @@ struct MyProfilePageView: View {
                                         //
                                     } label: {
                                         VStack(spacing: 4) {
-                                            Text("104")
+                                            Text("\(followingCount)")
                                                 .foregroundStyle(Color("MyWhite"))
                                                 .font(.custom("Urbanist-Bold", size: 24))
                                             Text("following")
@@ -171,7 +173,7 @@ struct MyProfilePageView: View {
                                         //
                                     } label: {
                                         VStack(spacing: 4) {
-                                            Text("5,278")
+                                            Text("\(followersCount)")
                                                 .foregroundStyle(Color("MyWhite"))
                                                 .font(.custom("Urbanist-Bold", size: 24))
                                             Text("followers")
@@ -440,6 +442,28 @@ struct MyProfilePageView: View {
                             }
                         case .failure(let error):
                             print("Failed to fetch user data: \(error.localizedDescription)")
+                        }
+                    }
+                    
+                    apiGetManager.getFollowingCount(userId: userId) { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                                case .success(let count):
+                                    self.followingCount = count
+                                case .failure(let error):
+                                    print("Failed to fetch following count: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+                    
+                    apiGetManager.getFollowersCount(userId: userId) { result in
+                        DispatchQueue.main.async {
+                            switch result {
+                                case .success(let count):
+                                    self.followersCount = count
+                                case .failure(let error):
+                                    print("Failed to fetch followers count: \(error.localizedDescription)")
+                            }
                         }
                     }
                 }

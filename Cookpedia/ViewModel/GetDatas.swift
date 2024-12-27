@@ -388,6 +388,80 @@ class APIGetRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func getFollowingCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+        let endpoint = "/users/\(userId)/following"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
+                print("Invalid response: \(response.debugDescription)")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                if let followingCount = jsonResult?["followingCount"] as? Int {
+                    completion(.success(followingCount))
+                } else {
+                    completion(.failure(APIGetError.decodingError))
+                }
+            } catch {
+                print("Decoding error: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    func getFollowersCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+        let endpoint = "/users/\(userId)/followers"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
+                print("Invalid response: \(response.debugDescription)")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                if let followersCount = jsonResult?["followersCount"] as? Int {
+                    completion(.success(followersCount))
+                } else {
+                    completion(.failure(APIGetError.decodingError))
+                }
+            } catch {
+                print("Decoding error: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+        }.resume()
+    }
 }
 
 enum APIGetError: Error {
