@@ -74,8 +74,8 @@ struct FollowersPageView: View {
                     if isFollowingSelected {
                         VStack(spacing: 20) {
                             ForEach(followingUser, id: \.id) { user in
-                                Button {
-                                    //
+                                NavigationLink {
+                                    ProfilePageView(userId: user.id)
                                 } label: {
                                     UserDetailsView(user: user)
                                 }
@@ -84,8 +84,8 @@ struct FollowersPageView: View {
                     } else if isFollowersSelected {
                         VStack(spacing: 20) {
                             ForEach(followerUser, id: \.id) { user in
-                                Button {
-                                    //
+                                NavigationLink {
+                                    ProfilePageView(userId: user.id)
                                 } label: {
                                     UserDetailsView(user: user)
                                 }
