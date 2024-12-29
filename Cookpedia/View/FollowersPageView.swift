@@ -99,11 +99,9 @@ struct FollowersPageView: View {
             .padding(.horizontal, 24)
             .background(Color("Dark1"))
             .onAppear {
-                
                 apiGetManager.getFollowers(userId: userId) { result in
                     switch result {
                         case .success(let followers):
-                            print("Followers: \(followers)")
                             DispatchQueue.main.async {
                                 self.followerUser = followers
                             }
@@ -115,7 +113,6 @@ struct FollowersPageView: View {
                 apiGetManager.getFollowing(userId: userId) { result in
                     switch result {
                         case .success(let following):
-                            print("Following: \(following)")
                             DispatchQueue.main.async {
                                 self.followingUser = following
                             }

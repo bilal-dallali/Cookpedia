@@ -147,8 +147,8 @@ struct ProfilePageView: View {
                                         .foregroundStyle(Color("Dark4"))
                                         .frame(width: 1)
                                 }
-                            Button {
-                                //
+                            NavigationLink {
+                                FollowersPageView(userId: userId, isFollowingSelected: true, isFollowersSelected: false)
                             } label: {
                                 VStack(spacing: 4) {
                                     Text("\(followingCount)")
@@ -166,8 +166,8 @@ struct ProfilePageView: View {
                                         .foregroundStyle(Color("Dark4"))
                                         .frame(width: 1)
                                 }
-                            Button {
-                                //
+                            NavigationLink {
+                                FollowersPageView(userId: userId, isFollowingSelected: false, isFollowersSelected: true)
                             } label: {
                                 VStack(spacing: 4) {
                                     Text("\(followersCount)")
