@@ -132,19 +132,15 @@ struct ProfilePageView: View {
                             }
                         
                         HStack(spacing: 16) {
-                            Button {
-                                //
-                            } label: {
-                                VStack(spacing: 4) {
-                                    Text("\(publishedRecipes.count)")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Bold", size: 24))
-                                    Text("recipes")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Medium", size: 12))
-                                }
-                                .frame(maxWidth: .infinity)
+                            VStack(spacing: 4) {
+                                Text("\(publishedRecipes.count)")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 24))
+                                Text("recipes")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Medium", size: 12))
                             }
+                            .frame(maxWidth: .infinity)
                             Divider()
                                 .overlay {
                                     Rectangle()
