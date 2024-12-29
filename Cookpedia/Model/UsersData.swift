@@ -66,6 +66,13 @@ struct User: Decodable {
     let website: String?
 }
 
+struct UserDetails: Decodable {
+    let id: Int
+    let username: String
+    let fullName: String
+    let profilePictureUrl: String?
+}
+
 struct EditUser: Decodable {
     let id: Int
     let fullName: String

@@ -462,6 +462,76 @@ class APIGetRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func getFollowers(userId: Int, completion: @escaping (Result<[UserDetails], Error>) -> Void) {
+        let endpoint = "/users/followers/\(userId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let followers = try decoder.decode([UserDetails].self, from: data)
+                completion(.success(followers))
+            } catch {
+                print("Decoding error: \(error.localizedDescription)")
+                completion(.failure(APIGetError.decodingError))
+            }
+        }.resume()
+    }
+    
+    func getFollowing(userId: Int, completion: @escaping (Result<[UserDetails], Error>) -> Void) {
+        let endpoint = "/users/following/\(userId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let following = try decoder.decode([UserDetails].self, from: data)
+                completion(.success(following))
+            } catch {
+                print("Decoding error: \(error.localizedDescription)")
+                completion(.failure(APIGetError.decodingError))
+            }
+        }.resume()
+    }
 }
 
 enum APIGetError: Error {

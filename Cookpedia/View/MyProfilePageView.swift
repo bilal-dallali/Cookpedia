@@ -22,6 +22,7 @@ struct MyProfilePageView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiGetManager = APIGetRequest()
+    @State private var connectedUserId: Int = 0
     
     @State private var followingCount: Int = 0
     @State private var followersCount: Int = 0
@@ -150,8 +151,8 @@ struct MyProfilePageView: View {
                                                 .foregroundStyle(Color("Dark4"))
                                                 .frame(width: 1)
                                         }
-                                    Button {
-                                        //
+                                    NavigationLink {
+                                        FollowersPageView(userId: connectedUserId, isFollowingSelected: true, isFollowersSelected: false)
                                     } label: {
                                         VStack(spacing: 4) {
                                             Text("\(followingCount)")
@@ -169,8 +170,8 @@ struct MyProfilePageView: View {
                                                 .foregroundStyle(Color("Dark4"))
                                                 .frame(width: 1)
                                         }
-                                    Button {
-                                        //
+                                    NavigationLink {
+                                        FollowersPageView(userId: connectedUserId, isFollowingSelected: false, isFollowersSelected: true)
                                     } label: {
                                         VStack(spacing: 4) {
                                             Text("\(followersCount)")
@@ -411,6 +412,8 @@ struct MyProfilePageView: View {
                     guard let userId = Int(currentUser.userId) else {
                         return
                     }
+                    
+                    connectedUserId = userId
                     
                     apiGetManager.getRecipesFromUserId(userId: userId) { result in
                         switch result {
