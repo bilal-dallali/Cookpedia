@@ -624,6 +624,10 @@ struct CreateRecipeView: View {
                                         self.cookTime = details.cookTime
                                         self.serves = details.serves
                                         self.origin = details.origin
+                                        self.ingredients = details.ingredients.map { $0.ingredient }
+                                        self.instructions = details.instructions.map {
+                                            Instruction(text: $0.instruction, instructionPictureUrl1: $0.instructionPictureUrl1, instructionPictureUrl2: $0.instructionPictureUrl2, instructionPictureUrl3: $0.instructionPictureUrl3)
+                                        }
                                     case .failure(let error):
                                         print("error \(error.localizedDescription)")
                                 }
