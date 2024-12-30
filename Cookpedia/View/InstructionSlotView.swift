@@ -48,6 +48,7 @@ struct InstructionSlotView: View {
                     .keyboardType(.default)
                     .foregroundStyle(Color("MyWhite"))
                     .font(.custom("Urbanist-Semibold", size: 16))
+                    .multilineTextAlignment(.leading)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 18)
                     Spacer()
@@ -174,10 +175,10 @@ struct InstructionSlotView: View {
                     // Generate unique name and assign it
                     let uniqueFileName = generateUniqueImageName()
                     switch selectedIndex {
-                    case 0: instructionPictureUrl1 = "instruction_picture_url_1_\(uniqueFileName)"
-                    case 1: instructionPictureUrl2 = "instruction_picture_url_2_\(uniqueFileName)"
-                    case 2: instructionPictureUrl3 = "instruction_picture_url_3_\(uniqueFileName)"
-                    default: break
+                        case 0: instructionPictureUrl1 = "instruction_picture_url_1_\(uniqueFileName)"
+                        case 1: instructionPictureUrl2 = "instruction_picture_url_2_\(uniqueFileName)"
+                        case 2: instructionPictureUrl3 = "instruction_picture_url_3_\(uniqueFileName)"
+                        default: break
                     }
                 }
             }

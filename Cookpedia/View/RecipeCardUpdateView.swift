@@ -14,6 +14,7 @@ struct RecipeCardUpdateView: View {
     var apiGetManager = APIGetRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    @State private var isUpdateRecipeSelected: Bool = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -35,6 +36,7 @@ struct RecipeCardUpdateView: View {
                         Spacer()
                         Button {
                             //print("update recipe \(recipe.id)")
+                            isUpdateRecipeSelected = true
                         } label: {
                             Circle()
                                 .foregroundStyle(Color("Primary900"))
@@ -82,6 +84,9 @@ struct RecipeCardUpdateView: View {
                     return
                 }
                 
+            }
+            .fullScreenCover(isPresented: $isUpdateRecipeSelected) {
+                CreateRecipeView(isCreateRecipeSelected: $isUpdateRecipeSelected, mode: .edit(existingRecipe: recipe.id))
             }
         }
     }

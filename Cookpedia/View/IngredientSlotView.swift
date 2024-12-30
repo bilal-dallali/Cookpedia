@@ -36,6 +36,7 @@ struct IngredientSlotView: View {
             .keyboardType(.default)
             .foregroundStyle(Color("MyWhite"))
             .font(.custom("Urbanist-Semibold", size: 16))
+            .multilineTextAlignment(.leading)
             .padding(.horizontal, 20)
             .padding(.vertical, 18)
             .frame(minHeight: 58)

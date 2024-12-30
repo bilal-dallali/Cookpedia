@@ -10,6 +10,10 @@ import Foundation
 import SwiftData
 
 struct CreateRecipeView: View {
+    enum Mode {
+        case create
+        case edit(existingRecipe: Int)
+    }
     
     @State private var title = ""
     @State private var description = ""
@@ -26,12 +30,10 @@ struct CreateRecipeView: View {
     @State private var isPublishedRecipe: Bool = false
     @State private var isSavedRecipe: Bool = false
     
-    @Binding var isHomeSelected: Bool
-    @Binding var isDiscoverSelected: Bool
-    @Binding var isMyRecipeSelected: Bool
-    @Binding var isMyProfileSelected: Bool
-    @Binding var isDraftSelected: Bool
-    @Binding var isPublishedSelected: Bool
+//    @Binding var isHomeSelected: Bool
+//    @Binding var isDiscoverSelected: Bool
+//    @Binding var isMyRecipeSelected: Bool
+//    @Binding var isMyProfileSelected: Bool
     
     @State var ingredients: [String] = Array(repeating: "", count: 7)
     @State private var ingredientCounter: Int = 7
@@ -65,6 +67,52 @@ struct CreateRecipeView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiPostManager = APIPostRequest()
+    var apiGetManager = APIGetRequest()
+    
+    let mode: Mode
+    
+    // Initializer
+//    init(mode: Mode, isHomeSelected: Binding<Bool>, isDiscoverSelected: Binding<Bool>, isMyRecipeSelected: Binding<Bool>, isMyProfileSelected: Binding<Bool>, isCreateRecipeSelected: Binding<Bool>) {
+//        self.mode = mode
+//        
+//        _isHomeSelected = isHomeSelected
+//        _isDiscoverSelected = isDiscoverSelected
+//        _isMyRecipeSelected = isMyRecipeSelected
+//        _isMyProfileSelected = isMyProfileSelected
+//        _isCreateRecipeSelected = isCreateRecipeSelected
+//        
+//        switch mode {
+//            case .create:
+//                // Initialiser des valeurs par défaut pour le mode `create`
+//                _title = State(initialValue: "")
+//                _description = State(initialValue: "")
+//                _cookTime = State(initialValue: "")
+//                _serves = State(initialValue: "")
+//                _origin = State(initialValue: "")
+//                _ingredients = State(initialValue: Array(repeating: "", count: 7))
+//                _instructions = State(initialValue: Array(repeating: Instruction(), count: 7))
+//                _recipeCoverPictureUrl1 = State(initialValue: "")
+//                _recipeCoverPictureUrl2 = State(initialValue: "")
+//            case .edit(let existingRecipe):
+//                // Charger les valeurs existantes pour le mode `edit`
+//                _title = State(initialValue: existingRecipe.title)
+//                _description = State(initialValue: existingRecipe.description)
+//                _cookTime = State(initialValue: existingRecipe.cookTime)
+//                _serves = State(initialValue: existingRecipe.serves)
+//                _origin = State(initialValue: existingRecipe.origin)
+//                _ingredients = State(initialValue: existingRecipe.ingredients.map { $0.ingredient })
+//                _instructions = State(initialValue: existingRecipe.instructions.map {
+//                    Instruction(
+//                        text: $0.instruction,
+//                        instructionPictureUrl1: $0.instructionPictureUrl1,
+//                        instructionPictureUrl2: $0.instructionPictureUrl2,
+//                        instructionPictureUrl3: $0.instructionPictureUrl3
+//                    )
+//                })
+//                _recipeCoverPictureUrl1 = State(initialValue: existingRecipe.recipeCoverPictureUrl1)
+//                _recipeCoverPictureUrl2 = State(initialValue: existingRecipe.recipeCoverPictureUrl2)
+//        }
+//    }
     
     var body: some View {
         ZStack {
@@ -144,10 +192,6 @@ struct CreateRecipeView: View {
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                     isSavedRecipe = false
                                                     isCreateRecipeSelected = false
-                                                    isHomeSelected = false
-                                                    isDiscoverSelected = false
-                                                    isMyRecipeSelected = true
-                                                    isMyProfileSelected = false
                                                 }
                                             case .failure(let error):
                                                 print("Error uploading recipe: \(error)")
@@ -219,10 +263,6 @@ struct CreateRecipeView: View {
                                                 DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                                                     isPublishedRecipe = false
                                                     isCreateRecipeSelected = false
-                                                    isHomeSelected = false
-                                                    isDiscoverSelected = false
-                                                    isMyRecipeSelected = true
-                                                    isMyProfileSelected = false
                                                 }
                                             case .failure(let error):
                                                 print("Error uploading recipe: \(error)")
@@ -404,11 +444,12 @@ struct CreateRecipeView: View {
                                 Text("Recipe Title")
                                     .foregroundStyle(Color("Greyscale500"))
                                     .font(.custom("Urbanist-Regular", size: 16))
-                                    
+                                    .multilineTextAlignment(.leading)
                             }
                             .keyboardType(.default)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Semibold", size: 16))
+                            .multilineTextAlignment(.leading)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 18)
                             .frame(minHeight: 58)
@@ -429,6 +470,7 @@ struct CreateRecipeView: View {
                                 .keyboardType(.default)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Semibold", size: 16))
+                                .multilineTextAlignment(.leading)
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 18)
                                 Spacer()
@@ -452,6 +494,7 @@ struct CreateRecipeView: View {
                             .keyboardType(.numberPad)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Semibold", size: 16))
+                            .multilineTextAlignment(.leading)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 18)
                             .frame(minHeight: 58)
@@ -472,6 +515,7 @@ struct CreateRecipeView: View {
                             .keyboardType(.numberPad)
                             .foregroundStyle(Color("MyWhite"))
                             .font(.custom("Urbanist-Semibold", size: 16))
+                            .multilineTextAlignment(.leading)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 18)
                             .frame(minHeight: 58)
@@ -493,6 +537,7 @@ struct CreateRecipeView: View {
                                 .keyboardType(.default)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Semibold", size: 16))
+                                .multilineTextAlignment(.leading)
                                 .padding(.vertical, 18)
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
                                 Image("Location - Regular - Light - Outline")
@@ -555,7 +600,7 @@ struct CreateRecipeView: View {
                             Text("Instructions:")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 24))
-                            InstructionListView(instructions: $instructions, instructionCounter: $ingredientCounter)
+                            InstructionListView(instructions: $instructions, instructionCounter: $instructionCounter)
                         }
                     }
                     .padding(.top, 16)
@@ -567,6 +612,24 @@ struct CreateRecipeView: View {
                 .blur(radius: isSavedRecipe || isPublishedRecipe ? 4 : 0)
                 .onTapGesture {
                     dismissKeyboard()
+                }
+                .onAppear {
+                    if case .edit(let existingRecipe) = mode {
+                        apiGetManager.getRecipeDetails(recipeId: existingRecipe) { result in
+                            DispatchQueue.main.async {
+                                switch result {
+                                    case .success(let details):
+                                        self.title = details.title
+                                        self.description = details.description
+                                        self.cookTime = details.cookTime
+                                        self.serves = details.serves
+                                        self.origin = details.origin
+                                    case .failure(let error):
+                                        print("error \(error.localizedDescription)")
+                                }
+                            }
+                        }
+                    }
                 }
             }
             if isSavedRecipe {
@@ -591,5 +654,11 @@ extension Array {
 }
 
 #Preview {
-    CreateRecipeView(isHomeSelected: .constant(false), isDiscoverSelected: .constant(false), isMyRecipeSelected: .constant(true), isMyProfileSelected: .constant(false), isDraftSelected: .constant(false), isPublishedSelected: .constant(false), isCreateRecipeSelected: .constant(true))
+    Group {
+        CreateRecipeView(isCreateRecipeSelected: .constant(true), mode: .create)
+            .previewDisplayName("Create Mode")
+        
+        CreateRecipeView(isCreateRecipeSelected: .constant(true), mode: .edit(existingRecipe: 1))
+            .previewDisplayName("Edit Mode")
+    }
 }
