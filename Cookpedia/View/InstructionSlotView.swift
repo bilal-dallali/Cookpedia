@@ -62,13 +62,31 @@ struct InstructionSlotView: View {
                         isImagePickerPresented = true
                     } label: {
                         VStack(spacing: 8) {
-                            Image("Image - Regular - Bold")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(Color("Greyscale500"))
-                            Text("Add image")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 10))
+                            if images.indices.contains(0) {
+                                Image(uiImage: images[0])
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 72)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } else if let url = instructionPictureUrl1 {
+                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(url).jpg")) { image in
+                                    image.resizable()
+                                        .scaledToFill()
+                                        .frame(height: 72)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                } placeholder: {
+                                    ProgressView()
+                                        .frame(height: 72)
+                                }
+                            } else {
+                                Image("Image - Regular - Bold")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundStyle(Color("Greyscale500"))
+                                Text("Add image")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 10))
+                            }
                         }
                         .frame(height: 72)
                         .frame(maxWidth: .infinity)
@@ -93,13 +111,31 @@ struct InstructionSlotView: View {
                         isImagePickerPresented = true
                     } label: {
                         VStack(spacing: 8) {
-                            Image("Image - Regular - Bold")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(Color("Greyscale500"))
-                            Text("Add image")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 10))
+                            if images.indices.contains(1) {
+                                Image(uiImage: images[1])
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 72)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } else if let url = instructionPictureUrl2 {
+                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(url).jpg")) { image in
+                                    image.resizable()
+                                        .scaledToFill()
+                                        .frame(height: 72)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                } placeholder: {
+                                    ProgressView()
+                                        .frame(height: 72)
+                                }
+                            } else {
+                                Image("Image - Regular - Bold")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundStyle(Color("Greyscale500"))
+                                Text("Add image")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 10))
+                            }
                         }
                         .frame(height: 72)
                         .frame(maxWidth: .infinity)
@@ -124,13 +160,31 @@ struct InstructionSlotView: View {
                         isImagePickerPresented = true
                     } label: {
                         VStack(spacing: 8) {
-                            Image("Image - Regular - Bold")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(Color("Greyscale500"))
-                            Text("Add image")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 10))
+                            if images.indices.contains(2) {
+                                Image(uiImage: images[2])
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 72)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } else if let url = instructionPictureUrl3 {
+                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(url).jpg")) { image in
+                                    image.resizable()
+                                        .scaledToFill()
+                                        .frame(height: 72)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                } placeholder: {
+                                    ProgressView()
+                                        .frame(height: 72)
+                                }
+                            } else {
+                                Image("Image - Regular - Bold")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundStyle(Color("Greyscale500"))
+                                Text("Add image")
+                                    .foregroundStyle(Color("Greyscale500"))
+                                    .font(.custom("Urbanist-Regular", size: 10))
+                            }
                         }
                         .frame(height: 72)
                         .frame(maxWidth: .infinity)

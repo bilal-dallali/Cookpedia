@@ -628,6 +628,7 @@ struct CreateRecipeView: View {
                                         self.instructions = details.instructions.map {
                                             Instruction(text: $0.instruction, instructionPictureUrl1: $0.instructionPictureUrl1, instructionPictureUrl2: $0.instructionPictureUrl2, instructionPictureUrl3: $0.instructionPictureUrl3)
                                         }
+                                        self.loadInstructionImages(from: self.instructions)
                                     case .failure(let error):
                                         print("error \(error.localizedDescription)")
                                 }
@@ -642,6 +643,32 @@ struct CreateRecipeView: View {
                 ModalView(title: "Recipe Successfully published", message: "Your recipe has been published. Anyone can see it!")
             }
         }
+    }
+    
+    func loadInstructionImages(from instructions: [CreateRecipeView.Instruction]) {
+        for index in instructions.indices {
+            var instruction = instructions[index]
+            
+            if let url1 = instruction.instructionPictureUrl1, let image1 = loadImage(from: url1) {
+                instruction.images.append(image1)
+            }
+            if let url2 = instruction.instructionPictureUrl2, let image2 = loadImage(from: url2) {
+                instruction.images.append(image2)
+            }
+            if let url3 = instruction.instructionPictureUrl3, let image3 = loadImage(from: url3) {
+                instruction.images.append(image3)
+            }
+            
+            self.instructions[index] = instruction
+        }
+    }
+    
+    private func loadImage(from urlString: String) -> UIImage? {
+        guard let url = URL(string: urlString),
+              let data = try? Data(contentsOf: url) else {
+            return nil
+        }
+        return UIImage(data: data)
     }
 }
 
