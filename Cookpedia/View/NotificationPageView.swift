@@ -97,7 +97,6 @@ struct NotificationPageView: View {
                 .padding(.vertical, 140)
             }
             .scrollIndicators(.hidden)
-            
         }
         .padding(.horizontal, 24)
         .ignoresSafeArea(edges: .bottom)

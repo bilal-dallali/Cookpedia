@@ -148,9 +148,6 @@ struct CreateRecipeView: View {
                                                     isDiscoverSelected = false
                                                     isMyRecipeSelected = true
                                                     isMyProfileSelected = false
-                                                    
-                                                    isDraftSelected = true
-                                                    isPublishedSelected = false
                                                 }
                                             case .failure(let error):
                                                 print("Error uploading recipe: \(error)")
@@ -159,11 +156,13 @@ struct CreateRecipeView: View {
                                         
                                     } label: {
                                         Text("Save")
-                                            .foregroundStyle(Color("MyWhite"))
+                                            .foregroundStyle(Color("Primary900"))
                                             .font(.custom("Urbanist-Semibold", size: 16))
                                             .frame(width: 77, height: 38)
-                                            .background(Color("Primary900"))
-                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: .infinity)
+                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                            }
                                     }
                                     Button {
                                         let encoder = JSONEncoder()
@@ -202,7 +201,6 @@ struct CreateRecipeView: View {
                                             instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
                                         }
                                         
-                                        
                                         guard let currentUser = userSession.first else {
                                             return
                                         }
@@ -225,9 +223,6 @@ struct CreateRecipeView: View {
                                                     isDiscoverSelected = false
                                                     isMyRecipeSelected = true
                                                     isMyProfileSelected = false
-                                                    
-                                                    isDraftSelected = false
-                                                    isPublishedSelected = true
                                                 }
                                             case .failure(let error):
                                                 print("Error uploading recipe: \(error)")
@@ -236,13 +231,11 @@ struct CreateRecipeView: View {
                                         
                                     } label: {
                                         Text("Publish")
-                                            .foregroundStyle(Color("Primary900"))
+                                            .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Semibold", size: 16))
                                             .frame(width: 91, height: 38)
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: .infinity)
-                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
-                                            }
+                                            .background(Color("Primary900"))
+                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     }
                                 } else {
                                     Button {
@@ -252,11 +245,13 @@ struct CreateRecipeView: View {
                                         }
                                     } label: {
                                         Text("Save")
-                                            .foregroundStyle(Color("MyWhite"))
+                                            .foregroundStyle(Color("Primary900"))
                                             .font(.custom("Urbanist-Semibold", size: 16))
                                             .frame(width: 77, height: 38)
-                                            .background(Color("Primary900"))
-                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: .infinity)
+                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                            }
                                     }
                                     Button {
                                         fieldsNotFilled = true
@@ -265,13 +260,11 @@ struct CreateRecipeView: View {
                                         }
                                     } label: {
                                         Text("Publish")
-                                            .foregroundStyle(Color("Primary900"))
+                                            .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Semibold", size: 16))
                                             .frame(width: 91, height: 38)
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: .infinity)
-                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
-                                            }
+                                            .background(Color("Primary900"))
+                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     }
                                 }
                                 Button {
