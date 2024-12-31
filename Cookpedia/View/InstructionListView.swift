@@ -14,38 +14,36 @@ struct InstructionListView: View {
     @Binding var instructionCounter: Int
     
     var body: some View {
-        VStack(spacing: 24) {
-            VStack(alignment: .leading, spacing: 16) {
-                ForEach(instructions.indices, id: \.self) { index in
-                    InstructionSlotView(
-                        instruction: $instructions[index].text,
-                        images: $instructions[index].images,
-                        instructionPictureUrl1: $instructions[index].instructionPictureUrl1,
-                        instructionPictureUrl2: $instructions[index].instructionPictureUrl2,
-                        instructionPictureUrl3: $instructions[index].instructionPictureUrl3,
-                        onDelete: {
-                            instructions.remove(at: index)
-                        },
-                        number: index + 1
-                    )
+        VStack(alignment: .leading, spacing: 24) {
+            ForEach(instructions.indices, id: \.self) { index in
+                InstructionSlotView(
+                    instruction: $instructions[index].text,
+                    images: $instructions[index].images,
+                    instructionPictureUrl1: $instructions[index].instructionPictureUrl1,
+                    instructionPictureUrl2: $instructions[index].instructionPictureUrl2,
+                    instructionPictureUrl3: $instructions[index].instructionPictureUrl3,
+                    onDelete: {
+                        instructions.remove(at: index)
+                    },
+                    number: index + 1
+                )
+            }
+            Button {
+                instructions.append(CreateRecipeView.Instruction())
+            } label: {
+                HStack {
+                    Image("Icon=plus, Component=Additional Icons")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .foregroundStyle(Color("MyWhite"))
+                    Text("Add Instructions")
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 16))
                 }
-                Button {
-                    instructions.append(CreateRecipeView.Instruction())
-                } label: {
-                    HStack {
-                        Image("Icon=plus, Component=Additional Icons")
-                            .resizable()
-                            .frame(width: 20, height: 20)
-                            .foregroundStyle(Color("MyWhite"))
-                        Text("Add Instructions")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                    }
-                    .frame(height: 58)
-                    .frame(maxWidth: .infinity)
-                    .background(Color("Dark4"))
-                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                }
+                .frame(height: 58)
+                .frame(maxWidth: .infinity)
+                .background(Color("Dark4"))
+                .clipShape(RoundedRectangle(cornerRadius: .infinity))
             }
         }
     }

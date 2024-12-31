@@ -619,6 +619,8 @@ struct CreateRecipeView: View {
                             DispatchQueue.main.async {
                                 switch result {
                                     case .success(let details):
+                                        self.recipeCoverPictureUrl1 = recipeCoverPictureUrl1
+                                        self.recipeCoverPictureUrl2 = recipeCoverPictureUrl2
                                         self.title = details.title
                                         self.description = details.description
                                         self.cookTime = details.cookTime
@@ -687,9 +689,9 @@ extension Array {
 #Preview {
     Group {
         CreateRecipeView(isCreateRecipeSelected: .constant(true), mode: .create)
-            .previewDisplayName("Create Mode")
+            //.previewDisplayName("Create Mode")
         
         CreateRecipeView(isCreateRecipeSelected: .constant(true), mode: .edit(existingRecipe: 1))
-            .previewDisplayName("Edit Mode")
+            //.previewDisplayName("Edit Mode")
     }
 }

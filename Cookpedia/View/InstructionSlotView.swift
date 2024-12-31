@@ -61,19 +61,29 @@ struct InstructionSlotView: View {
                         selectedImageIndex = 0
                         isImagePickerPresented = true
                     } label: {
-                        VStack(spacing: 8) {
-                            Image("Image - Regular - Bold")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(Color("Greyscale500"))
-                            Text("Add image")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 10))
+                        GeometryReader { geometry in
+                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instructionPictureUrl1 ?? "").jpg")) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: geometry.size.width, height: 72)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } placeholder: {
+                                VStack(spacing: 8) {
+                                    Image("Image - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color("Greyscale500"))
+                                    Text("Add image")
+                                        .foregroundStyle(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Regular", size: 10))
+                                }
+                                .frame(height: 72)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
                         }
-                        .frame(height: 72)
-                        .frame(maxWidth: .infinity)
-                        .background(Color("Dark2"))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
                         .overlay {
                             if images.indices.contains(0) {
                                 GeometryReader { geometry in
@@ -83,18 +93,6 @@ struct InstructionSlotView: View {
                                         .frame(width: geometry.size.width, height: 72)
                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
-                            } else if let url = instructionPictureUrl1 {
-                                GeometryReader { geometry in
-                                    AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(url).jpg")) { image in
-                                        image.resizable()
-                                            .scaledToFill()
-                                            .frame(width: geometry.size.width, height: 72)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(height: 72)
-                                    }
-                                }
                             }
                         }
                     }
@@ -103,19 +101,29 @@ struct InstructionSlotView: View {
                         selectedImageIndex = 1
                         isImagePickerPresented = true
                     } label: {
-                        VStack(spacing: 8) {
-                            Image("Image - Regular - Bold")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(Color("Greyscale500"))
-                            Text("Add image")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 10))
+                        GeometryReader { geometry in
+                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instructionPictureUrl2 ?? "").jpg")) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: geometry.size.width, height: 72)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } placeholder: {
+                                VStack(spacing: 8) {
+                                    Image("Image - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color("Greyscale500"))
+                                    Text("Add image")
+                                        .foregroundStyle(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Regular", size: 10))
+                                }
+                                .frame(height: 72)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
                         }
-                        .frame(height: 72)
-                        .frame(maxWidth: .infinity)
-                        .background(Color("Dark2"))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
                         .overlay {
                             if images.indices.contains(1) {
                                 GeometryReader { geometry in
@@ -125,18 +133,6 @@ struct InstructionSlotView: View {
                                         .frame(width: geometry.size.width, height: 72)
                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
-                            } else if let url = instructionPictureUrl2 {
-                                GeometryReader { geometry in
-                                    AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(url).jpg")) { image in
-                                        image.resizable()
-                                            .scaledToFill()
-                                            .frame(width: geometry.size.width, height: 72)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(height: 72)
-                                    }
-                                }
                             }
                         }
                     }
@@ -145,19 +141,29 @@ struct InstructionSlotView: View {
                         selectedImageIndex = 2
                         isImagePickerPresented = true
                     } label: {
-                        VStack(spacing: 8) {
-                            Image("Image - Regular - Bold")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                                .foregroundStyle(Color("Greyscale500"))
-                            Text("Add image")
-                                .foregroundStyle(Color("Greyscale500"))
-                                .font(.custom("Urbanist-Regular", size: 10))
+                        GeometryReader { geometry in
+                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instructionPictureUrl3 ?? "").jpg")) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: geometry.size.width, height: 72)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            } placeholder: {
+                                VStack(spacing: 8) {
+                                    Image("Image - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color("Greyscale500"))
+                                    Text("Add image")
+                                        .foregroundStyle(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Regular", size: 10))
+                                }
+                                .frame(height: 72)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                            }
                         }
-                        .frame(height: 72)
-                        .frame(maxWidth: .infinity)
-                        .background(Color("Dark2"))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
                         .overlay {
                             if images.indices.contains(2) {
                                 GeometryReader { geometry in
@@ -167,22 +173,11 @@ struct InstructionSlotView: View {
                                         .frame(width: geometry.size.width, height: 72)
                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
-                            } else if let url = instructionPictureUrl3 {
-                                GeometryReader { geometry in
-                                    AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(url).jpg")) { image in
-                                        image.resizable()
-                                            .scaledToFill()
-                                            .frame(width: geometry.size.width, height: 72)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    } placeholder: {
-                                        ProgressView()
-                                            .frame(height: 72)
-                                    }
-                                }
                             }
                         }
                     }
                 }
+                .frame(height: 72)
             }
             Button {
                 onDelete()
