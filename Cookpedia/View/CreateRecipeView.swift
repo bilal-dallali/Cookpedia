@@ -255,7 +255,6 @@ struct CreateRecipeView: View {
                                         
                                         let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                         
-                                        
                                         apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                             switch result {
                                             case .success:
@@ -753,7 +752,6 @@ struct CreateRecipeView: View {
                     }
                     .padding(.top, 16)
                     .padding(.horizontal, 24)
-                    
                 }
                 .scrollIndicators(.hidden)
                 .background(Color(isSavedRecipe || isPublishedRecipe ? "BackgroundOpacity" : "Dark1"))
