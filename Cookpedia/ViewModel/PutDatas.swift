@@ -72,7 +72,7 @@ class APIPutRequest: ObservableObject {
     }
     
     func updateRecipe(recipeId: Int, updatedRecipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
-        let endpoint = "/recipes/update/\(recipeId)"
+        let endpoint = "/recipes/update-recipe/\(recipeId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIPutError.invalidUrl))
             return
@@ -93,16 +93,17 @@ class APIPutRequest: ObservableObject {
             body.append("\(value)\r\n".data(using: .utf8)!)
         }
         
-        func appendImage(_ image: UIImage?, withName name: String) {
+        func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
-            body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(name).jpg\"\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
             body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
             body.append(imageData)
             body.append("\r\n".data(using: .utf8)!)
         }
         
         // Append recipe fields
+        appendField("userId", value: "\(updatedRecipe.userId)")
         appendField("title", value: updatedRecipe.title)
         appendField("recipeCoverPictureUrl1", value: updatedRecipe.recipeCoverPictureUrl1 ?? "")
         appendField("recipeCoverPictureUrl2", value: updatedRecipe.recipeCoverPictureUrl2 ?? "")
@@ -118,12 +119,17 @@ class APIPutRequest: ObservableObject {
         //appendField("isPublished", value: isPublished ? "1" : "0")
         
         // Append recipe cover images
-        appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1")
-        appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2")
+//        appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1")
+//        appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2")
+        appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: "recipeCoverPicture1.jpg")
+        appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
         // Append instruction images
-        for (image, name) in instructionImages {
-            appendImage(image, withName: name)
+//        for (image, name) in instructionImages {
+//            appendImage(image, withName: name)
+//        }
+        for (image, fileName) in instructionImages {
+            appendImage(image, withName: "instructionImages", fileName: fileName)
         }
         
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)

@@ -67,6 +67,7 @@ struct CreateRecipeView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiPostManager = APIPostRequest()
+    var apiPutManager = APIPutRequest()
     var apiGetManager = APIGetRequest()
     
     let mode: Mode
@@ -183,18 +184,36 @@ struct CreateRecipeView: View {
                                             return
                                         }
                                         
-                                        let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                        
-                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
-                                            switch result {
-                                            case .success:
-                                                isSavedRecipe = true
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                                    isSavedRecipe = false
-                                                    isCreateRecipeSelected = false
+                                        if case.create = mode {
+                                            let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                            
+                                            apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
+                                                switch result {
+                                                    case .success:
+                                                        isSavedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                            isSavedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    case .failure(let error):
+                                                        print("Error uploading recipe: \(error)")
                                                 }
-                                            case .failure(let error):
-                                                print("Error uploading recipe: \(error)")
+                                            }
+                                        } else if case .edit(let existingRecipe) = mode {
+                                            let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                            
+                                            apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
+                                                switch result {
+                                                    case .success(let message):
+                                                        print(message)
+                                                        isSavedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                            isSavedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    case .failure(let error):
+                                                        print("Failed to update recipe: \(error.localizedDescription)")
+                                                }
                                             }
                                         }
                                         
@@ -253,18 +272,36 @@ struct CreateRecipeView: View {
                                             return
                                         }
                                         
-                                        let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                        
-                                        apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
-                                            switch result {
-                                            case .success:
-                                                isPublishedRecipe = true
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                                    isPublishedRecipe = false
-                                                    isCreateRecipeSelected = false
+                                        if case.create = mode {
+                                            let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                            
+                                            apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
+                                                switch result {
+                                                    case .success:
+                                                        isPublishedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                            isPublishedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    case .failure(let error):
+                                                        print("Error uploading recipe: \(error)")
                                                 }
-                                            case .failure(let error):
-                                                print("Error uploading recipe: \(error)")
+                                            }
+                                        } else if case .edit(let existingRecipe) = mode {
+                                            let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                            
+                                            apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
+                                                switch result {
+                                                    case .success(let message):
+                                                        print(message)
+                                                        isPublishedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                            isPublishedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    case .failure(let error):
+                                                        print("Failed to update recipe: \(error.localizedDescription)")
+                                                }
                                             }
                                         }
                                         
