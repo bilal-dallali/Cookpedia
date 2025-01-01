@@ -434,8 +434,8 @@ class APIPostRequest: ObservableObject {
         }.resume()
     }
     
-    func incrementSearch(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
-        let endpoint = "/recipes/increment-search/\(recipeId)"
+    func incrementViews(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+        let endpoint = "/recipes/increment-views/\(recipeId)"
         
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))

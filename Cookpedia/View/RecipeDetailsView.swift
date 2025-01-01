@@ -531,7 +531,7 @@ struct RecipeDetailsView: View {
                             }
                         }
                         
-                        apiPostManager.incrementSearch(recipeId: recipeId) { result in
+                        apiPostManager.incrementViews(recipeId: recipeId) { result in
                             switch result {
                                 case .success:
                                     print("increment search")

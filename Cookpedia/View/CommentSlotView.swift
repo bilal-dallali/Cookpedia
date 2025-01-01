@@ -11,8 +11,6 @@ struct CommentSlotView: View {
     
     @State private var heartScaleX: CGFloat = 0
     @State private var heartScaleY: CGFloat = 0
-    @State private var heartWidth: CGFloat = 0
-    @State private var heartHeight: CGFloat = 0
     @State private var isCommentLiked: Bool = false
     
     var body: some View {
