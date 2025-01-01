@@ -28,6 +28,7 @@ struct CreateRecipeView: View {
     @State private var isImagePickerPresented1: Bool = false
     @State private var isImagePickerPresented2: Bool = false
     @State private var isPublishedRecipe: Bool = false
+    @State private var isDeletedRecipe: Bool = false
     @State private var isSavedRecipe: Bool = false
     @State private var isDropdownActivated: Bool = false
     @State private var deleteRecipeModal: Bool = false
@@ -64,6 +65,7 @@ struct CreateRecipeView: View {
     }
     
     @Binding var isCreateRecipeSelected: Bool
+    @Binding var isUpdateRecipeSelected: Bool
     @FocusState private var isOriginFocused: Bool
     @State private var fieldsNotFilled: Bool = false
     @Environment(\.modelContext) var context
@@ -71,6 +73,7 @@ struct CreateRecipeView: View {
     var apiPostManager = APIPostRequest()
     var apiPutManager = APIPutRequest()
     var apiGetManager = APIGetRequest()
+    var apiDeleteManager = APIDeleteRequest()
     let mode: Mode
     
     var body: some View {
@@ -750,8 +753,8 @@ struct CreateRecipeView: View {
                         .padding(.horizontal, 24)
                     }
                     .scrollIndicators(.hidden)
-                    .background(Color(isSavedRecipe || isPublishedRecipe ? "BackgroundOpacity" : "Dark1"))
-                    .blur(radius: isSavedRecipe || isPublishedRecipe ? 4 : 0)
+                    .background(Color(isSavedRecipe || isPublishedRecipe || isDeletedRecipe ? "BackgroundOpacity" : "Dark1"))
+                    .blur(radius: isSavedRecipe || isPublishedRecipe || isDeletedRecipe ? 4 : 0)
                     .onTapGesture {
                         dismissKeyboard()
                         isDropdownActivated = false
@@ -786,6 +789,8 @@ struct CreateRecipeView: View {
                     ModalView(title: "Recipe Successfully saved", message: "Your recipe has been added to your draft, it is not yet published.")
                 } else if isPublishedRecipe {
                     ModalView(title: "Recipe Successfully published", message: "Your recipe has been published. Anyone can see it!")
+                } else if isDeletedRecipe {
+                    ModalView(title: "Recipe Successfully deleted", message: "Your recipe has been deleted.")
                 }
             }
             if isDropdownActivated {
@@ -846,7 +851,19 @@ struct CreateRecipeView: View {
                         if case .create = mode {
                             isCreateRecipeSelected = false
                         } else if case .edit(let existingRecipe) = mode {
-                            print("delete")
+                            apiDeleteManager.deleteRecipe(recipeId: existingRecipe) { result in
+                                switch result {
+                                    case .success:
+                                        deleteRecipeModal = false
+                                        isDeletedRecipe = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                            isDeletedRecipe = false
+                                            isUpdateRecipeSelected = false
+                                        }
+                                    case .failure(let error):
+                                        print("error deleting the recipe \(error.localizedDescription)")
+                                }
+                            }
                         }
                     } label: {
                         Text("Yes, Delete")
@@ -916,7 +933,7 @@ extension Array {
 
 #Preview {
     Group {
-        CreateRecipeView(isCreateRecipeSelected: .constant(true), mode: .create)
-        CreateRecipeView(isCreateRecipeSelected: .constant(true), mode: .edit(existingRecipe: 1))
+        CreateRecipeView(isCreateRecipeSelected: .constant(true), isUpdateRecipeSelected: .constant(true), mode: .create)
+        CreateRecipeView(isCreateRecipeSelected: .constant(true), isUpdateRecipeSelected: .constant(false), mode: .edit(existingRecipe: 1))
     }
 }

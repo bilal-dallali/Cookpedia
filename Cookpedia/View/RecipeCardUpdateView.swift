@@ -86,7 +86,7 @@ struct RecipeCardUpdateView: View {
                 
             }
             .fullScreenCover(isPresented: $isUpdateRecipeSelected) {
-                CreateRecipeView(isCreateRecipeSelected: $isUpdateRecipeSelected, mode: .edit(existingRecipe: recipe.id))
+                CreateRecipeView(isCreateRecipeSelected: $isUpdateRecipeSelected, isUpdateRecipeSelected: $isUpdateRecipeSelected, mode: .edit(existingRecipe: recipe.id))
             }
         }
     }

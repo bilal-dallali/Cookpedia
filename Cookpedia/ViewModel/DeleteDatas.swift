@@ -29,7 +29,7 @@ class APIDeleteRequest: ObservableObject {
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
                   let data = data else {
                 print("Invalid response: \(response.debugDescription)")
-                completion(.failure(APIGetError.invalidResponse))
+                completion(.failure(APIDeleteError.invalidResponse))
                 return
             }
             
@@ -44,6 +44,36 @@ class APIDeleteRequest: ObservableObject {
                 }
             } catch {
                 completion(.failure(error))
+            }
+        }.resume()
+    }
+    
+    func deleteRecipe(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+        
+        let endpoint = "/recipes/delete-recipe/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                completion(.failure(APIDeleteError.invalidResponse))
+                return
+            }
+            
+            if let data = data, let message = String(data: data, encoding: .utf8) {
+                completion(.success(message))
+            } else {
+                completion(.failure(APIDeleteError.invalidResponse))
             }
         }.resume()
     }

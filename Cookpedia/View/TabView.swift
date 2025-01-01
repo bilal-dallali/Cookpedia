@@ -144,7 +144,7 @@ struct TabView: View {
         .ignoresSafeArea(edges: .bottom)
         .fullScreenCover(isPresented: $isCreateRecipeSelected) {
             CreateRecipeView(
-                isCreateRecipeSelected: $isCreateRecipeSelected, mode: .create
+                isCreateRecipeSelected: $isCreateRecipeSelected, isUpdateRecipeSelected: .constant(false), mode: .create
             )
         }
     }
