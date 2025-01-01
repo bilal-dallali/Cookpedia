@@ -415,7 +415,7 @@ struct RecipeDetailsView: View {
                                         }
                                         
                                         VStack(spacing: 20) {
-                                            CommentSlotView()
+                                            //CommentSlotView()
                                             
                                             HStack(spacing: 16) {
                                                 AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in

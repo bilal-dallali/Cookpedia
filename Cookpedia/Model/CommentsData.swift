@@ -21,5 +21,5 @@ struct CommentsDetails: Codable {
     let fullName: String
     let profilePictureUrl: String
     let createdAt: String
-    let updatedAt: String
+    //let updatedAt: String
 }

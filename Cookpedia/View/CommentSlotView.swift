@@ -6,22 +6,37 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CommentSlotView: View {
     
-    //let comment: CommentsDetails
+    let comment: CommentsDetails
     @State private var heartScaleX: CGFloat = 0
     @State private var heartScaleY: CGFloat = 0
     @State private var isCommentLiked: Bool = false
+    var apiPostManager = APIPostRequest()
+    var apiGetManager = APIGetRequest()
+    @Environment(\.modelContext) var context
+    @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
     var body: some View {
         VStack(spacing: 14) {
             HStack(spacing: 16) {
-                Image("tanner-stafford")
-                    .resizable()
-                    .frame(width: 48, height: 48)
-                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                Text("Tanner Stafford")
+                
+                AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(comment.profilePictureUrl).jpg")) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipped()
+                        .frame(width: 48, height: 48)
+                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                } placeholder: {
+                    Image("tanner-stafford")
+                        .resizable()
+                        .frame(width: 48, height: 48)
+                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                }
+                Text(comment.fullName)
                     .foregroundStyle(Color("MyWhite"))
                     .font(.custom("Urbanist-Bold", size: 16))
                 Spacer()
@@ -34,7 +49,7 @@ struct CommentSlotView: View {
                         .foregroundStyle(Color("MyWhite"))
                 }
             }
-            Text("Loving this recipe! So many delicious recipes to choose from ❤️❤️❤️")
+            Text(comment.comment)
                 .foregroundStyle(Color("Greyscale50"))
                 .font(.custom("Urbanist-Medium", size: 16))
             HStack(spacing: 24) {
@@ -93,6 +108,5 @@ struct CommentSlotView: View {
 }
 
 #Preview {
-    CommentSlotView()
+    CommentSlotView(comment: CommentsDetails(id: 1, userId: 1, recipeId: 8, comment: "Amazing recipe", fullName: "tanner stafford", profilePictureUrl: "anyway", createdAt: "2025-01-01 22:05:17"))
 }
-//comment: CommentsDetails(id: 1, userId: 1, recipeId: 1, comment: "Amazing recipe! 🔥🔥🔥", fullName: "Daniel Hoffman", profilePictureUrl: "", createdAt: "", updatedAt: "")
