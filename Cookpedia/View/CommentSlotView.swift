@@ -9,6 +9,10 @@ import SwiftUI
 
 struct CommentSlotView: View {
     
+    @State private var heartScaleX: CGFloat = 0
+    @State private var heartScaleY: CGFloat = 0
+    @State private var heartWidth: CGFloat = 0
+    @State private var heartHeight: CGFloat = 0
     @State private var isCommentLiked: Bool = false
     
     var body: some View {
@@ -37,32 +41,43 @@ struct CommentSlotView: View {
             HStack(spacing: 24) {
                 HStack(spacing: 8) {
                     Button {
-                        withAnimation {
-                            isCommentLiked.toggle()
-                        }
-                    } label: {
+                        isCommentLiked.toggle()
                         if isCommentLiked {
-                            LinearGradient(
-                                stops: [
-                                    Gradient.Stop(color: Color(red: 0.96, green: 0.28, blue: 0.29), location: 0.00),
-                                    Gradient.Stop(color: Color(red: 1, green: 0.45, blue: 0.46), location: 1.00),
-                                ],
-                                startPoint: UnitPoint(x: 1, y: 1),
-                                endPoint: UnitPoint(x: 0, y: 0)
-                            )
-                            .frame(width: 24, height: 24)
-                            .mask {
-                                Image("Heart - Regular - Bold")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
+                            withAnimation(.easeIn(duration: 0.2)) {
+                                heartScaleX = 1
+                                heartScaleY = 1
                             }
                         } else {
-                            Image("Heart - Regular - Light - Outline")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundStyle(Color("Greyscale300"))
+                            withAnimation(.easeOut(duration: 0.2)) {
+                                heartScaleX = 0
+                                heartScaleY = 0
+                            }
                         }
-                        
+                    } label: {
+                        ZStack {
+                            if isCommentLiked {
+                                LinearGradient(
+                                    stops: [
+                                        Gradient.Stop(color: Color(red: 0.96, green: 0.28, blue: 0.29), location: 0.00),
+                                        Gradient.Stop(color: Color(red: 1, green: 0.45, blue: 0.46), location: 1.00),
+                                    ],
+                                    startPoint: UnitPoint(x: 1, y: 1),
+                                    endPoint: UnitPoint(x: 0, y: 0)
+                                )
+                                .frame(width: 24, height: 24)
+                                .mask {
+                                    Image("Heart - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                        .scaleEffect(x: heartScaleX, y: heartScaleY, anchor: .center)
+                                }
+                            } else {
+                                Image("Heart - Regular - Light - Outline")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundStyle(Color("Greyscale300"))
+                            }
+                        }
                     }
                     Text("90")
                         .foregroundStyle(Color("Greyscale300"))
@@ -73,6 +88,7 @@ struct CommentSlotView: View {
                     .font(.custom("Urbanist-Medium", size: 12))
                 Spacer()
             }
+            .frame(height: 24)
         }
     }
 }

@@ -413,6 +413,10 @@ struct RecipeDetailsView: View {
                                         
                                         VStack(spacing: 20) {
                                             CommentSlotView()
+                                            CommentSlotView()
+                                            CommentSlotView()
+                                            CommentSlotView()
+                                            CommentSlotView()
                                             
                                         }
                                     }
