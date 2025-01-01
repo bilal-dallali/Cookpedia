@@ -189,58 +189,70 @@ struct LoginView: View {
                                 isLoading = true
                                 apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
                                     switch result {
-                                    case .success(let (token, id)):
-                                        // Get the userId from the token
-                                        var userId: String = String(id)
-                                        // Store session in SwiftData
-                                        let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
-                                        context.insert(userSession)
-                                        //UserSession.shared = userSession
-                                        do {
-                                            try context.save()
-                                        } catch {
-                                            print("Failed to save user session: \(error.localizedDescription)")
-                                        }
-                                        loadingScreen = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                            self.redirectHomePage = true
-                                            loadingScreen = false
-                                        }
-                                    case .failure(let error):
-                                        switch error {
-                                        case .invalidUrl:
-                                            errorMessage = "URL invalid"
-                                            alertUsersExists = true
-                                            break
-                                        case .invalidData:
-                                            errorMessage = "Your datas are invalid, please try again later!"
-                                            alertUsersExists = true
-                                            break
-                                        case .invalidCredentials:
-                                            errorMessage = "Incorrect password"
-                                            alertUsersExists = true
-                                            break
-                                        case .userNotFound:
-                                            errorMessage = "User not found"
-                                            alertUsersExists = true
-                                            break
-                                        case .emailAlreadyExists:
-                                            errorMessage = "This email address is already registered"
-                                            alertUsersExists = true
-                                            break
-                                        case .usernameAlreadyExists:
-                                            errorMessage = "This username is already registered"
-                                            alertUsersExists = true
-                                            break
-                                        case .phoneNumberAlreadyExists:
-                                            errorMessage = "This phone number is already registered"
-                                            alertUsersExists = true
-                                            break
-                                        case .serverError:
-                                            errorMessage = "Server error"
-                                            alertUsersExists = true
-                                            break
-                                        }
+                                        case .success(let (token, id)):
+                                            // Get the userId from the token
+                                            var userId: String = String(id)
+                                            // Store session in SwiftData
+                                            let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
+                                            context.insert(userSession)
+                                            //UserSession.shared = userSession
+                                            do {
+                                                try context.save()
+                                            } catch {
+                                                print("Failed to save user session: \(error.localizedDescription)")
+                                            }
+                                            loadingScreen = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                self.redirectHomePage = true
+                                                loadingScreen = false
+                                            }
+                                        case .failure(let error):
+                                            switch error {
+                                                case .invalidUrl:
+                                                    errorMessage = "URL invalid"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .invalidData:
+                                                    errorMessage = "Your datas are invalid, please try again later!"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .invalidCredentials:
+                                                    errorMessage = "Incorrect password"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .userNotFound:
+                                                    errorMessage = "User not found"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .emailAlreadyExists:
+                                                    errorMessage = "This email address is already registered"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .usernameAlreadyExists:
+                                                    errorMessage = "This username is already registered"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .phoneNumberAlreadyExists:
+                                                    errorMessage = "This phone number is already registered"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .serverError:
+                                                    errorMessage = "Server error"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .requestFailed:
+                                                    errorMessage = "Request failed"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .invalidResponse:
+                                                    errorMessage = "Invalid response"
+                                                    alertUsersExists = true
+                                                    break
+                                                case .decodingError:
+                                                    errorMessage = "Decoding error"
+                                                    alertUsersExists = true
+                                                    break
+                                            }
                                     }
                                 }
                             } label: {

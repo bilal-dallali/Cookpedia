@@ -21,6 +21,9 @@ struct RecipeDetailsView: View {
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     @State private var connectedUserId: Int? = nil
     @State private var following: Bool = false
+    @State private var profilePictureUrl: String = ""
+    @State private var commentText: String = ""
+    @FocusState private var isCommentTextfieldFocused: Bool
     
     // Private initializer for internal use only
     private init(recipeDetails: RecipeDetails, recipeId: Int) {
@@ -413,11 +416,69 @@ struct RecipeDetailsView: View {
                                         
                                         VStack(spacing: 20) {
                                             CommentSlotView()
-                                            CommentSlotView()
-                                            CommentSlotView()
-                                            CommentSlotView()
-                                            CommentSlotView()
                                             
+                                            HStack(spacing: 16) {
+                                                AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .clipped()
+                                                        .frame(width: 48, height: 48)
+                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                } placeholder: {
+                                                    Image("Ellipse")
+                                                        .resizable()
+                                                        .frame(width: 48, height: 48)
+                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                }
+                                                HStack(spacing: 12) {
+                                                    TextField(text: $commentText) {
+                                                        Text("Add a comment")
+                                                            .foregroundStyle(Color("Greyscale500"))
+                                                            .font(.custom("Urbanist-Regular", size: 16))
+                                                    }
+                                                    .autocorrectionDisabled(true)
+                                                    .keyboardType(.default)
+                                                    .foregroundStyle(Color("MyWhite"))
+                                                    .font(.custom("Urbanist-Semibold", size: 16))
+                                                    .focused($isCommentTextfieldFocused)
+                                                    Button {
+                                                        guard let currentUser = userSession.first else {
+                                                            return
+                                                        }
+                                                        
+                                                        guard let userId = Int(currentUser.userId) else {
+                                                            return
+                                                        }
+                                                        
+                                                        let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
+                                                        apiPostManager.postComment(comment: comment) { result in
+                                                            switch result {
+                                                                case .success(let response):
+                                                                    print("Comment posted successfully with response: \(response)")
+                                                                    commentText = ""
+                                                                case .failure(let error):
+                                                                    print("Failed to post comment\(error)")
+                                                            }
+                                                        }
+                                                    } label: {
+                                                        Image("Send - Regular - Bold")
+                                                            .resizable()
+                                                            .frame(width: 20, height: 20)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                    }
+                                                }
+                                                .padding(.horizontal, 20)
+                                                .frame(height: 58)
+                                                .background(Color(isCommentTextfieldFocused ? "TransparentRed" : "Dark2"))
+                                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                                .overlay {
+                                                    if isCommentTextfieldFocused {
+                                                        RoundedRectangle(cornerRadius: 16)
+                                                            .strokeBorder(Color("Primary900"), lineWidth: 1)
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     
@@ -515,14 +576,23 @@ struct RecipeDetailsView: View {
                                             switch result {
                                                 case .success(let isFollowing):
                                                     if isFollowing {
-                                                        print("User is following the other user.")
                                                         following = true
                                                     } else {
-                                                        print("User is not following the other user.")
                                                         following = false
                                                     }
                                                 case .failure(let error):
                                                     print("Failed to check follow status: \(error.localizedDescription)")
+                                            }
+                                        }
+                                        
+                                        apiGetManager.getUserDataFromUserId(userId: userId) { result in
+                                            switch result {
+                                                case .success(let user):
+                                                    DispatchQueue.main.async {
+                                                        self.profilePictureUrl = user.profilePictureUrl ?? ""
+                                                    }
+                                                case .failure(let error):
+                                                    print("Failed to fetch user data: \(error.localizedDescription)")
                                             }
                                         }
                                     case .failure(let error):
@@ -534,11 +604,13 @@ struct RecipeDetailsView: View {
                         apiPostManager.incrementViews(recipeId: recipeId) { result in
                             switch result {
                                 case .success:
-                                    print("increment search")
+                                    print("increment views")
                                 case .failure(let error):
-                                    print("Failed to check follow status: \(error.localizedDescription)")
+                                    print("Failed to increment views: \(error.localizedDescription)")
                             }
                         }
+                        
+                        
                     }
                 }
                 if addedToBookmarks {
@@ -565,6 +637,9 @@ struct RecipeDetailsView: View {
                         .ignoresSafeArea()
                     }
                 }
+            }
+            .onTapGesture {
+                dismissKeyboard()
             }
         }
     }

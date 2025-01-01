@@ -463,6 +463,45 @@ class APIPostRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func postComment(comment: CommentsPost, completion: @escaping (Result<String, Error>) -> Void) {
+        let endpoint = "/comments/add-comment"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIPostError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let requestBody = try JSONEncoder().encode(comment)
+            request.httpBody = requestBody
+        } catch {
+            completion(.failure(error))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201,
+                  let data = data else {
+                completion(.failure(APIPostError.invalidResponse))
+                return
+            }
+            
+            if let responseMessage = String(data: data, encoding: .utf8) {
+                completion(.success(responseMessage))
+            } else {
+                completion(.failure(APIPostError.decodingError))
+            }
+        }.resume()
+    }
 }
 
 enum APIPostError: Error {
@@ -474,25 +513,34 @@ enum APIPostError: Error {
     case usernameAlreadyExists
     case phoneNumberAlreadyExists
     case serverError
+    case requestFailed
+    case invalidResponse
+    case decodingError
     
     var localizedDescription: String {
         switch self {
-        case .invalidUrl:
-            return "Invalid URL"
-        case .invalidData:
-            return "Invalid data"
-        case .invalidCredentials:
-            return "Incorrect password"
-        case .userNotFound:
-            return "User not found"
-        case .emailAlreadyExists:
-            return "Email already exists"
-        case .usernameAlreadyExists:
-            return "Username already exists"
-        case .phoneNumberAlreadyExists:
-            return "Phone number already exists"
-        case .serverError:
-            return "Server error"
+            case .invalidUrl:
+                return "Invalid URL"
+            case .invalidData:
+                return "Invalid data"
+            case .invalidCredentials:
+                return "Incorrect password"
+            case .userNotFound:
+                return "User not found"
+            case .emailAlreadyExists:
+                return "Email already exists"
+            case .usernameAlreadyExists:
+                return "Username already exists"
+            case .phoneNumberAlreadyExists:
+                return "Phone number already exists"
+            case .serverError:
+                return "Server error"
+            case .requestFailed:
+                return "Request failed"
+            case .invalidResponse:
+                return "Invalid response"
+            case .decodingError:
+                return "Decoding error"
         }
     }
 }

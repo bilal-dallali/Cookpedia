@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CommentSlotView: View {
     
+    //let comment: CommentsDetails
     @State private var heartScaleX: CGFloat = 0
     @State private var heartScaleY: CGFloat = 0
     @State private var isCommentLiked: Bool = false
@@ -94,3 +95,4 @@ struct CommentSlotView: View {
 #Preview {
     CommentSlotView()
 }
+//comment: CommentsDetails(id: 1, userId: 1, recipeId: 1, comment: "Amazing recipe! 🔥🔥🔥", fullName: "Daniel Hoffman", profilePictureUrl: "", createdAt: "", updatedAt: "")

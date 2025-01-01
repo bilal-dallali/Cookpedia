@@ -532,6 +532,41 @@ class APIGetRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func getComments(forRecipeId recipeId: Int, completion: @escaping (Result<[CommentsDetails], Error>) -> Void) {
+        let endpoint = "/comments/get-comments-from-recipe-id/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Network error: \(error.localizedDescription)")
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
+                print("Invalid response: \(response.debugDescription)")
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let comments = try decoder.decode([CommentsDetails].self, from: data)
+                completion(.success(comments))
+            } catch {
+                print("Decoding error: \(error.localizedDescription)")
+                completion(.failure(APIGetError.decodingError))
+            }
+        }.resume()
+    }
 }
 
 enum APIGetError: Error {
