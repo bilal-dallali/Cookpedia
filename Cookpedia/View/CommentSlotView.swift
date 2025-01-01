@@ -20,9 +20,8 @@ struct CommentSlotView: View {
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 16) {
-                
                 AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(comment.profilePictureUrl).jpg")) { image in
                     image
                         .resizable()
@@ -57,12 +56,12 @@ struct CommentSlotView: View {
                     Button {
                         isCommentLiked.toggle()
                         if isCommentLiked {
-                            withAnimation(.easeIn(duration: 0.2)) {
+                            withAnimation(.easeIn(duration: 0.4)) {
                                 heartScaleX = 1
                                 heartScaleY = 1
                             }
                         } else {
-                            withAnimation(.easeOut(duration: 0.2)) {
+                            withAnimation(.easeOut(duration: 0.4)) {
                                 heartScaleX = 0
                                 heartScaleY = 0
                             }

@@ -470,6 +470,15 @@ struct RecipeDetailsView: View {
                                                                 case .success(let response):
                                                                     print("Comment posted successfully with response: \(response)")
                                                                     commentText = ""
+                                                                    apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
+                                                                        switch result {
+                                                                            case .success(let comments):
+                                                                                print("comments \(comments)")
+                                                                                self.comments = comments
+                                                                            case .failure(let error):
+                                                                                print("error \(error.localizedDescription)")
+                                                                        }
+                                                                    }
                                                                 case .failure(let error):
                                                                     print("Failed to post comment\(error)")
                                                             }
