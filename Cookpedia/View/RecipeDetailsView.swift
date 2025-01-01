@@ -395,6 +395,30 @@ struct RecipeDetailsView: View {
                                                 .frame(height: 1)
                                                 .foregroundStyle(Color("Dark4"))
                                         }
+                                    VStack(spacing: 20) {
+                                        HStack {
+                                            Text("Comments")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 24))
+                                            Spacer()
+                                            Image("Arrow - Right - Regular - Light - Outline")
+                                                .resizable()
+                                                .frame(width: 24, height: 24)
+                                                .foregroundStyle(Color("Primary900"))
+                                        }
+                                        
+                                        VStack(spacing: 20) {
+                                            CommentSlotView()
+                                            
+                                        }
+                                    }
+                                    
+                                    Divider()
+                                        .overlay {
+                                            Rectangle()
+                                                .frame(height: 1)
+                                                .foregroundStyle(Color("Dark4"))
+                                        }
                                 }
                                 .padding(.horizontal, 24)
                             }
@@ -439,14 +463,7 @@ struct RecipeDetailsView: View {
                                         .frame(width: 28, height: 28)
                                         .foregroundStyle(Color(isBookmarkSelected ? "Primary900" : "MyWhite"))
                                 }
-                                Button {
-                                    //
-                                } label: {
-                                    Image("Send - Curved - Light - Outline")
-                                        .resizable()
-                                        .frame(width: 28, height: 28)
-                                        .foregroundStyle(Color("MyWhite"))
-                                }
+
                                 Button {
                                     //
                                 } label: {
