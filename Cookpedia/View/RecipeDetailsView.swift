@@ -31,6 +31,8 @@ struct RecipeDetailsView: View {
         self.recipeId = recipeId
     }
     
+    @State private var comments: [CommentsDetails] = []
+    
     // Public initializer for NavigationLink and external use
     init(recipeId: Int) {
         self.recipeId = recipeId
@@ -416,6 +418,17 @@ struct RecipeDetailsView: View {
                                         
                                         VStack(spacing: 20) {
                                             //CommentSlotView()
+//                                            ForEach(bookmarkedRecipes.prefix(3), id: \.id) { recipe in
+//                                                NavigationLink {
+//                                                    RecipeDetailsView(recipeId: recipe.id)
+//                                                } label: {
+//                                                    RecipeCardNameView(recipe: recipe)
+//                                                        .frame(width: 183, height: 260)
+//                                                }
+//                                            }
+                                            ForEach(comments, id: \.id) { comment in
+                                                CommentSlotView(comment: comment)
+                                            }
                                             
                                             HStack(spacing: 16) {
                                                 AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
@@ -593,6 +606,16 @@ struct RecipeDetailsView: View {
                                                     }
                                                 case .failure(let error):
                                                     print("Failed to fetch user data: \(error.localizedDescription)")
+                                            }
+                                        }
+                                        
+                                        apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
+                                            switch result {
+                                                case .success(let comments):
+                                                    print("comments \(comments)")
+                                                    self.comments = comments
+                                                case .failure(let error):
+                                                    print("error \(error.localizedDescription)")
                                             }
                                         }
                                     case .failure(let error):
