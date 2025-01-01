@@ -402,7 +402,7 @@ struct RecipeDetailsView: View {
                                         }
                                     VStack(spacing: 20) {
                                         HStack {
-                                            Text("Comments")
+                                            Text("Comments (\(comments.count))")
                                                 .foregroundStyle(Color("MyWhite"))
                                                 .font(.custom("Urbanist-Bold", size: 24))
                                             Spacer()
@@ -417,15 +417,6 @@ struct RecipeDetailsView: View {
                                         }
                                         
                                         VStack(spacing: 20) {
-                                            //CommentSlotView()
-//                                            ForEach(bookmarkedRecipes.prefix(3), id: \.id) { recipe in
-//                                                NavigationLink {
-//                                                    RecipeDetailsView(recipeId: recipe.id)
-//                                                } label: {
-//                                                    RecipeCardNameView(recipe: recipe)
-//                                                        .frame(width: 183, height: 260)
-//                                                }
-//                                            }
                                             ForEach(comments, id: \.id) { comment in
                                                 CommentSlotView(comment: comment)
                                             }
