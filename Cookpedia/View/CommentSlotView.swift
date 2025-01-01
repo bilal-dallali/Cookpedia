@@ -37,7 +37,9 @@ struct CommentSlotView: View {
             HStack(spacing: 24) {
                 HStack(spacing: 8) {
                     Button {
-                        isCommentLiked.toggle()
+                        withAnimation {
+                            isCommentLiked.toggle()
+                        }
                     } label: {
                         if isCommentLiked {
                             LinearGradient(

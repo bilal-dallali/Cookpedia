@@ -401,10 +401,14 @@ struct RecipeDetailsView: View {
                                                 .foregroundStyle(Color("MyWhite"))
                                                 .font(.custom("Urbanist-Bold", size: 24))
                                             Spacer()
-                                            Image("Arrow - Right - Regular - Light - Outline")
-                                                .resizable()
-                                                .frame(width: 24, height: 24)
-                                                .foregroundStyle(Color("Primary900"))
+                                            Button {
+                                                //
+                                            } label: {
+                                                Image("Arrow - Right - Regular - Light - Outline")
+                                                    .resizable()
+                                                    .frame(width: 24, height: 24)
+                                                    .foregroundStyle(Color("Primary900"))
+                                            }
                                         }
                                         
                                         VStack(spacing: 20) {
