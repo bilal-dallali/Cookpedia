@@ -115,19 +115,11 @@ class APIPutRequest: ObservableObject {
         appendField("instructions", value: updatedRecipe.instructions)
         appendField("isPublished", value: "\(isPublished)")
         
-        // Append isPublished field
-        //appendField("isPublished", value: isPublished ? "1" : "0")
-        
         // Append recipe cover images
-//        appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1")
-//        appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2")
         appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: "recipeCoverPicture1.jpg")
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
         // Append instruction images
-//        for (image, name) in instructionImages {
-//            appendImage(image, withName: name)
-//        }
         for (image, fileName) in instructionImages {
             appendImage(image, withName: "instructionImages", fileName: fileName)
         }

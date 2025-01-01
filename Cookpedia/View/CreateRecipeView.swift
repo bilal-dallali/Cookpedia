@@ -29,6 +29,8 @@ struct CreateRecipeView: View {
     @State private var isImagePickerPresented2: Bool = false
     @State private var isPublishedRecipe: Bool = false
     @State private var isSavedRecipe: Bool = false
+    @State private var isDropdownActivated: Bool = false
+    @State private var deleteRecipeModal: Bool = false
     
 //    @Binding var isHomeSelected: Bool
 //    @Binding var isDiscoverSelected: Bool
@@ -69,438 +71,272 @@ struct CreateRecipeView: View {
     var apiPostManager = APIPostRequest()
     var apiPutManager = APIPutRequest()
     var apiGetManager = APIGetRequest()
-    
     let mode: Mode
     
-    // Initializer
-//    init(mode: Mode, isHomeSelected: Binding<Bool>, isDiscoverSelected: Binding<Bool>, isMyRecipeSelected: Binding<Bool>, isMyProfileSelected: Binding<Bool>, isCreateRecipeSelected: Binding<Bool>) {
-//        self.mode = mode
-//        
-//        _isHomeSelected = isHomeSelected
-//        _isDiscoverSelected = isDiscoverSelected
-//        _isMyRecipeSelected = isMyRecipeSelected
-//        _isMyProfileSelected = isMyProfileSelected
-//        _isCreateRecipeSelected = isCreateRecipeSelected
-//        
-//        switch mode {
-//            case .create:
-//                // Initialiser des valeurs par défaut pour le mode `create`
-//                _title = State(initialValue: "")
-//                _description = State(initialValue: "")
-//                _cookTime = State(initialValue: "")
-//                _serves = State(initialValue: "")
-//                _origin = State(initialValue: "")
-//                _ingredients = State(initialValue: Array(repeating: "", count: 7))
-//                _instructions = State(initialValue: Array(repeating: Instruction(), count: 7))
-//                _recipeCoverPictureUrl1 = State(initialValue: "")
-//                _recipeCoverPictureUrl2 = State(initialValue: "")
-//            case .edit(let existingRecipe):
-//                // Charger les valeurs existantes pour le mode `edit`
-//                _title = State(initialValue: existingRecipe.title)
-//                _description = State(initialValue: existingRecipe.description)
-//                _cookTime = State(initialValue: existingRecipe.cookTime)
-//                _serves = State(initialValue: existingRecipe.serves)
-//                _origin = State(initialValue: existingRecipe.origin)
-//                _ingredients = State(initialValue: existingRecipe.ingredients.map { $0.ingredient })
-//                _instructions = State(initialValue: existingRecipe.instructions.map {
-//                    Instruction(
-//                        text: $0.instruction,
-//                        instructionPictureUrl1: $0.instructionPictureUrl1,
-//                        instructionPictureUrl2: $0.instructionPictureUrl2,
-//                        instructionPictureUrl3: $0.instructionPictureUrl3
-//                    )
-//                })
-//                _recipeCoverPictureUrl1 = State(initialValue: existingRecipe.recipeCoverPictureUrl1)
-//                _recipeCoverPictureUrl2 = State(initialValue: existingRecipe.recipeCoverPictureUrl2)
-//        }
-//    }
-    
     var body: some View {
-        ZStack {
-            GeometryReader { geometry in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        HStack {
-                            HStack(spacing: 16) {
-                                Button {
-                                    isCreateRecipeSelected = false
-                                } label: {
-                                    Image("Icon=times, Component=Additional Icons")
-                                        .resizable()
-                                        .frame(width: 28, height: 28)
-                                        .foregroundStyle(Color("MyWhite"))
-                                }
-                                Text("Create Recipe")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 24))
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-                            }
-                            Spacer()
-                            HStack(spacing: 12) {
-                                if recipeCoverPictureUrl1 != "" && title != "" && description != "" && cookTime != "" && serves != "" && origin != "" && ingredients.count > 0 && ingredients[0] != "" && instructions.count > 0 && instructions[0].text != "" {
+        ZStack(alignment: .topTrailing) {
+            ZStack {
+                GeometryReader { geometry in
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 24) {
+                            HStack {
+                                HStack(spacing: 16) {
                                     Button {
-                                        let encoder = JSONEncoder()
-                                        encoder.outputFormatting = .sortedKeys
-                                        
-                                        // Put ingredients in JSON
-                                        guard let ingredientsData = try? encoder.encode(
-                                            ingredients.enumerated().map { index, ingredient in
-                                                Ingredients(index: index + 1, ingredient: ingredient)
-                                            }
-                                        ) else {
-                                            return
-                                        }
-                                        
-                                        let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
-                                        
-                                        // Put instruction JSON
-                                        guard let instructionsData = try? encoder.encode(
-                                            instructions.enumerated().map { index, instruction in
-                                                Instructions(
-                                                    index: index + 1,
-                                                    instruction: instruction.text,
-                                                    instructionPictureUrl1: instruction.instructionPictureUrl1,
-                                                    instructionPictureUrl2: instruction.instructionPictureUrl2,
-                                                    instructionPictureUrl3: instruction.instructionPictureUrl3
-                                                )
-                                            }
-                                        ) else {
-                                            return
-                                        }
-                                        let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
-                                        
-                                        var instructionImages: [(UIImage, String)] = []
-                                        
-                                        for (instructionIndex, instruction) in instructions.enumerated() {
-                                            instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
-                                        }
-                                        
-                                        guard let currentUser = userSession.first else {
-                                            return
-                                        }
-                                        
-                                        guard let userId = Int(currentUser.userId) else {
-                                            return
-                                        }
-                                        
-                                        if case.create = mode {
-                                            let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                            
-                                            apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
-                                                switch result {
-                                                    case .success:
-                                                        isSavedRecipe = true
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                            isSavedRecipe = false
-                                                            isCreateRecipeSelected = false
-                                                        }
-                                                    case .failure(let error):
-                                                        print("Error uploading recipe: \(error)")
-                                                }
-                                            }
-                                        } else if case .edit(let existingRecipe) = mode {
-                                            let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                            
-                                            apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
-                                                switch result {
-                                                    case .success(let message):
-                                                        print(message)
-                                                        isSavedRecipe = true
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                            isSavedRecipe = false
-                                                            isCreateRecipeSelected = false
-                                                        }
-                                                    case .failure(let error):
-                                                        print("Failed to update recipe: \(error.localizedDescription)")
-                                                }
-                                            }
-                                        }
-                                        
+                                        isCreateRecipeSelected = false
                                     } label: {
-                                        Text("Save")
-                                            .foregroundStyle(Color("Primary900"))
-                                            .font(.custom("Urbanist-Semibold", size: 16))
-                                            .frame(width: 77, height: 38)
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: .infinity)
-                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
-                                            }
-                                    }
-                                    Button {
-                                        let encoder = JSONEncoder()
-                                        encoder.outputFormatting = .sortedKeys
-                                        
-                                        // Put ingredients in JSON
-                                        guard let ingredientsData = try? encoder.encode(
-                                            ingredients.enumerated().map { index, ingredient in
-                                                Ingredients(index: index + 1, ingredient: ingredient)
-                                            }
-                                        ) else {
-                                            return
-                                        }
-                                        
-                                        let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
-                                        
-                                        // Put instructions JSON
-                                        guard let instructionsData = try? encoder.encode(
-                                            instructions.enumerated().map { index, instruction in
-                                                Instructions(
-                                                    index: index + 1,
-                                                    instruction: instruction.text,
-                                                    instructionPictureUrl1: instruction.instructionPictureUrl1,
-                                                    instructionPictureUrl2: instruction.instructionPictureUrl2,
-                                                    instructionPictureUrl3: instruction.instructionPictureUrl3
-                                                )
-                                            }
-                                        ) else {
-                                            return
-                                        }
-                                        let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
-                                        
-                                        var instructionImages: [(UIImage, String)] = []
-                                        
-                                        for (instructionIndex, instruction) in instructions.enumerated() {
-                                            instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
-                                        }
-                                        
-                                        guard let currentUser = userSession.first else {
-                                            return
-                                        }
-                                        
-                                        guard let userId = Int(currentUser.userId) else {
-                                            return
-                                        }
-                                        
-                                        if case.create = mode {
-                                            let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                            
-                                            apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
-                                                switch result {
-                                                    case .success:
-                                                        isPublishedRecipe = true
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                            isPublishedRecipe = false
-                                                            isCreateRecipeSelected = false
-                                                        }
-                                                    case .failure(let error):
-                                                        print("Error uploading recipe: \(error)")
-                                                }
-                                            }
-                                        } else if case .edit(let existingRecipe) = mode {
-                                            let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
-                                            
-                                            apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
-                                                switch result {
-                                                    case .success(let message):
-                                                        print(message)
-                                                        isPublishedRecipe = true
-                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                            isPublishedRecipe = false
-                                                            isCreateRecipeSelected = false
-                                                        }
-                                                    case .failure(let error):
-                                                        print("Failed to update recipe: \(error.localizedDescription)")
-                                                }
-                                            }
-                                        }
-                                        
-                                    } label: {
-                                        Text("Publish")
+                                        Image("Icon=times, Component=Additional Icons")
+                                            .resizable()
+                                            .frame(width: 28, height: 28)
                                             .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Semibold", size: 16))
-                                            .frame(width: 91, height: 38)
-                                            .background(Color("Primary900"))
-                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     }
-                                } else {
-                                    Button {
-                                        fieldsNotFilled = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                            fieldsNotFilled = false
-                                        }
-                                    } label: {
-                                        Text("Save")
-                                            .foregroundStyle(Color("Primary900"))
-                                            .font(.custom("Urbanist-Semibold", size: 16))
-                                            .frame(width: 77, height: 38)
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: .infinity)
-                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
-                                            }
-                                    }
-                                    Button {
-                                        fieldsNotFilled = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                            fieldsNotFilled = false
-                                        }
-                                    } label: {
-                                        Text("Publish")
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Semibold", size: 16))
-                                            .frame(width: 91, height: 38)
-                                            .background(Color("Primary900"))
-                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                    }
-                                }
-                                Button {
-                                    //
-                                } label: {
-                                    Image("More Circle - Regular - Light - Outline")
-                                        .resizable()
-                                        .frame(width: 24, height: 24)
+                                    Text("Create Recipe")
                                         .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
                                 }
-                            }
-                        }
-                        if fieldsNotFilled {
-                            HStack(spacing: 6) {
-                                Image("Info Circle - Regular - Bold")
-                                    .resizable()
-                                    .frame(width: 18, height: 18)
-                                    .foregroundStyle(Color("MyOrange"))
-                                    .padding(.leading, 12)
-                                Text("You must fill out all fields.")
-                                    .foregroundStyle(Color("MyOrange"))
-                                    .font(.custom("Urbanist-Regular", size: 12))
                                 Spacer()
-                            }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 34)
-                            .background(Color("TransparentRed"))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
-                        if case .create = mode {
-                            ScrollView(.horizontal) {
                                 HStack(spacing: 12) {
-                                    Button {
-                                        isImagePickerPresented1 = true
-                                    } label: {
-                                        if let selectedImage1 = selectedImage1 {
-                                            Image(uiImage: selectedImage1)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .clipped()
-                                                .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .overlay(alignment: .trailingLastTextBaseline) {
-                                                    Circle()
-                                                        .foregroundStyle(Color("Primary900"))
-                                                        .frame(width: 52, height: 52)
-                                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                                        .overlay {
-                                                            Image("Edit - Curved - Bold")
-                                                                .resizable()
-                                                                .frame(width: 28, height: 28)
-                                                                .foregroundStyle(Color("MyWhite"))
-                                                        }
-                                                        .padding(12)
-                                                }
-                                        } else {
-                                            VStack(spacing: 32) {
-                                                Image("Image - Regular - Bold")
-                                                    .resizable()
-                                                    .frame(width: 60, height: 60)
-                                                    .foregroundStyle(Color("Greyscale500"))
-                                                Text("Add recipe cover image")
-                                                    .foregroundStyle(Color("Greyscale500"))
-                                                    .font(.custom("Urbanist-Regular", size: 16))
-                                            }
-                                            .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                            .background(Color("Dark2"))
-                                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: 20)
-                                                    .strokeBorder(Color("Dark4"), lineWidth: 1)
-                                            }
-                                        }
-                                    }
-                                    .sheet(isPresented: $isImagePickerPresented1) {
-                                        ImagePicker(image: $selectedImage1) { fileName in
-                                            recipeCoverPictureUrl1 = "recipe_cover_picture_url_1_\(fileName)"
-                                        }
-                                    }
-                                    Button {
-                                        isImagePickerPresented2 = true
-                                    } label: {
-                                        if let selectedImage2 = selectedImage2 {
-                                            Image(uiImage: selectedImage2)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .clipped()
-                                                .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .overlay(alignment: .trailingLastTextBaseline) {
-                                                    Circle()
-                                                        .foregroundStyle(Color("Primary900"))
-                                                        .frame(width: 52, height: 52)
-                                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                                        .overlay {
-                                                            Image("Edit - Curved - Bold")
-                                                                .resizable()
-                                                                .frame(width: 28, height: 28)
-                                                                .foregroundStyle(Color("MyWhite"))
-                                                        }
-                                                        .padding(12)
-                                                }
+                                    if recipeCoverPictureUrl1 != "" && title != "" && description != "" && cookTime != "" && serves != "" && origin != "" && ingredients.count > 0 && ingredients[0] != "" && instructions.count > 0 && instructions[0].text != "" {
+                                        Button {
+                                            let encoder = JSONEncoder()
+                                            encoder.outputFormatting = .sortedKeys
                                             
-                                        } else {
-                                            VStack(spacing: 32) {
-                                                Image("Image - Regular - Bold")
-                                                    .resizable()
-                                                    .frame(width: 60, height: 60)
-                                                    .foregroundStyle(Color("Greyscale500"))
-                                                Text("Add recipe cover image")
-                                                    .foregroundStyle(Color("Greyscale500"))
-                                                    .font(.custom("Urbanist-Regular", size: 16))
+                                            // Put ingredients in JSON
+                                            guard let ingredientsData = try? encoder.encode(
+                                                ingredients.enumerated().map { index, ingredient in
+                                                    Ingredients(index: index + 1, ingredient: ingredient)
+                                                }
+                                            ) else {
+                                                return
                                             }
-                                            .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                            .background(Color("Dark2"))
-                                            .clipShape(RoundedRectangle(cornerRadius: 20))
-                                            .overlay {
-                                                RoundedRectangle(cornerRadius: 20)
-                                                    .strokeBorder(Color("Dark4"), lineWidth: 1)
+                                            
+                                            let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
+                                            
+                                            // Put instruction JSON
+                                            guard let instructionsData = try? encoder.encode(
+                                                instructions.enumerated().map { index, instruction in
+                                                    Instructions(
+                                                        index: index + 1,
+                                                        instruction: instruction.text,
+                                                        instructionPictureUrl1: instruction.instructionPictureUrl1,
+                                                        instructionPictureUrl2: instruction.instructionPictureUrl2,
+                                                        instructionPictureUrl3: instruction.instructionPictureUrl3
+                                                    )
+                                                }
+                                            ) else {
+                                                return
                                             }
+                                            let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
+                                            
+                                            var instructionImages: [(UIImage, String)] = []
+                                            
+                                            for (instructionIndex, instruction) in instructions.enumerated() {
+                                                instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
+                                            }
+                                            
+                                            guard let currentUser = userSession.first else {
+                                                return
+                                            }
+                                            
+                                            guard let userId = Int(currentUser.userId) else {
+                                                return
+                                            }
+                                            
+                                            if case.create = mode {
+                                                let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                                
+                                                apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
+                                                    switch result {
+                                                        case .success:
+                                                            isSavedRecipe = true
+                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                                isSavedRecipe = false
+                                                                isCreateRecipeSelected = false
+                                                            }
+                                                        case .failure(let error):
+                                                            print("Error uploading recipe: \(error)")
+                                                    }
+                                                }
+                                            } else if case .edit(let existingRecipe) = mode {
+                                                let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                                
+                                                apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
+                                                    switch result {
+                                                        case .success(let message):
+                                                            print(message)
+                                                            isSavedRecipe = true
+                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                                isSavedRecipe = false
+                                                                isCreateRecipeSelected = false
+                                                            }
+                                                        case .failure(let error):
+                                                            print("Failed to update recipe: \(error.localizedDescription)")
+                                                    }
+                                                }
+                                            }
+                                            
+                                        } label: {
+                                            Text("Save")
+                                                .foregroundStyle(Color("Primary900"))
+                                                .font(.custom("Urbanist-Semibold", size: 16))
+                                                .frame(width: 77, height: 38)
+                                                .overlay {
+                                                    RoundedRectangle(cornerRadius: .infinity)
+                                                        .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                                }
+                                        }
+                                        Button {
+                                            let encoder = JSONEncoder()
+                                            encoder.outputFormatting = .sortedKeys
+                                            
+                                            // Put ingredients in JSON
+                                            guard let ingredientsData = try? encoder.encode(
+                                                ingredients.enumerated().map { index, ingredient in
+                                                    Ingredients(index: index + 1, ingredient: ingredient)
+                                                }
+                                            ) else {
+                                                return
+                                            }
+                                            
+                                            let ingredientsJson = String(data: ingredientsData, encoding: .utf8) ?? ""
+                                            
+                                            // Put instructions JSON
+                                            guard let instructionsData = try? encoder.encode(
+                                                instructions.enumerated().map { index, instruction in
+                                                    Instructions(
+                                                        index: index + 1,
+                                                        instruction: instruction.text,
+                                                        instructionPictureUrl1: instruction.instructionPictureUrl1,
+                                                        instructionPictureUrl2: instruction.instructionPictureUrl2,
+                                                        instructionPictureUrl3: instruction.instructionPictureUrl3
+                                                    )
+                                                }
+                                            ) else {
+                                                return
+                                            }
+                                            let instructionsJson = String(data: instructionsData, encoding: .utf8) ?? ""
+                                            
+                                            var instructionImages: [(UIImage, String)] = []
+                                            
+                                            for (instructionIndex, instruction) in instructions.enumerated() {
+                                                instructionImages.append(contentsOf: instruction.getRenamedImages(instructionIndex: instructionIndex))
+                                            }
+                                            
+                                            guard let currentUser = userSession.first else {
+                                                return
+                                            }
+                                            
+                                            guard let userId = Int(currentUser.userId) else {
+                                                return
+                                            }
+                                            
+                                            if case.create = mode {
+                                                let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                                
+                                                apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
+                                                    switch result {
+                                                        case .success:
+                                                            isPublishedRecipe = true
+                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                                isPublishedRecipe = false
+                                                                isCreateRecipeSelected = false
+                                                            }
+                                                        case .failure(let error):
+                                                            print("Error uploading recipe: \(error)")
+                                                    }
+                                                }
+                                            } else if case .edit(let existingRecipe) = mode {
+                                                let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
+                                                
+                                                apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
+                                                    switch result {
+                                                        case .success(let message):
+                                                            print(message)
+                                                            isPublishedRecipe = true
+                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                                isPublishedRecipe = false
+                                                                isCreateRecipeSelected = false
+                                                            }
+                                                        case .failure(let error):
+                                                            print("Failed to update recipe: \(error.localizedDescription)")
+                                                    }
+                                                }
+                                            }
+                                            
+                                        } label: {
+                                            Text("Publish")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Semibold", size: 16))
+                                                .frame(width: 91, height: 38)
+                                                .background(Color("Primary900"))
+                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                        }
+                                    } else {
+                                        Button {
+                                            fieldsNotFilled = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                fieldsNotFilled = false
+                                            }
+                                        } label: {
+                                            Text("Save")
+                                                .foregroundStyle(Color("Primary900"))
+                                                .font(.custom("Urbanist-Semibold", size: 16))
+                                                .frame(width: 77, height: 38)
+                                                .overlay {
+                                                    RoundedRectangle(cornerRadius: .infinity)
+                                                        .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                                }
+                                        }
+                                        Button {
+                                            fieldsNotFilled = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                fieldsNotFilled = false
+                                            }
+                                        } label: {
+                                            Text("Publish")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Semibold", size: 16))
+                                                .frame(width: 91, height: 38)
+                                                .background(Color("Primary900"))
+                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                         }
                                     }
-                                    .sheet(isPresented: $isImagePickerPresented2) {
-                                        ImagePicker(image: $selectedImage2) { fileName in
-                                            recipeCoverPictureUrl2 = "recipe_cover_picture_url_2_\(fileName)"
-                                        }
+                                    Button {
+                                        isDropdownActivated = true
+                                    } label: {
+                                        Image("More Circle - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("MyWhite"))
                                     }
                                 }
                             }
-                            .scrollIndicators(.hidden)
-                            .scrollTargetBehavior(.paging)
-                        } else {
-                            ScrollView(.horizontal) {
-                                HStack(spacing: 12) {
-                                    Button {
-                                        isImagePickerPresented1 = true
-                                    } label: {
-                                        if let selectedImage1 = selectedImage1 {
-                                            Image(uiImage: selectedImage1)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .clipped()
-                                                .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .overlay(alignment: .trailingLastTextBaseline) {
-                                                    Circle()
-                                                        .foregroundStyle(Color("Primary900"))
-                                                        .frame(width: 52, height: 52)
-                                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                                        .overlay {
-                                                            Image("Edit - Curved - Bold")
-                                                                .resizable()
-                                                                .frame(width: 28, height: 28)
-                                                                .foregroundStyle(Color("MyWhite"))
-                                                        }
-                                                        .padding(12)
-                                                }
-                                        } else {
-                                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeCoverPictureUrl1).jpg")) { image in
-                                                image
+                            if fieldsNotFilled {
+                                HStack(spacing: 6) {
+                                    Image("Info Circle - Regular - Bold")
+                                        .resizable()
+                                        .frame(width: 18, height: 18)
+                                        .foregroundStyle(Color("MyOrange"))
+                                        .padding(.leading, 12)
+                                    Text("You must fill out all fields.")
+                                        .foregroundStyle(Color("MyOrange"))
+                                        .font(.custom("Urbanist-Regular", size: 12))
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 34)
+                                .background(Color("TransparentRed"))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                            }
+                            if case .create = mode {
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 12) {
+                                        Button {
+                                            isImagePickerPresented1 = true
+                                        } label: {
+                                            if let selectedImage1 = selectedImage1 {
+                                                Image(uiImage: selectedImage1)
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fill)
                                                     .clipped()
@@ -519,7 +355,7 @@ struct CreateRecipeView: View {
                                                             }
                                                             .padding(12)
                                                     }
-                                            } placeholder: {
+                                            } else {
                                                 VStack(spacing: 32) {
                                                     Image("Image - Regular - Bold")
                                                         .resizable()
@@ -538,39 +374,16 @@ struct CreateRecipeView: View {
                                                 }
                                             }
                                         }
-                                    }
-                                    .sheet(isPresented: $isImagePickerPresented1) {
-                                        ImagePicker(image: $selectedImage1) { fileName in
-                                            recipeCoverPictureUrl1 = "recipe_cover_picture_url_1_\(fileName)"
+                                        .sheet(isPresented: $isImagePickerPresented1) {
+                                            ImagePicker(image: $selectedImage1) { fileName in
+                                                recipeCoverPictureUrl1 = "recipe_cover_picture_url_1_\(fileName)"
+                                            }
                                         }
-                                    }
-                                    Button {
-                                        isImagePickerPresented2 = true
-                                    } label: {
-                                        if let selectedImage2 = selectedImage2 {
-                                            Image(uiImage: selectedImage2)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .clipped()
-                                                .frame(width: max(geometry.size.width - 48, 0), height: 382)
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .overlay(alignment: .trailingLastTextBaseline) {
-                                                    Circle()
-                                                        .foregroundStyle(Color("Primary900"))
-                                                        .frame(width: 52, height: 52)
-                                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                                        .overlay {
-                                                            Image("Edit - Curved - Bold")
-                                                                .resizable()
-                                                                .frame(width: 28, height: 28)
-                                                                .foregroundStyle(Color("MyWhite"))
-                                                        }
-                                                        .padding(12)
-                                                }
-                                            
-                                        } else {
-                                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeCoverPictureUrl2).jpg")) { image in
-                                                image
+                                        Button {
+                                            isImagePickerPresented2 = true
+                                        } label: {
+                                            if let selectedImage2 = selectedImage2 {
+                                                Image(uiImage: selectedImage2)
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fill)
                                                     .clipped()
@@ -589,7 +402,8 @@ struct CreateRecipeView: View {
                                                             }
                                                             .padding(12)
                                                     }
-                                            } placeholder: {
+                                                
+                                            } else {
                                                 VStack(spacing: 32) {
                                                     Image("Image - Regular - Bold")
                                                         .resizable()
@@ -608,48 +422,172 @@ struct CreateRecipeView: View {
                                                 }
                                             }
                                         }
-                                    }
-                                    .sheet(isPresented: $isImagePickerPresented2) {
-                                        ImagePicker(image: $selectedImage2) { fileName in
-                                            recipeCoverPictureUrl2 = "recipe_cover_picture_url_2_\(fileName)"
+                                        .sheet(isPresented: $isImagePickerPresented2) {
+                                            ImagePicker(image: $selectedImage2) { fileName in
+                                                recipeCoverPictureUrl2 = "recipe_cover_picture_url_2_\(fileName)"
+                                            }
                                         }
                                     }
                                 }
+                                .scrollIndicators(.hidden)
+                                .scrollTargetBehavior(.paging)
+                            } else {
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 12) {
+                                        Button {
+                                            isImagePickerPresented1 = true
+                                        } label: {
+                                            if let selectedImage1 = selectedImage1 {
+                                                Image(uiImage: selectedImage1)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .clipped()
+                                                    .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                    .overlay(alignment: .trailingLastTextBaseline) {
+                                                        Circle()
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .frame(width: 52, height: 52)
+                                                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                                            .overlay {
+                                                                Image("Edit - Curved - Bold")
+                                                                    .resizable()
+                                                                    .frame(width: 28, height: 28)
+                                                                    .foregroundStyle(Color("MyWhite"))
+                                                            }
+                                                            .padding(12)
+                                                    }
+                                            } else {
+                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeCoverPictureUrl1).jpg")) { image in
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .clipped()
+                                                        .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                        .overlay(alignment: .trailingLastTextBaseline) {
+                                                            Circle()
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .frame(width: 52, height: 52)
+                                                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                                                .overlay {
+                                                                    Image("Edit - Curved - Bold")
+                                                                        .resizable()
+                                                                        .frame(width: 28, height: 28)
+                                                                        .foregroundStyle(Color("MyWhite"))
+                                                                }
+                                                                .padding(12)
+                                                        }
+                                                } placeholder: {
+                                                    VStack(spacing: 32) {
+                                                        Image("Image - Regular - Bold")
+                                                            .resizable()
+                                                            .frame(width: 60, height: 60)
+                                                            .foregroundStyle(Color("Greyscale500"))
+                                                        Text("Add recipe cover image")
+                                                            .foregroundStyle(Color("Greyscale500"))
+                                                            .font(.custom("Urbanist-Regular", size: 16))
+                                                    }
+                                                    .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                                    .background(Color("Dark2"))
+                                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .strokeBorder(Color("Dark4"), lineWidth: 1)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .sheet(isPresented: $isImagePickerPresented1) {
+                                            ImagePicker(image: $selectedImage1) { fileName in
+                                                recipeCoverPictureUrl1 = "recipe_cover_picture_url_1_\(fileName)"
+                                            }
+                                        }
+                                        Button {
+                                            isImagePickerPresented2 = true
+                                        } label: {
+                                            if let selectedImage2 = selectedImage2 {
+                                                Image(uiImage: selectedImage2)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .clipped()
+                                                    .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                    .overlay(alignment: .trailingLastTextBaseline) {
+                                                        Circle()
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .frame(width: 52, height: 52)
+                                                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                                            .overlay {
+                                                                Image("Edit - Curved - Bold")
+                                                                    .resizable()
+                                                                    .frame(width: 28, height: 28)
+                                                                    .foregroundStyle(Color("MyWhite"))
+                                                            }
+                                                            .padding(12)
+                                                    }
+                                                
+                                            } else {
+                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeCoverPictureUrl2).jpg")) { image in
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .clipped()
+                                                        .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                        .overlay(alignment: .trailingLastTextBaseline) {
+                                                            Circle()
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .frame(width: 52, height: 52)
+                                                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                                                .overlay {
+                                                                    Image("Edit - Curved - Bold")
+                                                                        .resizable()
+                                                                        .frame(width: 28, height: 28)
+                                                                        .foregroundStyle(Color("MyWhite"))
+                                                                }
+                                                                .padding(12)
+                                                        }
+                                                } placeholder: {
+                                                    VStack(spacing: 32) {
+                                                        Image("Image - Regular - Bold")
+                                                            .resizable()
+                                                            .frame(width: 60, height: 60)
+                                                            .foregroundStyle(Color("Greyscale500"))
+                                                        Text("Add recipe cover image")
+                                                            .foregroundStyle(Color("Greyscale500"))
+                                                            .font(.custom("Urbanist-Regular", size: 16))
+                                                    }
+                                                    .frame(width: max(geometry.size.width - 48, 0), height: 382)
+                                                    .background(Color("Dark2"))
+                                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                    .overlay {
+                                                        RoundedRectangle(cornerRadius: 20)
+                                                            .strokeBorder(Color("Dark4"), lineWidth: 1)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .sheet(isPresented: $isImagePickerPresented2) {
+                                            ImagePicker(image: $selectedImage2) { fileName in
+                                                recipeCoverPictureUrl2 = "recipe_cover_picture_url_2_\(fileName)"
+                                            }
+                                        }
+                                    }
+                                }
+                                .scrollIndicators(.hidden)
+                                .scrollTargetBehavior(.paging)
                             }
-                            .scrollIndicators(.hidden)
-                            .scrollTargetBehavior(.paging)
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Title")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 20))
-                            TextField(text: $title) {
-                                Text("Recipe Title")
-                                    .foregroundStyle(Color("Greyscale500"))
-                                    .font(.custom("Urbanist-Regular", size: 16))
-                                    .multilineTextAlignment(.leading)
-                            }
-                            .keyboardType(.default)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Semibold", size: 16))
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 18)
-                            .frame(minHeight: 58)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Description")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 20))
-                            VStack(alignment: .leading, spacing: 0) {
-                                TextField(text: $description, axis: .vertical) {
-                                    Text("Lorem ipsum dolor sit amet ...")
+                            
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Title")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                TextField(text: $title) {
+                                    Text("Recipe Title")
                                         .foregroundStyle(Color("Greyscale500"))
                                         .font(.custom("Urbanist-Regular", size: 16))
+                                        .multilineTextAlignment(.leading)
                                 }
                                 .keyboardType(.default)
                                 .foregroundStyle(Color("MyWhite"))
@@ -657,176 +595,283 @@ struct CreateRecipeView: View {
                                 .multilineTextAlignment(.leading)
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 18)
-                                Spacer()
+                                .frame(minHeight: 58)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
                             }
-                            .frame(minHeight: 140)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
                             
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Cook Time")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 20))
-                            TextField(text: $cookTime) {
-                                Text("1 hour, 30 mins, etc")
-                                    .foregroundStyle(Color("Greyscale500"))
-                                    .font(.custom("Urbanist-Regular", size: 16))
-                                    
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Description")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                VStack(alignment: .leading, spacing: 0) {
+                                    TextField(text: $description, axis: .vertical) {
+                                        Text("Lorem ipsum dolor sit amet ...")
+                                            .foregroundStyle(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Regular", size: 16))
+                                    }
+                                    .keyboardType(.default)
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Semibold", size: 16))
+                                    .multilineTextAlignment(.leading)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 18)
+                                    Spacer()
+                                }
+                                .frame(minHeight: 140)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                
                             }
-                            .keyboardType(.numberPad)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Semibold", size: 16))
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 18)
-                            .frame(minHeight: 58)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Serves")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 20))
-                            TextField(text: $serves) {
-                                Text("3 people")
-                                    .foregroundStyle(Color("Greyscale500"))
-                                    .font(.custom("Urbanist-Regular", size: 16))
-                                    
-                            }
-                            .keyboardType(.numberPad)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Semibold", size: 16))
-                            .multilineTextAlignment(.leading)
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 18)
-                            .frame(minHeight: 58)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
-                        
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("Origin")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 20))
-                            HStack {
-                                TextField(text: $origin) {
-                                    Text("Location")
+                            
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Cook Time")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                TextField(text: $cookTime) {
+                                    Text("1 hour, 30 mins, etc")
                                         .foregroundStyle(Color("Greyscale500"))
                                         .font(.custom("Urbanist-Regular", size: 16))
-                                        
+                                    
                                 }
-                                .keyboardType(.default)
+                                .keyboardType(.numberPad)
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Semibold", size: 16))
                                 .multilineTextAlignment(.leading)
+                                .padding(.horizontal, 20)
                                 .padding(.vertical, 18)
+                                .frame(minHeight: 58)
+                                .background(Color("Dark2"))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                                Image("Location - Regular - Light - Outline")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundStyle(Color(origin.isEmpty ? "Greyscale500" : "MyWhite"))
                             }
-                            .padding(.horizontal, 20)
-                            .frame(height: 58)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                        }
-                        Divider()
-                            .overlay {
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundStyle(Color("Dark4"))
-                            }
-                        
-                        VStack(alignment: .leading, spacing: 24) {
-                            Text("Ingredients:")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 24))
-                            ForEach(ingredients.indices, id: \.self) { index in
-                                IngredientSlotView(
-                                    ingredient: $ingredients[index],
-                                    index: index,
-                                    onDelete: {
-                                        ingredients.remove(at: index)
-                                    }
-                                )
-                            }
-                        }
-                        
-                        Button {
-                            ingredients.append("")
-                        } label: {
-                            HStack {
-                                Image("Icon=plus, Component=Additional Icons")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                    .foregroundStyle(Color("MyWhite"))
-                                Text("Add Ingredients")
-                                    .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 16))
-                            }
-                            .frame(height: 58)
-                            .frame(maxWidth: .infinity)
-                            .background(Color("Dark4"))
-                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
                             
-                        }
-                        Divider()
-                            .overlay {
-                                Rectangle()
-                                    .frame(height: 1)
-                                    .foregroundStyle(Color("Dark4"))
-                            }
-                        VStack(alignment: .leading, spacing: 24) {
-                            Text("Instructions:")
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Serves")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                TextField(text: $serves) {
+                                    Text("3 people")
+                                        .foregroundStyle(Color("Greyscale500"))
+                                        .font(.custom("Urbanist-Regular", size: 16))
+                                    
+                                }
+                                .keyboardType(.numberPad)
                                 .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 24))
-                            InstructionListView(instructions: $instructions, instructionCounter: $instructionCounter)
-                        }
-                    }
-                    .padding(.top, 16)
-                    .padding(.horizontal, 24)
-                }
-                .scrollIndicators(.hidden)
-                .background(Color(isSavedRecipe || isPublishedRecipe ? "BackgroundOpacity" : "Dark1"))
-                .blur(radius: isSavedRecipe || isPublishedRecipe ? 4 : 0)
-                .onTapGesture {
-                    dismissKeyboard()
-                }
-                .onAppear {
-                    if case .edit(let existingRecipe) = mode {
-                        apiGetManager.getRecipeDetails(recipeId: existingRecipe) { result in
-                            DispatchQueue.main.async {
-                                switch result {
-                                    case .success(let details):
-                                        self.recipeCoverPictureUrl1 = details.recipeCoverPictureUrl1
-                                        self.recipeCoverPictureUrl2 = details.recipeCoverPictureUrl2
-                                        self.title = details.title
-                                        self.description = details.description
-                                        self.cookTime = details.cookTime
-                                        self.serves = details.serves
-                                        self.origin = details.origin
-                                        self.ingredients = details.ingredients.map { $0.ingredient }
-                                        self.instructions = details.instructions.map {
-                                            Instruction(text: $0.instruction, instructionPictureUrl1: $0.instructionPictureUrl1, instructionPictureUrl2: $0.instructionPictureUrl2, instructionPictureUrl3: $0.instructionPictureUrl3)
+                                .font(.custom("Urbanist-Semibold", size: 16))
+                                .multilineTextAlignment(.leading)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 18)
+                                .frame(minHeight: 58)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Origin")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 20))
+                                HStack {
+                                    TextField(text: $origin) {
+                                        Text("Location")
+                                            .foregroundStyle(Color("Greyscale500"))
+                                            .font(.custom("Urbanist-Regular", size: 16))
+                                        
+                                    }
+                                    .keyboardType(.default)
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Semibold", size: 16))
+                                    .multilineTextAlignment(.leading)
+                                    .padding(.vertical, 18)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    Image("Location - Regular - Light - Outline")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color(origin.isEmpty ? "Greyscale500" : "MyWhite"))
+                                }
+                                .padding(.horizontal, 20)
+                                .frame(height: 58)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                            }
+                            Divider()
+                                .overlay {
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundStyle(Color("Dark4"))
+                                }
+                            
+                            VStack(alignment: .leading, spacing: 24) {
+                                Text("Ingredients:")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 24))
+                                ForEach(ingredients.indices, id: \.self) { index in
+                                    IngredientSlotView(
+                                        ingredient: $ingredients[index],
+                                        index: index,
+                                        onDelete: {
+                                            ingredients.remove(at: index)
                                         }
-                                        self.loadInstructionImages(from: self.instructions)
-                                    case .failure(let error):
-                                        print("error \(error.localizedDescription)")
+                                    )
+                                }
+                            }
+                            
+                            Button {
+                                ingredients.append("")
+                            } label: {
+                                HStack {
+                                    Image("Icon=plus, Component=Additional Icons")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color("MyWhite"))
+                                    Text("Add Ingredients")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 16))
+                                }
+                                .frame(height: 58)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("Dark4"))
+                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                
+                            }
+                            Divider()
+                                .overlay {
+                                    Rectangle()
+                                        .frame(height: 1)
+                                        .foregroundStyle(Color("Dark4"))
+                                }
+                            VStack(alignment: .leading, spacing: 24) {
+                                Text("Instructions:")
+                                    .foregroundStyle(Color("MyWhite"))
+                                    .font(.custom("Urbanist-Bold", size: 24))
+                                InstructionListView(instructions: $instructions, instructionCounter: $instructionCounter)
+                            }
+                        }
+                        .padding(.top, 16)
+                        .padding(.horizontal, 24)
+                    }
+                    .scrollIndicators(.hidden)
+                    .background(Color(isSavedRecipe || isPublishedRecipe ? "BackgroundOpacity" : "Dark1"))
+                    .blur(radius: isSavedRecipe || isPublishedRecipe ? 4 : 0)
+                    .onTapGesture {
+                        dismissKeyboard()
+                        isDropdownActivated = false
+                    }
+                    .onAppear {
+                        if case .edit(let existingRecipe) = mode {
+                            apiGetManager.getRecipeDetails(recipeId: existingRecipe) { result in
+                                DispatchQueue.main.async {
+                                    switch result {
+                                        case .success(let details):
+                                            self.recipeCoverPictureUrl1 = details.recipeCoverPictureUrl1
+                                            self.recipeCoverPictureUrl2 = details.recipeCoverPictureUrl2
+                                            self.title = details.title
+                                            self.description = details.description
+                                            self.cookTime = details.cookTime
+                                            self.serves = details.serves
+                                            self.origin = details.origin
+                                            self.ingredients = details.ingredients.map { $0.ingredient }
+                                            self.instructions = details.instructions.map {
+                                                Instruction(text: $0.instruction, instructionPictureUrl1: $0.instructionPictureUrl1, instructionPictureUrl2: $0.instructionPictureUrl2, instructionPictureUrl3: $0.instructionPictureUrl3)
+                                            }
+                                            self.loadInstructionImages(from: self.instructions)
+                                        case .failure(let error):
+                                            print("error \(error.localizedDescription)")
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                if isSavedRecipe {
+                    ModalView(title: "Recipe Successfully saved", message: "Your recipe has been added to your draft, it is not yet published.")
+                } else if isPublishedRecipe {
+                    ModalView(title: "Recipe Successfully published", message: "Your recipe has been published. Anyone can see it!")
+                }
             }
-            if isSavedRecipe {
-                ModalView(title: "Recipe Successfully saved", message: "Your recipe has been added to your draft, it is not yet published.")
-            } else if isPublishedRecipe {
-                ModalView(title: "Recipe Successfully published", message: "Your recipe has been published. Anyone can see it!")
+            if isDropdownActivated {
+                Button {
+                    isDropdownActivated = false
+                    deleteRecipeModal = true
+                } label: {
+                    HStack(spacing: 12) {
+                        Image("Delete - Regular - Light - Outline")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color("Greyscale50"))
+                        Text("Delete Recipe")
+                            .foregroundStyle(Color("Greyscale50"))
+                            .font(.custom("Urbanist-Semibold", size: 14))
+                    }
+                    .frame(width: 168, height: 60)
+                    .background(Color("Dark2"))
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .shadow(color: Color(red: 0.02, green: 0.02, blue: 0.06).opacity(0.08), radius: 50, x: 0, y: 20)
+                }
+                .padding(.top, 54)
+                .padding(.trailing, 24)
             }
+        }
+        .sheet(isPresented: $deleteRecipeModal) {
+            VStack(spacing: 24) {
+                RoundedRectangle(cornerRadius: .infinity)
+                    .foregroundStyle(Color("Dark4"))
+                    .frame(width: 38, height: 3)
+                Text("Delete Recipe")
+                    .foregroundStyle(Color("Error"))
+                    .font(.custom("Urbanist-Bold", size: 24))
+                Divider()
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 0)
+                            .foregroundStyle(Color("Dark4"))
+                            .frame(height: 1)
+                    }
+                Text("Are you sure you want to delete this recipe?")
+                    .foregroundStyle(Color("MyWhite"))
+                    .font(.custom("Urbanist-Bold", size: 20))
+                    .multilineTextAlignment(.center)
+                HStack(spacing: 12) {
+                    Button {
+                        deleteRecipeModal = false
+                    } label: {
+                        Text("Cancel")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("Dark4"))
+                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                    }
+                    
+                    Button {
+                        if case .create = mode {
+                            isCreateRecipeSelected = false
+                        } else if case .edit(let existingRecipe) = mode {
+                            print("delete")
+                        }
+                    } label: {
+                        Text("Yes, Delete")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 58)
+                            .background(Color("Primary900"))
+                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                    }
+                }
+            }
+            .padding(.top, 8)
+            .padding(.bottom, 36)
+            .padding(.horizontal, 24)
+            .presentationDetents([.height(300)])
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color("Dark2"))
+            .clipShape(RoundedRectangle(cornerRadius: 44))
+            .overlay {
+                RoundedRectangle(cornerRadius: 44)
+                    .strokeBorder(Color("Dark4"), lineWidth: 1)
+            }
+            .ignoresSafeArea(edges: .bottom)
         }
     }
     
