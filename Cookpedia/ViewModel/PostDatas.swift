@@ -433,6 +433,36 @@ class APIPostRequest: ObservableObject {
             }
         }.resume()
     }
+    
+    func incrementSearch(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+        let endpoint = "/recipes/increment-search/\(recipeId)"
+        
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            if let data = data, let message = String(data: data, encoding: .utf8) {
+                completion(.success(message))
+            } else {
+                completion(.failure(APIGetError.invalidResponse))
+            }
+        }.resume()
+    }
 }
 
 enum APIPostError: Error {

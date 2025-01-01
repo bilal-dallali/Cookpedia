@@ -505,6 +505,15 @@ struct RecipeDetailsView: View {
                                 }
                             }
                         }
+                        
+                        apiPostManager.incrementSearch(recipeId: recipeId) { result in
+                            switch result {
+                                case .success:
+                                    print("increment search")
+                                case .failure(let error):
+                                    print("Failed to check follow status: \(error.localizedDescription)")
+                            }
+                        }
                     }
                 }
                 if addedToBookmarks {

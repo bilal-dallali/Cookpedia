@@ -817,78 +817,73 @@ struct CreateRecipeView: View {
             }
         }
         .sheet(isPresented: $deleteRecipeModal) {
-            VStack(spacing: 24) {
-                RoundedRectangle(cornerRadius: .infinity)
-                    .foregroundStyle(Color("Dark4"))
-                    .frame(width: 38, height: 3)
-                Text("Delete Recipe")
-                    .foregroundStyle(Color("Error"))
-                    .font(.custom("Urbanist-Bold", size: 24))
-                Divider()
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 0)
-                            .foregroundStyle(Color("Dark4"))
-                            .frame(height: 1)
-                    }
-                Text("Are you sure you want to delete this recipe?")
-                    .foregroundStyle(Color("MyWhite"))
-                    .font(.custom("Urbanist-Bold", size: 20))
-                    .multilineTextAlignment(.center)
-                HStack(spacing: 12) {
-                    Button {
-                        deleteRecipeModal = false
-                    } label: {
-                        Text("Cancel")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 58)
-                            .background(Color("Dark4"))
-                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                    }
-                    
-                    Button {
-                        if case .create = mode {
-                            isCreateRecipeSelected = false
-                        } else if case .edit(let existingRecipe) = mode {
-                            apiDeleteManager.deleteRecipe(recipeId: existingRecipe) { result in
-                                switch result {
-                                    case .success:
-                                        deleteRecipeModal = false
-                                        isDeletedRecipe = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                            isDeletedRecipe = false
-                                            isUpdateRecipeSelected = false
-                                        }
-                                    case .failure(let error):
-                                        print("error deleting the recipe \(error.localizedDescription)")
+
+                VStack(spacing: 24) {
+                    RoundedRectangle(cornerRadius: .infinity)
+                        .foregroundStyle(Color("Dark4"))
+                        .frame(width: 38, height: 3)
+                    Text("Delete Recipe")
+                        .foregroundStyle(Color("Error"))
+                        .font(.custom("Urbanist-Bold", size: 24))
+                    Divider()
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 0)
+                                .foregroundStyle(Color("Dark4"))
+                                .frame(height: 1)
+                        }
+                    Text("Are you sure you want to delete this recipe?")
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 20))
+                        .multilineTextAlignment(.center)
+                        .frame(height: 64)
+                    HStack(spacing: 12) {
+                        Button {
+                            deleteRecipeModal = false
+                        } label: {
+                            Text("Cancel")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("Dark4"))
+                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                        }
+                        
+                        Button {
+                            if case .create = mode {
+                                isCreateRecipeSelected = false
+                            } else if case .edit(let existingRecipe) = mode {
+                                apiDeleteManager.deleteRecipe(recipeId: existingRecipe) { result in
+                                    switch result {
+                                        case .success:
+                                            deleteRecipeModal = false
+                                            isDeletedRecipe = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                isDeletedRecipe = false
+                                                isUpdateRecipeSelected = false
+                                            }
+                                        case .failure(let error):
+                                            print("error deleting the recipe \(error.localizedDescription)")
+                                    }
                                 }
                             }
+                        } label: {
+                            Text("Yes, Delete")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 16))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 58)
+                                .background(Color("Primary900"))
+                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                         }
-                    } label: {
-                        Text("Yes, Delete")
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 16))
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 58)
-                            .background(Color("Primary900"))
-                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                            .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                     }
                 }
-            }
-            .padding(.top, 8)
-            .padding(.bottom, 36)
-            .padding(.horizontal, 24)
-            .presentationDetents([.height(300)])
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color("Dark2"))
-            .clipShape(RoundedRectangle(cornerRadius: 44))
-            .overlay {
-                RoundedRectangle(cornerRadius: 44)
-                    .strokeBorder(Color("Dark4"), lineWidth: 1)
-            }
-            .ignoresSafeArea(edges: .bottom)
+                .padding(.horizontal, 24)
+                .clipShape(RoundedRectangle(cornerRadius: 44))
+                .presentationDetents([.height(260)])
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color("Dark2"))
         }
     }
     
