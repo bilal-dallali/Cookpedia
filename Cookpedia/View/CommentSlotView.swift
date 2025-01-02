@@ -14,6 +14,7 @@ struct CommentSlotView: View {
     @State private var heartScaleX: CGFloat = 0
     @State private var heartScaleY: CGFloat = 0
     @State private var isCommentLiked: Bool = false
+    //@State var isDropdownActivated: Bool
     var apiPostManager = APIPostRequest()
     var apiGetManager = APIGetRequest()
     @Environment(\.modelContext) var context
@@ -21,23 +22,30 @@ struct CommentSlotView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 16) {
-                AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(comment.profilePictureUrl).jpg")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipped()
-                        .frame(width: 48, height: 48)
-                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                } placeholder: {
-                    Image("tanner-stafford")
-                        .resizable()
-                        .frame(width: 48, height: 48)
-                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+            HStack(spacing: 0) {
+                NavigationLink {
+                    //print("User who posted the comment: \(comment.userId)")
+                    ProfilePageView(userId: comment.userId)
+                } label: {
+                    HStack(spacing: 16) {
+                        AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(comment.profilePictureUrl).jpg")) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .clipped()
+                                .frame(width: 48, height: 48)
+                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                        } placeholder: {
+                            Image("tanner-stafford")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                        }
+                        Text(comment.fullName)
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 16))
+                    }
                 }
-                Text(comment.fullName)
-                    .foregroundStyle(Color("MyWhite"))
-                    .font(.custom("Urbanist-Bold", size: 16))
                 Spacer()
                 Button {
                     //
@@ -107,5 +115,5 @@ struct CommentSlotView: View {
 }
 
 #Preview {
-    CommentSlotView(comment: CommentsDetails(id: 1, userId: 1, recipeId: 8, comment: "Amazing recipe", fullName: "tanner stafford", profilePictureUrl: "anyway", createdAt: "2025-01-01 22:05:17"))
+    CommentSlotView(comment: CommentsDetails(id: 1, userId: 1, recipeId: 8, comment: "Amazing recipe", fullName: "Tanner Stafford", profilePictureUrl: "anyway", createdAt: "2025-01-01 22:05:17"))
 }

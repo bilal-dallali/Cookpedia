@@ -54,7 +54,6 @@ struct RecipeDetailsView: View {
         )
     }
     
-    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
@@ -632,8 +631,6 @@ struct RecipeDetailsView: View {
                                     print("Failed to increment views: \(error.localizedDescription)")
                             }
                         }
-                        
-                        
                     }
                 }
                 if addedToBookmarks {
