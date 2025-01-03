@@ -428,6 +428,15 @@ struct RecipeDetailsView: View {
                                                                 switch result {
                                                                     case .success:
                                                                         print("successfully deleted the comment")
+                                                                        apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
+                                                                            switch result {
+                                                                                case .success(let comments):
+                                                                                    print("comments \(comments)")
+                                                                                    self.comments = comments
+                                                                                case .failure(let error):
+                                                                                    print("error \(error.localizedDescription)")
+                                                                            }
+                                                                        }
                                                                     case .failure:
                                                                         print("Didn't delete the comment")
                                                                 }
