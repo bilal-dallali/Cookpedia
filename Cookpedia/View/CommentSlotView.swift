@@ -14,17 +14,19 @@ struct CommentSlotView: View {
     @State private var heartScaleX: CGFloat = 0
     @State private var heartScaleY: CGFloat = 0
     @State private var isCommentLiked: Bool = false
-    //@State var isDropdownActivated: Bool
+    @State private var userId: Int?
+    @Binding var deleteCommentAlert: Bool
     var apiPostManager = APIPostRequest()
     var apiGetManager = APIGetRequest()
+    var apiDeleteManager = APIDeleteRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     
     var body: some View {
+        
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 0) {
                 NavigationLink {
-                    //print("User who posted the comment: \(comment.userId)")
                     ProfilePageView(userId: comment.userId)
                 } label: {
                     HStack(spacing: 16) {
@@ -47,8 +49,26 @@ struct CommentSlotView: View {
                     }
                 }
                 Spacer()
-                Button {
-                    //
+                Menu {
+                    if userId == comment.userId {
+                        Button {
+                            deleteCommentAlert = true
+                        } label: {
+                            Label {
+                                Text("Delete Comment")
+                                    .foregroundStyle(Color("Primary900"))
+                            } icon: {
+                                Image("Delete - Regular - Light - Outline")
+                                    .foregroundStyle(Color("Primary900"))
+                            }
+                        }
+                    } else {
+                        Button {
+                            //
+                        } label: {
+                            Text("Can't delete the comment it's not yours")
+                        }
+                    }
                 } label: {
                     Image("More Circle - Regular - Light - Outline")
                         .resizable()
@@ -111,9 +131,20 @@ struct CommentSlotView: View {
             }
             .frame(height: 24)
         }
+        .onAppear {
+            guard let currentUser = userSession.first else {
+                return
+            }
+            
+            guard let connectedUserId = Int(currentUser.userId) else {
+                return
+            }
+            
+            userId = connectedUserId
+        }
     }
 }
 
 #Preview {
-    CommentSlotView(comment: CommentsDetails(id: 1, userId: 1, recipeId: 8, comment: "Amazing recipe", fullName: "Tanner Stafford", profilePictureUrl: "anyway", createdAt: "2025-01-01 22:05:17"))
+    CommentSlotView(comment: CommentsDetails(id: 1, userId: 1, recipeId: 8, comment: "Amazing recipe", fullName: "Tanner Stafford", profilePictureUrl: "anyway", createdAt: "2025-01-01 22:05:17"), deleteCommentAlert: .constant(false))
 }

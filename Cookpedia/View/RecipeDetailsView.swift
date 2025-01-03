@@ -14,6 +14,7 @@ struct RecipeDetailsView: View {
     let recipeId: Int
     @State private var isBookmarkSelected: Bool = false
     @State private var addedToBookmarks: Bool = false
+    @State private var deleteCommentAlert: Bool = false
     var apiGetManager = APIGetRequest()
     var apiPostManager = APIPostRequest()
     var apiDeleteManager = APIDeleteRequest()
@@ -26,7 +27,7 @@ struct RecipeDetailsView: View {
     @FocusState private var isCommentTextfieldFocused: Bool
     
     // Private initializer for internal use only
-    private init(recipeDetails: RecipeDetails, recipeId: Int) {
+    private init(recipeDetails: RecipeDetails, recipeId: Int, isDropdownActivated: Bool) {
         self.recipeDetails = recipeDetails
         self.recipeId = recipeId
     }
@@ -417,7 +418,26 @@ struct RecipeDetailsView: View {
                                         
                                         VStack(spacing: 20) {
                                             ForEach(comments, id: \.id) { comment in
-                                                CommentSlotView(comment: comment)
+                                                CommentSlotView(comment: comment, deleteCommentAlert: $deleteCommentAlert)
+                                                    .alert("", isPresented: $deleteCommentAlert) {
+                                                        Button("Cancel", role: .cancel) {
+                                                            
+                                                        }
+                                                        Button("Delete", role: .destructive) {
+                                                            apiDeleteManager.deleteComment(commentId: comment.id) { result in
+                                                                switch result {
+                                                                    case .success:
+                                                                        print("successfully deleted the comment")
+                                                                    case .failure:
+                                                                        print("Didn't delete the comment")
+                                                                }
+                                                            }
+                                                        }
+                                                    } message: {
+                                                        Text("Are you sure you want to delete this comment?")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Regular", size: 16))
+                                                    }
                                             }
                                             
                                             HStack(spacing: 16) {
@@ -455,6 +475,7 @@ struct RecipeDetailsView: View {
                                                         }
                                                         
                                                         let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
+                                                        
                                                         apiPostManager.postComment(comment: comment) { result in
                                                             switch result {
                                                                 case .success(let response):
