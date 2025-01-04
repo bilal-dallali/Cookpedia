@@ -21,13 +21,11 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
-                print("Invalid response: \(response.debugDescription)")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -39,7 +37,6 @@ class APIGetRequest: ObservableObject {
                 completion(.success(user))
             } catch {
                 completion(.failure(APIGetError.decodingError))
-                print("decoding error: \(error.localizedDescription)")
             }
         }.resume()
     }
@@ -346,7 +343,6 @@ class APIGetRequest: ObservableObject {
                 let recipeDetails = try decoder.decode(RecipeDetails.self, from: data)
                 completion(.success(recipeDetails))
             } catch {
-                print("Decoding error: \(error)")
                 completion(.failure(APIGetError.invalidResponse))
             }
         }.resume()
@@ -364,14 +360,12 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
                   let data = data else {
-                print("Invalid response: \(response.debugDescription)")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -401,13 +395,11 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
-                print("Invalid response: \(response.debugDescription)")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -420,7 +412,6 @@ class APIGetRequest: ObservableObject {
                     completion(.failure(APIGetError.decodingError))
                 }
             } catch {
-                print("Decoding error: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }.resume()
@@ -438,13 +429,11 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
-                print("Invalid response: \(response.debugDescription)")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -457,7 +446,6 @@ class APIGetRequest: ObservableObject {
                     completion(.failure(APIGetError.decodingError))
                 }
             } catch {
-                print("Decoding error: \(error.localizedDescription)")
                 completion(.failure(error))
             }
         }.resume()
@@ -475,7 +463,6 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
@@ -492,7 +479,6 @@ class APIGetRequest: ObservableObject {
                 let followers = try decoder.decode([UserDetails].self, from: data)
                 completion(.success(followers))
             } catch {
-                print("Decoding error: \(error.localizedDescription)")
                 completion(.failure(APIGetError.decodingError))
             }
         }.resume()
@@ -510,7 +496,6 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
@@ -527,7 +512,6 @@ class APIGetRequest: ObservableObject {
                 let following = try decoder.decode([UserDetails].self, from: data)
                 completion(.success(following))
             } catch {
-                print("Decoding error: \(error.localizedDescription)")
                 completion(.failure(APIGetError.decodingError))
             }
         }.resume()
@@ -545,13 +529,11 @@ class APIGetRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
-                print("Invalid response: \(response.debugDescription)")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }
@@ -562,7 +544,6 @@ class APIGetRequest: ObservableObject {
                 let comments = try decoder.decode([CommentsDetails].self, from: data)
                 completion(.success(comments))
             } catch {
-                print("Decoding error: \(error.localizedDescription)")
                 completion(.failure(APIGetError.decodingError))
             }
         }.resume()

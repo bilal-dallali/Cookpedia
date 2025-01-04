@@ -412,14 +412,12 @@ class APIPostRequest: ObservableObject {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("Network error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201,
                   let data = data else {
-                print("Invalid response: \(response.debugDescription)")
                 completion(.failure(APIGetError.invalidResponse))
                 return
             }

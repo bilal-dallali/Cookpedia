@@ -86,18 +86,15 @@ struct ProfilePageView: View {
                                     apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId) { result in
                                         switch result {
                                             case .success(let message):
-                                                print("Success: \(message)")
                                                 following = false
                                             case .failure(let error):
                                                 print("Failed to unfollow user: \(error.localizedDescription)")
                                         }
                                     }
                                 } else if following == false {
-                                    print("following false")
                                     apiPostManager.followUser(followerId: connectedUserId, followedId: userId) { result in
                                         switch result {
                                             case .success(let message):
-                                                print("message \(message)")
                                                 following = true
                                             case .failure(let error):
                                                 print("Failed to follow user : \(error.localizedDescription)")
@@ -414,11 +411,9 @@ struct ProfilePageView: View {
                     switch result {
                         case .success(let isFollowing):
                             if isFollowing {
-                                print("User is following the other user.")
                                 following = true
                             } else {
                                 print("User is not following the other user.")
-                                following = false
                             }
                         case .failure(let error):
                             print("Failed to check follow status: \(error.localizedDescription)")

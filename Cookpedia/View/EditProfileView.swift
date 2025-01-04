@@ -422,7 +422,6 @@ struct EditProfileView: View {
                             apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
                                 switch result {
                                     case .success(let message):
-                                        print(message)
                                         profileUpdated = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                             self.redirectHomePage = true
@@ -475,6 +474,9 @@ struct EditProfileView: View {
                             print("Failed to fetch user data: \(error.localizedDescription)")
                     }
                 }
+            }
+            .onTapGesture {
+                dismissKeyboard()
             }
             if profileUpdated {
                 ModalView(title: "Profile infos updated", message: "Your infos have been updated successfully")

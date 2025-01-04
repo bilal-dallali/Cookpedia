@@ -161,8 +161,6 @@ struct MyRecipePageView: View {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                 ForEach(publishedRecipes, id: \.id) { recipe in
                                     NavigationLink {
-                                        //WelcomeView()
-                                        //print("recipe id: \(recipe.id)")
                                         RecipeDetailsView(recipeId: recipe.id)
                                     } label: {
                                         RecipeCardUpdateView(recipe: recipe)

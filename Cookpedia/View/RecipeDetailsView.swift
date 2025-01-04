@@ -158,22 +158,18 @@ struct RecipeDetailsView: View {
                                                     }
 
                                                     if following == true {
-                                                        print("following true")
                                                         apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
                                                             switch result {
                                                                 case .success(let message):
-                                                                    print("Success: \(message)")
                                                                     following = false
                                                                 case .failure(let error):
                                                                     print("Failed to unfollow user: \(error.localizedDescription)")
                                                             }
                                                         }
                                                     } else if following == false {
-                                                        print("following false")
                                                         apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId) { result in
                                                             switch result {
                                                                 case .success(let message):
-                                                                    print("message \(message)")
                                                                     following = true
                                                                 case .failure(let error):
                                                                     print("Failed to follow user : \(error.localizedDescription)")
@@ -427,11 +423,9 @@ struct RecipeDetailsView: View {
                                                             apiDeleteManager.deleteComment(commentId: comment.id) { result in
                                                                 switch result {
                                                                     case .success:
-                                                                        print("successfully deleted the comment")
                                                                         apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
                                                                             switch result {
                                                                                 case .success(let comments):
-                                                                                    print("comments \(comments)")
                                                                                     self.comments = comments
                                                                                 case .failure(let error):
                                                                                     print("error \(error.localizedDescription)")
@@ -486,19 +480,23 @@ struct RecipeDetailsView: View {
                                                         let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                         
                                                         apiPostManager.postComment(comment: comment) { result in
+                                                            print("result \(result)")
                                                             switch result {
                                                                 case .success(let response):
-                                                                    print("Comment posted successfully with response: \(response)")
+                                                                    print("comment poster successfully \(response)")
                                                                     commentText = ""
+                                                                    //DispatchQueue.main.asyncAfter(deadline: .now() + 5)
                                                                     apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
                                                                         switch result {
                                                                             case .success(let comments):
-                                                                                print("comments \(comments)")
+                                                                                print("comment loaded successfully after being posted \(comments)")
                                                                                 self.comments = comments
                                                                             case .failure(let error):
                                                                                 print("error \(error.localizedDescription)")
+                                                                                print("comment not loaded after being posted")
                                                                         }
                                                                     }
+                                                                    
                                                                 case .failure(let error):
                                                                     print("Failed to post comment\(error)")
                                                             }
@@ -639,9 +637,10 @@ struct RecipeDetailsView: View {
                                         }
                                         
                                         apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
+                                            print("Trying to get comments \(result)")
                                             switch result {
                                                 case .success(let comments):
-                                                    print("comments \(comments)")
+                                                    print("comments loaded successfully on page landing \(comments)")
                                                     self.comments = comments
                                                 case .failure(let error):
                                                     print("error \(error.localizedDescription)")

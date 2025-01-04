@@ -73,16 +73,16 @@ struct HomePageView: View {
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .lineSpacing(7)
-                                        Button {
-                                            //
-                                        } label: {
-                                            Text("Read more")
-                                                .foregroundStyle(Color("Primary900"))
-                                                .font(.custom("Urbanist-Semibold", size: 14))
-                                        }
-                                        .frame(width: 102, height: 32)
-                                        .background(Color("MyWhite"))
-                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+//                                        Button {
+//                                            //
+//                                        } label: {
+//                                            Text("Read more")
+//                                                .foregroundStyle(Color("Primary900"))
+//                                                .font(.custom("Urbanist-Semibold", size: 14))
+//                                        }
+//                                        .frame(width: 102, height: 32)
+//                                        .background(Color("MyWhite"))
+//                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                         
                                     }
                                     .frame(width: 220)
