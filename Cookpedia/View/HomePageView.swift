@@ -248,6 +248,28 @@ struct HomePageView: View {
                     return
                 }
                 
+                apiGetManager.getAllRecentRecipes { result in
+                    switch result {
+                        case .success(let recipes):
+                            DispatchQueue.main.async {
+                                self.recentRecipes = recipes
+                            }
+                        case .failure(let error):
+                            print("Error fetching recipes:", error.localizedDescription)
+                    }
+                }
+                
+                apiGetManager.getConnectedUserRecipesWithDetails(userId: userId) { result in
+                    DispatchQueue.main.async {
+                        switch result {
+                            case .success(let recipes):
+                                self.yourRecipes = recipes
+                            case .failure(let error):
+                                print("Failed to fetch user recipes: \(error.localizedDescription)")
+                        }
+                    }
+                }
+                
                 apiGetManager.getSavedRecipes(userId: userId) { result in
                     switch result {
                         case .success(let fetchedRecipes):

@@ -37,7 +37,6 @@ struct RecipeCardNameView: View {
                     HStack {
                         Spacer()
                         Button {
-                            
                             guard let currentUser = userSession.first else {
                                 return
                             }
@@ -114,7 +113,26 @@ struct RecipeCardNameView: View {
                     .strokeBorder(Color("Dark3"), lineWidth: 1)
             }
             .onAppear {
+                guard let currentUser = userSession.first else {
+                    return
+                }
                 
+                guard let userId = Int(currentUser.userId) else {
+                    return
+                }
+                
+                apiGetManager.getBookmark(userId: userId, recipeId: recipe.id) { result in
+                    switch result {
+                        case .success(let jsonResult):
+                            if jsonResult {
+                                isBookmarkSelected = true
+                            }
+                        case .failure(let error):
+                            print("failure \(error.localizedDescription)")
+                    }
+                }
+            }
+            .onChange(of: shouldRefresh) {
                 guard let currentUser = userSession.first else {
                     return
                 }
