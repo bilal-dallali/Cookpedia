@@ -364,6 +364,7 @@ struct EditProfileView: View {
                     .padding(.horizontal, 24)
                     .padding(.top, 24)
                 }
+                .scrollIndicators(.hidden)
             }
             .background(Color(profileUpdated ? "BackgroundOpacity" : "Dark1"))
             .blur(radius: profileUpdated ? 4 : 0)
@@ -443,7 +444,6 @@ struct EditProfileView: View {
                     }
                     
                 }
-                
             }
             .onAppear {
                 guard let currentUser = userSession.first else {

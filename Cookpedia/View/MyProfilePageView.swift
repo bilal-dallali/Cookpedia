@@ -63,8 +63,8 @@ struct MyProfilePageView: View {
                             }
                             .padding(.trailing, 20)
                             
-                            Button {
-                                //
+                            NavigationLink {
+                                SettingsView()
                             } label: {
                                 Image("Setting - Curved - Light - Outline")
                                     .resizable()

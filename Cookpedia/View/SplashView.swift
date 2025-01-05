@@ -46,7 +46,6 @@ struct SplashView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     redirectHomePage = true
-                    
                 } else {
                     redirectWelcomePage = true
                 }
@@ -58,7 +57,6 @@ struct SplashView: View {
         .navigationDestination(isPresented: $redirectWelcomePage) {
             WelcomeView()
         }
-
     }
 }
 
