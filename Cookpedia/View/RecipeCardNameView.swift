@@ -16,6 +16,7 @@ struct RecipeCardNameView: View {
     var apiGetManager = APIGetRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    @Binding var shouldRefresh: Bool
     
     var body: some View {
         GeometryReader { geometry in
@@ -50,6 +51,7 @@ struct RecipeCardNameView: View {
                                 switch result {
                                     case .success:
                                         isBookmarkSelected.toggle()
+                                        shouldRefresh.toggle()
                                     case .failure:
                                         print("failure")
                                 }
@@ -138,6 +140,6 @@ struct RecipeCardNameView: View {
 }
 
 #Preview {
-    RecipeCardNameView(recipe: RecipeTitleCoverUser(id: 1, userId: 1, title: "Couscous royal", recipeCoverPictureUrl1: "recipe_cover_picture_url_1_20241218184217_70BD8E36-8989-49E6-A64F-B4B724222552", fullName: "Bilal Dallali", profilePictureUrl: "profile_picture_20241206182148_6A019BB5-C982-4764-AE6F-3902F31C5CD5"))
+    RecipeCardNameView(recipe: RecipeTitleCoverUser(id: 1, userId: 1, title: "Couscous royal", recipeCoverPictureUrl1: "recipe_cover_picture_url_1_20241218184217_70BD8E36-8989-49E6-A64F-B4B724222552", fullName: "Bilal Dallali", profilePictureUrl: "profile_picture_20241206182148_6A019BB5-C982-4764-AE6F-3902F31C5CD5"), shouldRefresh: .constant(false))
         .frame(width: 183)
 }

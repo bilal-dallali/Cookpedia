@@ -14,6 +14,7 @@ struct MyBookmarkView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiGetManager = APIGetRequest()
+    @State private var shouldRefresh: Bool = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -23,8 +24,9 @@ struct MyBookmarkView: View {
                         NavigationLink {
                             RecipeDetailsView(recipeId: recipe.id)
                         } label: {
-                            RecipeCardNameView(recipe: recipe)
+                            RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                 .frame(height: 260)
+                                
                         }
                     }
                 }
@@ -68,6 +70,27 @@ struct MyBookmarkView: View {
                 return
             }
             
+            apiGetManager.getSavedRecipes(userId: userId) { result in
+                switch result {
+                    case .success(let fetchedRecipes):
+                        DispatchQueue.main.async {
+                            // Update only with the fetched saved recipes
+                            self.recipes = fetchedRecipes
+                        }
+                    case .failure(let error):
+                        print("Error fetching saved recipes:", error.localizedDescription)
+                }
+            }
+        }
+        .onChange(of: shouldRefresh) { _ in
+            guard let currentUser = userSession.first else {
+                return
+            }
+            
+            guard let userId = Int(currentUser.userId) else {
+                return
+            }
+            print("change")
             apiGetManager.getSavedRecipes(userId: userId) { result in
                 switch result {
                     case .success(let fetchedRecipes):

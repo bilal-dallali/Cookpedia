@@ -22,6 +22,7 @@ struct HomePageView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiGetManager = APIGetRequest()
+    @State private var shouldRefresh: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -114,7 +115,7 @@ struct HomePageView: View {
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
                                             } label: {
-                                                RecipeCardNameView(recipe: recipe)
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
                                             }
                                         }
@@ -148,7 +149,7 @@ struct HomePageView: View {
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
                                             } label: {
-                                                RecipeCardNameView(recipe: recipe)
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
                                             }
                                         }
@@ -179,7 +180,7 @@ struct HomePageView: View {
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
                                             } label: {
-                                                RecipeCardNameView(recipe: recipe)
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
                                             }
                                         }
@@ -220,7 +221,7 @@ struct HomePageView: View {
                     DispatchQueue.main.async {
                         switch result {
                             case .success(let recipes):
-                                self.yourRecipes = recipes // Mettez à jour la variable de votre vue
+                                self.yourRecipes = recipes
                             case .failure(let error):
                                 print("Failed to fetch user recipes: \(error.localizedDescription)")
                         }

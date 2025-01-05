@@ -14,6 +14,7 @@ struct RecentRecipeView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     var apiGetManager = APIGetRequest()
+    @State private var shouldRefresh: Bool = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -23,7 +24,7 @@ struct RecentRecipeView: View {
                         NavigationLink {
                             RecipeDetailsView(recipeId: recipe.id)
                         } label: {
-                            RecipeCardNameView(recipe: recipe)
+                            RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                 .frame(height: 260)
                         }
                     }
