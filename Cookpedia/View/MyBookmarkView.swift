@@ -82,7 +82,7 @@ struct MyBookmarkView: View {
                 }
             }
         }
-        .onChange(of: shouldRefresh) { _ in
+        .onChange(of: shouldRefresh) {
             guard let currentUser = userSession.first else {
                 return
             }
@@ -90,7 +90,7 @@ struct MyBookmarkView: View {
             guard let userId = Int(currentUser.userId) else {
                 return
             }
-            print("change")
+            
             apiGetManager.getSavedRecipes(userId: userId) { result in
                 switch result {
                     case .success(let fetchedRecipes):

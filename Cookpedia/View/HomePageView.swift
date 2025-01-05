@@ -106,7 +106,6 @@ struct HomePageView: View {
                                             .frame(width: 24, height: 24)
                                             .foregroundStyle(Color("Primary900"))
                                     }
-                                    
                                 }
                                 
                                 ScrollView(.horizontal) {
@@ -226,6 +225,27 @@ struct HomePageView: View {
                                 print("Failed to fetch user recipes: \(error.localizedDescription)")
                         }
                     }
+                }
+                
+                apiGetManager.getSavedRecipes(userId: userId) { result in
+                    switch result {
+                        case .success(let fetchedRecipes):
+                            DispatchQueue.main.async {
+                                // Update only with the fetched saved recipes
+                                self.bookmarkedRecipes = fetchedRecipes
+                            }
+                        case .failure(let error):
+                            print("Error fetching saved recipes:", error.localizedDescription)
+                    }
+                }
+            }
+            .onChange(of: shouldRefresh) {
+                guard let currentUser = userSession.first else {
+                    return
+                }
+                
+                guard let userId = Int(currentUser.userId) else {
+                    return
                 }
                 
                 apiGetManager.getSavedRecipes(userId: userId) { result in
