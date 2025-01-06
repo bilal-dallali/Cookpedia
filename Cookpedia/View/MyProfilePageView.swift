@@ -37,7 +37,8 @@ struct MyProfilePageView: View {
     @State private var website: String = ""
     @State private var city: String = ""
     @State private var country: String = ""
-    @State private var createdAt: String = ""
+    @State private var createdAtRaw: String = ""
+    @State private var createdAtFormatted: String = ""
     
     var body: some View {
         NavigationStack {
@@ -271,14 +272,18 @@ struct MyProfilePageView: View {
                             } else if isAboutSelected {
                                 VStack(spacing: 16) {
                                     if !description.isEmpty {
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            Text("Description")
-                                                .foregroundStyle(Color("MyWhite"))
-                                                .font(.custom("Urbanist-Bold", size: 18))
-                                            Text(description)
-                                                .foregroundStyle(Color("MyWhite"))
-                                                .font(.custom("Urbanist-Medium", size: 16))
+                                        HStack {
+                                            VStack(alignment: .leading, spacing: 8) {
+                                                Text("Description")
+                                                    .foregroundStyle(Color("MyWhite"))
+                                                    .font(.custom("Urbanist-Bold", size: 18))
+                                                Text(description)
+                                                    .foregroundStyle(Color("MyWhite"))
+                                                    .font(.custom("Urbanist-Medium", size: 16))
+                                            }
+                                            Spacer()
                                         }
+                                        .frame(maxWidth: .infinity)
                                         Divider()
                                             .overlay {
                                                 Rectangle()
@@ -393,6 +398,15 @@ struct MyProfilePageView: View {
                                                     .font(.custom("Urbanist-Medium", size: 16))
                                                 Spacer()
                                             }
+                                            HStack(spacing: 12) {
+                                                Image("Info Square - Regular - Light - Outline")
+                                                    .resizable()
+                                                    .frame(width: 24, height: 24)
+                                                    .foregroundStyle(Color("Greyscale300"))
+                                                Text("Joined since \(createdAtFormatted)")
+                                                    .foregroundStyle(Color("Greyscale300"))
+                                                    .font(.custom("Urbanist-Medium", size: 16))
+                                            }
                                         }
                                     }
                                 }
@@ -425,26 +439,28 @@ struct MyProfilePageView: View {
                                 print("Failed to fetch user recipes: \(error.localizedDescription)")
                         }
                     }
-
+                    
                     apiGetManager.getUserDataFromUserId(userId: userId) { result in
                         switch result {
-                        case .success(let user):
-                            DispatchQueue.main.async {
-                                self.profilePictureUrl = user.profilePictureUrl ?? ""
-                                self.fullName = user.fullName
-                                self.username = user.username
-                                self.description = user.description ?? ""
-                                self.youtube = user.youtube ?? ""
-                                self.facebook = user.facebook ?? ""
-                                self.twitter = user.twitter ?? ""
-                                self.instagram = user.instagram ?? ""
-                                self.website = user.website ?? ""
-                                self.city = user.city
-                                self.country = user.country
-                                //self.createdAt = createdAt
-                            }
-                        case .failure(let error):
-                            print("Failed to fetch user data: \(error.localizedDescription)")
+                            case .success(let user):
+                                DispatchQueue.main.async {
+                                    self.profilePictureUrl = user.profilePictureUrl ?? ""
+                                    self.fullName = user.fullName
+                                    self.username = user.username
+                                    self.description = user.description ?? ""
+                                    self.youtube = user.youtube ?? ""
+                                    self.facebook = user.facebook ?? ""
+                                    self.twitter = user.twitter ?? ""
+                                    self.instagram = user.instagram ?? ""
+                                    self.website = user.website ?? ""
+                                    self.city = user.city
+                                    self.country = user.country
+                                    //self.createdAt = user.createdAt
+                                    self.createdAtRaw = user.createdAt
+                                    self.createdAtFormatted = formatDate(from: user.createdAt)
+                                }
+                            case .failure(let error):
+                                print("Failed to fetch user data: \(error.localizedDescription)")
                         }
                     }
                     
@@ -473,6 +489,24 @@ struct MyProfilePageView: View {
             }
             .navigationBarBackButtonHidden(true)
         }
+    }
+}
+
+func formatDate(from dateString: String) -> String {
+    print("Received date string: \(dateString)")
+    
+    let inputFormatter = ISO8601DateFormatter()
+    inputFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    
+    let outputFormatter = DateFormatter()
+    outputFormatter.dateFormat = "MMM d, yyyy"
+    outputFormatter.locale = Locale(identifier: "en_US")
+    
+    if let date = inputFormatter.date(from: dateString) {
+        return outputFormatter.string(from: date)
+    } else {
+        print("Failed to parse date string: \(dateString)")
+        return "Unknown Date"
     }
 }
 

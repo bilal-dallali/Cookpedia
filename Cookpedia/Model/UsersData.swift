@@ -64,6 +64,7 @@ struct User: Decodable {
     let twitter: String?
     let instagram: String?
     let website: String?
+    let createdAt: String
 }
 
 struct UserDetails: Decodable {
