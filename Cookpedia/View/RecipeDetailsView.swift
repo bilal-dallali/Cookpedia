@@ -463,7 +463,7 @@ struct RecipeDetailsView: View {
                                                             apiDeleteManager.deleteComment(commentId: comment.id) { result in
                                                                 switch result {
                                                                     case .success:
-                                                                        apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
+                                                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
                                                                             switch result {
                                                                                 case .success(let comments):
                                                                                     self.comments = comments
@@ -526,7 +526,7 @@ struct RecipeDetailsView: View {
                                                                     print("comment poster successfully \(response)")
                                                                     commentText = ""
                                                                     //DispatchQueue.main.asyncAfter(deadline: .now() + 5)
-                                                                    apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
+                                                                    apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
                                                                         switch result {
                                                                             case .success(let comments):
                                                                                 print("comment loaded successfully after being posted \(comments)")
@@ -676,7 +676,7 @@ struct RecipeDetailsView: View {
                                             }
                                         }
                                         
-                                        apiGetManager.getComments(forRecipeId: recipeDetails.id) { result in
+                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
                                             print("Trying to get comments \(result)")
                                             switch result {
                                                 case .success(let comments):

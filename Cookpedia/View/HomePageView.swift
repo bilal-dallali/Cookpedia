@@ -29,25 +29,15 @@ struct HomePageView: View {
             VStack {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
-                        HStack(spacing: 0) {
+                        HStack(spacing: 16) {
                             Image("logo")
                                 .resizable()
                                 .frame(width: 28, height: 28)
                             Text("Cookpedia")
                                 .foregroundStyle(Color("MyWhite"))
                                 .font(.custom("Urbanist-Bold", size: 24))
-                                .padding(.leading, 16)
-                            Spacer()
                             
-                            NavigationLink {
-                                NotificationPageView()
-                            } label: {
-                                Image("Notification - Regular - Light - Outline")
-                                    .resizable()
-                                    .frame(width: 28, height: 28)
-                                    .foregroundStyle(Color("MyWhite"))
-                            }
-                            .padding(.trailing, 20)
+                            Spacer()
                             
                             NavigationLink {
                                 MyBookmarkView()
@@ -57,7 +47,6 @@ struct HomePageView: View {
                                     .frame(width: 28, height: 28)
                                     .foregroundStyle(Color("MyWhite"))
                             }
-
                         }
                         .padding(.vertical, 5)
                         

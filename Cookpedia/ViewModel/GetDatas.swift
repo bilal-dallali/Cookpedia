@@ -517,8 +517,8 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
-    func getComments(forRecipeId recipeId: Int, completion: @escaping (Result<[CommentsDetails], Error>) -> Void) {
-        let endpoint = "/comments/get-comments-from-recipe-id/\(recipeId)"
+    func getCommentsOrderAsc(forRecipeId recipeId: Int, completion: @escaping (Result<[CommentsDetails], Error>) -> Void) {
+        let endpoint = "/comments/get-comments-from-recipe-id-order-asc/\(recipeId)"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
             completion(.failure(APIGetError.invalidUrl))
             return
@@ -547,6 +547,42 @@ class APIGetRequest: ObservableObject {
                 completion(.failure(APIGetError.decodingError))
             }
         }.resume()
+    }
+    
+    func getMostPopularRecipes(completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
+        let endpoint = "/recipes/most-popular-recipes"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        // Create usersession request
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            // Network errors
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            // Check datas
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                return
+            }
+            
+            // Decode datas
+            do {
+                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+                completion(.success(recipes))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
     }
 }
 
