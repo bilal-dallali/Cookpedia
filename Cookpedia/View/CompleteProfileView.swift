@@ -365,7 +365,7 @@ struct CompleteProfileView: View {
             }
             .onTapGesture {
                 isDropDownMenuActivated = false
-                dismissKeyboard()
+                isTextFocused = false
             }
             
             if isDropDownMenuActivated {

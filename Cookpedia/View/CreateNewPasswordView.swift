@@ -331,7 +331,7 @@ struct CreateNewPasswordView: View {
                 }
             }
             .onTapGesture {
-                dismissKeyboard()
+                isTextFocused = false
             }
             if loadingScreen {
                 VStack(spacing: 32) {

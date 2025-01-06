@@ -688,7 +688,7 @@ struct RecipeDetailsView: View {
                 }
             }
             .onTapGesture {
-                dismissKeyboard()
+                isCommentTextfieldFocused = false
             }
         }
     }

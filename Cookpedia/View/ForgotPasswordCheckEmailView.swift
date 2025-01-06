@@ -184,7 +184,7 @@ struct ForgotPasswordCheckEmailView: View {
             }
         }
         .onTapGesture {
-            dismissKeyboard()
+            isTextFocused = false
         }
         .onAppear {
             focusedIndex = 0

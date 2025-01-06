@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-func dismissKeyboard() {
-    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-}
-
 struct CountryView: View {
     
     @State private var selectedCountry: Country?
@@ -134,7 +130,7 @@ struct CountryView: View {
             }
         }
         .onTapGesture {
-            dismissKeyboard()
+            isTextFocused = false
         }
     }
 }

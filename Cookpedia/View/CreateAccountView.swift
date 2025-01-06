@@ -579,7 +579,7 @@ struct CreateAccountView: View {
                 }
             }
             .onTapGesture {
-                dismissKeyboard()
+                isTextFocused = false
             }
             if loadingScreen {
                 ModalView(title: "Sign Up Successful", message: "Your account has been created. Please wait a moment, we are preparing for you...")

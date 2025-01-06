@@ -45,9 +45,6 @@ struct ForgotPasswordView: View {
                             .font(.custom("Urbanist-Bold", size: 20))
                             .frame(height: 32)
                             .focused($isTextFocused)
-                            .onSubmit {
-                                
-                            }
                             Rectangle()
                                 .foregroundStyle(Color("Primary900"))
                                 .frame(height: 1)
@@ -174,7 +171,7 @@ struct ForgotPasswordView: View {
             }
         }
         .onTapGesture {
-            dismissKeyboard()
+            isTextFocused = false
         }
         .navigationDestination(isPresented: $showOTPScreen) {
             ForgotPasswordCheckEmailView(email: $email)

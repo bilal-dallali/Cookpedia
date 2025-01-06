@@ -476,7 +476,7 @@ struct EditProfileView: View {
                 }
             }
             .onTapGesture {
-                dismissKeyboard()
+                isTextFocused = false
             }
             if profileUpdated {
                 ModalView(title: "Profile infos updated", message: "Your infos have been updated successfully")

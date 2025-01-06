@@ -22,6 +22,7 @@ struct CreateRecipeView: View {
     @State private var origin = ""
     @State private var recipeCoverPictureUrl1: String = ""
     @State private var recipeCoverPictureUrl2: String = ""
+    @FocusState private var isTextFocused: Bool
     
     @State private var selectedImage1: UIImage? = nil
     @State private var selectedImage2: UIImage? = nil
@@ -32,11 +33,6 @@ struct CreateRecipeView: View {
     @State private var isSavedRecipe: Bool = false
     @State private var isDropdownActivated: Bool = false
     @State private var deleteRecipeModal: Bool = false
-    
-//    @Binding var isHomeSelected: Bool
-//    @Binding var isDiscoverSelected: Bool
-//    @Binding var isMyRecipeSelected: Bool
-//    @Binding var isMyProfileSelected: Bool
     
     @State var ingredients: [String] = Array(repeating: "", count: 7)
     @State private var ingredientCounter: Int = 7
@@ -599,6 +595,7 @@ struct CreateRecipeView: View {
                                 .frame(minHeight: 58)
                                 .background(Color("Dark2"))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .focused($isTextFocused)
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
@@ -617,6 +614,7 @@ struct CreateRecipeView: View {
                                     .multilineTextAlignment(.leading)
                                     .padding(.horizontal, 20)
                                     .padding(.vertical, 18)
+                                    .focused($isTextFocused)
                                     Spacer()
                                 }
                                 .frame(minHeight: 140)
@@ -644,6 +642,7 @@ struct CreateRecipeView: View {
                                 .frame(minHeight: 58)
                                 .background(Color("Dark2"))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .focused($isTextFocused)
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
@@ -665,6 +664,7 @@ struct CreateRecipeView: View {
                                 .frame(minHeight: 58)
                                 .background(Color("Dark2"))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .focused($isTextFocused)
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
@@ -684,6 +684,7 @@ struct CreateRecipeView: View {
                                     .multilineTextAlignment(.leading)
                                     .padding(.vertical, 18)
                                     .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .focused($isTextFocused)
                                     Image("Location - Regular - Light - Outline")
                                         .resizable()
                                         .frame(width: 20, height: 20)
@@ -754,8 +755,8 @@ struct CreateRecipeView: View {
                     .background(Color(isSavedRecipe || isPublishedRecipe || isDeletedRecipe ? "BackgroundOpacity" : "Dark1"))
                     .blur(radius: isSavedRecipe || isPublishedRecipe || isDeletedRecipe ? 4 : 0)
                     .onTapGesture {
-                        dismissKeyboard()
                         isDropdownActivated = false
+                        isTextFocused = false
                     }
                     .onAppear {
                         if case .edit(let existingRecipe) = mode {

@@ -61,9 +61,6 @@ struct LoginView: View {
                                     .font(.custom("Urbanist-Bold", size: 20))
                                     .frame(height: 32)
                                     .focused($isTextFocused)
-                                    .onSubmit {
-                                        
-                                    }
                                     Rectangle()
                                         .foregroundStyle(Color("Primary900"))
                                         .frame(height: 1)
@@ -105,9 +102,6 @@ struct LoginView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .frame(height: 32)
                                             .focused($isTextFocused)
-                                            .onSubmit {
-                                                
-                                            }
                                         } else {
                                             TextField(text: $password) {
                                                 Text("Password")
@@ -120,9 +114,6 @@ struct LoginView: View {
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .frame(height: 32)
                                             .focused($isTextFocused)
-                                            .onSubmit {
-                                                
-                                            }
                                         }
                                         Button {
                                             isPasswordHidden.toggle()
@@ -320,7 +311,7 @@ struct LoginView: View {
                 }
             }
             .onTapGesture {
-                dismissKeyboard()
+                isTextFocused = false
             }
             if loadingScreen {
                 ModalView(title: "Sign In Successful!", message: "Your informations are valid. Please wait a moment, we are preparing for you...")
