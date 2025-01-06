@@ -8,6 +8,46 @@
 import SwiftUI
 import SwiftData
 
+import Foundation
+
+func timeAgo(from dateString: String) -> String {
+    let inputFormatter = ISO8601DateFormatter()
+    inputFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // Supporte le format ISO 8601
+    
+    guard let date = inputFormatter.date(from: dateString) else {
+        return "Unknown time"
+    }
+    
+    let now = Date()
+    let calendar = Calendar.current
+    
+    let components = calendar.dateComponents([.year, .month, .weekOfYear, .day, .hour, .minute, .second], from: date, to: now)
+    
+    if let year = components.year, year > 0 {
+        return year == 1 ? "1 year ago" : "\(year) years ago"
+    }
+    if let month = components.month, month > 0 {
+        return month == 1 ? "1 month ago" : "\(month) months ago"
+    }
+    if let week = components.weekOfYear, week > 0 {
+        return week == 1 ? "1 week ago" : "\(week) weeks ago"
+    }
+    if let day = components.day, day > 0 {
+        return day == 1 ? "1 day ago" : "\(day) days ago"
+    }
+    if let hour = components.hour, hour > 0 {
+        return hour == 1 ? "1 hour ago" : "\(hour) hours ago"
+    }
+    if let minute = components.minute, minute > 0 {
+        return minute == 1 ? "1 minute ago" : "\(minute) minutes ago"
+    }
+    if let second = components.second, second > 0 {
+        return second == 1 ? "1 second ago" : "\(second) seconds ago"
+    }
+    
+    return "Just now"
+}
+
 struct RecipeDetailsView: View {
     
     @State private var recipeDetails: RecipeDetails

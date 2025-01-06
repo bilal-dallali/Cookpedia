@@ -37,8 +37,7 @@ struct MyProfilePageView: View {
     @State private var website: String = ""
     @State private var city: String = ""
     @State private var country: String = ""
-    @State private var createdAtRaw: String = ""
-    @State private var createdAtFormatted: String = ""
+    @State private var createdAt: String = ""
     
     var body: some View {
         NavigationStack {
@@ -398,12 +397,13 @@ struct MyProfilePageView: View {
                                                     .font(.custom("Urbanist-Medium", size: 16))
                                                 Spacer()
                                             }
+                                            
                                             HStack(spacing: 12) {
                                                 Image("Info Square - Regular - Light - Outline")
                                                     .resizable()
                                                     .frame(width: 24, height: 24)
                                                     .foregroundStyle(Color("Greyscale300"))
-                                                Text("Joined since \(createdAtFormatted)")
+                                                Text("Joined since \(createdAt)")
                                                     .foregroundStyle(Color("Greyscale300"))
                                                     .font(.custom("Urbanist-Medium", size: 16))
                                             }
@@ -455,9 +455,7 @@ struct MyProfilePageView: View {
                                     self.website = user.website ?? ""
                                     self.city = user.city
                                     self.country = user.country
-                                    //self.createdAt = user.createdAt
-                                    self.createdAtRaw = user.createdAt
-                                    self.createdAtFormatted = formatDate(from: user.createdAt)
+                                    self.createdAt = formatDate(from: user.createdAt)
                                 }
                             case .failure(let error):
                                 print("Failed to fetch user data: \(error.localizedDescription)")

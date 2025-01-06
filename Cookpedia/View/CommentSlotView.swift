@@ -124,7 +124,7 @@ struct CommentSlotView: View {
                         .foregroundStyle(Color("Greyscale300"))
                         .font(.custom("Urbanist-Medium", size: 12))
                 }
-                Text("1 month ago")
+                Text("\(timeAgo(from: comment.createdAt))")
                     .foregroundStyle(Color("Greyscale300"))
                     .font(.custom("Urbanist-Medium", size: 12))
                 Spacer()

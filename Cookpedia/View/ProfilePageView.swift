@@ -82,7 +82,6 @@ struct ProfilePageView: View {
                                 }
                                 
                                 if following == true {
-                                    print("following true")
                                     apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId) { result in
                                         switch result {
                                             case .success(let message):
@@ -266,13 +265,16 @@ struct ProfilePageView: View {
                     } else {
                         VStack(spacing: 16) {
                             if !description.isEmpty {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Description")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Bold", size: 18))
-                                    Text(description)
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Medium", size: 16))
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("Description")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 18))
+                                        Text(description)
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Medium", size: 16))
+                                    }
+                                    Spacer()
                                 }
                                 Divider()
                                     .overlay {
@@ -388,6 +390,16 @@ struct ProfilePageView: View {
                                             .font(.custom("Urbanist-Medium", size: 16))
                                         Spacer()
                                     }
+                                    
+                                    HStack(spacing: 12) {
+                                        Image("Info Square - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Greyscale300"))
+                                        Text("Joined since \(createdAt)")
+                                            .foregroundStyle(Color("Greyscale300"))
+                                            .font(.custom("Urbanist-Medium", size: 16))
+                                    }
                                 }
                             }
                         }
@@ -435,7 +447,7 @@ struct ProfilePageView: View {
                                 self.website = user.website ?? ""
                                 self.city = user.city
                                 self.country = user.country
-                                //self.createdAt = createdAt
+                                self.createdAt = formatDate(from: user.createdAt)
                             }
                         case .failure(let error):
                             print("Failed to fetch user data: \(error.localizedDescription)")
