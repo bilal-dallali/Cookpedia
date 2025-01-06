@@ -72,51 +72,53 @@ struct ProfilePageView: View {
                                 }
                             }
                             Spacer()
-                            Button {
-                                guard let currentUser = userSession.first else {
-                                    return
-                                }
-                                
-                                guard let connectedUserId = Int(currentUser.userId) else {
-                                    return
-                                }
-                                
-                                if following == true {
-                                    apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId) { result in
-                                        switch result {
-                                            case .success(let message):
-                                                following = false
-                                            case .failure(let error):
-                                                print("Failed to unfollow user: \(error.localizedDescription)")
+                            if userId != Int(userSession.first!.userId) {
+                                Button {
+                                    guard let currentUser = userSession.first else {
+                                        return
+                                    }
+                                    
+                                    guard let connectedUserId = Int(currentUser.userId) else {
+                                        return
+                                    }
+                                    
+                                    if following == true {
+                                        apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId) { result in
+                                            switch result {
+                                                case .success(let message):
+                                                    following = false
+                                                case .failure(let error):
+                                                    print("Failed to unfollow user: \(error.localizedDescription)")
+                                            }
+                                        }
+                                    } else if following == false {
+                                        apiPostManager.followUser(followerId: connectedUserId, followedId: userId) { result in
+                                            switch result {
+                                                case .success(let message):
+                                                    following = true
+                                                case .failure(let error):
+                                                    print("Failed to follow user : \(error.localizedDescription)")
+                                            }
                                         }
                                     }
-                                } else if following == false {
-                                    apiPostManager.followUser(followerId: connectedUserId, followedId: userId) { result in
-                                        switch result {
-                                            case .success(let message):
-                                                following = true
-                                            case .failure(let error):
-                                                print("Failed to follow user : \(error.localizedDescription)")
-                                        }
+                                } label: {
+                                    if following {
+                                        Text("Following")
+                                            .foregroundStyle(Color("Primary900"))
+                                            .font(.custom("Urbanist-Semibold", size: 16))
+                                            .frame(width: 108, height: 38)
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: .infinity)
+                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                            }
+                                    } else {
+                                        Text("Follow")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Semibold", size: 16))
+                                            .frame(width: 86, height: 38)
+                                            .background(Color("Primary900"))
+                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                     }
-                                }
-                            } label: {
-                                if following {
-                                    Text("Following")
-                                        .foregroundStyle(Color("Primary900"))
-                                        .font(.custom("Urbanist-Semibold", size: 16))
-                                        .frame(width: 108, height: 38)
-                                        .overlay {
-                                            RoundedRectangle(cornerRadius: .infinity)
-                                                .strokeBorder(Color("Primary900"), lineWidth: 2)
-                                        }
-                                } else {
-                                    Text("Follow")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Semibold", size: 16))
-                                        .frame(width: 86, height: 38)
-                                        .background(Color("Primary900"))
-                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                 }
                             }
                         }
