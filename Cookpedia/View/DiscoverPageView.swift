@@ -14,6 +14,8 @@ struct DiscoverPageView: View {
     @FocusState private var isTextFocused: Bool
     @State private var mostPopularRecipes: [RecipeTitleCoverUser] = []
     @State private var recommendationsRecipes: [RecipeTitleCoverUser] = []
+    @State private var mostSearchedRecipes: [RecipeTitleCoverUser] = []
+    @State private var recentRecipes: [RecipeTitleCoverUser] = []
     @State private var mostPopularUsers: [UserDetails] = []
     var apiGetManager = APIGetRequest()
     
@@ -134,7 +136,67 @@ struct DiscoverPageView: View {
                                 }
                                 ScrollView(.horizontal) {
                                     HStack(spacing: 16) {
-                                        ForEach(recommendationsRecipes, id: \.id) { recipe in
+                                        ForEach(recommendationsRecipes.prefix(5), id: \.id) { recipe in
+                                            NavigationLink {
+                                                RecipeDetailsView(recipeId: recipe.id)
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                    .frame(width: 183, height: 260)
+                                            }
+                                        }
+                                    }
+                                }
+                                .scrollIndicators(.hidden)
+                            }
+                            
+                            VStack(spacing: 20) {
+                                HStack {
+                                    Text("Most Searches")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    Button {
+                                        //
+                                    } label: {
+                                        Image("Arrow - Right - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
+                                }
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 16) {
+                                        ForEach(mostSearchedRecipes.prefix(5), id: \.id) { recipe in
+                                            NavigationLink {
+                                                RecipeDetailsView(recipeId: recipe.id)
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                    .frame(width: 183, height: 260)
+                                            }
+                                        }
+                                    }
+                                }
+                                .scrollIndicators(.hidden)
+                            }
+                            
+                            VStack(spacing: 20) {
+                                HStack {
+                                    Text("New Recipes")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    Button {
+                                        //
+                                    } label: {
+                                        Image("Arrow - Right - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
+                                }
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 16) {
+                                        ForEach(recentRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
                                             } label: {
@@ -184,6 +246,26 @@ struct DiscoverPageView: View {
                         case .success(let recipes):
                             print("success")
                             self.recommendationsRecipes = recipes
+                        case .failure(let failure):
+                            print("failure \(failure)")
+                    }
+                }
+                
+                apiGetManager.getMostSearchesRecipes { result in
+                    switch result {
+                        case .success(let recipes):
+                            print("success")
+                            self.mostSearchedRecipes = recipes
+                        case .failure(let failure):
+                            print("failure \(failure)")
+                    }
+                }
+                
+                apiGetManager.getAllRecentRecipes { result in
+                    switch result {
+                        case .success(let recipe):
+                            print("success")
+                            self.recentRecipes = recipe
                         case .failure(let failure):
                             print("failure \(failure)")
                     }
