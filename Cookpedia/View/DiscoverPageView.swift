@@ -185,8 +185,8 @@ struct DiscoverPageView: View {
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 24))
                                     Spacer()
-                                    Button {
-                                        //
+                                    NavigationLink {
+                                        RecentRecipeView()
                                     } label: {
                                         Image("Arrow - Right - Regular - Light - Outline")
                                             .resizable()
