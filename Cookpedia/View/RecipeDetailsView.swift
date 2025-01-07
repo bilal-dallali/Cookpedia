@@ -65,6 +65,9 @@ struct RecipeDetailsView: View {
     @State private var profilePictureUrl: String = ""
     @State private var commentText: String = ""
     @FocusState private var isCommentTextfieldFocused: Bool
+    @State private var scrollPosition = ScrollPosition()
+    @State private var paddingBottom: CGFloat = 0
+    @State private var scrollToBottomKey: String = UUID().uuidString
     
     // Private initializer for internal use only
     private init(recipeDetails: RecipeDetails, recipeId: Int, isDropdownActivated: Bool) {
@@ -100,414 +103,95 @@ struct RecipeDetailsView: View {
             ZStack(alignment: .top) {
                 GeometryReader { geometry in
                     VStack(spacing: 0) {
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 24) {
-                                if recipeDetails.recipeCoverPictureUrl2.isEmpty {
-                                    AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
-                                        image
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .clipped()
-                                            .frame(width: geometry.size.width, height: 430)
-                                    } placeholder: {
-                                        Rectangle()
-                                            .fill(Color("Greyscale400"))
-                                            .frame(width: geometry.size.width, height: 430)
-                                    }
-                                } else {
-                                    ScrollView(.horizontal) {
-                                        HStack(spacing: 0) {
-                                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
-                                                image
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .clipped()
-                                                    .frame(width: geometry.size.width, height: 430)
-                                            } placeholder: {
-                                                Rectangle()
-                                                    .fill(Color("Greyscale400"))
-                                                    .frame(width: geometry.size.width, height: 430)
-                                            }
-                                            
-                                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl2).jpg")) { image in
-                                                image
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fill)
-                                                    .clipped()
-                                                    .frame(width: geometry.size.width, height: 430)
-                                            } placeholder: {
-                                                Rectangle()
-                                                    .fill(Color("Greyscale400"))
-                                                    .frame(width: geometry.size.width, height: 430)
-                                            }
-                                        }
-                                    }
-                                    .scrollIndicators(.hidden)
-                                    .scrollTargetBehavior(.paging)
-                                }
-                                
+                        ScrollViewReader { proxy in
+                            ScrollView {
                                 VStack(alignment: .leading, spacing: 24) {
-                                    VStack(alignment: .leading, spacing: 16) {
-                                        Text(recipeDetails.title)
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 32))
-                                        Divider()
-                                            .overlay {
-                                                Rectangle()
-                                                    .frame(height: 1)
-                                                    .foregroundStyle(Color("Dark4"))
-                                            }
-                                        
-                                        if connectedUserId != recipeDetails.userId {
-                                            HStack {
-                                                NavigationLink {
-                                                    ProfilePageView(userId: recipeDetails.userId)
-                                                } label: {
-                                                    HStack(spacing: 20) {
-                                                        AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fill)
-                                                                .clipped()
-                                                                .frame(width: 72, height: 72)
-                                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                                        } placeholder: {
-                                                            Rectangle()
-                                                                .fill(Color("Greyscale400"))
-                                                                .frame(width: 72, height: 72)
-                                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                                        }
-                                                        VStack(alignment: .leading, spacing: 4) {
-                                                            Text(recipeDetails.fullName)
-                                                                .foregroundStyle(Color("MyWhite"))
-                                                                .font(.custom("Urbanist-Bold", size: 20))
-                                                            Text("@\(recipeDetails.username)")
-                                                                .foregroundStyle(Color("MyWhite"))
-                                                                .font(.custom("Urbanist-Medium", size: 16))
-                                                        }
-                                                    }
-                                                }
-                                                Spacer()
-                                                Button {
-                                                    guard let currentUser = userSession.first else {
-                                                        return
-                                                    }
-                                                    
-                                                    guard let userId = Int(currentUser.userId) else {
-                                                        return
-                                                    }
-
-                                                    if following == true {
-                                                        apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
-                                                            switch result {
-                                                                case .success(let message):
-                                                                    following = false
-                                                                case .failure(let error):
-                                                                    print("Failed to unfollow user: \(error.localizedDescription)")
-                                                            }
-                                                        }
-                                                    } else if following == false {
-                                                        apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId) { result in
-                                                            switch result {
-                                                                case .success(let message):
-                                                                    following = true
-                                                                case .failure(let error):
-                                                                    print("Failed to follow user : \(error.localizedDescription)")
-                                                            }
-                                                        }
-                                                    }
-                                                } label: {
-                                                    if following {
-                                                        Text("Following")
-                                                            .foregroundStyle(Color("Primary900"))
-                                                            .font(.custom("Urbanist-Semibold", size: 16))
-                                                            .frame(width: 108, height: 38)
-                                                            .overlay {
-                                                                RoundedRectangle(cornerRadius: .infinity)
-                                                                    .strokeBorder(Color("Primary900"), lineWidth: 2)
-                                                            }
-                                                    } else {
-                                                        Text("Follow")
-                                                            .foregroundStyle(Color("MyWhite"))
-                                                            .font(.custom("Urbanist-Semibold", size: 16))
-                                                            .frame(width: 86, height: 38)
-                                                            .background(Color("Primary900"))
-                                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            HStack(spacing: 20) {
-                                                AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
+                                    if recipeDetails.recipeCoverPictureUrl2.isEmpty {
+                                        AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .clipped()
+                                                .frame(width: geometry.size.width, height: 430)
+                                        } placeholder: {
+                                            Rectangle()
+                                                .fill(Color("Greyscale400"))
+                                                .frame(width: geometry.size.width, height: 430)
+                                        }
+                                    } else {
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 0) {
+                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl1).jpg")) { image in
                                                     image
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fill)
                                                         .clipped()
-                                                        .frame(width: 72, height: 72)
-                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                        .frame(width: geometry.size.width, height: 430)
                                                 } placeholder: {
                                                     Rectangle()
                                                         .fill(Color("Greyscale400"))
-                                                        .frame(width: 72, height: 72)
-                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                        .frame(width: geometry.size.width, height: 430)
                                                 }
-                                                VStack(alignment: .leading, spacing: 4) {
-                                                    Text(recipeDetails.fullName)
-                                                        .foregroundStyle(Color("MyWhite"))
-                                                        .font(.custom("Urbanist-Bold", size: 20))
-                                                    Text("@\(recipeDetails.username)")
-                                                        .foregroundStyle(Color("MyWhite"))
-                                                        .font(.custom("Urbanist-Medium", size: 16))
-                                                }
-                                                Spacer()
-                                            }
-                                        }
-                                        Divider()
-                                            .overlay {
-                                                Rectangle()
-                                                    .frame(height: 1)
-                                                    .foregroundStyle(Color("Dark4"))
-                                            }
-                                        Text(recipeDetails.description)
-                                            .foregroundStyle(Color("Greyscale50"))
-                                            .font(.custom("Urbanist-Medium", size: 18))
-                                        HStack(spacing: 12) {
-                                            VStack(spacing: 6) {
-                                                HStack(spacing: 6) {
-                                                    Image("Time Circle - Regular - Light - Outline")
-                                                        .resizable()
-                                                        .frame(width: 16, height: 16)
-                                                        .foregroundStyle(Color("Primary900"))
-                                                    Text("\(recipeDetails.cookTime) mins")
-                                                        .foregroundStyle(Color("Primary900"))
-                                                        .font(.custom("Urbanist-Semibold", size: 14))
-                                                }
-                                                Text("cook time")
-                                                    .foregroundStyle(Color("Greyscale300"))
-                                                    .font(.custom("Urbanist-Medium", size: 12))
-                                            }
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 60)
-                                            .background(Color("Dark3"))
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            
-                                            VStack(spacing: 6) {
-                                                HStack(spacing: 6) {
-                                                    Image("Profile - Regular - Light - Outline")
-                                                        .resizable()
-                                                        .frame(width: 16, height: 16)
-                                                        .foregroundStyle(Color("Primary900"))
-                                                    Text("\(recipeDetails.serves) serving")
-                                                        .foregroundStyle(Color("Primary900"))
-                                                        .font(.custom("Urbanist-Semibold", size: 14))
-                                                }
-                                                Text("serve")
-                                                    .foregroundStyle(Color("Greyscale300"))
-                                                    .font(.custom("Urbanist-Medium", size: 12))
-                                            }
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 60)
-                                            .background(Color("Dark3"))
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            
-                                            VStack(spacing: 6) {
-                                                HStack(spacing: 6) {
-                                                    Image("Location - Regular - Light - Outline")
-                                                        .resizable()
-                                                        .frame(width: 16, height: 16)
-                                                        .foregroundStyle(Color("Primary900"))
-                                                    Text(recipeDetails.origin)
-                                                        .foregroundStyle(Color("Primary900"))
-                                                        .font(.custom("Urbanist-Semibold", size: 14))
-                                                        .lineLimit(1)
-                                                        .truncationMode(.tail)
-                                                }
-                                                Text("origin")
-                                                    .foregroundStyle(Color("Greyscale300"))
-                                                    .font(.custom("Urbanist-Medium", size: 12))
-                                            }
-                                            .frame(maxWidth: .infinity)
-                                            .frame(height: 60)
-                                            .background(Color("Dark3"))
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            
-                                        }
-                                    }
-                                    Divider()
-                                        .overlay {
-                                            Rectangle()
-                                                .frame(height: 1)
-                                                .foregroundStyle(Color("Dark4"))
-                                        }
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        Text("Ingredients:")
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 24))
-                                        VStack(alignment: .leading, spacing: 12) {
-                                            ForEach(recipeDetails.ingredients, id: \.index) { ingredient in
-                                                HStack(spacing: 16) {
-                                                    Circle()
-                                                        .foregroundStyle(Color("Dark3"))
-                                                        .frame(width: 32, height: 32)
-                                                        .overlay {
-                                                            Text("\(ingredient.index)")
-                                                                .foregroundStyle(Color("Primary900"))
-                                                                .font(.custom("Urbanist-Semibold", size: 16))
-                                                        }
-                                                    Text(ingredient.ingredient)
-                                                        .foregroundStyle(Color("MyWhite"))
-                                                        .font(.custom("Urbanist-Medium", size: 18))
-                                                }
-                                            }
-                                        }
-                                    }
-                                    Divider()
-                                        .overlay {
-                                            Rectangle()
-                                                .frame(height: 1)
-                                                .foregroundStyle(Color("Dark4"))
-                                        }
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        Text("Instructions:")
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 24))
-                                        ForEach(recipeDetails.instructions, id: \.index) { instruction in
-                                            HStack(alignment: .top, spacing: 16) {
-                                                Circle()
-                                                    .foregroundStyle(Color("Dark3"))
-                                                    .frame(width: 32, height: 32)
-                                                    .overlay {
-                                                        Text("\(instruction.index)")
-                                                            .foregroundStyle(Color("Primary900"))
-                                                            .font(.custom("Urbanist-Semibold", size: 16))
-                                                    }
-                                                VStack(alignment: .leading, spacing: 12) {
-                                                    Text("\(instruction.instruction)")
-                                                        .foregroundStyle(Color("MyWhite"))
-                                                        .font(.custom("Urbanist-Medium", size: 18))
-                                                    HStack(spacing: 8) {
-                                                        AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl1 ?? "").jpg")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .frame(maxWidth: .infinity)
-                                                                .frame(height: 80)
-                                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                        } placeholder: {
-                                                            RoundedRectangle(cornerRadius: 12)
-                                                                .foregroundStyle(Color("Dark1"))
-                                                                .frame(maxWidth: .infinity)
-                                                                .frame(height: 0)
-                                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                        }
-                                                        AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl2 ?? "").jpg")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .frame(maxWidth: .infinity)
-                                                                .frame(height: 80)
-                                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                        } placeholder: {
-                                                            RoundedRectangle(cornerRadius: 12)
-                                                                .foregroundStyle(Color("Dark1"))
-                                                                .frame(maxWidth: .infinity)
-                                                                .frame(height: 0)
-                                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                        }
-                                                        AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl3 ?? "").jpg")) { image in
-                                                            image
-                                                                .resizable()
-                                                                .frame(maxWidth: .infinity)
-                                                                .frame(height: 80)
-                                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                        } placeholder: {
-                                                            RoundedRectangle(cornerRadius: 12)
-                                                                .foregroundStyle(Color("Dark1"))
-                                                                .frame(maxWidth: .infinity)
-                                                                .frame(height: 0)
-                                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    Divider()
-                                        .overlay {
-                                            Rectangle()
-                                                .frame(height: 1)
-                                                .foregroundStyle(Color("Dark4"))
-                                        }
-                                    VStack(spacing: 20) {
-                                        HStack {
-                                            Text("Comments (\(comments.count))")
-                                                .foregroundStyle(Color("MyWhite"))
-                                                .font(.custom("Urbanist-Bold", size: 24))
-                                            Spacer()
-                                            Button {
-                                                //
-                                            } label: {
-                                                Image("Arrow - Right - Regular - Light - Outline")
-                                                    .resizable()
-                                                    .frame(width: 24, height: 24)
-                                                    .foregroundStyle(Color("Primary900"))
-                                            }
-                                        }
-                                        
-                                        VStack(spacing: 20) {
-                                            ForEach(comments, id: \.id) { comment in
-                                                CommentSlotView(comment: comment, deleteCommentAlert: $deleteCommentAlert)
-                                                    .alert("", isPresented: $deleteCommentAlert) {
-                                                        Button("Cancel", role: .cancel) {
-                                                            
-                                                        }
-                                                        Button("Delete", role: .destructive) {
-                                                            apiDeleteManager.deleteComment(commentId: comment.id) { result in
-                                                                switch result {
-                                                                    case .success:
-                                                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                                                            switch result {
-                                                                                case .success(let comments):
-                                                                                    self.comments = comments
-                                                                                case .failure(let error):
-                                                                                    print("error \(error.localizedDescription)")
-                                                                            }
-                                                                        }
-                                                                    case .failure:
-                                                                        print("Didn't delete the comment")
-                                                                }
-                                                            }
-                                                        }
-                                                    } message: {
-                                                        Text("Are you sure you want to delete this comment?")
-                                                            .foregroundStyle(Color("Primary900"))
-                                                            .font(.custom("Urbanist-Regular", size: 16))
-                                                    }
-                                            }
-                                            
-                                            HStack(spacing: 16) {
-                                                AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
+                                                
+                                                AsyncImage(url: URL(string: "\(baseUrl)/recipes/recipe-cover/\(recipeDetails.recipeCoverPictureUrl2).jpg")) { image in
                                                     image
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fill)
                                                         .clipped()
-                                                        .frame(width: 48, height: 48)
-                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                        .frame(width: geometry.size.width, height: 430)
                                                 } placeholder: {
-                                                    Image("Ellipse")
-                                                        .resizable()
-                                                        .frame(width: 48, height: 48)
-                                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                    Rectangle()
+                                                        .fill(Color("Greyscale400"))
+                                                        .frame(width: geometry.size.width, height: 430)
                                                 }
-                                                HStack(spacing: 12) {
-                                                    TextField(text: $commentText) {
-                                                        Text("Add a comment")
-                                                            .foregroundStyle(Color("Greyscale500"))
-                                                            .font(.custom("Urbanist-Regular", size: 16))
+                                            }
+                                        }
+                                        .scrollIndicators(.hidden)
+                                        .scrollTargetBehavior(.paging)
+                                    }
+                                    
+                                    VStack(alignment: .leading, spacing: 24) {
+                                        VStack(alignment: .leading, spacing: 16) {
+                                            Text(recipeDetails.title)
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 32))
+                                            Divider()
+                                                .overlay {
+                                                    Rectangle()
+                                                        .frame(height: 1)
+                                                        .foregroundStyle(Color("Dark4"))
+                                                }
+                                            
+                                            if connectedUserId != recipeDetails.userId {
+                                                HStack {
+                                                    NavigationLink {
+                                                        ProfilePageView(userId: recipeDetails.userId)
+                                                    } label: {
+                                                        HStack(spacing: 20) {
+                                                            AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
+                                                                image
+                                                                    .resizable()
+                                                                    .aspectRatio(contentMode: .fill)
+                                                                    .clipped()
+                                                                    .frame(width: 72, height: 72)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                            } placeholder: {
+                                                                Rectangle()
+                                                                    .fill(Color("Greyscale400"))
+                                                                    .frame(width: 72, height: 72)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                            }
+                                                            VStack(alignment: .leading, spacing: 4) {
+                                                                Text(recipeDetails.fullName)
+                                                                    .foregroundStyle(Color("MyWhite"))
+                                                                    .font(.custom("Urbanist-Bold", size: 20))
+                                                                Text("@\(recipeDetails.username)")
+                                                                    .foregroundStyle(Color("MyWhite"))
+                                                                    .font(.custom("Urbanist-Medium", size: 16))
+                                                            }
+                                                        }
                                                     }
-                                                    .autocorrectionDisabled(true)
-                                                    .keyboardType(.default)
-                                                    .foregroundStyle(Color("MyWhite"))
-                                                    .font(.custom("Urbanist-Semibold", size: 16))
-                                                    .focused($isCommentTextfieldFocused)
+                                                    Spacer()
                                                     Button {
                                                         guard let currentUser = userSession.first else {
                                                             return
@@ -517,62 +201,401 @@ struct RecipeDetailsView: View {
                                                             return
                                                         }
                                                         
-                                                        let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
-                                                        
-                                                        apiPostManager.postComment(comment: comment) { result in
-                                                            print("result \(result)")
-                                                            switch result {
-                                                                case .success(let response):
-                                                                    print("comment poster successfully \(response)")
-                                                                    commentText = ""
-                                                                    //DispatchQueue.main.asyncAfter(deadline: .now() + 5)
-                                                                    apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                                                        switch result {
-                                                                            case .success(let comments):
-                                                                                print("comment loaded successfully after being posted \(comments)")
-                                                                                self.comments = comments
-                                                                            case .failure(let error):
-                                                                                print("error \(error.localizedDescription)")
-                                                                                print("comment not loaded after being posted")
-                                                                        }
-                                                                    }
-                                                                    
-                                                                case .failure(let error):
-                                                                    print("Failed to post comment\(error)")
+                                                        if following == true {
+                                                            apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
+                                                                switch result {
+                                                                    case .success(let message):
+                                                                        following = false
+                                                                    case .failure(let error):
+                                                                        print("Failed to unfollow user: \(error.localizedDescription)")
+                                                                }
+                                                            }
+                                                        } else if following == false {
+                                                            apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId) { result in
+                                                                switch result {
+                                                                    case .success(let message):
+                                                                        following = true
+                                                                    case .failure(let error):
+                                                                        print("Failed to follow user : \(error.localizedDescription)")
+                                                                }
                                                             }
                                                         }
                                                     } label: {
-                                                        Image("Send - Regular - Bold")
-                                                            .resizable()
-                                                            .frame(width: 20, height: 20)
-                                                            .foregroundStyle(Color("Primary900"))
+                                                        if following {
+                                                            Text("Following")
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .font(.custom("Urbanist-Semibold", size: 16))
+                                                                .frame(width: 108, height: 38)
+                                                                .overlay {
+                                                                    RoundedRectangle(cornerRadius: .infinity)
+                                                                        .strokeBorder(Color("Primary900"), lineWidth: 2)
+                                                                }
+                                                        } else {
+                                                            Text("Follow")
+                                                                .foregroundStyle(Color("MyWhite"))
+                                                                .font(.custom("Urbanist-Semibold", size: 16))
+                                                                .frame(width: 86, height: 38)
+                                                                .background(Color("Primary900"))
+                                                                .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                        }
                                                     }
                                                 }
-                                                .padding(.horizontal, 20)
-                                                .frame(height: 58)
-                                                .background(Color(isCommentTextfieldFocused ? "TransparentRed" : "Dark2"))
-                                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                            } else {
+                                                HStack(spacing: 20) {
+                                                    AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(recipeDetails.profilePictureUrl).jpg")) { image in
+                                                        image
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .clipped()
+                                                            .frame(width: 72, height: 72)
+                                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                    } placeholder: {
+                                                        Rectangle()
+                                                            .fill(Color("Greyscale400"))
+                                                            .frame(width: 72, height: 72)
+                                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                    }
+                                                    VStack(alignment: .leading, spacing: 4) {
+                                                        Text(recipeDetails.fullName)
+                                                            .foregroundStyle(Color("MyWhite"))
+                                                            .font(.custom("Urbanist-Bold", size: 20))
+                                                        Text("@\(recipeDetails.username)")
+                                                            .foregroundStyle(Color("MyWhite"))
+                                                            .font(.custom("Urbanist-Medium", size: 16))
+                                                    }
+                                                    Spacer()
+                                                }
+                                            }
+                                            Divider()
                                                 .overlay {
-                                                    if isCommentTextfieldFocused {
-                                                        RoundedRectangle(cornerRadius: 16)
-                                                            .strokeBorder(Color("Primary900"), lineWidth: 1)
+                                                    Rectangle()
+                                                        .frame(height: 1)
+                                                        .foregroundStyle(Color("Dark4"))
+                                                }
+                                            Text(recipeDetails.description)
+                                                .foregroundStyle(Color("Greyscale50"))
+                                                .font(.custom("Urbanist-Medium", size: 18))
+                                            HStack(spacing: 12) {
+                                                VStack(spacing: 6) {
+                                                    HStack(spacing: 6) {
+                                                        Image("Time Circle - Regular - Light - Outline")
+                                                            .resizable()
+                                                            .frame(width: 16, height: 16)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text("\(recipeDetails.cookTime) mins")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Semibold", size: 14))
+                                                    }
+                                                    Text("cook time")
+                                                        .foregroundStyle(Color("Greyscale300"))
+                                                        .font(.custom("Urbanist-Medium", size: 12))
+                                                }
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 60)
+                                                .background(Color("Dark3"))
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                
+                                                VStack(spacing: 6) {
+                                                    HStack(spacing: 6) {
+                                                        Image("Profile - Regular - Light - Outline")
+                                                            .resizable()
+                                                            .frame(width: 16, height: 16)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text("\(recipeDetails.serves) serving")
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Semibold", size: 14))
+                                                    }
+                                                    Text("serve")
+                                                        .foregroundStyle(Color("Greyscale300"))
+                                                        .font(.custom("Urbanist-Medium", size: 12))
+                                                }
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 60)
+                                                .background(Color("Dark3"))
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                
+                                                VStack(spacing: 6) {
+                                                    HStack(spacing: 6) {
+                                                        Image("Location - Regular - Light - Outline")
+                                                            .resizable()
+                                                            .frame(width: 16, height: 16)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                        Text(recipeDetails.origin)
+                                                            .foregroundStyle(Color("Primary900"))
+                                                            .font(.custom("Urbanist-Semibold", size: 14))
+                                                            .lineLimit(1)
+                                                            .truncationMode(.tail)
+                                                    }
+                                                    Text("origin")
+                                                        .foregroundStyle(Color("Greyscale300"))
+                                                        .font(.custom("Urbanist-Medium", size: 12))
+                                                }
+                                                .frame(maxWidth: .infinity)
+                                                .frame(height: 60)
+                                                .background(Color("Dark3"))
+                                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                
+                                            }
+                                        }
+                                        Divider()
+                                            .overlay {
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundStyle(Color("Dark4"))
+                                            }
+                                        VStack(alignment: .leading, spacing: 20) {
+                                            Text("Ingredients:")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 24))
+                                            VStack(alignment: .leading, spacing: 12) {
+                                                ForEach(recipeDetails.ingredients, id: \.index) { ingredient in
+                                                    HStack(spacing: 16) {
+                                                        Circle()
+                                                            .foregroundStyle(Color("Dark3"))
+                                                            .frame(width: 32, height: 32)
+                                                            .overlay {
+                                                                Text("\(ingredient.index)")
+                                                                    .foregroundStyle(Color("Primary900"))
+                                                                    .font(.custom("Urbanist-Semibold", size: 16))
+                                                            }
+                                                        Text(ingredient.ingredient)
+                                                            .foregroundStyle(Color("MyWhite"))
+                                                            .font(.custom("Urbanist-Medium", size: 18))
                                                     }
                                                 }
                                             }
                                         }
-                                    }
-                                    
-                                    Divider()
-                                        .overlay {
-                                            Rectangle()
-                                                .frame(height: 1)
-                                                .foregroundStyle(Color("Dark4"))
+                                        Divider()
+                                            .overlay {
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundStyle(Color("Dark4"))
+                                            }
+                                        VStack(alignment: .leading, spacing: 20) {
+                                            Text("Instructions:")
+                                                .foregroundStyle(Color("MyWhite"))
+                                                .font(.custom("Urbanist-Bold", size: 24))
+                                            ForEach(recipeDetails.instructions, id: \.index) { instruction in
+                                                HStack(alignment: .top, spacing: 16) {
+                                                    Circle()
+                                                        .foregroundStyle(Color("Dark3"))
+                                                        .frame(width: 32, height: 32)
+                                                        .overlay {
+                                                            Text("\(instruction.index)")
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .font(.custom("Urbanist-Semibold", size: 16))
+                                                        }
+                                                    VStack(alignment: .leading, spacing: 12) {
+                                                        Text("\(instruction.instruction)")
+                                                            .foregroundStyle(Color("MyWhite"))
+                                                            .font(.custom("Urbanist-Medium", size: 18))
+                                                        HStack(spacing: 8) {
+                                                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl1 ?? "").jpg")) { image in
+                                                                image
+                                                                    .resizable()
+                                                                    .frame(maxWidth: .infinity)
+                                                                    .frame(height: 80)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                            } placeholder: {
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .foregroundStyle(Color("Dark1"))
+                                                                    .frame(maxWidth: .infinity)
+                                                                    .frame(height: 0)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                            }
+                                                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl2 ?? "").jpg")) { image in
+                                                                image
+                                                                    .resizable()
+                                                                    .frame(maxWidth: .infinity)
+                                                                    .frame(height: 80)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                            } placeholder: {
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .foregroundStyle(Color("Dark1"))
+                                                                    .frame(maxWidth: .infinity)
+                                                                    .frame(height: 0)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                            }
+                                                            AsyncImage(url: URL(string: "\(baseUrl)/recipes/instruction-image/\(instruction.instructionPictureUrl3 ?? "").jpg")) { image in
+                                                                image
+                                                                    .resizable()
+                                                                    .frame(maxWidth: .infinity)
+                                                                    .frame(height: 80)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                            } placeholder: {
+                                                                RoundedRectangle(cornerRadius: 12)
+                                                                    .foregroundStyle(Color("Dark1"))
+                                                                    .frame(maxWidth: .infinity)
+                                                                    .frame(height: 0)
+                                                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
+                                        Divider()
+                                            .overlay {
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundStyle(Color("Dark4"))
+                                            }
+                                        VStack(spacing: 20) {
+                                            HStack {
+                                                Text("Comments (\(comments.count))")
+                                                    .foregroundStyle(Color("MyWhite"))
+                                                    .font(.custom("Urbanist-Bold", size: 24))
+                                                Spacer()
+                                                Button {
+                                                    //
+                                                } label: {
+                                                    Image("Arrow - Right - Regular - Light - Outline")
+                                                        .resizable()
+                                                        .frame(width: 24, height: 24)
+                                                        .foregroundStyle(Color("Primary900"))
+                                                }
+                                            }
+                                            
+                                            VStack(spacing: 20) {
+                                                ForEach(comments, id: \.id) { comment in
+                                                    CommentSlotView(comment: comment, deleteCommentAlert: $deleteCommentAlert)
+                                                        .alert("", isPresented: $deleteCommentAlert) {
+                                                            Button("Cancel", role: .cancel) {
+                                                                
+                                                            }
+                                                            Button("Delete", role: .destructive) {
+                                                                apiDeleteManager.deleteComment(commentId: comment.id) { result in
+                                                                    switch result {
+                                                                        case .success:
+                                                                            apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
+                                                                                switch result {
+                                                                                    case .success(let comments):
+                                                                                        self.comments = comments
+                                                                                    case .failure(let error):
+                                                                                        print("error \(error.localizedDescription)")
+                                                                                }
+                                                                            }
+                                                                        case .failure:
+                                                                            print("Didn't delete the comment")
+                                                                    }
+                                                                }
+                                                            }
+                                                        } message: {
+                                                            Text("Are you sure you want to delete this comment?")
+                                                                .foregroundStyle(Color("Primary900"))
+                                                                .font(.custom("Urbanist-Regular", size: 16))
+                                                        }
+                                                }
+                                                
+                                                HStack(spacing: 16) {
+                                                    AsyncImage(url: URL(string: "\(baseUrl)/users/profile-picture/\(profilePictureUrl).jpg")) { image in
+                                                        image
+                                                            .resizable()
+                                                            .aspectRatio(contentMode: .fill)
+                                                            .clipped()
+                                                            .frame(width: 48, height: 48)
+                                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                    } placeholder: {
+                                                        Image("Ellipse")
+                                                            .resizable()
+                                                            .frame(width: 48, height: 48)
+                                                            .clipShape(RoundedRectangle(cornerRadius: .infinity))
+                                                    }
+                                                    HStack(spacing: 12) {
+                                                        TextField(text: $commentText) {
+                                                            Text("Add a comment")
+                                                                .foregroundStyle(Color("Greyscale500"))
+                                                                .font(.custom("Urbanist-Regular", size: 16))
+                                                        }
+                                                        .autocorrectionDisabled(true)
+                                                        .keyboardType(.default)
+                                                        .foregroundStyle(Color("MyWhite"))
+                                                        .font(.custom("Urbanist-Semibold", size: 16))
+                                                        .focused($isCommentTextfieldFocused)
+                                                        Button {
+                                                            guard let currentUser = userSession.first else {
+                                                                return
+                                                            }
+                                                            
+                                                            guard let userId = Int(currentUser.userId) else {
+                                                                return
+                                                            }
+                                                            
+                                                            let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
+                                                            
+                                                            apiPostManager.postComment(comment: comment) { result in
+                                                                print("result \(result)")
+                                                                switch result {
+                                                                    case .success(let response):
+                                                                        print("comment poster successfully \(response)")
+                                                                        commentText = ""
+                                                                        //DispatchQueue.main.asyncAfter(deadline: .now() + 5)
+                                                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
+                                                                            switch result {
+                                                                                case .success(let comments):
+                                                                                    print("comment loaded successfully after being posted \(comments)")
+                                                                                    self.comments = comments
+                                                                                case .failure(let error):
+                                                                                    print("error \(error.localizedDescription)")
+                                                                                    print("comment not loaded after being posted")
+                                                                            }
+                                                                        }
+                                                                        
+                                                                    case .failure(let error):
+                                                                        print("Failed to post comment\(error)")
+                                                                }
+                                                            }
+                                                        } label: {
+                                                            Image("Send - Regular - Bold")
+                                                                .resizable()
+                                                                .frame(width: 20, height: 20)
+                                                                .foregroundStyle(Color("Primary900"))
+                                                        }
+                                                    }
+                                                    .padding(.horizontal, 20)
+                                                    .frame(height: 58)
+                                                    .background(Color(isCommentTextfieldFocused ? "TransparentRed" : "Dark2"))
+                                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                                    .overlay {
+                                                        if isCommentTextfieldFocused {
+                                                            RoundedRectangle(cornerRadius: 16)
+                                                                .strokeBorder(Color("Primary900"), lineWidth: 1)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                        Divider()
+                                            .overlay {
+                                                Rectangle()
+                                                    .frame(height: 1)
+                                                    .foregroundStyle(Color("Dark4"))
+                                            }
+                                            .id(scrollToBottomKey)
+                                            .padding(.bottom, paddingBottom)
+                                        
+                                    }
+                                    .padding(.horizontal, 24)
                                 }
-                                .padding(.horizontal, 24)
+                            }
+                            .scrollIndicators(.hidden)
+                            .scrollPosition($scrollPosition)
+                            .animation(.spring, value: scrollPosition)
+                            .onChange(of: isCommentTextfieldFocused) {
+                                if isCommentTextfieldFocused {
+                                    paddingBottom = 400
+                                    scrollToBottomKey = UUID().uuidString
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                        withAnimation {
+                                            proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
+                                        }
+                                    }
+                                } else {
+                                    paddingBottom = 0
+                                }
                             }
                         }
-                        .scrollIndicators(.hidden)
                     }
                     .ignoresSafeArea(edges: .all)
                     .background(Color("Dark1"))
