@@ -59,6 +59,7 @@ struct CompleteProfileView: View {
     
     @State var date: String = ""
     @State var city = ""
+    @State private var progressViewWidth: CGFloat = 132
     
     var body: some View {
         ZStack {
@@ -345,6 +346,13 @@ struct CompleteProfileView: View {
                     }
                 }
             }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                    withAnimation(.easeIn(duration: 1)) {
+                        progressViewWidth = 168
+                    }
+                }
+            }
             .background(Color("Dark1"))
             .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
             .navigationBarBackButtonHidden(true)
@@ -359,7 +367,7 @@ struct CompleteProfileView: View {
                         .overlay(alignment: .leading) {
                             RoundedRectangle(cornerRadius: .infinity)
                                 .foregroundStyle(Color("Primary900"))
-                                .frame(width: 168, height: 12)
+                                .frame(width: progressViewWidth, height: 12)
                         }
                 }
             }

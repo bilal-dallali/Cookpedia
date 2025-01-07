@@ -23,6 +23,7 @@ struct CuisinePreferenceView: View {
     @State var rice: Bool = false
     @State var bread: Bool = false
     @State var fruit: Bool = false
+    @State private var progressViewWidth: CGFloat = 72
     
     var body: some View {
         VStack(spacing: 0) {
@@ -411,6 +412,13 @@ struct CuisinePreferenceView: View {
                 .padding(.bottom, 36)
             }
         }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                withAnimation(.easeIn(duration: 1)) {
+                    progressViewWidth = 108
+                }
+            }
+        }
         .background(Color("Dark1"))
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
@@ -425,7 +433,7 @@ struct CuisinePreferenceView: View {
                     .overlay(alignment: .leading) {
                         RoundedRectangle(cornerRadius: .infinity)
                             .foregroundStyle(Color("Primary900"))
-                            .frame(width: 108, height: 12)
+                            .frame(width: progressViewWidth, height: 12)
                     }
             }
         }

@@ -13,6 +13,7 @@ struct CountryView: View {
     @State private var searchText: String = ""
     @State var country: String = ""
     @FocusState private var isTextFocused: Bool
+    @State private var progressViewWidth: CGFloat = 0
     
     var filteredCountries: [Country] {
         if searchText.isEmpty {
@@ -110,6 +111,11 @@ struct CountryView: View {
         }
         .onAppear {
             country = selectedCountry?.name ?? ""
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                withAnimation(.easeIn(duration: 1)) {
+                    progressViewWidth = 48
+                }
+            }
         }
         .background(Color("Dark1"))
         .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
@@ -125,7 +131,7 @@ struct CountryView: View {
                     .overlay(alignment: .leading) {
                         RoundedRectangle(cornerRadius: .infinity)
                             .foregroundStyle(Color("Primary900"))
-                            .frame(width: 48, height: 12)
+                            .frame(width: progressViewWidth, height: 12)
                     }
             }
         }

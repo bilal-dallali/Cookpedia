@@ -16,6 +16,7 @@ struct CookingLevelView: View {
     @State var professional: Bool = false
     @State var master: Bool = false
     @State var level: String = ""
+    @State private var progressViewWidth: CGFloat = 48
     
     var body: some View {
         VStack(spacing: 0) {
@@ -237,6 +238,13 @@ struct CookingLevelView: View {
                 }
             }
         }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                withAnimation(.easeIn(duration: 1)) {
+                    progressViewWidth = 72
+                }
+            }
+        }
         .background(Color("Dark1"))
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
@@ -251,7 +259,7 @@ struct CookingLevelView: View {
                     .overlay(alignment: .leading) {
                         RoundedRectangle(cornerRadius: .infinity)
                             .foregroundStyle(Color("Primary900"))
-                            .frame(width: 72, height: 12)
+                            .frame(width: progressViewWidth, height: 12)
                     }
             }
         }

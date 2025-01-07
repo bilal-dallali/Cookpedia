@@ -67,6 +67,7 @@ struct CreateAccountView: View {
     @State private var alertUsersExists = false
     @State var errorMessage: String?
     @FocusState private var isTextFocused: Bool
+    @State private var progressViewWidth: CGFloat = 168
     
     var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) var context
@@ -101,9 +102,6 @@ struct CreateAccountView: View {
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .frame(height: 32)
                                 .focused($isTextFocused)
-                                .onSubmit {
-                                    
-                                }
                                 Rectangle()
                                     .foregroundStyle(Color("Primary900"))
                                     .frame(height: 1)
@@ -126,9 +124,6 @@ struct CreateAccountView: View {
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .frame(height: 32)
                                 .focused($isTextFocused)
-                                .onSubmit {
-                                    
-                                }
                                 Rectangle()
                                     .foregroundStyle(Color("Primary900"))
                                     .frame(height: 1)
@@ -169,9 +164,6 @@ struct CreateAccountView: View {
                                 .font(.custom("Urbanist-Bold", size: 20))
                                 .frame(height: 32)
                                 .focused($isTextFocused)
-                                .onSubmit {
-                                    
-                                }
                                 Rectangle()
                                     .foregroundStyle(Color("Primary900"))
                                     .frame(height: 1)
@@ -214,9 +206,6 @@ struct CreateAccountView: View {
                                         .font(.custom("Urbanist-Bold", size: 20))
                                         .frame(height: 32)
                                         .focused($isTextFocused)
-                                        .onSubmit {
-                                            
-                                        }
                                     } else {
                                         TextField(text: $password) {
                                             Text("Password")
@@ -229,9 +218,6 @@ struct CreateAccountView: View {
                                         .font(.custom("Urbanist-Bold", size: 20))
                                         .frame(height: 32)
                                         .focused($isTextFocused)
-                                        .onSubmit {
-                                            
-                                        }
                                     }
                                     Button {
                                         isPasswordHidden.toggle()
@@ -332,9 +318,6 @@ struct CreateAccountView: View {
                                         .font(.custom("Urbanist-Bold", size: 20))
                                         .frame(height: 32)
                                         .focused($isTextFocused)
-                                        .onSubmit {
-                                            
-                                        }
                                     }
                                     Button {
                                         isConfirmPasswordHidden.toggle()
@@ -559,6 +542,13 @@ struct CreateAccountView: View {
                     }
                 }
             }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                    withAnimation(.easeIn(duration: 1)) {
+                        progressViewWidth = 216
+                    }
+                }
+            }
             .background(Color(loadingScreen ? "BackgroundOpacity" : "Dark1"))
             .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
             .blur(radius: loadingScreen ? 4 : 0)
@@ -574,7 +564,7 @@ struct CreateAccountView: View {
                         .overlay(alignment: .leading) {
                             RoundedRectangle(cornerRadius: .infinity)
                                 .foregroundStyle(Color("Primary900"))
-                                .frame(width: 216, height: 12)
+                                .frame(width: progressViewWidth, height: 12)
                         }
                 }
             }

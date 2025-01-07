@@ -36,6 +36,7 @@ struct DietaryPreferencesView: View {
     @State var rawFood: Bool = false
     @State var lowFat: Bool = false
     @State var halal: Bool = false
+    @State private var progressViewWidth: CGFloat = 108
     
     var body: some View {
         VStack(spacing: 0) {
@@ -405,6 +406,13 @@ struct DietaryPreferencesView: View {
                 .padding(.bottom, 36)
             }
         }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now()) {
+                withAnimation(.easeIn(duration: 1)) {
+                    progressViewWidth = 132
+                }
+            }
+        }
         .background(Color("Dark1"))
         .ignoresSafeArea(edges: .bottom)
         .navigationBarBackButtonHidden(true)
@@ -419,7 +427,7 @@ struct DietaryPreferencesView: View {
                     .overlay(alignment: .leading) {
                         RoundedRectangle(cornerRadius: .infinity)
                             .foregroundStyle(Color("Primary900"))
-                            .frame(width: 132, height: 12)
+                            .frame(width: progressViewWidth, height: 12)
                     }
             }
         }
