@@ -615,6 +615,38 @@ class APIGetRequest: ObservableObject {
         }
         task.resume()
     }
+    
+    func getRecommendations(completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
+        let endpoint = "/recipes/recommendations"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                return
+            }
+            
+            do {
+                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+                completion(.success(recipes))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
 }
 
 enum APIGetError: Error {

@@ -13,6 +13,7 @@ struct DiscoverPageView: View {
     @State private var shouldRefresh: Bool = false
     @FocusState private var isTextFocused: Bool
     @State private var mostPopularRecipes: [RecipeTitleCoverUser] = []
+    @State private var recommendationsRecipes: [RecipeTitleCoverUser] = []
     @State private var mostPopularUsers: [UserDetails] = []
     var apiGetManager = APIGetRequest()
     
@@ -115,6 +116,36 @@ struct DiscoverPageView: View {
                                 }
                                 .scrollIndicators(.hidden)
                             }
+                            
+                            VStack(spacing: 20) {
+                                HStack {
+                                    Text("Our Recommendations")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    Button {
+                                        //
+                                    } label: {
+                                        Image("Arrow - Right - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
+                                }
+                                ScrollView(.horizontal) {
+                                    HStack(spacing: 16) {
+                                        ForEach(recommendationsRecipes, id: \.id) { recipe in
+                                            NavigationLink {
+                                                RecipeDetailsView(recipeId: recipe.id)
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                    .frame(width: 183, height: 260)
+                                            }
+                                        }
+                                    }
+                                }
+                                .scrollIndicators(.hidden)
+                            }
                         }
                     }
                 }
@@ -143,6 +174,16 @@ struct DiscoverPageView: View {
                         case .success(let users):
                             print("success")
                             self.mostPopularUsers = users
+                        case .failure(let failure):
+                            print("failure \(failure)")
+                    }
+                }
+                
+                apiGetManager.getRecommendations { result in
+                    switch result {
+                        case .success(let recipes):
+                            print("success")
+                            self.recommendationsRecipes = recipes
                         case .failure(let failure):
                             print("failure \(failure)")
                     }
