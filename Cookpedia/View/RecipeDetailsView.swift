@@ -524,20 +524,18 @@ struct RecipeDetailsView: View {
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
                                                             apiPostManager.postComment(comment: comment) { result in
-                                                                print("result \(result)")
                                                                 switch result {
                                                                     case .success(let response):
-                                                                        print("comment poster successfully \(response)")
                                                                         commentText = ""
-                                                                        //DispatchQueue.main.asyncAfter(deadline: .now() + 5)
+                                                                        withAnimation {
+                                                                            proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
+                                                                        }
                                                                         apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
                                                                             switch result {
                                                                                 case .success(let comments):
-                                                                                    print("comment loaded successfully after being posted \(comments)")
                                                                                     self.comments = comments
                                                                                 case .failure(let error):
                                                                                     print("error \(error.localizedDescription)")
-                                                                                    print("comment not loaded after being posted")
                                                                             }
                                                                         }
                                                                         
@@ -574,7 +572,6 @@ struct RecipeDetailsView: View {
                                             }
                                             .id(scrollToBottomKey)
                                             .padding(.bottom, paddingBottom)
-                                        
                                     }
                                     .padding(.horizontal, 24)
                                 }
@@ -584,15 +581,37 @@ struct RecipeDetailsView: View {
                             .animation(.spring, value: scrollPosition)
                             .onChange(of: isCommentTextfieldFocused) {
                                 if isCommentTextfieldFocused {
-                                    paddingBottom = 400
+                                    if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 956 {
+                                        paddingBottom = 333
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 932 {
+                                        paddingBottom = 333
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 926 {
+                                        paddingBottom = 333
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 896 {
+                                        paddingBottom = 333
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 874 {
+                                        paddingBottom = 333
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 852 {
+                                        paddingBottom = 333
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 844 {
+                                        paddingBottom = 333
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 780 {
+                                        print("iphone 13 mini")
+                                        paddingBottom = 333
+                                    } else {
+                                        print("height \(UIScreen.main.nativeBounds.height / UIScreen.main.scale)")
+                                    }
+                                    
                                     scrollToBottomKey = UUID().uuidString
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                         withAnimation {
                                             proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
                                         }
                                     }
                                 } else {
-                                    paddingBottom = 0
+                                    withAnimation {
+                                        paddingBottom = 0
+                                    }
                                 }
                             }
                         }
