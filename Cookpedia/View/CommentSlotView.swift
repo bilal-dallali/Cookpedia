@@ -15,12 +15,13 @@ struct CommentSlotView: View {
     @State private var heartScaleY: CGFloat = 0
     @State private var isCommentLiked: Bool = false
     @State private var userId: Int?
-    @Binding var deleteCommentAlert: Bool
+    @State private var deleteCommentAlert: Bool = false
     var apiPostManager = APIPostRequest()
     var apiGetManager = APIGetRequest()
     var apiDeleteManager = APIDeleteRequest()
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    @Binding var refreshComment: Bool
     
     var body: some View {
         
@@ -131,6 +132,27 @@ struct CommentSlotView: View {
             }
             .frame(height: 24)
         }
+        .alert("", isPresented: $deleteCommentAlert) {
+            Button("Cancel", role: .cancel) {
+                
+            }
+            Button("Delete", role: .destructive) {
+                apiDeleteManager.deleteComment(commentId: comment.id) { result in
+                    switch result {
+                        case .success:
+                            refreshComment.toggle()
+                            print("successfully deleted the comment")
+                        case .failure:
+                            print("Didn't delete the comment")
+                    }
+                }
+            }
+        } message: {
+            //Text("comment id \(comment.id)")
+            Text("Are you sure you want to delete this comment?")
+                .foregroundStyle(Color("Primary900"))
+                .font(.custom("Urbanist-Regular", size: 16))
+        }
         .onAppear {
             guard let currentUser = userSession.first else {
                 return
@@ -146,5 +168,5 @@ struct CommentSlotView: View {
 }
 
 #Preview {
-    CommentSlotView(comment: CommentsDetails(id: 1, userId: 1, recipeId: 8, comment: "Amazing recipe", fullName: "Tanner Stafford", profilePictureUrl: "anyway", createdAt: "2025-01-01 22:05:17"), deleteCommentAlert: .constant(false))
+    CommentSlotView(comment: CommentsDetails(id: 1, userId: 1, recipeId: 8, comment: "Amazing recipe", fullName: "Tanner Stafford", profilePictureUrl: "anyway", createdAt: "2025-01-01 22:05:17"), refreshComment: .constant(false))
 }

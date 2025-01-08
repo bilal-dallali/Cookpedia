@@ -54,7 +54,7 @@ struct RecipeDetailsView: View {
     let recipeId: Int
     @State private var isBookmarkSelected: Bool = false
     @State private var addedToBookmarks: Bool = false
-    @State private var deleteCommentAlert: Bool = false
+    //@State private var deleteCommentAlert: Bool = false
     var apiGetManager = APIGetRequest()
     var apiPostManager = APIPostRequest()
     var apiDeleteManager = APIDeleteRequest()
@@ -68,6 +68,7 @@ struct RecipeDetailsView: View {
     @State private var scrollPosition = ScrollPosition()
     @State private var paddingBottom: CGFloat = 0
     @State private var scrollToBottomKey: String = UUID().uuidString
+    @State private var refreshComment: Bool = false
     
     // Private initializer for internal use only
     private init(recipeDetails: RecipeDetails, recipeId: Int, isDropdownActivated: Bool) {
@@ -458,33 +459,7 @@ struct RecipeDetailsView: View {
                                             
                                             VStack(spacing: 20) {
                                                 ForEach(comments, id: \.id) { comment in
-                                                    CommentSlotView(comment: comment, deleteCommentAlert: $deleteCommentAlert)
-                                                        .alert("", isPresented: $deleteCommentAlert) {
-                                                            Button("Cancel", role: .cancel) {
-                                                                
-                                                            }
-                                                            Button("Delete", role: .destructive) {
-                                                                apiDeleteManager.deleteComment(commentId: comment.id) { result in
-                                                                    switch result {
-                                                                        case .success:
-                                                                            apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                                                                switch result {
-                                                                                    case .success(let comments):
-                                                                                        self.comments = comments
-                                                                                    case .failure(let error):
-                                                                                        print("error \(error.localizedDescription)")
-                                                                                }
-                                                                            }
-                                                                        case .failure:
-                                                                            print("Didn't delete the comment")
-                                                                    }
-                                                                }
-                                                            }
-                                                        } message: {
-                                                            Text("Are you sure you want to delete this comment?")
-                                                                .foregroundStyle(Color("Primary900"))
-                                                                .font(.custom("Urbanist-Regular", size: 16))
-                                                        }
+                                                    CommentSlotView(comment: comment, refreshComment: $refreshComment)
                                                 }
                                                 
                                                 HStack(spacing: 16) {
@@ -719,10 +694,8 @@ struct RecipeDetailsView: View {
                                         }
                                         
                                         apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                            print("Trying to get comments \(result)")
                                             switch result {
                                                 case .success(let comments):
-                                                    print("comments loaded successfully on page landing \(comments)")
                                                     self.comments = comments
                                                 case .failure(let error):
                                                     print("error \(error.localizedDescription)")
@@ -740,6 +713,18 @@ struct RecipeDetailsView: View {
                                     print("increment views")
                                 case .failure(let error):
                                     print("Failed to increment views: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+                    .onChange(of: refreshComment) {
+                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
+                            print("Trying to get comments \(result)")
+                            switch result {
+                                case .success(let comments):
+                                    print("comments loaded successfully on page landing \(comments)")
+                                    self.comments = comments
+                                case .failure(let error):
+                                    print("error \(error.localizedDescription)")
                             }
                         }
                     }
