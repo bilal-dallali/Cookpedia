@@ -556,27 +556,11 @@ struct RecipeDetailsView: View {
                             .animation(.spring, value: scrollPosition)
                             .onChange(of: isCommentTextfieldFocused) {
                                 if isCommentTextfieldFocused {
-                                    if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 956 {
+                                    if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale >= 956 && UIScreen.main.nativeBounds.height / UIScreen.main.scale <= 780 {
                                         paddingBottom = 333
-                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 932 {
-                                        paddingBottom = 333
-                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 926 {
-                                        paddingBottom = 333
-                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 896 {
-                                        paddingBottom = 333
-                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 874 {
-                                        paddingBottom = 333
-                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 852 {
-                                        paddingBottom = 333
-                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 844 {
-                                        paddingBottom = 333
-                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 780 {
-                                        print("iphone 13 mini")
-                                        paddingBottom = 333
-                                    } else {
-                                        print("height \(UIScreen.main.nativeBounds.height / UIScreen.main.scale)")
+                                    } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 667 {
+                                        paddingBottom = 260
                                     }
-                                    
                                     scrollToBottomKey = UUID().uuidString
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                         withAnimation {
