@@ -54,7 +54,6 @@ struct RecipeDetailsView: View {
     let recipeId: Int
     @State private var isBookmarkSelected: Bool = false
     @State private var addedToBookmarks: Bool = false
-    //@State private var deleteCommentAlert: Bool = false
     var apiGetManager = APIGetRequest()
     var apiPostManager = APIPostRequest()
     var apiDeleteManager = APIDeleteRequest()
@@ -556,7 +555,7 @@ struct RecipeDetailsView: View {
                             .animation(.spring, value: scrollPosition)
                             .onChange(of: isCommentTextfieldFocused) {
                                 if isCommentTextfieldFocused {
-                                    if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale >= 956 && UIScreen.main.nativeBounds.height / UIScreen.main.scale <= 780 {
+                                    if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale <= 956 && UIScreen.main.nativeBounds.height / UIScreen.main.scale >= 780 {
                                         paddingBottom = 333
                                     } else if UIDevice.current.model == "iPhone" && UIScreen.main.nativeBounds.height / UIScreen.main.scale == 667 {
                                         paddingBottom = 260
