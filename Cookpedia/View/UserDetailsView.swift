@@ -58,7 +58,7 @@ struct UserDetailsView: View {
                     if following == true {
                         apiDeleteManager.unfollowUser(followerId: userId, followedId: user.id) { result in
                             switch result {
-                                case .success(let message):
+                                case .success:
                                     following = false
                                 case .failure(let error):
                                     print("Failed to unfollow user: \(error.localizedDescription)")
@@ -68,7 +68,7 @@ struct UserDetailsView: View {
                         print("following false")
                         apiPostManager.followUser(followerId: userId, followedId: user.id) { result in
                             switch result {
-                                case .success(let message):
+                                case .success:
                                     following = true
                                 case .failure(let error):
                                     print("Failed to follow user : \(error.localizedDescription)")

@@ -162,7 +162,7 @@ struct CreateRecipeView: View {
                                                 
                                                 apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
                                                     switch result {
-                                                        case .success(let message):
+                                                        case .success:
                                                             isSavedRecipe = true
                                                             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                                                 isSavedRecipe = false
@@ -249,7 +249,7 @@ struct CreateRecipeView: View {
                                                 
                                                 apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
                                                     switch result {
-                                                        case .success(let message):
+                                                        case .success:
                                                             isPublishedRecipe = true
                                                             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                                                 isPublishedRecipe = false

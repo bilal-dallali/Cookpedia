@@ -387,7 +387,7 @@ struct CreateAccountView: View {
                                         apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe) { result in
                                             switch result {
                                                 case .success(let (token, id)):
-                                                    var userId: String = String(id)
+                                                    let userId: String = String(id)
                                                     let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                                     context.insert(userSession)
                                                     do {

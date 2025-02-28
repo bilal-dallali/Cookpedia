@@ -182,7 +182,7 @@ struct LoginView: View {
                                     switch result {
                                         case .success(let (token, id)):
                                             // Get the userId from the token
-                                            var userId: String = String(id)
+                                            let userId: String = String(id)
                                             // Store session in SwiftData
                                             let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
                                             context.insert(userSession)

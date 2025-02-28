@@ -204,7 +204,7 @@ struct RecipeDetailsView: View {
                                                         if following == true {
                                                             apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
                                                                 switch result {
-                                                                    case .success(let message):
+                                                                    case .success:
                                                                         following = false
                                                                     case .failure(let error):
                                                                         print("Failed to unfollow user: \(error.localizedDescription)")
@@ -213,7 +213,7 @@ struct RecipeDetailsView: View {
                                                         } else if following == false {
                                                             apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId) { result in
                                                                 switch result {
-                                                                    case .success(let message):
+                                                                    case .success:
                                                                         following = true
                                                                     case .failure(let error):
                                                                         print("Failed to follow user : \(error.localizedDescription)")
@@ -499,7 +499,7 @@ struct RecipeDetailsView: View {
                                                             
                                                             apiPostManager.postComment(comment: comment) { result in
                                                                 switch result {
-                                                                    case .success(let response):
+                                                                    case .success:
                                                                         commentText = ""
                                                                         withAnimation {
                                                                             proxy.scrollTo(scrollToBottomKey, anchor: .bottom)

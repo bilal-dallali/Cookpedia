@@ -422,7 +422,7 @@ struct EditProfileView: View {
                             
                             apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
                                 switch result {
-                                    case .success(let message):
+                                    case .success:
                                         profileUpdated = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                             self.redirectHomePage = true
