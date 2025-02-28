@@ -100,6 +100,29 @@ class APIDeleteRequest: ObservableObject {
             completion(.success(()))
         }.resume()
     }
+    
+    func unlikeComment(userId: Int, commentId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+        let endpoint = "/comments/unlike-comment"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body: [String: Any] = ["userId": userId, "commentId": commentId]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        URLSession.shared.dataTask(with: request) { _, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            completion(.success(()))
+        }.resume()
+    }
 }
 
 enum APIDeleteError: Error {

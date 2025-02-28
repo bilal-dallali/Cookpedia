@@ -681,6 +681,69 @@ class APIGetRequest: ObservableObject {
         task.resume()
     }
     
+    func getCommentLikes(commentId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+        let endpoint = "/comments/comment-likes/\(commentId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                print("error1 \(error)")
+                return
+            }
+            
+            guard let data = data,
+                  let jsonResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let likeCount = jsonResponse["likeCount"] as? Int else {
+                completion(.failure(APIGetError.invalidResponse))
+                print("error2")
+                return
+            }
+            
+            completion(.success(likeCount))
+        }.resume()
+    }
+    
+    func isCommentLiked(userId: Int, commentId: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+        let endpoint = "/comments/is-comment-liked/\(userId)/\(commentId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            // Log brut response
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("Raw server response:", responseString)
+            }
+            
+            // Extract isLiked from JSON
+            do {
+                if let jsonResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let isLiked = jsonResponse["isLiked"] as? Bool {
+                    completion(.success(isLiked))
+                } else {
+                    completion(.failure(APIGetError.invalidResponse))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
 }
 
 enum APIGetError: Error {

@@ -22,9 +22,9 @@ struct CommentSlotView: View {
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
     @Binding var refreshComment: Bool
+    @State private var likeCount: Int = 0
     
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 0) {
                 NavigationLink {
@@ -83,16 +83,36 @@ struct CommentSlotView: View {
             HStack(spacing: 24) {
                 HStack(spacing: 8) {
                     Button {
-                        isCommentLiked.toggle()
-                        if isCommentLiked {
+                        //isCommentLiked.toggle()
+                        if isCommentLiked == true {
                             withAnimation(.easeIn(duration: 0.4)) {
                                 heartScaleX = 1
                                 heartScaleY = 1
                             }
-                        } else {
+                            apiDeleteManager.unlikeComment(userId: userId ?? 0, commentId: comment.id) { _ in
+                                DispatchQueue.main.async {
+                                    likeCount -= 1
+                                    isCommentLiked = false
+                                    withAnimation(.easeIn(duration: 0.4)) {
+                                        heartScaleX = 0
+                                        heartScaleY = 0
+                                    }
+                                }
+                            }
+                        } else if isCommentLiked == false {
                             withAnimation(.easeOut(duration: 0.4)) {
                                 heartScaleX = 0
                                 heartScaleY = 0
+                            }
+                            apiPostManager.likeComment(userId: userId ?? 0, commentId: comment.id) { _ in
+                                DispatchQueue.main.async {
+                                    likeCount += 1
+                                    isCommentLiked = true
+                                    withAnimation(.easeIn(duration: 0.4)) {
+                                        heartScaleX = 1
+                                        heartScaleY = 1
+                                    }
+                                }
                             }
                         }
                     } label: {
@@ -121,7 +141,7 @@ struct CommentSlotView: View {
                             }
                         }
                     }
-                    Text("90")
+                    Text("\(likeCount)")
                         .foregroundStyle(Color("Greyscale300"))
                         .font(.custom("Urbanist-Medium", size: 12))
                 }
@@ -148,7 +168,6 @@ struct CommentSlotView: View {
                 }
             }
         } message: {
-            //Text("comment id \(comment.id)")
             Text("Are you sure you want to delete this comment?")
                 .foregroundStyle(Color("Primary900"))
                 .font(.custom("Urbanist-Regular", size: 16))
@@ -163,6 +182,39 @@ struct CommentSlotView: View {
             }
             
             userId = connectedUserId
+            
+            apiGetManager.getCommentLikes(commentId: comment.id) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let count):
+                        likeCount = count
+                    case .failure:
+                        likeCount = 0
+                    }
+                }
+            }
+            
+            apiGetManager.isCommentLiked(userId: userId ?? 0, commentId: comment.id) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let isLiked):
+                        isCommentLiked = isLiked
+                        if isCommentLiked == true {
+                            withAnimation(.easeIn(duration: 0.4)) {
+                                heartScaleX = 1
+                                heartScaleY = 1
+                            }
+                        } else {
+                            withAnimation(.easeIn(duration: 0.4)) {
+                                heartScaleX = 0
+                                heartScaleY = 0
+                            }
+                        }
+                    case .failure:
+                        isCommentLiked = false
+                    }
+                }
+            }
         }
     }
 }

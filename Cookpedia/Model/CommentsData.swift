@@ -23,3 +23,9 @@ struct CommentsDetails: Codable {
     let createdAt: String
     //let updatedAt: String
 }
+
+struct CommentLikeStatus: Codable {
+    let isLiked: Bool
+    //let likeCount: Int
+}
+
