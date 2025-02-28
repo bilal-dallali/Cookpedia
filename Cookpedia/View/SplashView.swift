@@ -16,6 +16,8 @@ struct SplashView: View {
     let sessionDescriptor = FetchDescriptor<UserSession>(predicate: #Predicate { $0.isRemembered == true })
     @Environment(\.modelContext) private var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
+    @Query(sort: \UserSession.authToken) var userSessionToken: [UserSession]
+    var apiGetManager = APIGetRequest()
     
     var body: some View {
         VStack(spacing: 184) {
@@ -47,7 +49,21 @@ struct SplashView: View {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     redirectHomePage = true
                     if let session = userSession.first {
-                        redirectHomePage = true
+                        print("token \(session.authToken)")
+                        apiGetManager.checkUserSession(token: session.authToken) { result in
+                            DispatchQueue.main.async {
+                                switch result {
+                                case .success(let userId):
+                                    if userId != nil {
+                                        redirectHomePage = true
+                                    } else {
+                                        redirectWelcomePage = true
+                                    }
+                                case .failure:
+                                    redirectWelcomePage = true
+                                }
+                            }
+                        }
                     } else {
                         redirectWelcomePage = true
                     }

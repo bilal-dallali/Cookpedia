@@ -744,6 +744,43 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
+    func checkUserSession(token: String, completion: @escaping (Result<Int?, Error>) -> Void) {
+        let endpoint = "/users/check-session"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
+                  let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+
+            do {
+                if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let isActive = jsonResponse["active"] as? Bool {
+                    let userId = isActive ? jsonResponse["userId"] as? Int : nil
+                    completion(.success(userId))
+                } else {
+                    completion(.failure(APIGetError.invalidResponse))
+                }
+            } catch {
+                completion(.failure(APIGetError.decodingError))
+            }
+        }.resume()
+    }
+    
 }
 
 enum APIGetError: Error {
