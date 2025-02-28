@@ -80,9 +80,7 @@ struct RecipeCardUpdateView: View {
                     return
                 }
                 
-                guard let userId = Int(currentUser.userId) else {
-                    return
-                }
+                let userId = currentUser.userId
                 
             }
             .fullScreenCover(isPresented: $isUpdateRecipeSelected) {

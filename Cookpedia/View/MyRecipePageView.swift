@@ -140,9 +140,7 @@ struct MyRecipePageView: View {
                                     return
                                 }
                                 
-                                guard let userId = Int(currentUser.userId) else {
-                                    return
-                                }
+                                let userId = currentUser.userId
                                 
                                 apiGetManager.getPublishedRecipesFromUserId(userId: userId, published: false) { result in
                                     switch result {
@@ -173,9 +171,7 @@ struct MyRecipePageView: View {
                                     return
                                 }
                                 
-                                guard let userId = Int(currentUser.userId) else {
-                                    return
-                                }
+                                let userId = currentUser.userId
                                 
                                 apiGetManager.getPublishedRecipesFromUserId(userId: userId, published: true) { result in
                                     switch result {
@@ -204,9 +200,7 @@ struct MyRecipePageView: View {
                 return
             }
             
-            guard let userId = Int(currentUser.userId) else {
-                return
-            }
+            let userId = currentUser.userId
             
             apiGetManager.getPublishedRecipesCount(userId: userId) { result in
                 switch result {

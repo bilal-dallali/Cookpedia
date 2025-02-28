@@ -16,6 +16,6 @@ struct CookpediaApp: App {
                 SplashView()
             }
         }
-        .modelContainer(for: [UserSession.self])
+        .modelContainer(for: UserSession.self)
     }
 }

@@ -41,9 +41,7 @@ struct RecipeCardNameView: View {
                                 return
                             }
                             
-                            guard let userId = Int(currentUser.userId) else {
-                                return
-                            }
+                            let userId = currentUser.userId
                             
                             apiPostManager.toggleBookmark(userId: userId, recipeId: recipe.id, isBookmarked: isBookmarkSelected) { result in
                                 switch result {
@@ -117,9 +115,7 @@ struct RecipeCardNameView: View {
                     return
                 }
                 
-                guard let userId = Int(currentUser.userId) else {
-                    return
-                }
+                let userId = currentUser.userId
                 
                 apiGetManager.getBookmark(userId: userId, recipeId: recipe.id) { result in
                     switch result {
@@ -137,9 +133,7 @@ struct RecipeCardNameView: View {
                     return
                 }
                 
-                guard let userId = Int(currentUser.userId) else {
-                    return
-                }
+                let userId = currentUser.userId
                 
                 apiGetManager.getBookmark(userId: userId, recipeId: recipe.id) { result in
                     switch result {

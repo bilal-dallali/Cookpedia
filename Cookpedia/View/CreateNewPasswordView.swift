@@ -250,10 +250,8 @@ struct CreateNewPasswordView: View {
                                 apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined(), rememberMe: rememberMe) { result in
                                     switch result {
                                     case .success(let (token, id)):
-                                        // Get the userId
-                                        let userId: String = String(id)
                                         // Store session in SwiftData
-                                        let userSession = UserSession(userId: userId, email: email, authToken: token, isRemembered: rememberMe)
+                                        let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         do {
                                             try context.save()

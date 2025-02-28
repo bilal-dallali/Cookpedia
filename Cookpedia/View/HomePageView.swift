@@ -190,9 +190,9 @@ struct HomePageView: View {
                     return
                 }
                 
-                guard let userId = Int(currentUser.userId) else {
-                    return
-                }
+                let userId = currentUser.userId
+                
+                print("user id \(userId)")
                 
                 apiGetManager.getAllRecentRecipes { result in
                     switch result {
@@ -232,10 +232,8 @@ struct HomePageView: View {
                 guard let currentUser = userSession.first else {
                     return
                 }
-                
-                guard let userId = Int(currentUser.userId) else {
-                    return
-                }
+            
+                let userId = currentUser.userId
                 
                 apiGetManager.getAllRecentRecipes { result in
                     switch result {

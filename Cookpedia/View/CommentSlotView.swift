@@ -188,9 +188,7 @@ struct CommentSlotView: View {
                 return
             }
             
-            guard let connectedUserId = Int(currentUser.userId) else {
-                return
-            }
+            let connectedUserId = currentUser.userId
             
             userId = connectedUserId
             

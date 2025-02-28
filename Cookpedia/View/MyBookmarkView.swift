@@ -66,9 +66,7 @@ struct MyBookmarkView: View {
                 return
             }
             
-            guard let userId = Int(currentUser.userId) else {
-                return
-            }
+            let userId = currentUser.userId
             
             apiGetManager.getSavedRecipes(userId: userId) { result in
                 switch result {
@@ -87,9 +85,7 @@ struct MyBookmarkView: View {
                 return
             }
             
-            guard let userId = Int(currentUser.userId) else {
-                return
-            }
+            let userId = currentUser.userId
             
             apiGetManager.getSavedRecipes(userId: userId) { result in
                 switch result {

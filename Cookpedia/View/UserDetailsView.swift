@@ -51,9 +51,7 @@ struct UserDetailsView: View {
                         return
                     }
                     
-                    guard let userId = Int(currentUser.userId) else {
-                        return
-                    }
+                    let userId = currentUser.userId
                     
                     if following == true {
                         apiDeleteManager.unfollowUser(followerId: userId, followedId: user.id) { result in
@@ -102,9 +100,7 @@ struct UserDetailsView: View {
                 return
             }
             
-            guard let userId = Int(currentUser.userId) else {
-                return
-            }
+            let userId = currentUser.userId
             
             connectedUserId = userId
             

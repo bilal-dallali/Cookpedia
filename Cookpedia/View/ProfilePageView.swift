@@ -78,9 +78,7 @@ struct ProfilePageView: View {
                                         return
                                     }
                                     
-                                    guard let connectedUserId = Int(currentUser.userId) else {
-                                        return
-                                    }
+                                    let connectedUserId = currentUser.userId
                                     
                                     if following == true {
                                         apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId) { result in
@@ -417,9 +415,7 @@ struct ProfilePageView: View {
                     return
                 }
                 
-                guard let connectedUserId = Int(currentUser.userId) else {
-                    return
-                }
+                let connectedUserId = currentUser.userId
                 
                 apiGetManager.isFollowing(followerId: connectedUserId, followedId: userId) { result in
                     switch result {

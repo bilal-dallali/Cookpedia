@@ -401,9 +401,7 @@ struct EditProfileView: View {
                                 return
                             }
                             
-                            guard let userId = Int(currentUser.userId) else {
-                                return
-                            }
+                            let userId = currentUser.userId
                             
                             let updatedUser = EditUser(
                                 id: userId,
@@ -450,9 +448,7 @@ struct EditProfileView: View {
                     return
                 }
                 
-                guard let userId = Int(currentUser.userId) else {
-                    return
-                }
+                let userId = currentUser.userId
                 
                 apiGetManager.getUserDataFromUserId(userId: userId) { result in
                     switch result {

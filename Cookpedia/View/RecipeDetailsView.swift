@@ -197,9 +197,7 @@ struct RecipeDetailsView: View {
                                                             return
                                                         }
                                                         
-                                                        guard let userId = Int(currentUser.userId) else {
-                                                            return
-                                                        }
+                                                        let userId = currentUser.userId
                                                         
                                                         if following == true {
                                                             apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
@@ -491,9 +489,7 @@ struct RecipeDetailsView: View {
                                                                 return
                                                             }
                                                             
-                                                            guard let userId = Int(currentUser.userId) else {
-                                                                return
-                                                            }
+                                                            let userId = currentUser.userId
                                                             
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
@@ -588,9 +584,7 @@ struct RecipeDetailsView: View {
                                         return
                                     }
                                     
-                                    guard let userId = Int(currentUser.userId) else {
-                                        return
-                                    }
+                                    let userId = currentUser.userId
                                     
                                     apiPostManager.toggleBookmark(userId: userId, recipeId: recipeDetails.id, isBookmarked: isBookmarkSelected) { result in
                                         switch result {
@@ -629,9 +623,7 @@ struct RecipeDetailsView: View {
                             return
                         }
                         
-                        guard let userId = Int(currentUser.userId) else {
-                            return
-                        }
+                        let userId = currentUser.userId
                         
                         connectedUserId = userId
                         

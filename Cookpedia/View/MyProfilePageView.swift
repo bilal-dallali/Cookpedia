@@ -423,9 +423,7 @@ struct MyProfilePageView: View {
                         return
                     }
                     
-                    guard let userId = Int(currentUser.userId) else {
-                        return
-                    }
+                    let userId = currentUser.userId
                     
                     connectedUserId = userId
                     

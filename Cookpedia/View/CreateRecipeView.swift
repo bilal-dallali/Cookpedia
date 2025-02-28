@@ -138,9 +138,7 @@ struct CreateRecipeView: View {
                                                 return
                                             }
                                             
-                                            guard let userId = Int(currentUser.userId) else {
-                                                return
-                                            }
+                                            let userId = currentUser.userId
                                             
                                             if case.create = mode {
                                                 let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
@@ -225,9 +223,7 @@ struct CreateRecipeView: View {
                                                 return
                                             }
                                             
-                                            guard let userId = Int(currentUser.userId) else {
-                                                return
-                                            }
+                                            let userId = currentUser.userId
                                             
                                             if case.create = mode {
                                                 let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
