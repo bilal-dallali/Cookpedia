@@ -72,7 +72,7 @@ class APIPostRequest: ObservableObject {
         
         // Execute the request
         URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
+            if error != nil {
                 completion(.failure(APIPostError.serverError))
                 return
             }
@@ -138,7 +138,7 @@ class APIPostRequest: ObservableObject {
             let jsonData = try JSONSerialization.data(withJSONObject: loginDetails, options: [])
             request.httpBody = jsonData
             URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
+                if error != nil {
                     completion(.failure(.serverError))
                     return
                 }
@@ -184,7 +184,7 @@ class APIPostRequest: ObservableObject {
         do {
             request.httpBody = try JSONEncoder().encode(body)
             URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
+                if error != nil {
                     completion(.failure(.serverError))
                     return
                 }
@@ -215,7 +215,7 @@ class APIPostRequest: ObservableObject {
         do {
             request.httpBody = try JSONEncoder().encode(body)
             URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
+                if error != nil {
                     completion(.failure(.serverError))
                     return
                 }
@@ -247,7 +247,7 @@ class APIPostRequest: ObservableObject {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
             URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
+                if error != nil {
                     completion(.failure(.serverError))
                     return
                 }

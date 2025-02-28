@@ -57,17 +57,28 @@ struct CommentSlotView: View {
                         } label: {
                             Label {
                                 Text("Delete Comment")
-                                    .foregroundStyle(Color("Primary900"))
                             } icon: {
                                 Image("Delete - Regular - Light - Outline")
-                                    .foregroundStyle(Color("Primary900"))
+                            }
+                        }
+                        Button {
+                            //
+                        } label: {
+                            Label {
+                                Text("Signal as inappropriate")
+                            } icon: {
+                                Image("Danger Triangle - Regular - Light - Outline")
                             }
                         }
                     } else {
                         Button {
                             //
                         } label: {
-                            Text("Can't delete the comment it's not yours")
+                            Label {
+                                Text("Signal as inappropriate")
+                            } icon: {
+                                Image("Danger Triangle - Regular - Light - Outline")
+                            }
                         }
                     }
                 } label: {
