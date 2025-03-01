@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		E1DFDF382D72F3D900095D4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E14540662CCBF3A600D2D86E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E145406D2CCBF3A600D2D86E;
+			remoteInfo = Cookpedia;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		E145406E2CCBF3A600D2D86E /* Cookpedia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cookpedia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1DFDF342D72F3D900095D4C /* CookpediaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CookpediaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,10 +40,22 @@
 			path = Cookpedia;
 			sourceTree = "<group>";
 		};
+		E1DFDF352D72F3D900095D4C /* CookpediaTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = CookpediaTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		E145406B2CCBF3A600D2D86E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1DFDF312D72F3D900095D4C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				E14540702CCBF3A600D2D86E /* Cookpedia */,
+				E1DFDF352D72F3D900095D4C /* CookpediaTests */,
 				E145406F2CCBF3A600D2D86E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				E145406E2CCBF3A600D2D86E /* Cookpedia.app */,
+				E1DFDF342D72F3D900095D4C /* CookpediaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -83,6 +108,29 @@
 			productReference = E145406E2CCBF3A600D2D86E /* Cookpedia.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E1DFDF332D72F3D900095D4C /* CookpediaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E1DFDF3C2D72F3D900095D4C /* Build configuration list for PBXNativeTarget "CookpediaTests" */;
+			buildPhases = (
+				E1DFDF302D72F3D900095D4C /* Sources */,
+				E1DFDF312D72F3D900095D4C /* Frameworks */,
+				E1DFDF322D72F3D900095D4C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E1DFDF392D72F3D900095D4C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E1DFDF352D72F3D900095D4C /* CookpediaTests */,
+			);
+			name = CookpediaTests;
+			packageProductDependencies = (
+			);
+			productName = CookpediaTests;
+			productReference = E1DFDF342D72F3D900095D4C /* CookpediaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -90,11 +138,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1600;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					E145406D2CCBF3A600D2D86E = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					E1DFDF332D72F3D900095D4C = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = E145406D2CCBF3A600D2D86E;
 					};
 				};
 			};
@@ -113,12 +165,20 @@
 			projectRoot = "";
 			targets = (
 				E145406D2CCBF3A600D2D86E /* Cookpedia */,
+				E1DFDF332D72F3D900095D4C /* CookpediaTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E145406C2CCBF3A600D2D86E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E1DFDF322D72F3D900095D4C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +195,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E1DFDF302D72F3D900095D4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E1DFDF392D72F3D900095D4C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E145406D2CCBF3A600D2D86E /* Cookpedia */;
+			targetProxy = E1DFDF382D72F3D900095D4C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E145407A2CCBF3A700D2D86E /* Debug */ = {
@@ -317,6 +392,44 @@
 			};
 			name = Release;
 		};
+		E1DFDF3A2D72F3D900095D4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 257XYBXF37;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bilal-dallali.CookpediaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cookpedia.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Cookpedia";
+			};
+			name = Debug;
+		};
+		E1DFDF3B2D72F3D900095D4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 257XYBXF37;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bilal-dallali.CookpediaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cookpedia.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Cookpedia";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -334,6 +447,15 @@
 			buildConfigurations = (
 				E145407D2CCBF3A700D2D86E /* Debug */,
 				E145407E2CCBF3A700D2D86E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E1DFDF3C2D72F3D900095D4C /* Build configuration list for PBXNativeTarget "CookpediaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E1DFDF3A2D72F3D900095D4C /* Debug */,
+				E1DFDF3B2D72F3D900095D4C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
