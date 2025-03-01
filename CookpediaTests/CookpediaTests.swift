@@ -290,4 +290,96 @@ class PostDatasTests: XCTestCase {
         
         waitForExpectations(timeout: 5, handler: nil)
     }
+    
+    func testSendResetCode_Success() {
+        let expectation = self.expectation(description: "Reset code sent successfully")
+
+        apiPostRequest.sendResetCode(email: "dallali-bilal@hotmail.fr") { result in
+            switch result {
+            case .success:
+                expectation.fulfill()
+            case .failure:
+                XCTFail("L'envoi du code de réinitialisation ne devrait pas échouer")
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+
+    func testSendResetCode_Failure() {
+        let expectation = self.expectation(description: "Fail to send reset code")
+
+        apiPostRequest.sendResetCode(email: "invalid@example.com") { result in
+            switch result {
+            case .success:
+                XCTFail("L'envoi devrait échouer")
+            case .failure:
+                expectation.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testVerifyResetCode_Success() {
+        let expectation = self.expectation(description: "Reset code verified successfully")
+
+        apiPostRequest.verifyResetCode(email: "dallali-bilal@hotmail.fr", code: "2324") { result in
+            switch result {
+            case .success:
+                expectation.fulfill()
+            case .failure:
+                XCTFail("La vérification du code ne devrait pas échouer")
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+
+    func testVerifyResetCode_Failure() {
+        let expectation = self.expectation(description: "Fail to verify reset code")
+
+        apiPostRequest.verifyResetCode(email: "test@example.com", code: "0000") { result in
+            switch result {
+            case .success:
+                XCTFail("La vérification devrait échouer")
+            case .failure:
+                expectation.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testResetPassword_Success() {
+        let expectation = self.expectation(description: "Password reset successfully")
+
+        apiPostRequest.resetPassword(email: "dallali-bilal@hotmail.fr", newPassword: "r6h94mpk5Be5&n!G", resetCode: "2324", rememberMe: false) { result in
+            switch result {
+            case .success(let (token, id)):
+                XCTAssertNotNil(token, "Le token ne doit pas être nil")
+                XCTAssertGreaterThan(id, 0, "L'ID doit être valide")
+                expectation.fulfill()
+            case .failure:
+                XCTFail("La réinitialisation du mot de passe ne devrait pas échouer")
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+
+    func testResetPassword_Failure() {
+        let expectation = self.expectation(description: "Fail to reset password")
+
+        apiPostRequest.resetPassword(email: "test@example.com", newPassword: "short", resetCode: "000000", rememberMe: false) { result in
+            switch result {
+            case .success:
+                XCTFail("La réinitialisation devrait échouer")
+            case .failure:
+                expectation.fulfill()
+            }
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 }
