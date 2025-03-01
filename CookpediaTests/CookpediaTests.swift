@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import UIKit
 @testable import Cookpedia
 
 class PostDatasTests: XCTestCase {
@@ -28,7 +29,14 @@ class PostDatasTests: XCTestCase {
         let uniqueUsername = "testuser\(Int.random(in: 1000...9999))"
         let uniqueEmail = "test\(Int.random(in: 1000...9999))@example.com"
         let uniquePhoneNumber = "\(Int.random(in: 1000000000...9999999999))"
-
+        
+        guard let testImage = UIImage(systemName: "person.crop.circle") else {
+            XCTFail("❌ Impossible de charger l'image SF Symbol")
+            return
+        }
+        
+        print("✅ Image SF Symbol chargée avec succès")
+        
         let mockUser = UserRegistration(
             username: uniqueUsername,
             email: uniqueEmail,
@@ -67,7 +75,7 @@ class PostDatasTests: XCTestCase {
             profilePictureUrl: "profile-picture"
         )
 
-        apiPostRequest.registerUser(registration: mockUser, profilePicture: nil, rememberMe: false) { result in
+        apiPostRequest.registerUser(registration: mockUser, profilePicture: testImage, rememberMe: false) { result in
             switch result {
             case .success(let (token, id)):
                 XCTAssertNotNil(token, "Token should not be nil")

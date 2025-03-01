@@ -110,7 +110,6 @@ class APIPostRequest: ObservableObject {
                 } else {
                     completion(.failure(.invalidData))
                 }
-                
             case 500:
                 completion(.failure(.serverError))
             default:
