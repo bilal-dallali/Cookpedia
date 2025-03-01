@@ -258,4 +258,36 @@ class PostDatasTests: XCTestCase {
         
         waitForExpectations(timeout: 10, handler: nil)
     }
+    
+    func testLoginUser_Success() {
+        let expectation = self.expectation(description: "Login succeeds")
+        
+        apiPostRequest.loginUser(email: "axes-empenne.0g@icloud.com", password: "mmeKzB6FxFTpyiz@", rememberMe: false) { result in
+            switch result {
+            case .success(let (token, id)):
+                XCTAssertNotNil(token, "Le token ne doit pas être nil")
+                XCTAssertGreaterThan(id, 0, "L'ID doit être valide")
+                expectation.fulfill()
+            case .failure:
+                XCTFail("Le test de login ne devrait pas échouer")
+            }
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
+    func testLoginUser_Failure() {
+        let expectation = self.expectation(description: "Login fails with wrong credentials")
+        
+        apiPostRequest.loginUser(email: "wrong@example.com", password: "wrongpassword", rememberMe: false) { result in
+            switch result {
+            case .success:
+                XCTFail("Le test devrait échouer")
+            case .failure:
+                expectation.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
 }
