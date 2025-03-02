@@ -94,12 +94,7 @@ struct CommentSlotView: View {
             HStack(spacing: 24) {
                 HStack(spacing: 8) {
                     Button {
-                        //isCommentLiked.toggle()
                         if isCommentLiked == true {
-                            withAnimation(.easeIn(duration: 0.4)) {
-                                heartScaleX = 1
-                                heartScaleY = 1
-                            }
                             apiDeleteManager.unlikeComment(userId: userId ?? 0, commentId: comment.id) { _ in
                                 DispatchQueue.main.async {
                                     likeCount -= 1
@@ -111,10 +106,6 @@ struct CommentSlotView: View {
                                 }
                             }
                         } else if isCommentLiked == false {
-                            withAnimation(.easeOut(duration: 0.4)) {
-                                heartScaleX = 0
-                                heartScaleY = 0
-                            }
                             apiPostManager.likeComment(userId: userId ?? 0, commentId: comment.id) { _ in
                                 DispatchQueue.main.async {
                                     likeCount += 1

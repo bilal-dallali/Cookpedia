@@ -7,6 +7,7 @@
 
 import XCTest
 import UIKit
+import Testing
 @testable import Cookpedia
 
 class PostDatasTests: XCTestCase {
