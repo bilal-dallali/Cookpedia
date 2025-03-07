@@ -41,6 +41,17 @@
                ReferencedContainer = "container:Cookpedia.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E187A67E2D75A2F800FFD03E"
+               BuildableName = "RegisterTests.xctest"
+               BlueprintName = "RegisterTests"
+               ReferencedContainer = "container:Cookpedia.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

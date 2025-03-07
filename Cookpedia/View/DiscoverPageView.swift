@@ -64,8 +64,8 @@ struct DiscoverPageView: View {
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 24))
                                     Spacer()
-                                    Button {
-                                        //
+                                    NavigationLink {
+                                        MostPopularRecipeView()
                                     } label: {
                                         Image("Arrow - Right - Regular - Light - Outline")
                                             .resizable()
@@ -94,8 +94,8 @@ struct DiscoverPageView: View {
                                         .foregroundStyle(Color("MyWhite"))
                                         .font(.custom("Urbanist-Bold", size: 24))
                                     Spacer()
-                                    Button {
-                                        //
+                                    NavigationLink {
+                                        TopChefView()
                                     } label: {
                                         Image("Arrow - Right - Regular - Light - Outline")
                                             .resizable()
