@@ -76,11 +76,11 @@ struct RecipeCardUpdateView: View {
             }
             .onAppear {
                 
-                guard let currentUser = userSession.first else {
-                    return
-                }
-                
-                let userId = currentUser.userId
+//                guard let currentUser = userSession.first else {
+//                    return
+//                }
+//                
+//                let userId = currentUser.userId
                 
             }
             .fullScreenCover(isPresented: $isUpdateRecipeSelected) {

@@ -1,28 +1,28 @@
 //
-//  RecentRecipeView.swift
+//  MostSearchedView.swift
 //  Cookpedia
 //
-//  Created by Bilal Dallali on 19/12/2024.
+//  Created by Bilal Dallali on 07/03/2025.
 //
 
 import SwiftUI
 
-struct RecentRecipeView: View {
+struct MostSearchedView: View {
     
-    @State private var recipes: [RecipeTitleCoverUser] = []
-    var apiGetManager = APIGetRequest()
+    @State private var mostSearchedRecipes: [RecipeTitleCoverUser] = []
     @State private var shouldRefresh: Bool = false
+    var apiGetManager = APIGetRequest()
     
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                    ForEach(recipes, id: \.id) { recipe in
+                    ForEach(mostSearchedRecipes, id: \.id) { recipe in
                         NavigationLink {
                             RecipeDetailsView(recipeId: recipe.id)
                         } label: {
                             RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                .frame(height: 260)
+                                .frame(width: 183, height: 260)
                         }
                     }
                 }
@@ -39,7 +39,7 @@ struct RecentRecipeView: View {
             }
             ToolbarItem(placement: .principal) {
                 HStack {
-                    Text("Recent recipes")
+                    Text("Most Searches")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 24))
                         .padding(.leading, 16)
@@ -58,21 +58,19 @@ struct RecentRecipeView: View {
             }
         }
         .onAppear {
-            apiGetManager.getAllRecentRecipes { result in
+            apiGetManager.getMostSearchesRecipes { result in
                 switch result {
                     case .success(let recipes):
-                        DispatchQueue.main.async {
-                            self.recipes = recipes
-                        }
-                    case .failure(let error):
-                        print("Error fetching recipes:", error.localizedDescription)
+                        print("success")
+                        self.mostSearchedRecipes = recipes
+                    case .failure(let failure):
+                        print("failure \(failure)")
                 }
             }
         }
     }
 }
 
-
 #Preview {
-    RecentRecipeView()
+    MostSearchedView()
 }
