@@ -107,7 +107,6 @@ struct CountryView: View {
                         .padding(.bottom, 36)
                 }
             }
-            
         }
         .onAppear {
             country = selectedCountry?.name ?? ""

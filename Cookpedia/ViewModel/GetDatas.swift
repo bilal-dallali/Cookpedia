@@ -549,6 +549,70 @@ class APIGetRequest: ObservableObject {
         }.resume()
     }
     
+    func getCommentsOrderDesc(forRecipeId recipeId: Int, completion: @escaping (Result<[CommentsDetails], Error>) -> Void) {
+        let endpoint = "/comments/get-comments-from-recipe-id-order-desc/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let comments = try decoder.decode([CommentsDetails].self, from: data)
+                completion(.success(comments))
+            } catch {
+                completion(.failure(APIGetError.decodingError))
+            }
+        }.resume()
+    }
+    
+    func getCommentsByLikes(forRecipeId recipeId: Int, completion: @escaping (Result<[CommentsDetails], Error>) -> Void) {
+        let endpoint = "/comments/get-comments-from-recipe-id-order-by-likes/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(APIGetError.invalidUrl))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
+                completion(.failure(APIGetError.invalidResponse))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let comments = try decoder.decode([CommentsDetails].self, from: data)
+                completion(.success(comments))
+            } catch {
+                completion(.failure(APIGetError.decodingError))
+            }
+        }.resume()
+    }
+    
     func getMostPopularRecipes(completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
         let endpoint = "/recipes/most-popular-recipes"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {

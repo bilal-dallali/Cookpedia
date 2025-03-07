@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-
 import Foundation
 
 func timeAgo(from dateString: String) -> String {
