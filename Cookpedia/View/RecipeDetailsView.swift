@@ -444,8 +444,8 @@ struct RecipeDetailsView: View {
                                                     .foregroundStyle(Color("MyWhite"))
                                                     .font(.custom("Urbanist-Bold", size: 24))
                                                 Spacer()
-                                                Button {
-                                                    //
+                                                NavigationLink {
+                                                    CommentsView(recipeId: recipeDetails.id)
                                                 } label: {
                                                     Image("Arrow - Right - Regular - Light - Outline")
                                                         .resizable()
