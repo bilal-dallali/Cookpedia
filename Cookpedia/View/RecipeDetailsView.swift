@@ -455,7 +455,7 @@ struct RecipeDetailsView: View {
                                             }
                                             
                                             VStack(spacing: 20) {
-                                                ForEach(comments, id: \.id) { comment in
+                                                ForEach(comments.prefix(5), id: \.id) { comment in
                                                     CommentSlotView(comment: comment, refreshComment: $refreshComment)
                                                 }
                                                 
@@ -484,6 +484,37 @@ struct RecipeDetailsView: View {
                                                         .foregroundStyle(Color("MyWhite"))
                                                         .font(.custom("Urbanist-Semibold", size: 16))
                                                         .focused($isCommentTextfieldFocused)
+                                                        .submitLabel(.done)
+                                                        .onSubmit {
+                                                            guard let currentUser = userSession.first else {
+                                                                return
+                                                            }
+                                                            
+                                                            let userId = currentUser.userId
+                                                            
+                                                            let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
+                                                            
+                                                            apiPostManager.postComment(comment: comment) { result in
+                                                                switch result {
+                                                                    case .success:
+                                                                        commentText = ""
+                                                                        withAnimation {
+                                                                            proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
+                                                                        }
+                                                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
+                                                                            switch result {
+                                                                                case .success(let comments):
+                                                                                    self.comments = comments
+                                                                                case .failure(let error):
+                                                                                    print("error \(error.localizedDescription)")
+                                                                            }
+                                                                        }
+                                                                        
+                                                                    case .failure(let error):
+                                                                        print("Failed to post comment\(error)")
+                                                                }
+                                                            }
+                                                        }
                                                         Button {
                                                             guard let currentUser = userSession.first else {
                                                                 return

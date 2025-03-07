@@ -35,7 +35,6 @@ struct RecipeCardUpdateView: View {
                     HStack {
                         Spacer()
                         Button {
-                            //print("update recipe \(recipe.id)")
                             isUpdateRecipeSelected = true
                         } label: {
                             Circle()
