@@ -63,7 +63,6 @@ struct UserDetailsView: View {
                             }
                         }
                     } else if following == false {
-                        print("following false")
                         apiPostManager.followUser(followerId: userId, followedId: user.id) { result in
                             switch result {
                                 case .success:

@@ -61,7 +61,6 @@ struct MostPopularRecipeView: View {
             apiGetManager.getMostPopularRecipes { result in
                 switch result {
                     case .success(let recipes):
-                        print("success")
                         self.mostPopularRecipes = recipes
                     case .failure(let failure):
                         print("failure \(failure)")

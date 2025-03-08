@@ -61,7 +61,6 @@ struct OurRecommendationsView: View {
             apiGetManager.getRecommendations { result in
                 switch result {
                     case .success(let recipes):
-                        print("success")
                         self.recommendationsRecipes = recipes
                     case .failure(let failure):
                         print("failure \(failure)")

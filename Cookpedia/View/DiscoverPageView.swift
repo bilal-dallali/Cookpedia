@@ -224,7 +224,6 @@ struct DiscoverPageView: View {
                 apiGetManager.getMostPopularRecipes { result in
                     switch result {
                         case .success(let recipes):
-                            print("success")
                             self.mostPopularRecipes = recipes
                         case .failure(let failure):
                             print("failure \(failure)")
@@ -234,7 +233,6 @@ struct DiscoverPageView: View {
                 apiGetManager.getUsersByRecipeViews { result in
                     switch result {
                         case .success(let users):
-                            print("success")
                             self.mostPopularUsers = users
                         case .failure(let failure):
                             print("failure \(failure)")
@@ -244,7 +242,6 @@ struct DiscoverPageView: View {
                 apiGetManager.getRecommendations { result in
                     switch result {
                         case .success(let recipes):
-                            print("success")
                             self.recommendationsRecipes = recipes
                         case .failure(let failure):
                             print("failure \(failure)")
@@ -254,7 +251,6 @@ struct DiscoverPageView: View {
                 apiGetManager.getMostSearchesRecipes { result in
                     switch result {
                         case .success(let recipes):
-                            print("success")
                             self.mostSearchedRecipes = recipes
                         case .failure(let failure):
                             print("failure \(failure)")
@@ -264,7 +260,6 @@ struct DiscoverPageView: View {
                 apiGetManager.getAllRecentRecipes { result in
                     switch result {
                         case .success(let recipe):
-                            print("success")
                             self.recentRecipes = recipe
                         case .failure(let failure):
                             print("failure \(failure)")

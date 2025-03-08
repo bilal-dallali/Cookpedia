@@ -127,12 +127,6 @@ struct CommentsView: View {
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
                     .onAppear {
-                        guard let currentUser = userSession.first else {
-                            return
-                        }
-                        
-                        let userId = currentUser.userId
-                        
                         apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
                             switch result {
                                 case .success(let comments):
@@ -153,12 +147,6 @@ struct CommentsView: View {
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
                     .onAppear {
-                        guard let currentUser = userSession.first else {
-                            return
-                        }
-                        
-                        let userId = currentUser.userId
-                        
                         apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
                             switch result {
                                 case .success(let comments):
@@ -179,12 +167,6 @@ struct CommentsView: View {
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
                     .onAppear {
-                        guard let currentUser = userSession.first else {
-                            return
-                        }
-                        
-                        let userId = currentUser.userId
-                        
                         apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
                             switch result {
                                 case .success(let comments):
@@ -381,33 +363,6 @@ struct CommentsView: View {
             
             let userId = currentUser.userId
             
-//            apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
-//                switch result {
-//                    case .success(let comments):
-//                        self.oldestComments = comments
-//                    case .failure(let error):
-//                        print("error \(error.localizedDescription)")
-//                }
-//            }
-//            
-//            apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
-//                switch result {
-//                    case .success(let comments):
-//                        self.newestComments = comments
-//                    case .failure(let error):
-//                        print("error \(error.localizedDescription)")
-//                }
-//            }
-//            
-//            apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
-//                switch result {
-//                    case .success(let comments):
-//                        self.topComments = comments
-//                    case .failure(let error):
-//                        print("error \(error.localizedDescription)")
-//                }
-//            }
-            
             apiGetManager.getUserDataFromUserId(userId: userId) { result in
                 switch result {
                     case .success(let user):
@@ -423,7 +378,6 @@ struct CommentsView: View {
             apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
                 switch result {
                     case .success(let comments):
-                        print("comments loaded successfully on page landing \(comments)")
                         self.oldestComments = comments
                     case .failure(let error):
                         print("error \(error.localizedDescription)")
@@ -433,7 +387,6 @@ struct CommentsView: View {
             apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
                 switch result {
                     case .success(let comments):
-                        print("comments loaded successfully on page landing \(comments)")
                         self.newestComments = comments
                     case .failure(let error):
                         print("error \(error.localizedDescription)")

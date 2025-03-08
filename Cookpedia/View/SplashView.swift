@@ -49,7 +49,6 @@ struct SplashView: View {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     redirectHomePage = true
                     if let session = userSession.first {
-                        print("token \(session.authToken)")
                         apiGetManager.checkUserSession(token: session.authToken) { result in
                             DispatchQueue.main.async {
                                 switch result {

@@ -39,7 +39,7 @@ struct CommentSlotView: View {
                                 .frame(width: 48, height: 48)
                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
                         } placeholder: {
-                            Image("tanner-stafford")
+                            Image("Ellipse")
                                 .resizable()
                                 .frame(width: 48, height: 48)
                                 .clipShape(RoundedRectangle(cornerRadius: .infinity))
@@ -163,7 +163,6 @@ struct CommentSlotView: View {
                     switch result {
                         case .success:
                             refreshComment.toggle()
-                            print("successfully deleted the comment")
                         case .failure:
                             print("Didn't delete the comment")
                     }

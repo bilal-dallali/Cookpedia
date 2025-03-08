@@ -489,7 +489,6 @@ struct MyProfilePageView: View {
 }
 
 func formatDate(from dateString: String) -> String {
-    print("Received date string: \(dateString)")
     
     let inputFormatter = ISO8601DateFormatter()
     inputFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -501,7 +500,6 @@ func formatDate(from dateString: String) -> String {
     if let date = inputFormatter.date(from: dateString) {
         return outputFormatter.string(from: date)
     } else {
-        print("Failed to parse date string: \(dateString)")
         return "Unknown Date"
     }
 }

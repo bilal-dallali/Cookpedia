@@ -755,7 +755,6 @@ class APIGetRequest: ObservableObject {
         URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
             if let error = error {
                 completion(.failure(error))
-                print("error1 \(error)")
                 return
             }
             
@@ -763,7 +762,6 @@ class APIGetRequest: ObservableObject {
                   let jsonResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                   let likeCount = jsonResponse["likeCount"] as? Int else {
                 completion(.failure(APIGetError.invalidResponse))
-                print("error2")
                 return
             }
             

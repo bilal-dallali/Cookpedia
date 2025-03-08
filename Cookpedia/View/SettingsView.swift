@@ -107,16 +107,14 @@ struct SettingsView: View {
                     
                     Button {
                         guard let currentSession = userSessions.first else {
-                            print("Aucune session utilisateur trouvée.")
                             return
                         }
                         
-                        // Supprimez la session utilisateur du contexte
+                        // Delete the session from context
                         context.delete(currentSession)
                         
                         do {
-                            try context.save() // Sauvegarde les changements
-                            print("Session utilisateur supprimée avec succès.")
+                            try context.save()
                         } catch {
                             print("Erreur lors de la suppression de la session utilisateur : \(error.localizedDescription)")
                         }

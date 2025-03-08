@@ -192,8 +192,6 @@ struct HomePageView: View {
                 
                 let userId = currentUser.userId
                 
-                print("user id \(userId)")
-                
                 apiGetManager.getAllRecentRecipes { result in
                     switch result {
                         case .success(let recipes):
