@@ -180,7 +180,9 @@ struct InstructionSlotView: View {
                 .frame(height: 72)
             }
             Button {
-                onDelete()
+                withAnimation {
+                    onDelete()
+                }
             } label: {
                 Image("Delete - Regular - Light - Outline")
                     .resizable()

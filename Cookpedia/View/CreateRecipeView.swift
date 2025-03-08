@@ -714,7 +714,9 @@ struct CreateRecipeView: View {
                             }
                             
                             Button {
-                                ingredients.append("")
+                                withAnimation {
+                                    ingredients.append("")
+                                }
                             } label: {
                                 HStack {
                                     Image("Icon=plus, Component=Additional Icons")

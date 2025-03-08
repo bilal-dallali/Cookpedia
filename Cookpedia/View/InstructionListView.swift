@@ -29,7 +29,9 @@ struct InstructionListView: View {
                 )
             }
             Button {
-                instructions.append(CreateRecipeView.Instruction())
+                withAnimation {
+                    instructions.append(CreateRecipeView.Instruction())
+                }
             } label: {
                 HStack {
                     Image("Icon=plus, Component=Additional Icons")

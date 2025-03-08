@@ -43,7 +43,9 @@ struct IngredientSlotView: View {
             .background(Color("Dark2"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
             Button {
-                onDelete()
+                withAnimation {
+                    onDelete()
+                }
             } label: {
                 Image("Delete - Regular - Light - Outline")
                     .resizable()

@@ -36,27 +36,25 @@ struct DiscoverPageView: View {
                         .padding(.vertical, 5)
                         
                         VStack(alignment: .leading, spacing: 28) {
-                            HStack(spacing: 12) {
-                                Image("Search - Regular - Light - Outline")
-                                    .foregroundStyle(Color(searchRecipeOrChefText.isEmpty ? "Greyscale600" : "MyWhite"))
-                                    .frame(width: 20, height: 20)
-                                    .padding(.leading, 20)
-                                TextField(text: $searchRecipeOrChefText) {
+                            NavigationLink {
+                                SearchView()
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image("Search - Regular - Light - Outline")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                        .foregroundStyle(Color(searchRecipeOrChefText.isEmpty ? "Greyscale600" : "MyWhite"))
+                                        .padding(.leading, 20)
                                     Text("Search for Recipes or Chef")
                                         .foregroundStyle(Color("Greyscale600"))
                                         .font(.custom("Urbanist-Regular", size: 16))
+                                    Spacer()
                                 }
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled(true)
-                                .keyboardType(.default)
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Regular", size: 18))
-                                .padding(.trailing, 20)
-                                .focused($isTextFocused)
+                                .frame(height: 58)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("Dark2"))
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
                             }
-                            .frame(height: 58)
-                            .background(Color("Dark2"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
                             
                             VStack(spacing: 20) {
                                 HStack {
