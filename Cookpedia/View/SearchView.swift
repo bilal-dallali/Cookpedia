@@ -119,11 +119,24 @@ struct SearchView: View {
             }
             if isRecipeSelected {
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                        if searchText != "" {
-                            if filteredResults.isEmpty {
-                                Text("It is empty")
-                            } else {
+                    if searchText != "" {
+                        if filteredResults.isEmpty {
+                            VStack(spacing: 60) {
+                                Image("not-found-icon")
+                                    .resizable()
+                                    .frame(width: 350, height: 258)
+                                VStack(spacing: 12) {
+                                    Text("Not Found")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Text("We're sorry, the keyword you were looking for could not be found. Please search with another keywords.")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Regular", size: 18))
+                                }
+                            }
+                            .padding(.vertical, 120)
+                        } else {
+                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                 ForEach(filteredResults as! [RecipeTitleCoverUser], id: \.id) { recipe in
                                     NavigationLink {
                                         RecipeDetailsView(recipeId: recipe.id)
@@ -133,7 +146,9 @@ struct SearchView: View {
                                     }
                                 }
                             }
-                        } else {
+                        }
+                    } else {
+                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                             ForEach(mostSearchedRecipes, id: \.id) { recipe in
                                 NavigationLink {
                                     RecipeDetailsView(recipeId: recipe.id)
@@ -144,15 +159,29 @@ struct SearchView: View {
                             }
                         }
                     }
+                    
                 }
                 .scrollIndicators(.hidden)
             } else if isPeopleSelected {
                 ScrollView {
-                    VStack(spacing: 20) {
-                        if searchText != "" {
-                            if filteredResults.isEmpty {
-                                Text("It is empty")
-                            } else {
+                    if searchText != "" {
+                        if filteredResults.isEmpty {
+                            VStack(spacing: 60) {
+                                Image("not-found-icon")
+                                    .resizable()
+                                    .frame(width: 350, height: 258)
+                                VStack(spacing: 12) {
+                                    Text("Not Found")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Text("We're sorry, the keyword you were looking for could not be found. Please search with another keywords.")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Regular", size: 18))
+                                }
+                            }
+                            .padding(.vertical, 120)
+                        } else {
+                            VStack(spacing: 20) {
                                 ForEach(filteredResults as! [UserDetails], id: \.id) { user in
                                     NavigationLink {
                                         ProfilePageView(userId: user.id)
@@ -161,7 +190,9 @@ struct SearchView: View {
                                     }
                                 }
                             }
-                        } else {
+                        }
+                    } else {
+                        VStack(spacing: 20) {
                             ForEach(mostPopularUsers, id: \.id) { user in
                                 NavigationLink {
                                     ProfilePageView(userId: user.id)
@@ -174,7 +205,6 @@ struct SearchView: View {
                 }
                 .scrollIndicators(.hidden)
             }
-
         }
         .padding(.horizontal, 24)
         .padding(.top, 24)
@@ -198,12 +228,12 @@ struct SearchView: View {
             
             apiGetManager.getUsersByRecipeViews { result in
                 switch result {
-                    case .success(let users):
+                case .success(let users):
                     DispatchQueue.main.async {
                         self.mostPopularUsers = users
                     }
-                    case .failure(let failure):
-                        print("failure \(failure)")
+                case .failure(let failure):
+                    print("failure \(failure)")
                 }
             }
         }
