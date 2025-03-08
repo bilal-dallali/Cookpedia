@@ -60,7 +60,9 @@ struct TopChefView: View {
             apiGetManager.getUsersByRecipeViews { result in
                 switch result {
                     case .success(let users):
+                    DispatchQueue.main.async {
                         self.mostPopularUsers = users
+                    }
                     case .failure(let failure):
                         print("failure \(failure)")
                 }

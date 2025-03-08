@@ -13,6 +13,10 @@ struct SearchView: View {
     @FocusState private var isTextFocused: Bool
     @State private var isRecipeSelected: Bool = true
     @State private var isPeopleSelected: Bool = false
+    var apiGetManager = APIGetRequest()
+    @State private var mostSearchedRecipes: [RecipeTitleCoverUser] = []
+    @State private var shouldRefresh: Bool = false
+    @State private var mostPopularUsers: [UserDetails] = []
     
     var body: some View {
         VStack(spacing: 24) {
@@ -105,11 +109,34 @@ struct SearchView: View {
                     }
                 }
             }
-            
-            ScrollView {
-                Text("azerty")
+            if isRecipeSelected {
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+                        ForEach(mostSearchedRecipes, id: \.id) { recipe in
+                            NavigationLink {
+                                RecipeDetailsView(recipeId: recipe.id)
+                            } label: {
+                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                    .frame(width: 183, height: 260)
+                            }
+                        }
+                    }
+                }
+                .scrollIndicators(.hidden)
+            } else if isPeopleSelected {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        ForEach(mostPopularUsers, id: \.id) { user in
+                            NavigationLink {
+                                ProfilePageView(userId: user.id)
+                            } label: {
+                                UserDetailsView(user: user)
+                            }
+                        }
+                    }
+                }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
 
         }
         .padding(.horizontal, 24)
@@ -119,7 +146,29 @@ struct SearchView: View {
             isTextFocused = false
         }
         .onAppear {
-            //isTextFocused = true
+            isTextFocused = true
+            
+            apiGetManager.getMostSearchesRecipes { result in
+                switch result {
+                case .success(let recipes):
+                    DispatchQueue.main.async {
+                        self.mostSearchedRecipes = recipes
+                    }
+                case .failure(let failure):
+                    print("failure \(failure)")
+                }
+            }
+            
+            apiGetManager.getUsersByRecipeViews { result in
+                switch result {
+                    case .success(let users):
+                    DispatchQueue.main.async {
+                        self.mostPopularUsers = users
+                    }
+                    case .failure(let failure):
+                        print("failure \(failure)")
+                }
+            }
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
