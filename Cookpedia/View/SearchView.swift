@@ -18,6 +18,14 @@ struct SearchView: View {
     @State private var shouldRefresh: Bool = false
     @State private var mostPopularUsers: [UserDetails] = []
     
+    var filteredResults: [Any] {
+        if isRecipeSelected {
+            return mostSearchedRecipes.filter { $0.title.lowercased().contains(searchText.lowercased()) }
+        } else {
+            return mostPopularUsers.filter { $0.fullName.lowercased().contains(searchText.lowercased()) }
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 24) {
             HStack(spacing: 12) {
@@ -112,12 +120,27 @@ struct SearchView: View {
             if isRecipeSelected {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                        ForEach(mostSearchedRecipes, id: \.id) { recipe in
-                            NavigationLink {
-                                RecipeDetailsView(recipeId: recipe.id)
-                            } label: {
-                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                    .frame(width: 183, height: 260)
+                        if searchText != "" {
+                            if filteredResults.isEmpty {
+                                Text("It is empty")
+                            } else {
+                                ForEach(filteredResults as! [RecipeTitleCoverUser], id: \.id) { recipe in
+                                    NavigationLink {
+                                        RecipeDetailsView(recipeId: recipe.id)
+                                    } label: {
+                                        RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                            .frame(width: 183, height: 260)
+                                    }
+                                }
+                            }
+                        } else {
+                            ForEach(mostSearchedRecipes, id: \.id) { recipe in
+                                NavigationLink {
+                                    RecipeDetailsView(recipeId: recipe.id)
+                                } label: {
+                                    RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                        .frame(width: 183, height: 260)
+                                }
                             }
                         }
                     }
@@ -126,11 +149,25 @@ struct SearchView: View {
             } else if isPeopleSelected {
                 ScrollView {
                     VStack(spacing: 20) {
-                        ForEach(mostPopularUsers, id: \.id) { user in
-                            NavigationLink {
-                                ProfilePageView(userId: user.id)
-                            } label: {
-                                UserDetailsView(user: user)
+                        if searchText != "" {
+                            if filteredResults.isEmpty {
+                                Text("It is empty")
+                            } else {
+                                ForEach(filteredResults as! [UserDetails], id: \.id) { user in
+                                    NavigationLink {
+                                        ProfilePageView(userId: user.id)
+                                    } label: {
+                                        UserDetailsView(user: user)
+                                    }
+                                }
+                            }
+                        } else {
+                            ForEach(mostPopularUsers, id: \.id) { user in
+                                NavigationLink {
+                                    ProfilePageView(userId: user.id)
+                                } label: {
+                                    UserDetailsView(user: user)
+                                }
                             }
                         }
                     }
