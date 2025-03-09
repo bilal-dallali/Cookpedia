@@ -203,7 +203,7 @@ struct CreateAccountView: View {
                                             .frame(width: 28, height: 28)
                                             .foregroundStyle(Color("Primary900"))
                                     }
-
+                                    
                                 }
                                 Rectangle()
                                     .foregroundStyle(Color("Primary900"))
@@ -303,7 +303,7 @@ struct CreateAccountView: View {
                                             .frame(width: 28, height: 28)
                                             .foregroundStyle(Color("Primary900"))
                                     }
-
+                                    
                                 }
                                 Rectangle()
                                     .foregroundStyle(Color("Primary900"))
@@ -359,74 +359,64 @@ struct CreateAccountView: View {
                             if email != "" && email == confirmEmail {
                                 if isValidEmail(email) {
                                     Button {
-                                        let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
-                                        
-                                        
-//                                        apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe) { result in
-//                                            switch result {
-//                                                case .success(let (token, id)):
-//                                                    //let userId: Int = id
-//                                                    let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)
-//                                                    context.insert(userSession)
-//                                                    do {
-//                                                        try context.save()
-//                                                    } catch {
-//                                                        print("Failed to save user session: \(error.localizedDescription)")
-//                                                    }
-//                                                    loadingScreen = true
-//                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//                                                        self.redirectHomePage = true
-//                                                        loadingScreen = false
-//                                                    }
-//                                                case .failure(let error):
-//                                                    switch error {
-//                                                        case .invalidUrl:
-//                                                            errorMessage = "URL invalid"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .invalidData:
-//                                                            errorMessage = "Your datas are invalid, please try again later!"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .invalidCredentials:
-//                                                            errorMessage = "Incorrect password"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .userNotFound:
-//                                                            errorMessage = "User not found"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .emailAlreadyExists:
-//                                                            errorMessage = "This email address is already registered"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .usernameAlreadyExists:
-//                                                            errorMessage = "This username is already registered"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .phoneNumberAlreadyExists:
-//                                                            errorMessage = "This phone number is already registered"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .serverError:
-//                                                            errorMessage = "Server error"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .requestFailed:
-//                                                            errorMessage = "Request failed"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .invalidResponse:
-//                                                            errorMessage = "Invalid response"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                        case .decodingError:
-//                                                            errorMessage = "Decoding error"
-//                                                            alertUsersExists = true
-//                                                            break
-//                                                    }
-//                                            }
-//                                        }
+                                        Task {
+                                            let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
+                                            
+                                            do {
+                                                let (token, id) = try await apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe)
+                                                
+                                                let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)
+                                                
+                                                context.insert(userSession)
+                                                
+                                                do {
+                                                    try context.save()
+                                                } catch {
+                                                    print("Failed to save user session: \(error.localizedDescription)")
+                                                }
+                                                
+                                                loadingScreen = true
+                                                
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                    loadingScreen = false
+                                                    self.redirectHomePage = true
+                                                }
+                                                
+                                                
+                                            } catch let error as APIPostError {
+                                                DispatchQueue.main.async {
+                                                    switch error {
+                                                    case .invalidUrl:
+                                                        errorMessage = "Invalid URL"
+                                                        alertUsersExists = true
+                                                    case .invalidData:
+                                                        errorMessage = "Invalid data. Please try again!"
+                                                        alertUsersExists = true
+                                                    case .emailAlreadyExists:
+                                                        errorMessage = "This email is already registered."
+                                                        alertUsersExists = true
+                                                    case .usernameAlreadyExists:
+                                                        errorMessage = "This username is already taken."
+                                                        alertUsersExists = true
+                                                    case .phoneNumberAlreadyExists:
+                                                        errorMessage = "This phone number is already in use."
+                                                        alertUsersExists = true
+                                                    case .serverError:
+                                                        errorMessage = "Server error. Try again later."
+                                                        alertUsersExists = true
+                                                    default:
+                                                        errorMessage = "An unexpected error occurred."
+                                                        alertUsersExists = true
+                                                    }
+                                                }
+                                                
+                                            } catch {
+                                                DispatchQueue.main.async {
+                                                    errorMessage = "Unexpected error occurred: \(error.localizedDescription)"
+                                                    alertUsersExists = true
+                                                }
+                                            }
+                                        }
                                     } label: {
                                         Text("Continue")
                                             .foregroundStyle(Color("MyWhite"))
@@ -555,6 +545,7 @@ struct CreateAccountView: View {
         }
     }
 }
+
 
 #Preview {
     CreateAccountView(country: .constant("France"), level: .constant("Novice"), fullName: .constant("JK Rowling"), phoneNumber: .constant("0600000000"), gender: .constant("Male"), date: .constant("12/05/1997"), city: .constant("London"), profilePictureUrl: .constant("profile-picture"), selectedImage: .constant(nil))
