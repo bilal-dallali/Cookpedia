@@ -12,11 +12,10 @@ let baseUrl = "http://localhost:3000/api"
 
 class APIPostRequest: ObservableObject {
     
-    func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIPostError>) -> ()) {
+    func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool) async throws -> (token: String, id: Int) {
         let endpoint = "/users/registration"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(.invalidUrl))
-            return
+            throw APIPostError.invalidUrl
         }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -70,53 +69,43 @@ class APIPostRequest: ObservableObject {
         // Assign the body to the request
         request.httpBody = body
         
-        // Execute the request
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if error != nil {
-                completion(.failure(APIPostError.serverError))
-                return
+        // Execute the request using async/await
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPostError.invalidData
+        }
+        
+        switch httpResponse.statusCode {
+        case 201:
+            // Decode token from response
+            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let token = json["token"] as? String, let id = json["userId"] as? Int {
+                return (token: token, id: id)
+            } else {
+                throw APIPostError.invalidData
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                completion(.failure(.invalidData))
-                return
-            }
-            
-            switch httpResponse.statusCode {
-            case 201:
-                // Decode token from response
-                if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
-                   let token = json["token"] as? String, let id = json["userId"] as? Int {
-                    completion(.success((token: token, id: id)))
-                    
+        case 400:
+            // Decode the error message from the backend
+            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let errorMessage = json["error"] as? String {
+                if errorMessage.contains("Email") {
+                    throw APIPostError.emailAlreadyExists
+                } else if errorMessage.contains("Username") {
+                    throw APIPostError.usernameAlreadyExists
+                } else if errorMessage.contains("Phone number") {
+                    throw APIPostError.phoneNumberAlreadyExists
                 } else {
-                    completion(.failure(.invalidData))
+                    throw APIPostError.invalidData
                 }
-            case 400:
-                // Decode the error message from the backend
-                if let data = data,
-                   let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let errorMessage = json["error"] as? String {
-                    if errorMessage.contains("Email") {
-                        completion(.failure(.emailAlreadyExists))
-                    } else if errorMessage.contains("Username") {
-                        completion(.failure(.usernameAlreadyExists))
-                    } else if errorMessage.contains("Phone number") {
-                        completion(.failure(.phoneNumberAlreadyExists))
-                    } else {
-                        completion(.failure(.invalidData))
-                        // Default case for unknown errors
-                    }
-                } else {
-                    completion(.failure(.invalidData))
-                }
-            case 500:
-                completion(.failure(.serverError))
-            default:
-                completion(.failure(.serverError))
+            } else {
+                throw APIPostError.invalidData
             }
-            
-        }.resume()
+        case 500:
+            throw APIPostError.serverError
+        default:
+            throw APIPostError.serverError
+        }
     }
     
     func loginUser(email: String, password: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIPostError>) -> ()) {
