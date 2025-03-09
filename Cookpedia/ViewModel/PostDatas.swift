@@ -522,6 +522,32 @@ class APIPostRequest: ObservableObject {
             completion(.success(()))
         }.resume()
     }
+    
+    func incrementRecipeSearch(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+        let endpoint = "/recipes/increment-searches/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        // Execute request
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                completion(.failure(NSError(domain: "Invalid Response", code: -1, userInfo: nil)))
+                return
+            }
+
+            completion(.success("Recipe search count incremented successfully"))
+        }.resume()
+    }
 }
 
 enum APIPostError: Error {

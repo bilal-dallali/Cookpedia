@@ -386,7 +386,7 @@ struct CuisinePreferenceView: View {
                     }
                     if salad == true || egg == true || soup == true || meat == true || chicken == true || seafood == true || burger == true || pizza == true || sushi == true || rice == true || bread == true || fruit == true {
                         NavigationLink {
-                            DietaryPreferencesView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit)
+                            //
                         } label: {
                             Text("Continue")
                                 .foregroundStyle(Color("MyWhite"))

@@ -14,6 +14,7 @@ struct SearchView: View {
     @State private var isRecipeSelected: Bool = true
     @State private var isPeopleSelected: Bool = false
     var apiGetManager = APIGetRequest()
+    var apiPostManager = APIPostRequest()
     @State private var mostSearchedRecipes: [RecipeTitleCoverUser] = []
     @State private var shouldRefresh: Bool = false
     @State private var mostPopularUsers: [UserDetails] = []
@@ -29,40 +30,43 @@ struct SearchView: View {
     var body: some View {
         VStack(spacing: 24) {
             HStack(spacing: 12) {
-                Image("Search - Regular - Light - Outline")
-                    .resizable()
-                    .frame(width: 20, height: 20)
-                    .foregroundStyle(Color("MyWhite"))
-                    .padding(.leading, 20)
-                TextField("", text: $searchText)
-                    .foregroundStyle(Color("MyWhite"))
-                    .font(.custom("Urbanist-Semibold", size: 16))
-                    .keyboardType(.default)
-                    .multilineTextAlignment(.leading)
-                    .frame(height: 22)
-                    .frame(maxWidth: .infinity)
-                    .focused($isTextFocused)
-                    .submitLabel(.done)
-                    .onSubmit {
-                        //
-                    }
-                Button {
-                    searchText = ""
-                } label: {
-                    Image("Icon=times, Component=Additional Icons")
+                BackButtonView()
+                HStack(spacing: 12) {
+                    Image("Search - Regular - Light - Outline")
                         .resizable()
                         .frame(width: 20, height: 20)
                         .foregroundStyle(Color("MyWhite"))
+                        .padding(.leading, 20)
+                    TextField("", text: $searchText)
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Semibold", size: 16))
+                        .keyboardType(.default)
+                        .multilineTextAlignment(.leading)
+                        .frame(height: 22)
+                        .frame(maxWidth: .infinity)
+                        .focused($isTextFocused)
+                        .submitLabel(.done)
+                        .onSubmit {
+                            //
+                        }
+                    Button {
+                        searchText = ""
+                    } label: {
+                        Image("Icon=times, Component=Additional Icons")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundStyle(Color("MyWhite"))
+                    }
+                    .padding(.trailing, 20)
                 }
-                .padding(.trailing, 20)
-            }
-            .frame(height: 58)
-            .frame(maxWidth: .infinity)
-            .background(Color("Dark2"))
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .overlay {
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(isTextFocused ? Color("Primary900") : Color.clear, lineWidth: 2)
+                .frame(height: 58)
+                .frame(maxWidth: .infinity)
+                .background(Color("Dark2"))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(isTextFocused ? Color("Primary900") : Color.clear, lineWidth: 2)
+                }
             }
             HStack(spacing: 12) {
                 Button {
@@ -156,6 +160,7 @@ struct SearchView: View {
                                     RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                         .frame(width: 183, height: 260)
                                 }
+                                
                             }
                         }
                     }
@@ -207,7 +212,7 @@ struct SearchView: View {
             }
         }
         .padding(.horizontal, 24)
-        .padding(.top, 24)
+        .padding(.top, 16)
         .background(Color("Dark1"))
         .onTapGesture {
             isTextFocused = false
@@ -238,12 +243,6 @@ struct SearchView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                BackButtonView()
-            }
-        }
-        
     }
 }
 

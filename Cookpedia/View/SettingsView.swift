@@ -75,9 +75,6 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $doLogout) {
             VStack(spacing: 24) {
-                RoundedRectangle(cornerRadius: .infinity)
-                    .foregroundStyle(Color("Dark4"))
-                    .frame(width: 38, height: 3)
                 Text("Delete Recipe")
                     .foregroundStyle(Color("Error"))
                     .font(.custom("Urbanist-Bold", size: 24))
@@ -133,7 +130,9 @@ struct SettingsView: View {
                 }
             }
             .padding(.horizontal, 24)
+            .padding(.top, 24)
             .clipShape(RoundedRectangle(cornerRadius: 44))
+            .presentationDragIndicator(.visible)
             .presentationDetents([.height(260)])
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("Dark2"))

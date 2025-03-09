@@ -221,7 +221,7 @@ struct CookingLevelView: View {
                         .padding(.bottom, 36)
                 } else {
                     NavigationLink {
-                        CuisinePreferenceView(country: $country, level: $level)
+                        CompleteProfileView(country: $country, level: $level)
                     } label: {
                         Text("Continue")
                             .foregroundStyle(Color("MyWhite"))

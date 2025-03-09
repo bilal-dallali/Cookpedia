@@ -366,7 +366,7 @@ struct DietaryPreferencesView: View {
                     }
                 HStack(spacing: 16) {
                     NavigationLink {
-                        CompleteProfileView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal)
+                        //
                     } label: {
                         Text("Skip")
                             .foregroundStyle(Color("MyWhite"))
@@ -380,7 +380,7 @@ struct DietaryPreferencesView: View {
                     
                     if vegetarian == true || vegan == true || glutenFree == true || nutFree == true || dairyFree == true || lowCarb == true || peanutFree == true || keto == true || soyFree == true || rawFood == true || lowFat == true || halal == true {
                         NavigationLink {
-                            CompleteProfileView(country: $country, level: $level, salad: $salad, egg: $egg, soup: $soup, meat: $meat, chicken: $chicken, seafood: $seafood, burger: $burger, pizza: $pizza, sushi: $sushi, rice: $rice, bread: $bread, fruit: $fruit, vegetarian: $vegetarian, vegan: $vegan, glutenFree: $glutenFree, nutFree: $nutFree, dairyFree: $dairyFree, lowCarb: $lowCarb, peanutFree: $peanutFree, keto: $keto, soyFree: $soyFree, rawFood: $rawFood, lowFat: $lowFat, halal: $halal)
+                            //
                         } label: {
                             Text("Continue")
                                 .foregroundStyle(Color("MyWhite"))
