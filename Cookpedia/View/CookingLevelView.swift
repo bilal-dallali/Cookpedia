@@ -16,7 +16,7 @@ struct CookingLevelView: View {
     @State var professional: Bool = false
     @State var master: Bool = false
     @State var level: String = ""
-    @State private var progressViewWidth: CGFloat = 48
+    @State private var progressViewWidth: CGFloat = 54
     
     var body: some View {
         VStack(spacing: 0) {
@@ -241,7 +241,7 @@ struct CookingLevelView: View {
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 withAnimation(.easeIn(duration: 1)) {
-                    progressViewWidth = 72
+                    progressViewWidth = 108
                 }
             }
         }

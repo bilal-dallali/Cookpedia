@@ -43,7 +43,7 @@ struct CreateAccountView: View {
     @State private var alertUsersExists = false
     @State var errorMessage: String?
     @FocusState private var isTextFocused: Bool
-    @State private var progressViewWidth: CGFloat = 168
+    @State private var progressViewWidth: CGFloat = 162
     
     var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) var context

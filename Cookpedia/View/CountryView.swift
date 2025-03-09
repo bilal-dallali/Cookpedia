@@ -112,7 +112,7 @@ struct CountryView: View {
             country = selectedCountry?.name ?? ""
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 withAnimation(.easeIn(duration: 1)) {
-                    progressViewWidth = 48
+                    progressViewWidth = 54
                 }
             }
         }

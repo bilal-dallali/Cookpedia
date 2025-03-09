@@ -35,7 +35,7 @@ struct CompleteProfileView: View {
     
     @State var date: String = ""
     @State var city = ""
-    @State private var progressViewWidth: CGFloat = 132
+    @State private var progressViewWidth: CGFloat = 108
     
     var body: some View {
         ZStack {
@@ -325,7 +325,7 @@ struct CompleteProfileView: View {
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now()) {
                     withAnimation(.easeIn(duration: 1)) {
-                        progressViewWidth = 168
+                        progressViewWidth = 162
                     }
                 }
             }
