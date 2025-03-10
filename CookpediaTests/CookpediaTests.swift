@@ -38,10 +38,7 @@ final class APIPostRequestTests: XCTestCase {
         """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!,
-                                                       statusCode: 201,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 201, httpVersion: nil, headerFields: nil)
         
         let user = UserRegistration(username: "testUser", email: "test@example.com", password: "password", country: "USA", level: "Beginner", fullName: "Test User", phoneNumber: "1234567890", gender: "Male", date: "2024-01-01", city: "NY", profilePictureUrl: "")
         
@@ -49,5 +46,27 @@ final class APIPostRequestTests: XCTestCase {
         
         XCTAssertEqual(result.token, "testToken123")
         XCTAssertEqual(result.id, 1)
+    }
+    
+    func testRegisterUserWithProfilePicture() async throws {
+        let jsonData = """
+        {
+            "token": "testTokenWithImage",
+            "userId": 2
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 201, httpVersion: nil, headerFields: nil)
+        
+        let user = UserRegistration(username: "imageUser", email: "image@example.com", password: "password123", country: "France", level: "Intermediate", fullName: "Image User", phoneNumber: "9876543210", gender: "Female", date: "2024-02-02", city: "Paris", profilePictureUrl: "")
+        
+        // Create a dummy image for testing
+        let testImage = UIImage(systemName: "person.circle")!
+        
+        let result = try await apiRequest.registerUser(registration: user, profilePicture: testImage, rememberMe: false)
+        
+        XCTAssertEqual(result.token, "testTokenWithImage")
+        XCTAssertEqual(result.id, 2)
     }
 }
