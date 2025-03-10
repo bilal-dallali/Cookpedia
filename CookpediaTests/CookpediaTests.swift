@@ -69,4 +69,106 @@ final class APIPostRequestTests: XCTestCase {
         XCTAssertEqual(result.token, "testTokenWithImage")
         XCTAssertEqual(result.id, 2)
     }
+    
+    // 🚨 Test for Email Already Exists (400)
+    func testRegisterUserEmailAlreadyExists() async throws {
+        let jsonData = """
+        {
+            "error": "Email already exists"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!,
+                                                       statusCode: 400,
+                                                       httpVersion: nil,
+                                                       headerFields: nil)
+        
+        let user = UserRegistration(username: "testUser", email: "existing@example.com", password: "password", country: "USA", level: "Beginner", fullName: "Existing User", phoneNumber: "1234567890", gender: "Male", date: "2024-01-01", city: "NY", profilePictureUrl: "")
+        
+        do {
+            _ = try await apiRequest.registerUser(registration: user, profilePicture: nil, rememberMe: false)
+            XCTFail("Expected APIPostError.emailAlreadyExists but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.emailAlreadyExists)
+        }
+    }
+    
+    // 🚨 Test for Username Already Exists (400)
+    func testRegisterUserUsernameAlreadyExists() async throws {
+        let jsonData = """
+        {
+            "error": "Username already exists"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        let user = UserRegistration(username: "existingUsername", email: "user@example.com", password: "password", country: "USA", level: "Beginner", fullName: "Existing User", phoneNumber: "1234567890", gender: "Male", date: "2024-01-01", city: "NY", profilePictureUrl: "")
+        
+        do {
+            _ = try await apiRequest.registerUser(registration: user, profilePicture: nil, rememberMe: false)
+            XCTFail("Expected APIPostError.usernameAlreadyExists but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.usernameAlreadyExists)
+        }
+    }
+    
+    // 🚨 Test for Phone Number Already Exists (400)
+    func testRegisterUserPhoneNumberAlreadyExists() async throws {
+        let jsonData = """
+        {
+            "error": "Phone number already exists"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        let user = UserRegistration(username: "newUser", email: "new@example.com", password: "password", country: "USA", level: "Beginner", fullName: "New User", phoneNumber: "existingPhoneNumber", gender: "Male", date: "2024-01-01", city: "NY", profilePictureUrl: "")
+        
+        do {
+            _ = try await apiRequest.registerUser(registration: user, profilePicture: nil, rememberMe: false)
+            XCTFail("Expected APIPostError.phoneNumberAlreadyExists but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.phoneNumberAlreadyExists)
+        }
+    }
+    
+    // 🚨 Test for Generic 400 Error (Invalid Data)
+    func testRegisterUserInvalidData() async throws {
+        let jsonData = """
+            {
+                "error": "Some other invalid data"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        let user = UserRegistration(username: "newUser", email: "new@example.com", password: "password", country: "USA", level: "Beginner", fullName: "New User", phoneNumber: "1234567890", gender: "Male", date: "2024-01-01", city: "NY", profilePictureUrl: "")
+        
+        do {
+            _ = try await apiRequest.registerUser(registration: user, profilePicture: nil, rememberMe: false)
+            XCTFail("Expected APIPostError.invalidData but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidData)
+        }
+    }
+    
+    // 🚨 Test for Server Error (500)
+    func testRegisterUserServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        let user = UserRegistration(username: "serverErrorUser", email: "server@example.com", password: "password", country: "USA", level: "Beginner", fullName: "Server Error User", phoneNumber: "1234567890", gender: "Male", date: "2024-01-01", city: "NY", profilePictureUrl: "")
+        
+        do {
+            _ = try await apiRequest.registerUser(registration: user, profilePicture: nil, rememberMe: false)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
 }
