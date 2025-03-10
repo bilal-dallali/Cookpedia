@@ -12,6 +12,13 @@ let baseUrl = "http://localhost:3000/api"
 
 class APIPostRequest: ObservableObject {
     
+    private let networkService: NetworkService
+    
+    // Dependency Injection
+    init(networkService: NetworkService = URLSession.shared) {
+        self.networkService = networkService
+    }
+    
     func registerUser(registration: UserRegistration, profilePicture: UIImage?, rememberMe: Bool) async throws -> (token: String, id: Int) {
         let endpoint = "/users/registration"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
@@ -31,8 +38,8 @@ class APIPostRequest: ObservableObject {
         for (key, value) in Mirror(reflecting: registration).children {
             if let key = key {
                 var fieldValue: String
-
-                // Convert specific types before adding it to the body
+                
+                // Convert specific types before adding them to the body
                 if let boolValue = value as? Bool {
                     fieldValue = boolValue ? "1" : "0"
                 } else if let value = value as? CustomStringConvertible {
@@ -40,7 +47,7 @@ class APIPostRequest: ObservableObject {
                 } else {
                     continue
                 }
-
+                
                 // Add to body
                 body.append("--\(boundary)\r\n".data(using: .utf8)!)
                 body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
@@ -69,8 +76,8 @@ class APIPostRequest: ObservableObject {
         // Assign the body to the request
         request.httpBody = body
         
-        // Execute the request using async/await
-        let (data, response) = try await URLSession.shared.data(for: request)
+        // Execute the request using the injected network service
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPostError.invalidData
@@ -78,7 +85,6 @@ class APIPostRequest: ObservableObject {
         
         switch httpResponse.statusCode {
         case 201:
-            // Decode token from response
             if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                let token = json["token"] as? String, let id = json["userId"] as? Int {
                 return (token: token, id: id)
@@ -86,7 +92,6 @@ class APIPostRequest: ObservableObject {
                 throw APIPostError.invalidData
             }
         case 400:
-            // Decode the error message from the backend
             if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                let errorMessage = json["error"] as? String {
                 if errorMessage.contains("Email") {
