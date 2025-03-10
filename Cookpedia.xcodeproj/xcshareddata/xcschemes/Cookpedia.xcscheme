@@ -35,20 +35,9 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1DFDF332D72F3D900095D4C"
+               BlueprintIdentifier = "E156C98D2D7F0B3D00DB433F"
                BuildableName = "CookpediaTests.xctest"
                BlueprintName = "CookpediaTests"
-               ReferencedContainer = "container:Cookpedia.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E187A67E2D75A2F800FFD03E"
-               BuildableName = "RegisterTests.xctest"
-               BlueprintName = "RegisterTests"
                ReferencedContainer = "container:Cookpedia.xcodeproj">
             </BuildableReference>
          </TestableReference>

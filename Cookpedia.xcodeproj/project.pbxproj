@@ -7,14 +7,7 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
-		E187A6832D75A2F800FFD03E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E14540662CCBF3A600D2D86E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E145406D2CCBF3A600D2D86E;
-			remoteInfo = Cookpedia;
-		};
-		E1DFDF382D72F3D900095D4C /* PBXContainerItemProxy */ = {
+		E156C9922D7F0B3D00DB433F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E14540662CCBF3A600D2D86E /* Project object */;
 			proxyType = 1;
@@ -25,8 +18,7 @@
 
 /* Begin PBXFileReference section */
 		E145406E2CCBF3A600D2D86E /* Cookpedia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cookpedia.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E187A67F2D75A2F800FFD03E /* RegisterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RegisterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E1DFDF342D72F3D900095D4C /* CookpediaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CookpediaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E156C98E2D7F0B3D00DB433F /* CookpediaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CookpediaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -48,7 +40,7 @@
 			path = Cookpedia;
 			sourceTree = "<group>";
 		};
-		E1DFDF352D72F3D900095D4C /* CookpediaTests */ = {
+		E156C98F2D7F0B3D00DB433F /* CookpediaTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = CookpediaTests;
 			sourceTree = "<group>";
@@ -63,14 +55,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E187A67C2D75A2F800FFD03E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1DFDF312D72F3D900095D4C /* Frameworks */ = {
+		E156C98B2D7F0B3D00DB433F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -84,7 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				E14540702CCBF3A600D2D86E /* Cookpedia */,
-				E1DFDF352D72F3D900095D4C /* CookpediaTests */,
+				E156C98F2D7F0B3D00DB433F /* CookpediaTests */,
 				E145406F2CCBF3A600D2D86E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -93,8 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				E145406E2CCBF3A600D2D86E /* Cookpedia.app */,
-				E1DFDF342D72F3D900095D4C /* CookpediaTests.xctest */,
-				E187A67F2D75A2F800FFD03E /* RegisterTests.xctest */,
+				E156C98E2D7F0B3D00DB433F /* CookpediaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,47 +108,27 @@
 			productReference = E145406E2CCBF3A600D2D86E /* Cookpedia.app */;
 			productType = "com.apple.product-type.application";
 		};
-		E187A67E2D75A2F800FFD03E /* RegisterTests */ = {
+		E156C98D2D7F0B3D00DB433F /* CookpediaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E187A6872D75A2F900FFD03E /* Build configuration list for PBXNativeTarget "RegisterTests" */;
+			buildConfigurationList = E156C9942D7F0B3D00DB433F /* Build configuration list for PBXNativeTarget "CookpediaTests" */;
 			buildPhases = (
-				E187A67B2D75A2F800FFD03E /* Sources */,
-				E187A67C2D75A2F800FFD03E /* Frameworks */,
-				E187A67D2D75A2F800FFD03E /* Resources */,
+				E156C98A2D7F0B3D00DB433F /* Sources */,
+				E156C98B2D7F0B3D00DB433F /* Frameworks */,
+				E156C98C2D7F0B3D00DB433F /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				E187A6842D75A2F800FFD03E /* PBXTargetDependency */,
-			);
-			name = RegisterTests;
-			packageProductDependencies = (
-			);
-			productName = RegisterTests;
-			productReference = E187A67F2D75A2F800FFD03E /* RegisterTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		E1DFDF332D72F3D900095D4C /* CookpediaTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E1DFDF3C2D72F3D900095D4C /* Build configuration list for PBXNativeTarget "CookpediaTests" */;
-			buildPhases = (
-				E1DFDF302D72F3D900095D4C /* Sources */,
-				E1DFDF312D72F3D900095D4C /* Frameworks */,
-				E1DFDF322D72F3D900095D4C /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E1DFDF392D72F3D900095D4C /* PBXTargetDependency */,
+				E156C9932D7F0B3D00DB433F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				E1DFDF352D72F3D900095D4C /* CookpediaTests */,
+				E156C98F2D7F0B3D00DB433F /* CookpediaTests */,
 			);
 			name = CookpediaTests;
 			packageProductDependencies = (
 			);
 			productName = CookpediaTests;
-			productReference = E1DFDF342D72F3D900095D4C /* CookpediaTests.xctest */;
+			productReference = E156C98E2D7F0B3D00DB433F /* CookpediaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -180,11 +144,7 @@
 					E145406D2CCBF3A600D2D86E = {
 						CreatedOnToolsVersion = 16.0;
 					};
-					E187A67E2D75A2F800FFD03E = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = E145406D2CCBF3A600D2D86E;
-					};
-					E1DFDF332D72F3D900095D4C = {
+					E156C98D2D7F0B3D00DB433F = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = E145406D2CCBF3A600D2D86E;
 					};
@@ -205,8 +165,7 @@
 			projectRoot = "";
 			targets = (
 				E145406D2CCBF3A600D2D86E /* Cookpedia */,
-				E1DFDF332D72F3D900095D4C /* CookpediaTests */,
-				E187A67E2D75A2F800FFD03E /* RegisterTests */,
+				E156C98D2D7F0B3D00DB433F /* CookpediaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -219,14 +178,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E187A67D2D75A2F800FFD03E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1DFDF322D72F3D900095D4C /* Resources */ = {
+		E156C98C2D7F0B3D00DB433F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -243,14 +195,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E187A67B2D75A2F800FFD03E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E1DFDF302D72F3D900095D4C /* Sources */ = {
+		E156C98A2D7F0B3D00DB433F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -260,15 +205,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		E187A6842D75A2F800FFD03E /* PBXTargetDependency */ = {
+		E156C9932D7F0B3D00DB433F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E145406D2CCBF3A600D2D86E /* Cookpedia */;
-			targetProxy = E187A6832D75A2F800FFD03E /* PBXContainerItemProxy */;
-		};
-		E1DFDF392D72F3D900095D4C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E145406D2CCBF3A600D2D86E /* Cookpedia */;
-			targetProxy = E1DFDF382D72F3D900095D4C /* PBXContainerItemProxy */;
+			targetProxy = E156C9922D7F0B3D00DB433F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -452,45 +392,7 @@
 			};
 			name = Release;
 		};
-		E187A6852D75A2F800FFD03E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 257XYBXF37;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bilal-dallali.RegisterTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cookpedia.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Cookpedia";
-			};
-			name = Debug;
-		};
-		E187A6862D75A2F800FFD03E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 257XYBXF37;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.bilal-dallali.RegisterTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cookpedia.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Cookpedia";
-			};
-			name = Release;
-		};
-		E1DFDF3A2D72F3D900095D4C /* Debug */ = {
+		E156C9952D7F0B3D00DB433F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -509,7 +411,7 @@
 			};
 			name = Debug;
 		};
-		E1DFDF3B2D72F3D900095D4C /* Release */ = {
+		E156C9962D7F0B3D00DB433F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -549,20 +451,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E187A6872D75A2F900FFD03E /* Build configuration list for PBXNativeTarget "RegisterTests" */ = {
+		E156C9942D7F0B3D00DB433F /* Build configuration list for PBXNativeTarget "CookpediaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E187A6852D75A2F800FFD03E /* Debug */,
-				E187A6862D75A2F800FFD03E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E1DFDF3C2D72F3D900095D4C /* Build configuration list for PBXNativeTarget "CookpediaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E1DFDF3A2D72F3D900095D4C /* Debug */,
-				E1DFDF3B2D72F3D900095D4C /* Release */,
+				E156C9952D7F0B3D00DB433F /* Debug */,
+				E156C9962D7F0B3D00DB433F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
