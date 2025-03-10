@@ -347,4 +347,54 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
+    // ✅ Test Successful Password Reset (200)
+    func testResetPasswordSuccess() async throws {
+        let jsonData = """
+        {
+            "token": "newToken123",
+            "id": 1
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/reset-password")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let result = try await apiRequest.resetPassword(email: "test@example.com", newPassword: "newStrongPass", resetCode: "123456", rememberMe: true)
+        
+        XCTAssertEqual(result.token, "newToken123")
+        XCTAssertEqual(result.id, 1)
+    }
+    
+    // 🚨 Test Invalid Reset Code (400)
+    func testResetPasswordInvalidCode() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid reset code"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/reset-password")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.resetPassword(email: "test@example.com", newPassword: "newStrongPass", resetCode: "wrongcode", rememberMe: false)
+            XCTFail("Expected APIPostError.invalidCredentials but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidCredentials)
+        }
+    }
+    
+    // 🚨 Test Server Error (500)
+    func testResetPasswordServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/reset-password")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.resetPassword(email: "servererror@example.com", newPassword: "newStrongPass", resetCode: "123456", rememberMe: false)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
 }

@@ -27,7 +27,7 @@ struct CreateNewPasswordView: View {
     @State private var loadedScreen: Bool = false
     @State private var isRotating: Bool = false
     
-    @State var errorMessage: String?
+    @State private var errorMessage: String?
     
     var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) var context
@@ -247,11 +247,10 @@ struct CreateNewPasswordView: View {
                     if password != "" && confirmPassword != "" {
                         if password == confirmPassword {
                             Button {
-                                apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined(), rememberMe: rememberMe) { result in
-                                    switch result {
-                                    case .success(let (token, id)):
-                                        // Store session in SwiftData
-                                        let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)
+                                Task {
+                                    do {
+                                        let result = try await apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined(), rememberMe: rememberMe)
+                                        let userSession = UserSession(userId: result.id, email: email, authToken: result.token, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         do {
                                             try context.save()
@@ -265,7 +264,8 @@ struct CreateNewPasswordView: View {
                                                 loadedScreen = true
                                             }
                                         }
-                                    case .failure(let error):
+                                    } catch let error as APIPostError {
+                                        print("Error: \(error.localizedDescription)")
                                         errorMessage = error.localizedDescription
                                     }
                                 }

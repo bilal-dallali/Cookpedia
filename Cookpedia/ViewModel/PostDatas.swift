@@ -235,62 +235,60 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool, completion: @escaping (Result<(token: String, id: Int), APIPostError>) -> ()) {
+    func resetPassword(email: String, newPassword: String, resetCode: String, rememberMe: Bool) async throws -> (token: String, id: Int) {
         let endpoint = "/users/reset-password"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(.invalidUrl))
-            return
+            throw APIPostError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        // Add the parameters in the body
-        let body = ["email": email, "newPassword": newPassword, "resetCode": resetCode, "rememberMe": rememberMe] as [String: Any]
+        let body: [String: Any] = [
+            "email": email,
+            "newPassword": newPassword,
+            "resetCode": resetCode,
+            "rememberMe": rememberMe
+        ]
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if error != nil {
-                    completion(.failure(.serverError))
-                    return
-                }
-                
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    completion(.failure(.invalidData))
-                    return
-                }
-                
-                switch httpResponse.statusCode {
-                case 200:
-                    // Decode JSON for response
-                    if let json = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any],
-                       let token = json["token"] as? String, let id = json["id"] as? Int {
-                        completion(.success((token: token, id: id)))
-                    } else {
-                        completion(.failure(.invalidData))
-                    }
-                case 400:
-                    if let data = data,
-                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                       let errorMessage = json["error"] as? String {
-                        if errorMessage.contains("Invalid reset code") {
-                            completion(.failure(.invalidCredentials))
-                        } else {
-                            completion(.failure(.invalidData))
-                        }
-                    } else {
-                        completion(.failure(.invalidData))
-                    }
-                case 500:
-                    completion(.failure(.serverError))
-                default:
-                    completion(.failure(.serverError))
-                }
-            }.resume()
         } catch {
-            completion(.failure(.invalidData))
+            throw APIPostError.invalidData
+        }
+
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPostError.invalidData
+        }
+
+        switch httpResponse.statusCode {
+        case 200:
+            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let token = json["token"] as? String,
+               let id = json["id"] as? Int {
+                return (token, id)
+            } else {
+                throw APIPostError.invalidData
+            }
+        case 400:
+            if let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let errorMessage = json["error"] as? String {
+                if errorMessage.contains("Invalid reset code") {
+                    throw APIPostError.invalidCredentials
+                } else {
+                    throw APIPostError.invalidData
+                }
+            } else {
+                throw APIPostError.invalidData
+            }
+        case 500:
+            throw APIPostError.serverError
+        default:
+            throw APIPostError.serverError
         }
     }
     
