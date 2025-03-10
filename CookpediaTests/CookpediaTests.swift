@@ -171,20 +171,17 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Successful Login (200)
+    // Test Successful Login (200)
     func testLoginUserSuccess() async throws {
         let jsonData = """
-            {
-                "token": "validToken123",
-                "id": 1
-            }
-            """.data(using: .utf8)
+        {
+            "token": "validToken123",
+            "id": 1
+        }
+        """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
-                                                       statusCode: 200,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         let result = try await apiRequest.loginUser(email: "test@example.com", password: "password123", rememberMe: true)
         
@@ -192,19 +189,16 @@ final class APIPostRequestTests: XCTestCase {
         XCTAssertEqual(result.id, 1)
     }
     
-    // 🚨 Test Invalid Credentials (401)
+    // Test Invalid Credentials (401)
     func testLoginUserInvalidCredentials() async throws {
         let jsonData = """
-            {
-                "error": "Invalid credentials"
-            }
-            """.data(using: .utf8)
+        {
+            "error": "Invalid credentials"
+        }
+        """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
-                                                       statusCode: 401,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!, statusCode: 401, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.loginUser(email: "wrong@example.com", password: "wrongpassword", rememberMe: false)
@@ -214,19 +208,16 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test User Not Found (404)
+    // Test User Not Found (404)
     func testLoginUserNotFound() async throws {
         let jsonData = """
-            {
-                "error": "User not found"
-            }
-            """.data(using: .utf8)
+        {
+            "error": "User not found"
+        }
+        """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
-                                                       statusCode: 404,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,statusCode: 404, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.loginUser(email: "nonexistent@example.com", password: "password123", rememberMe: false)
@@ -236,13 +227,10 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Server Error (500)
+    // Test Server Error (500)
     func testLoginUserServerError() async throws {
         MockURLProtocol.mockResponseData = nil
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
-                                                       statusCode: 500,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,statusCode: 500, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.loginUser(email: "servererror@example.com", password: "password", rememberMe: false)

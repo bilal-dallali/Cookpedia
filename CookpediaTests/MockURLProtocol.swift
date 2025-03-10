@@ -8,10 +8,11 @@
 import Foundation
 
 class MockURLProtocol: URLProtocol {
+    
     static var mockResponseData: Data?
     static var mockResponse: URLResponse?
     static var mockError: Error?
-
+    
     override class func canInit(with request: URLRequest) -> Bool {
         return true
     }
@@ -28,6 +29,7 @@ class MockURLProtocol: URLProtocol {
                 self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             }
             if let data = MockURLProtocol.mockResponseData {
+                _ = String(data: data, encoding: .utf8) ?? "Invalid JSON"
                 self.client?.urlProtocol(self, didLoad: data)
             }
         }
