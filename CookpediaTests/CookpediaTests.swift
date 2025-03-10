@@ -240,4 +240,48 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
+    // ✅ Test Successful Reset Code Request (200)
+    func testSendResetCodeSuccess() async throws {
+        MockURLProtocol.mockResponseData = nil // No response body needed
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/send-reset-code")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.sendResetCode(email: "test@example.com")
+        } catch {
+            XCTFail("Expected success, but got \(error)")
+        }
+    }
+    
+    // 🚨 Test User Not Found (404)
+    func testSendResetCodeUserNotFound() async throws {
+        let jsonData = """
+        {
+            "error": "User not found"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/send-reset-code")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.sendResetCode(email: "nonexistent@example.com")
+            XCTFail("Expected APIPostError.userNotFound but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.userNotFound)
+        }
+    }
+    
+    // 🚨 Test Server Error (500)
+    func testSendResetCodeServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/send-reset-code")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.sendResetCode(email: "servererror@example.com")
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
 }

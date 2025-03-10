@@ -16,7 +16,7 @@ struct ForgotPasswordCheckEmailView: View {
     @State private var isVerified: Bool = false
     @State private var errorMessage: String?
     
-    @State private var timeRemaining = 30
+    @State private var timeRemaining = 10
     @State private var timerActive = false
     @State private var timer: Timer?
     
@@ -103,10 +103,15 @@ struct ForgotPasswordCheckEmailView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Medium", size: 18))
                                 Button {
-                                    timerActive = true
-                                    timeRemaining = 60
-                                    apiPostManager.sendResetCode(email: email) { result in
-                                        
+                                    Task {
+                                        do {
+                                            timerActive = true
+                                            timeRemaining = 10
+                                            try await apiPostManager.sendResetCode(email: email)
+                                            print("Email de réinitialisation envoyé avec succès.")
+                                        } catch let error as APIPostError {
+                                            print("Erreur : \(error.localizedDescription)")
+                                        }
                                     }
                                 } label: {
                                     Text("Resend")
@@ -139,7 +144,6 @@ struct ForgotPasswordCheckEmailView: View {
                             switch result {
                             case .success:
                                 isVerified = true
-                                // Handle successful verification, e.g., navigate to reset password screen
                             case .failure(let error):
                                 errorMessage = error.localizedDescription
                             }
