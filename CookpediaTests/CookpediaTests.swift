@@ -284,4 +284,67 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
+    // ✅ Test Successful Reset Code Verification (200)
+    func testVerifyResetCodeSuccess() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/verify-reset-code")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.verifyResetCode(email: "test@example.com", code: "123456")
+        } catch {
+            XCTFail("Expected success, but got \(error)")
+        }
+    }
+    
+    // 🚨 Test Invalid Reset Code (400)
+    func testVerifyResetCodeInvalidCode() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid reset code"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/verify-reset-code")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.verifyResetCode(email: "test@example.com", code: "wrongcode")
+            XCTFail("Expected APIPostError.invalidData but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidData)
+        }
+    }
+    
+    // 🚨 Test User Not Found (404)
+    func testVerifyResetCodeUserNotFound() async throws {
+        let jsonData = """
+        {
+            "error": "User not found"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/verify-reset-code")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.verifyResetCode(email: "nonexistent@example.com", code: "123456")
+            XCTFail("Expected APIPostError.userNotFound but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.userNotFound)
+        }
+    }
+    
+    // 🚨 Test Server Error (500)
+    func testVerifyResetCodeServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/verify-reset-code")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.verifyResetCode(email: "servererror@example.com", code: "123456")
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
 }

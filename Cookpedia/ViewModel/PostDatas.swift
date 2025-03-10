@@ -198,33 +198,40 @@ class APIPostRequest: ObservableObject {
     }
     
     // Function to verify the reset code
-    func verifyResetCode(email: String, code: String, completion: @escaping (Result<Void, APIPostError>) -> ()) {
+    func verifyResetCode(email: String, code: String) async throws {
         let endpoint = "/users/verify-reset-code"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(.invalidUrl))
-            return
+            throw APIPostError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         let body = ["email": email, "code": code]
+        
         do {
             request.httpBody = try JSONEncoder().encode(body)
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                if error != nil {
-                    completion(.failure(.serverError))
-                    return
-                }
-                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                    completion(.failure(.invalidData))
-                    return
-                }
-                completion(.success(()))
-            }.resume()
         } catch {
-            completion(.failure(.invalidData))
+            throw APIPostError.invalidData
+        }
+
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPostError.invalidData
+        }
+
+        switch httpResponse.statusCode {
+        case 200:
+            return
+        case 400:
+            throw APIPostError.invalidData
+        case 404:
+            throw APIPostError.userNotFound
+        default:
+            throw APIPostError.serverError
         }
     }
     

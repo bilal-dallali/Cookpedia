@@ -140,11 +140,11 @@ struct ForgotPasswordCheckEmailView: View {
                     }
                 if code.joined().count == 4 {
                     Button {
-                        apiPostManager.verifyResetCode(email: email, code: code.joined()) { result in
-                            switch result {
-                            case .success:
+                        Task {
+                            do {
+                                try await apiPostManager.verifyResetCode(email: email, code: code.joined())
                                 isVerified = true
-                            case .failure(let error):
+                            } catch let error as APIPostError {
                                 errorMessage = error.localizedDescription
                             }
                         }
