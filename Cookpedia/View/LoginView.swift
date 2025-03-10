@@ -16,15 +16,14 @@ struct LoginView: View {
     @State private var emailInvalid: Bool = false
     @State private var redirectHomePage: Bool = false
     @State private var loginError: String? = nil
-    @State private var isLoading: Bool = false
     @State private var navigateToHome: Bool = false
     @State private var loadingScreen = false
     @State private var alertUsersExists = false
-    @State var errorMessage: String?
+    @State private var errorMessage: String?
     
     @State private var email = ""
     @State private var password = ""
-    @State var rememberMe: Bool = false
+    @State private var rememberMe: Bool = false
     
     var apiPostManager = APIPostRequest()
     @Environment(\.modelContext) var context
@@ -123,7 +122,7 @@ struct LoginView: View {
                                                 .frame(width: 28, height: 28)
                                                 .foregroundStyle(Color("Primary900"))
                                         }
-
+                                        
                                     }
                                     Rectangle()
                                         .foregroundStyle(Color("Primary900"))
@@ -177,70 +176,72 @@ struct LoginView: View {
                     if email != "" && password != "" {
                         if isValidEmail(email) {
                             Button {
-                                isLoading = true
-                                apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe) { result in
-                                    switch result {
-                                        case .success(let (token, id)):
-                                            // Store session in SwiftData
-                                            let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)
-                                            context.insert(userSession)
-                                            do {
-                                                try context.save()
-                                            } catch {
-                                                print("Failed to save user session: \(error.localizedDescription)")
-                                            }
-                                            loadingScreen = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                                self.redirectHomePage = true
-                                                loadingScreen = false
-                                            }
-                                        case .failure(let error):
+                                Task {
+                                    do {
+                                        let (token, id) = try await apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe)
+                                        
+                                        // Store session in SwiftData
+                                        let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)
+                                        context.insert(userSession)
+                                        do {
+                                            try context.save()
+                                        } catch {
+                                            print("Failed to save user session: \(error.localizedDescription)")
+                                        }
+                                        loadingScreen = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                            self.redirectHomePage = true
+                                            loadingScreen = false
+                                        }
+                                    } catch let error as APIPostError {
+                                        DispatchQueue.main.async {
                                             switch error {
-                                                case .invalidUrl:
-                                                    errorMessage = "URL invalid"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .invalidData:
-                                                    errorMessage = "Your datas are invalid, please try again later!"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .invalidCredentials:
-                                                    errorMessage = "Incorrect password"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .userNotFound:
-                                                    errorMessage = "User not found"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .emailAlreadyExists:
-                                                    errorMessage = "This email address is already registered"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .usernameAlreadyExists:
-                                                    errorMessage = "This username is already registered"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .phoneNumberAlreadyExists:
-                                                    errorMessage = "This phone number is already registered"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .serverError:
-                                                    errorMessage = "Server error"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .requestFailed:
-                                                    errorMessage = "Request failed"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .invalidResponse:
-                                                    errorMessage = "Invalid response"
-                                                    alertUsersExists = true
-                                                    break
-                                                case .decodingError:
-                                                    errorMessage = "Decoding error"
-                                                    alertUsersExists = true
-                                                    break
+                                            case .invalidUrl:
+                                                errorMessage = "URL invalid"
+                                                alertUsersExists = true
+                                                break
+                                            case .invalidData:
+                                                errorMessage = "Your datas are invalid, please try again later!"
+                                                alertUsersExists = true
+                                                break
+                                            case .invalidCredentials:
+                                                errorMessage = "Incorrect password"
+                                                alertUsersExists = true
+                                                break
+                                            case .userNotFound:
+                                                errorMessage = "User not found"
+                                                alertUsersExists = true
+                                                break
+                                            case .emailAlreadyExists:
+                                                errorMessage = "This email address is already registered"
+                                                alertUsersExists = true
+                                                break
+                                            case .usernameAlreadyExists:
+                                                errorMessage = "This username is already registered"
+                                                alertUsersExists = true
+                                                break
+                                            case .phoneNumberAlreadyExists:
+                                                errorMessage = "This phone number is already registered"
+                                                alertUsersExists = true
+                                                break
+                                            case .serverError:
+                                                errorMessage = "Server error"
+                                                alertUsersExists = true
+                                                break
+                                            case .requestFailed:
+                                                errorMessage = "Request failed"
+                                                alertUsersExists = true
+                                                break
+                                            case .invalidResponse:
+                                                errorMessage = "Invalid response"
+                                                alertUsersExists = true
+                                                break
+                                            case .decodingError:
+                                                errorMessage = "Decoding error"
+                                                alertUsersExists = true
+                                                break
                                             }
+                                        }
                                     }
                                 }
                             } label: {

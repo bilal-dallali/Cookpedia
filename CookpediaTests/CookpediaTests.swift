@@ -79,10 +79,7 @@ final class APIPostRequestTests: XCTestCase {
         """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!,
-                                                       statusCode: 400,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 400, httpVersion: nil, headerFields: nil)
         
         let user = UserRegistration(username: "testUser", email: "existing@example.com", password: "password", country: "USA", level: "Beginner", fullName: "Existing User", phoneNumber: "1234567890", gender: "Male", date: "2024-01-01", city: "NY", profilePictureUrl: "")
         
@@ -139,10 +136,10 @@ final class APIPostRequestTests: XCTestCase {
     // 🚨 Test for Generic 400 Error (Invalid Data)
     func testRegisterUserInvalidData() async throws {
         let jsonData = """
-            {
-                "error": "Some other invalid data"
-            }
-            """.data(using: .utf8)
+        {
+            "error": "Some other invalid data"
+        }
+        """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 400, httpVersion: nil, headerFields: nil)
