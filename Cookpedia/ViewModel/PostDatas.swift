@@ -152,13 +152,10 @@ class APIPostRequest: ObservableObject {
             } else {
                 throw APIPostError.invalidData
             }
-
         case 401:
             throw APIPostError.invalidCredentials
-
         case 404:
             throw APIPostError.userNotFound
-
         default:
             throw APIPostError.serverError
         }

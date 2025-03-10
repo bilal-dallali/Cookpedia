@@ -29,6 +29,7 @@ final class APIPostRequestTests: XCTestCase {
         super.tearDown()
     }
     
+    // Register User Success (201)
     func testRegisterUserSuccess() async throws {
         let jsonData = """
         {
@@ -48,6 +49,7 @@ final class APIPostRequestTests: XCTestCase {
         XCTAssertEqual(result.id, 1)
     }
     
+    // Upload profile picture register user (201)
     func testRegisterUserWithProfilePicture() async throws {
         let jsonData = """
         {
@@ -70,7 +72,7 @@ final class APIPostRequestTests: XCTestCase {
         XCTAssertEqual(result.id, 2)
     }
     
-    // 🚨 Test for Email Already Exists (400)
+    // Test for Email Already Exists (400)
     func testRegisterUserEmailAlreadyExists() async throws {
         let jsonData = """
         {
@@ -91,7 +93,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test for Username Already Exists (400)
+    // Test for Username Already Exists (400)
     func testRegisterUserUsernameAlreadyExists() async throws {
         let jsonData = """
         {
@@ -112,7 +114,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test for Phone Number Already Exists (400)
+    // Test for Phone Number Already Exists (400)
     func testRegisterUserPhoneNumberAlreadyExists() async throws {
         let jsonData = """
         {
@@ -133,7 +135,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test for Generic 400 Error (Invalid Data)
+    // Test for Generic 400 Error (Invalid Data)
     func testRegisterUserInvalidData() async throws {
         let jsonData = """
         {
@@ -154,7 +156,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test for Server Error (500)
+    // Test for Server Error (500)
     func testRegisterUserServerError() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/registration")!, statusCode: 500, httpVersion: nil, headerFields: nil)
@@ -168,4 +170,86 @@ final class APIPostRequestTests: XCTestCase {
             XCTAssertEqual(error, APIPostError.serverError)
         }
     }
+    
+    // ✅ Test Successful Login (200)
+    func testLoginUserSuccess() async throws {
+        let jsonData = """
+            {
+                "token": "validToken123",
+                "id": 1
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
+                                                       statusCode: 200,
+                                                       httpVersion: nil,
+                                                       headerFields: nil)
+        
+        let result = try await apiRequest.loginUser(email: "test@example.com", password: "password123", rememberMe: true)
+        
+        XCTAssertEqual(result.token, "validToken123")
+        XCTAssertEqual(result.id, 1)
+    }
+    
+    // 🚨 Test Invalid Credentials (401)
+    func testLoginUserInvalidCredentials() async throws {
+        let jsonData = """
+            {
+                "error": "Invalid credentials"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
+                                                       statusCode: 401,
+                                                       httpVersion: nil,
+                                                       headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.loginUser(email: "wrong@example.com", password: "wrongpassword", rememberMe: false)
+            XCTFail("Expected APIPostError.invalidCredentials but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidCredentials)
+        }
+    }
+    
+    // 🚨 Test User Not Found (404)
+    func testLoginUserNotFound() async throws {
+        let jsonData = """
+            {
+                "error": "User not found"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
+                                                       statusCode: 404,
+                                                       httpVersion: nil,
+                                                       headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.loginUser(email: "nonexistent@example.com", password: "password123", rememberMe: false)
+            XCTFail("Expected APIPostError.userNotFound but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.userNotFound)
+        }
+    }
+    
+    // 🚨 Test Server Error (500)
+    func testLoginUserServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/login")!,
+                                                       statusCode: 500,
+                                                       httpVersion: nil,
+                                                       headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.loginUser(email: "servererror@example.com", password: "password", rememberMe: false)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
 }

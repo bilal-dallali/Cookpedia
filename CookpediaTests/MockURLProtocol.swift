@@ -24,7 +24,9 @@ class MockURLProtocol: URLProtocol {
         if let error = MockURLProtocol.mockError {
             self.client?.urlProtocol(self, didFailWithError: error)
         } else {
-            self.client?.urlProtocol(self, didReceive: MockURLProtocol.mockResponse ?? HTTPURLResponse(), cacheStoragePolicy: .notAllowed)
+            if let response = MockURLProtocol.mockResponse {
+                self.client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            }
             if let data = MockURLProtocol.mockResponseData {
                 self.client?.urlProtocol(self, didLoad: data)
             }
