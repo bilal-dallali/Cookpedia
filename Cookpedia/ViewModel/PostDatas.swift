@@ -307,7 +307,7 @@ class APIPostRequest: ObservableObject {
         
         var body = Data()
         
-        // Function to add a textfield in the multipart request
+        // Function to add textfield to the multipart/formdata
         func appendField(_ name: String, value: String) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
@@ -315,7 +315,7 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
-        // Adding textfields
+        // Adding textfield
         appendField("userId", value: "\(recipe.userId)")
         appendField("title", value: recipe.title)
         appendField("recipeCoverPictureUrl1", value: recipe.recipeCoverPictureUrl1 ?? "")
@@ -328,7 +328,7 @@ class APIPostRequest: ObservableObject {
         appendField("instructions", value: recipe.instructions)
         appendField("isPublished", value: "\(isPublished)")
         
-        // Function to add an image in the multipart request
+        // Function to add an image to the format multipart/form-data
         func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -342,23 +342,33 @@ class APIPostRequest: ObservableObject {
         appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: "recipeCoverPicture1.jpg")
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
-        // Adding instruction images
+        // Adding instructions image
         for (image, fileName) in instructionImages {
             appendImage(image, withName: "instructionImages", fileName: fileName)
         }
         
-        // End multipart
+        // End format multipart/form-data
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
         
-        // Execute request `async/await` with injected network service
+        // Execute request with async await
         let (data, response) = try await networkService.request(request)
         
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             throw NSError(domain: "Invalid Response", code: -1, userInfo: nil)
         }
         
-        return "Recipe uploaded successfully"
+        // Handle HTTP errors
+        switch httpResponse.statusCode {
+        case 201:
+            return "Recipe uploaded successfully"
+        case 400:
+            throw NSError(domain: "Invalid Request", code: 400, userInfo: nil)
+        case 500:
+            throw NSError(domain: "Server Error", code: 500, userInfo: nil)
+        default:
+            throw NSError(domain: "Unexpected Error", code: httpResponse.statusCode, userInfo: nil)
+        }
     }
     
     func toggleBookmark(userId: Int, recipeId: Int, isBookmarked: Bool, completion: @escaping (Result<Void, Error>) -> Void) {

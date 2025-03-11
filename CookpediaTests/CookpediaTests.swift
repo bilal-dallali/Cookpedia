@@ -408,10 +408,21 @@ final class APIPostRequestTests: XCTestCase {
         MockURLProtocol.mockResponseData = jsonData
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/upload")!, statusCode: 201, httpVersion: nil, headerFields: nil)
         
-        let recipe = RecipeRegistration(userId: 1, title: "Test Recipe", recipeCoverPictureUrl1: nil, recipeCoverPictureUrl2: nil, description: "Delicious food", cookTime: "30 mins", serves: "4", origin: "French", ingredients: "Salt, Pepper, Chicken", instructions: "Mix and cook")
+        let recipe = RecipeRegistration(
+            userId: 1,
+            title: "Test Recipe",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "Delicious test recipe",
+            cookTime: "30 minutes",
+            serves: "4",
+            origin: "Italy",
+            ingredients: "Tomatoes, Basil, Garlic",
+            instructions: "Mix ingredients and cook"
+        )
         
         let testImage1 = UIImage(systemName: "photo")!
-        let testImage2 = UIImage(systemName: "photo.fill")!
+        let testImage2 = UIImage(systemName: "photo")!
         let instructionImages = [(testImage1, "step1.jpg"), (testImage2, "step2.jpg")]
         
         let result = try await apiRequest.uploadRecipe(recipe: recipe, recipeCoverPicture1: testImage1, recipeCoverPicture2: testImage2, instructionImages: instructionImages, isPublished: true)
@@ -419,22 +430,69 @@ final class APIPostRequestTests: XCTestCase {
         XCTAssertEqual(result, "Recipe uploaded successfully")
     }
     
+    // Test Invalid Request (400)
+    func testUploadRecipeInvalidRequest() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/upload")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        let recipe = RecipeRegistration(
+            userId: 1,
+            title: "",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "",
+            cookTime: "",
+            serves: "",
+            origin: "",
+            ingredients: "",
+            instructions: ""
+        )
+        
+        let testImage1 = UIImage(systemName: "photo")!
+        let testImage2 = UIImage(systemName: "photo")!
+        let instructionImages = [(testImage1, "step1.jpg"), (testImage2, "step2.jpg")]
+        
+        do {
+            _ = try await apiRequest.uploadRecipe(recipe: recipe, recipeCoverPicture1: testImage1, recipeCoverPicture2: testImage2, instructionImages: instructionImages, isPublished: false)
+            XCTFail("Expected NSError with code 400 but got success")
+        } catch let error as NSError {
+            XCTAssertEqual(error.code, 400)
+        }
+    }
+    
     // Test Server Error (500)
     func testUploadRecipeServerError() async throws {
         MockURLProtocol.mockResponseData = nil
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/upload")!, statusCode: 201, httpVersion: nil, headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/upload")!, statusCode: 500, httpVersion: nil, headerFields: nil)
         
-        let recipe = RecipeRegistration(userId: 1, title: "Test Recipe", recipeCoverPictureUrl1: nil, recipeCoverPictureUrl2: nil, description: "Delicious food", cookTime: "30", serves: "4", origin: "French", ingredients: "Salt, Pepper, Chicken", instructions: "Mix and cook")
+        let recipe = RecipeRegistration(
+            userId: 1,
+            title: "Test Recipe",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "Delicious test recipe",
+            cookTime: "30 minutes",
+            serves: "4",
+            origin: "Italy",
+            ingredients: "Tomatoes, Basil, Garlic",
+            instructions: "Mix ingredients and cook"
+        )
         
         let testImage1 = UIImage(systemName: "photo")!
-        let testImage2 = UIImage(systemName: "photo.fill")!
+        let testImage2 = UIImage(systemName: "photo")!
         let instructionImages = [(testImage1, "step1.jpg"), (testImage2, "step2.jpg")]
         
         do {
             _ = try await apiRequest.uploadRecipe(recipe: recipe, recipeCoverPicture1: testImage1, recipeCoverPicture2: testImage2, instructionImages: instructionImages, isPublished: true)
-            XCTFail("Expected APIPostError.serverError but got success")
-        } catch let error as APIPostError {
-            XCTAssertEqual(error, APIPostError.serverError)
+            XCTFail("Expected NSError with code 500 but got success")
+        } catch let error as NSError {
+            XCTAssertEqual(error.code, 500)
         }
     }
     
