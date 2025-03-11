@@ -240,7 +240,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Successful Reset Code Request (200)
+    // Test Successful Reset Code Request (200)
     func testSendResetCodeSuccess() async throws {
         MockURLProtocol.mockResponseData = nil // No response body needed
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/send-reset-code")!, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -252,7 +252,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test User Not Found (404)
+    // Test User Not Found (404)
     func testSendResetCodeUserNotFound() async throws {
         let jsonData = """
         {
@@ -271,7 +271,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Server Error (500)
+    // Test Server Error (500)
     func testSendResetCodeServerError() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/send-reset-code")!, statusCode: 500, httpVersion: nil, headerFields: nil)
@@ -284,7 +284,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Successful Reset Code Verification (200)
+    // Test Successful Reset Code Verification (200)
     func testVerifyResetCodeSuccess() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/verify-reset-code")!, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -296,7 +296,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Invalid Reset Code (400)
+    // Test Invalid Reset Code (400)
     func testVerifyResetCodeInvalidCode() async throws {
         let jsonData = """
         {
@@ -315,7 +315,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test User Not Found (404)
+    // Test User Not Found (404)
     func testVerifyResetCodeUserNotFound() async throws {
         let jsonData = """
         {
@@ -334,7 +334,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Server Error (500)
+    // Test Server Error (500)
     func testVerifyResetCodeServerError() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/verify-reset-code")!, statusCode: 500, httpVersion: nil, headerFields: nil)
@@ -347,7 +347,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Successful Password Reset (200)
+    // Test Successful Password Reset (200)
     func testResetPasswordSuccess() async throws {
         let jsonData = """
         {
@@ -365,7 +365,7 @@ final class APIPostRequestTests: XCTestCase {
         XCTAssertEqual(result.id, 1)
     }
     
-    // 🚨 Test Invalid Reset Code (400)
+    // Test Invalid Reset Code (400)
     func testResetPasswordInvalidCode() async throws {
         let jsonData = """
         {
@@ -384,13 +384,54 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Server Error (500)
+    // Test Server Error (500)
     func testResetPasswordServerError() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/reset-password")!, statusCode: 500, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.resetPassword(email: "servererror@example.com", newPassword: "newStrongPass", resetCode: "123456", rememberMe: false)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
+    // Test Successful Recipe Upload (201)
+    func testUploadRecipeSuccess() async throws {
+        let jsonData = """
+        {
+            "message": "Recipe uploaded successfully"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/upload")!, statusCode: 201, httpVersion: nil, headerFields: nil)
+        
+        let recipe = RecipeRegistration(userId: 1, title: "Test Recipe", recipeCoverPictureUrl1: nil, recipeCoverPictureUrl2: nil, description: "Delicious food", cookTime: "30 mins", serves: "4", origin: "French", ingredients: "Salt, Pepper, Chicken", instructions: "Mix and cook")
+        
+        let testImage1 = UIImage(systemName: "photo")!
+        let testImage2 = UIImage(systemName: "photo.fill")!
+        let instructionImages = [(testImage1, "step1.jpg"), (testImage2, "step2.jpg")]
+        
+        let result = try await apiRequest.uploadRecipe(recipe: recipe, recipeCoverPicture1: testImage1, recipeCoverPicture2: testImage2, instructionImages: instructionImages, isPublished: true)
+        
+        XCTAssertEqual(result, "Recipe uploaded successfully")
+    }
+    
+    // Test Server Error (500)
+    func testUploadRecipeServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/upload")!, statusCode: 201, httpVersion: nil, headerFields: nil)
+        
+        let recipe = RecipeRegistration(userId: 1, title: "Test Recipe", recipeCoverPictureUrl1: nil, recipeCoverPictureUrl2: nil, description: "Delicious food", cookTime: "30", serves: "4", origin: "French", ingredients: "Salt, Pepper, Chicken", instructions: "Mix and cook")
+        
+        let testImage1 = UIImage(systemName: "photo")!
+        let testImage2 = UIImage(systemName: "photo.fill")!
+        let instructionImages = [(testImage1, "step1.jpg"), (testImage2, "step2.jpg")]
+        
+        do {
+            _ = try await apiRequest.uploadRecipe(recipe: recipe, recipeCoverPicture1: testImage1, recipeCoverPicture2: testImage2, instructionImages: instructionImages, isPublished: true)
             XCTFail("Expected APIPostError.serverError but got success")
         } catch let error as APIPostError {
             XCTAssertEqual(error, APIPostError.serverError)

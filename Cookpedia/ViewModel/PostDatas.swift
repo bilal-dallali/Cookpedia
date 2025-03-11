@@ -351,8 +351,8 @@ class APIPostRequest: ObservableObject {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
         
-        // Execute request `async/await`
-        let (data, response) = try await URLSession.shared.data(for: request)
+        // Execute request `async/await` with injected network service
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 else {
             throw NSError(domain: "Invalid Response", code: -1, userInfo: nil)
