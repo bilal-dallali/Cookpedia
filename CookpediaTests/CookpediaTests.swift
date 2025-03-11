@@ -496,4 +496,60 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
+    // Test Bookmark Added (201)
+    func testToggleBookmarkAdded() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark")!, statusCode: 201, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.toggleBookmark(userId: 1, recipeId: 101, isBookmarked: false)
+        } catch {
+            XCTFail("Expected success, but got \(error)")
+        }
+    }
+    
+    // Test Bookmark Removed (200)
+    func testToggleBookmarkRemoved() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.toggleBookmark(userId: 1, recipeId: 101, isBookmarked: true)
+        } catch {
+            XCTFail("Expected success, but got \(error)")
+        }
+    }
+    
+    // Test Invalid Request (400)
+    func testToggleBookmarkInvalidRequest() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.toggleBookmark(userId: 0, recipeId: 0, isBookmarked: false)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Server Error (500)
+    func testToggleBookmarkServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.toggleBookmark(userId: 1, recipeId: 101, isBookmarked: false)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
 }

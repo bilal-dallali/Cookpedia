@@ -616,20 +616,6 @@ struct RecipeDetailsView: View {
                                     
                                     let userId = currentUser.userId
                                     
-//                                    apiPostManager.toggleBookmark(userId: userId, recipeId: recipeDetails.id, isBookmarked: isBookmarkSelected) { result in
-//                                        switch result {
-//                                            case .success:
-//                                                isBookmarkSelected.toggle()
-//                                                if isBookmarkSelected {
-//                                                    addedToBookmarks = true
-//                                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                                                        addedToBookmarks = false
-//                                                    }
-//                                                }
-//                                            case .failure:
-//                                                print("failure")
-//                                        }
-//                                    }
                                     Task {
                                         do {
                                             try await apiPostManager.toggleBookmark(userId: userId, recipeId: recipeId, isBookmarked: isBookmarkSelected)

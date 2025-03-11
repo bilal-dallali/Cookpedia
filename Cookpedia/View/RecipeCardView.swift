@@ -43,15 +43,6 @@ struct RecipeCardView: View {
                             
                             let userId = currentUser.userId
                             
-//                            apiPostManager.toggleBookmark(userId: userId, recipeId: recipe.id, isBookmarked: isBookmarkSelected) { result in
-//                                switch result {
-//                                case .success:
-//                                    isBookmarkSelected.toggle()
-//                                case .failure:
-//                                    print("failure")
-//                                }
-//                            }
-                            
                             Task {
                                 do {
                                     try await apiPostManager.toggleBookmark(userId: userId, recipeId: recipe.id, isBookmarked: isBookmarkSelected)
