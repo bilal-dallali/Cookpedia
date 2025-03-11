@@ -374,7 +374,7 @@ class APIPostRequest: ObservableObject {
     func toggleBookmark(userId: Int, recipeId: Int, isBookmarked: Bool) async throws {
         let endpoint = "/recipes/bookmark"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            throw APIGetError.invalidUrl
+            throw APIPostError.invalidUrl
         }
         
         var request = URLRequest(url: url)
@@ -390,15 +390,15 @@ class APIPostRequest: ObservableObject {
         let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw APIGetError.invalidResponse
+            throw APIPostError.invalidResponse
         }
     }
     
-    func followUser(followerId: Int, followedId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+    func followUser(followerId: Int, followedId: Int) async throws -> String {
         let endpoint = "/users/follow"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIPostError.invalidUrl
         }
         
         var request = URLRequest(url: url)
@@ -414,30 +414,34 @@ class APIPostRequest: ObservableObject {
             let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
             request.httpBody = jsonData
         } catch {
-            completion(.failure(error))
-            return
+            throw APIPostError.invalidData
         }
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPostError.invalidResponse
+        }
+        
+        switch httpResponse.statusCode {
+        case 201:
+            // Traiter la réponse JSON
+            if let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let message = jsonResponse["message"] as? String {
+                return message
+            } else {
+                return "Followed successfully"
             }
             
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                let message = jsonResponse?["message"] as? String ?? "Followed successfully"
-                completion(.success(message))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+        case 400:
+            throw APIPostError.invalidData
+        case 404:
+            throw APIPostError.userNotFound
+        case 500:
+            throw APIPostError.serverError
+        default:
+            throw APIPostError.invalidResponse
+        }
     }
     
     func incrementViews(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {

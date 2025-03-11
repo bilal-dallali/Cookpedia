@@ -534,8 +534,8 @@ final class APIPostRequestTests: XCTestCase {
         do {
             try await apiRequest.toggleBookmark(userId: 0, recipeId: 0, isBookmarked: false)
             XCTFail("Expected APIGetError.invalidResponse but got success")
-        } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.invalidResponse)
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidResponse)
         }
     }
     
@@ -547,8 +547,8 @@ final class APIPostRequestTests: XCTestCase {
         do {
             try await apiRequest.toggleBookmark(userId: 1, recipeId: 101, isBookmarked: false)
             XCTFail("Expected APIGetError.invalidResponse but got success")
-        } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.invalidResponse)
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidResponse)
         }
     }
     

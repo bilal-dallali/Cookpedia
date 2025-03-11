@@ -63,12 +63,20 @@ struct UserDetailsView: View {
                             }
                         }
                     } else if following == false {
-                        apiPostManager.followUser(followerId: userId, followedId: user.id) { result in
-                            switch result {
-                                case .success:
-                                    following = true
-                                case .failure(let error):
-                                    print("Failed to follow user : \(error.localizedDescription)")
+//                        apiPostManager.followUser(followerId: userId, followedId: user.id) { result in
+//                            switch result {
+//                                case .success:
+//                                    following = true
+//                                case .failure(let error):
+//                                    print("Failed to follow user : \(error.localizedDescription)")
+//                            }
+//                        }
+                        Task {
+                            do {
+                                let message = try await apiPostManager.followUser(followerId: userId, followedId: user.id)
+                                following = true
+                            } catch let error {
+                                print("Failed to follow user : \(error.localizedDescription)")
                             }
                         }
                     }
