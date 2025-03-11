@@ -371,11 +371,10 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func toggleBookmark(userId: Int, recipeId: Int, isBookmarked: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
-        let endpoint = isBookmarked ? "/recipes/bookmark" : "/recipes/bookmark"
+    func toggleBookmark(userId: Int, recipeId: Int, isBookmarked: Bool) async throws {
+        let endpoint = "/recipes/bookmark"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
@@ -386,15 +385,13 @@ class APIPostRequest: ObservableObject {
             "userId": userId,
             "recipeId": recipeId
         ]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            completion(.success(()))
-        }.resume()
+        let (_, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            throw APIGetError.invalidResponse
+        }
     }
     
     func followUser(followerId: Int, followedId: Int, completion: @escaping (Result<String, Error>) -> Void) {
