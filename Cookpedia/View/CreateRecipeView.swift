@@ -143,16 +143,17 @@ struct CreateRecipeView: View {
                                             if case.create = mode {
                                                 let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                                 
-                                                apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
-                                                    switch result {
-                                                        case .success:
-                                                            isSavedRecipe = true
-                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                                isSavedRecipe = false
-                                                                isCreateRecipeSelected = false
-                                                            }
-                                                        case .failure(let error):
-                                                            print("Error uploading recipe: \(error)")
+                                                Task {
+                                                    do {
+                                                        let success = try await apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false)
+                                                        print("success mesage \(success)")
+                                                        isSavedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                            isSavedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    } catch let error as APIPostError {
+                                                        print("Error uploading recipe \(error.localizedDescription)")
                                                     }
                                                 }
                                             } else if case .edit(let existingRecipe) = mode {
@@ -228,18 +229,20 @@ struct CreateRecipeView: View {
                                             if case.create = mode {
                                                 let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                                 
-                                                apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
-                                                    switch result {
-                                                        case .success:
-                                                            isPublishedRecipe = true
-                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                                isPublishedRecipe = false
-                                                                isCreateRecipeSelected = false
-                                                            }
-                                                        case .failure(let error):
-                                                            print("Error uploading recipe: \(error)")
+                                                Task {
+                                                    do {
+                                                        let success = try await apiPostManager.uploadRecipe(recipe: recipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true)
+                                                        print("success mesage \(success)")
+                                                        isPublishedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                                            isPublishedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    } catch let error as APIPostError {
+                                                        print("Error uploading recipe \(error.localizedDescription)")
                                                     }
                                                 }
+
                                             } else if case .edit(let existingRecipe) = mode {
                                                 let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                                 
@@ -815,9 +818,6 @@ struct CreateRecipeView: View {
         }
         .sheet(isPresented: $deleteRecipeModal) {
             VStack(spacing: 24) {
-                RoundedRectangle(cornerRadius: .infinity)
-                    .foregroundStyle(Color("Dark4"))
-                    .frame(width: 38, height: 3)
                 Text("Delete Recipe")
                     .foregroundStyle(Color("Error"))
                     .font(.custom("Urbanist-Bold", size: 24))
@@ -875,8 +875,10 @@ struct CreateRecipeView: View {
                     }
                 }
             }
+            .padding(.top, 24)
             .padding(.horizontal, 24)
             .clipShape(RoundedRectangle(cornerRadius: 44))
+            .presentationDragIndicator(.visible)
             .presentationDetents([.height(260)])
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color("Dark2"))

@@ -292,11 +292,12 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func uploadRecipe(recipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+    func uploadRecipe(recipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool) async throws -> String {
+        
         let endpoint = "/recipes/upload"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-            return
+            throw NSError(domain: "Invalid URL", code: -1, userInfo: nil)
         }
         
         var request = URLRequest(url: url)
@@ -306,7 +307,7 @@ class APIPostRequest: ObservableObject {
         
         var body = Data()
         
-        // Add fields for text
+        // Function to add a textfield in the multipart request
         func appendField(_ name: String, value: String) {
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
@@ -314,6 +315,7 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
+        // Adding textfields
         appendField("userId", value: "\(recipe.userId)")
         appendField("title", value: recipe.title)
         appendField("recipeCoverPictureUrl1", value: recipe.recipeCoverPictureUrl1 ?? "")
@@ -326,7 +328,7 @@ class APIPostRequest: ObservableObject {
         appendField("instructions", value: recipe.instructions)
         appendField("isPublished", value: "\(isPublished)")
         
-        // Add images to the body request
+        // Function to add an image in the multipart request
         func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -336,31 +338,27 @@ class APIPostRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
-        // Add cover images
+        // Adding cover images
         appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: "recipeCoverPicture1.jpg")
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
-        // Add instructions images
+        // Adding instruction images
         for (image, fileName) in instructionImages {
             appendImage(image, withName: "instructionImages", fileName: fileName)
         }
         
+        // End multipart
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 else {
-                completion(.failure(NSError(domain: "Invalid Response", code: -1, userInfo: nil)))
-                return
-            }
-            
-            completion(.success("Recipe uploaded successfully"))
-        }.resume()
+        // Execute request `async/await`
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 else {
+            throw NSError(domain: "Invalid Response", code: -1, userInfo: nil)
+        }
+        
+        return "Recipe uploaded successfully"
     }
     
     func toggleBookmark(userId: Int, recipeId: Int, isBookmarked: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
