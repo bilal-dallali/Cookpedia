@@ -552,4 +552,71 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
+    // ✅ Test Follow User Success (201)
+    func testFollowUserSuccess() async throws {
+        let jsonData = """
+        {
+            "message": "Successfully followed user"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/follow")!, statusCode: 201, httpVersion: nil, headerFields: nil)
+        
+        let result = try await apiRequest.followUser(followerId: 1, followedId: 2)
+        
+        XCTAssertEqual(result, "Successfully followed user")
+    }
+    
+    // 🚨 Test Invalid Request (400)
+    func testFollowUserInvalidRequest() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/follow")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.followUser(followerId: -1, followedId: -1)
+            XCTFail("Expected APIPostError.invalidData but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidData)
+        }
+    }
+    
+    // 🚨 Test User Not Found (404)
+    func testFollowUserNotFound() async throws {
+        let jsonData = """
+        {
+            "error": "User not found"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/follow")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.followUser(followerId: 999, followedId: 1000)
+            XCTFail("Expected APIPostError.userNotFound but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.userNotFound)
+        }
+    }
+    
+    // 🚨 Test Server Error (500)
+    func testFollowUserServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/follow")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.followUser(followerId: 1, followedId: 2)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
 }

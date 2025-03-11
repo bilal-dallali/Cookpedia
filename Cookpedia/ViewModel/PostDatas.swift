@@ -417,7 +417,7 @@ class APIPostRequest: ObservableObject {
             throw APIPostError.invalidData
         }
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPostError.invalidResponse
@@ -425,7 +425,6 @@ class APIPostRequest: ObservableObject {
         
         switch httpResponse.statusCode {
         case 201:
-            // Traiter la réponse JSON
             if let jsonResponse = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                let message = jsonResponse["message"] as? String {
                 return message
