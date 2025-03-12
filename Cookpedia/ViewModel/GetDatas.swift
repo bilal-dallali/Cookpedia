@@ -9,36 +9,36 @@ import Foundation
 
 class APIGetRequest: ObservableObject {
     
-    func getUserDataFromUserId(userId: Int, completion: @escaping (Result<User, Error>) -> Void) {
+    private let networkService: NetworkService
+    
+    // Dependency Injection
+    init(networkService: NetworkService = URLSession.shared) {
+        self.networkService = networkService
+    }
+    
+    func getUserDataFromUserId(userId: Int) async throws -> User {
         let endpoint = "/users/profile/\(userId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200, let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let user = try decoder.decode(User.self, from: data)
-                completion(.success(user))
-            } catch {
-                completion(.failure(APIGetError.decodingError))
-            }
-        }.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode(User.self, from: data)
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func getRecipesFromUserId(userId: Int, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {

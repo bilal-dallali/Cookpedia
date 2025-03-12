@@ -201,10 +201,10 @@ struct RecipeDetailsView: View {
                                                         if following == true {
                                                             apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
                                                                 switch result {
-                                                                    case .success:
-                                                                        following = false
-                                                                    case .failure(let error):
-                                                                        print("Failed to unfollow user: \(error.localizedDescription)")
+                                                                case .success:
+                                                                    following = false
+                                                                case .failure(let error):
+                                                                    print("Failed to unfollow user: \(error.localizedDescription)")
                                                                 }
                                                             }
                                                         } else if following == false {
@@ -643,7 +643,7 @@ struct RecipeDetailsView: View {
                                         .frame(width: 28, height: 28)
                                         .foregroundStyle(Color(isBookmarkSelected ? "Primary900" : "MyWhite"))
                                 }
-
+                                
                                 Button {
                                     //
                                 } label: {
@@ -666,55 +666,56 @@ struct RecipeDetailsView: View {
                         
                         apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id) { result in
                             switch result {
-                                case .success(let jsonResult):
-                                    if jsonResult {
-                                        isBookmarkSelected = true
-                                    }
-                                case .failure(let error):
-                                    print("failure \(error.localizedDescription)")
+                            case .success(let jsonResult):
+                                if jsonResult {
+                                    isBookmarkSelected = true
+                                }
+                            case .failure(let error):
+                                print("failure \(error.localizedDescription)")
                             }
                         }
                         
                         apiGetManager.getRecipeDetails(recipeId: recipeId) { result in
                             DispatchQueue.main.async {
                                 switch result {
-                                    case .success(let details):
-                                        self.recipeDetails = details
-                                        
-                                        apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId) { result in
-                                            switch result {
-                                                case .success(let isFollowing):
-                                                    if isFollowing {
-                                                        following = true
-                                                    } else {
-                                                        following = false
-                                                    }
-                                                case .failure(let error):
-                                                    print("Failed to check follow status: \(error.localizedDescription)")
+                                case .success(let details):
+                                    self.recipeDetails = details
+                                    
+                                    apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId) { result in
+                                        switch result {
+                                        case .success(let isFollowing):
+                                            if isFollowing {
+                                                following = true
+                                            } else {
+                                                following = false
                                             }
+                                        case .failure(let error):
+                                            print("Failed to check follow status: \(error.localizedDescription)")
                                         }
-                                        
-                                        apiGetManager.getUserDataFromUserId(userId: userId) { result in
-                                            switch result {
-                                                case .success(let user):
-                                                    DispatchQueue.main.async {
-                                                        self.profilePictureUrl = user.profilePictureUrl ?? ""
-                                                    }
-                                                case .failure(let error):
-                                                    print("Failed to fetch user data: \(error.localizedDescription)")
+                                    }
+                                    
+                                    Task {
+                                        do {
+                                            let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                                            print("User loaded: \(user)")
+                                            DispatchQueue.main.async {
+                                                self.profilePictureUrl = user.profilePictureUrl ?? ""
                                             }
+                                        } catch {
+                                            print("Erreur de chargement de l'utilisateur: \(error)")
                                         }
-                                        
-                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                            switch result {
-                                                case .success(let comments):
-                                                    self.comments = comments
-                                                case .failure(let error):
-                                                    print("error \(error.localizedDescription)")
-                                            }
+                                    }
+                                    
+                                    apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
+                                        switch result {
+                                        case .success(let comments):
+                                            self.comments = comments
+                                        case .failure(let error):
+                                            print("error \(error.localizedDescription)")
                                         }
-                                    case .failure(let error):
-                                        print("error \(error.localizedDescription)")
+                                    }
+                                case .failure(let error):
+                                    print("error \(error.localizedDescription)")
                                 }
                             }
                         }
@@ -732,11 +733,11 @@ struct RecipeDetailsView: View {
                         apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
                             print("Trying to get comments \(result)")
                             switch result {
-                                case .success(let comments):
-                                    print("comments loaded successfully on page landing \(comments)")
-                                    self.comments = comments
-                                case .failure(let error):
-                                    print("error \(error.localizedDescription)")
+                            case .success(let comments):
+                                print("comments loaded successfully on page landing \(comments)")
+                                self.comments = comments
+                            case .failure(let error):
+                                print("error \(error.localizedDescription)")
                             }
                         }
                     }
