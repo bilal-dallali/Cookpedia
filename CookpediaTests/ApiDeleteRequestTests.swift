@@ -147,5 +147,57 @@ final class ApiDeleteRequestTests: XCTestCase {
         }
     }
     
+    // Test Delete Comment Success (200 - No return value)
+    func testDeleteCommentSuccess() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/delete-comment/5")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.deleteComment(commentId: 5)
+            XCTAssertTrue(true, "Expected success but got error")
+        } catch {
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+    
+    // Test Comment Not Found (404 - Throws `userNotFound`)
+    func testDeleteCommentNotFound() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/delete-comment/5")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.deleteComment(commentId: 5)
+            XCTFail("Expected APIDeleteError.userNotFound but got success")
+        } catch let error as APIDeleteError {
+            XCTAssertEqual(error, APIDeleteError.userNotFound)
+        }
+    }
+    
+    // Test Server Error (500 - Throws `serverError`)
+    func testDeleteCommentServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/delete-comment/5")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.deleteComment(commentId: 5)
+            XCTFail("Expected APIDeleteError.serverError but got success")
+        } catch let error as APIDeleteError {
+            XCTAssertEqual(error, APIDeleteError.serverError)
+        }
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testDeleteCommentInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/delete-comment/5")!, statusCode: 403, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.deleteComment(commentId: 5)
+            XCTFail("Expected APIDeleteError.invalidResponse but got success")
+        } catch let error as APIDeleteError {
+            XCTAssertEqual(error, APIDeleteError.invalidResponse)
+        }
+    }
+    
     
 }

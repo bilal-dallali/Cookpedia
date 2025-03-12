@@ -90,7 +90,7 @@ class APIDeleteRequest: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIDeleteError.invalidResponse
