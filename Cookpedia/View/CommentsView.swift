@@ -366,6 +366,34 @@ struct CommentsView: View {
                 }
             }
         }
+        .onChange(of: refreshComment) {
+            Task {
+                do {
+                    let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                    self.topComments = comments
+                } catch {
+                    print("Cannot fetch comments with most likes")
+                }
+            }
+            
+            Task {
+                do {
+                    let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
+                    self.oldestComments = comments
+                } catch {
+                    print("Failed to fetch comments")
+                }
+            }
+            
+            Task {
+                do {
+                    let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                    self.newestComments = comments
+                } catch {
+                    print("Error fetching comments")
+                }
+            }
+        }
         .onTapGesture {
             isCommentTextfieldFocused = false
         }

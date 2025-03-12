@@ -80,29 +80,32 @@ class APIDeleteRequest: ObservableObject {
         }
     }
     
-    func deleteComment(commentId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+    func deleteComment(commentId: Int) async throws {
         let endpoint = "/comments/delete-comment/\(commentId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIDeleteError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
-        URLSession.shared.dataTask(with: request) { _, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                completion(.failure(APIDeleteError.invalidResponse))
-                return
-            }
-            
-            completion(.success(()))
-        }.resume()
+        let (_, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIDeleteError.invalidResponse
+        }
+        
+        switch httpResponse.statusCode {
+        case 200:
+            return
+        case 404:
+            throw APIDeleteError.userNotFound
+        case 500:
+            throw APIDeleteError.serverError
+        default:
+            throw APIDeleteError.invalidResponse
+        }
     }
     
     func unlikeComment(userId: Int, commentId: Int, completion: @escaping (Result<Void, Error>) -> Void) {

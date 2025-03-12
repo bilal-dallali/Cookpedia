@@ -164,12 +164,14 @@ struct CommentSlotView: View {
                 
             }
             Button("Delete", role: .destructive) {
-                apiDeleteManager.deleteComment(commentId: comment.id) { result in
-                    switch result {
-                        case .success:
+                Task {
+                    do {
+                        let _ = try await apiDeleteManager.deleteComment(commentId: comment.id)
+                        DispatchQueue.main.async {
                             refreshComment.toggle()
-                        case .failure:
-                            print("Didn't delete the comment")
+                        }
+                    } catch {
+                        print("Didn't delete the comment")
                     }
                 }
             }
@@ -187,16 +189,6 @@ struct CommentSlotView: View {
             
             userId = connectedUserId
             
-//            apiGetManager.getCommentLikes(commentId: comment.id) { result in
-//                DispatchQueue.main.async {
-//                    switch result {
-//                    case .success(let count):
-//                        likeCount = count
-//                    case .failure:
-//                        likeCount = 0
-//                    }
-//                }
-//            }
             Task {
                 do {
                     let count = try await apiGetManager.getCommentLikes(commentId: comment.id)
@@ -207,28 +199,6 @@ struct CommentSlotView: View {
                     likeCount = 0
                 }
             }
-            
-//            apiGetManager.isCommentLiked(userId: userId ?? 0, commentId: comment.id) { result in
-//                DispatchQueue.main.async {
-//                    switch result {
-//                    case .success(let isLiked):
-//                        isCommentLiked = isLiked
-//                        if isCommentLiked == true {
-//                            withAnimation(.easeIn(duration: 0.4)) {
-//                                heartScaleX = 1
-//                                heartScaleY = 1
-//                            }
-//                        } else {
-//                            withAnimation(.easeIn(duration: 0.4)) {
-//                                heartScaleX = 0
-//                                heartScaleY = 0
-//                            }
-//                        }
-//                    case .failure:
-//                        isCommentLiked = false
-//                    }
-//                }
-//            }
             
             Task {
                 do {
