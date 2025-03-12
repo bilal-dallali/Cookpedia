@@ -1688,4 +1688,132 @@ final class ApiGetRequestTests: XCTestCase {
             XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
+    
+    // Test Fetch Comment Likes Success (200)
+    func testGetCommentLikesSuccess() async throws {
+        let jsonData = """
+            {
+                "likeCount": 10
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/comment-likes/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let likeCount = try await apiRequest.getCommentLikes(commentId: 1)
+        
+        XCTAssertEqual(likeCount, 10, "Expected like count to be 10 but got \(likeCount)")
+    }
+    
+    // Test No Likes (200 - Zero Count)
+    func testGetCommentLikesZero() async throws {
+        let jsonData = """
+            {
+                "likeCount": 0
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/comment-likes/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let likeCount = try await apiRequest.getCommentLikes(commentId: 1)
+        
+        XCTAssertEqual(likeCount, 0, "Expected like count to be 0 but got \(likeCount)")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetCommentLikesInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/comment-likes/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getCommentLikes(commentId: 1)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetCommentLikesDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/comment-likes/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getCommentLikes(commentId: 1)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
+    
+    // Test Comment is Liked (200 - Returns true)
+    func testIsCommentLikedSuccess() async throws {
+        let jsonData = """
+            {
+                "isLiked": true
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/is-comment-liked/1/5")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let isLiked = try await apiRequest.isCommentLiked(userId: 1, commentId: 5)
+        
+        XCTAssertTrue(isLiked, "Expected comment to be liked but got false")
+    }
+    
+    // Test Comment is Not Liked (200 - Returns false)
+    func testIsCommentNotLikedSuccess() async throws {
+        let jsonData = """
+            {
+                "isLiked": false
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/is-comment-liked/1/5")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let isLiked = try await apiRequest.isCommentLiked(userId: 1, commentId: 5)
+        
+        XCTAssertFalse(isLiked, "Expected comment to be not liked but got true")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testIsCommentLikedInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/is-comment-liked/1/5")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.isCommentLiked(userId: 1, commentId: 5)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testIsCommentLikedDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/is-comment-liked/1/5")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.isCommentLiked(userId: 1, commentId: 5)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
 }

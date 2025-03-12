@@ -187,21 +187,53 @@ struct CommentSlotView: View {
             
             userId = connectedUserId
             
-            apiGetManager.getCommentLikes(commentId: comment.id) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let count):
+//            apiGetManager.getCommentLikes(commentId: comment.id) { result in
+//                DispatchQueue.main.async {
+//                    switch result {
+//                    case .success(let count):
+//                        likeCount = count
+//                    case .failure:
+//                        likeCount = 0
+//                    }
+//                }
+//            }
+            Task {
+                do {
+                    let count = try await apiGetManager.getCommentLikes(commentId: comment.id)
+                    DispatchQueue.main.async {
                         likeCount = count
-                    case .failure:
-                        likeCount = 0
                     }
+                } catch {
+                    likeCount = 0
                 }
             }
             
-            apiGetManager.isCommentLiked(userId: userId ?? 0, commentId: comment.id) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let isLiked):
+//            apiGetManager.isCommentLiked(userId: userId ?? 0, commentId: comment.id) { result in
+//                DispatchQueue.main.async {
+//                    switch result {
+//                    case .success(let isLiked):
+//                        isCommentLiked = isLiked
+//                        if isCommentLiked == true {
+//                            withAnimation(.easeIn(duration: 0.4)) {
+//                                heartScaleX = 1
+//                                heartScaleY = 1
+//                            }
+//                        } else {
+//                            withAnimation(.easeIn(duration: 0.4)) {
+//                                heartScaleX = 0
+//                                heartScaleY = 0
+//                            }
+//                        }
+//                    case .failure:
+//                        isCommentLiked = false
+//                    }
+//                }
+//            }
+            
+            Task {
+                do {
+                    let isLiked = try await apiGetManager.isCommentLiked(userId: userId ?? 0, commentId: comment.id)
+                    DispatchQueue.main.async {
                         isCommentLiked = isLiked
                         if isCommentLiked == true {
                             withAnimation(.easeIn(duration: 0.4)) {
@@ -214,9 +246,9 @@ struct CommentSlotView: View {
                                 heartScaleY = 0
                             }
                         }
-                    case .failure:
-                        isCommentLiked = false
                     }
+                } catch {
+                    isCommentLiked = false
                 }
             }
         }

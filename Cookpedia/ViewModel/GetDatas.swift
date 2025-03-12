@@ -580,65 +580,66 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func getCommentLikes(commentId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+    func getCommentLikes(commentId: Int) async throws -> Int {
         let endpoint = "/comments/comment-likes/\(commentId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
-        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            if let jsonResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let likeCount = jsonResponse["likeCount"] as? Int {
+                return likeCount
+            } else {
+                throw APIGetError.decodingError
             }
-            
-            guard let data = data,
-                  let jsonResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                  let likeCount = jsonResponse["likeCount"] as? Int else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            completion(.success(likeCount))
-        }.resume()
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
-    func isCommentLiked(userId: Int, commentId: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func isCommentLiked(userId: Int, commentId: Int) async throws -> Bool {
         let endpoint = "/comments/is-comment-liked/\(userId)/\(commentId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
-        URLSession.shared.dataTask(with: URLRequest(url: url)) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        // 🔥 Use injected `networkService` instead of `URLSession.shared`
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        // Log raw response (for debugging)
+        if let responseString = String(data: data, encoding: .utf8) {
+            print("Raw server response:", responseString)
+        }
+        
+        do {
+            if let jsonResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let isLiked = jsonResponse["isLiked"] as? Bool {
+                return isLiked
+            } else {
+                throw APIGetError.decodingError
             }
-            
-            guard let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            // Log brut response
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("Raw server response:", responseString)
-            }
-            
-            // Extract isLiked from JSON
-            do {
-                if let jsonResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-                   let isLiked = jsonResponse["isLiked"] as? Bool {
-                    completion(.success(isLiked))
-                } else {
-                    completion(.failure(APIGetError.invalidResponse))
-                }
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func checkUserSession(token: String, completion: @escaping (Result<Int?, Error>) -> Void) {
