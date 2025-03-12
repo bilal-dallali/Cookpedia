@@ -619,7 +619,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Fetch Connected User Recipes with Details Success (200)
+    // Test Fetch Connected User Recipes with Details Success (200)
     func testGetConnectedUserRecipesWithDetailsSuccess() async throws {
         let jsonData = """
             [
@@ -655,7 +655,7 @@ final class ApiGetRequestTests: XCTestCase {
         XCTAssertEqual(recipes[0].profilePictureUrl, "https://example.com/profile.jpg")
     }
     
-    // ✅ Test No User Recipes (200 - Empty Array)
+    // Test No User Recipes (200 - Empty Array)
     func testGetConnectedUserRecipesWithDetailsEmpty() async throws {
         let jsonData = "[]".data(using: .utf8)
         
@@ -667,7 +667,7 @@ final class ApiGetRequestTests: XCTestCase {
         XCTAssertEqual(recipes.count, 0, "Expected empty array but got non-empty result")
     }
     
-    // 🚨 Test Invalid Response (Non-200 Status Code)
+    // Test Invalid Response (Non-200 Status Code)
     func testGetConnectedUserRecipesWithDetailsInvalidResponse() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/user-recipes-with-details/2")!, statusCode: 500, httpVersion: nil, headerFields: nil)
@@ -680,7 +680,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Decoding Error
+    // Test Decoding Error
     func testGetConnectedUserRecipesWithDetailsDecodingError() async throws {
         let invalidJsonData = """
             {
@@ -693,6 +693,93 @@ final class ApiGetRequestTests: XCTestCase {
         
         do {
             _ = try await apiRequest.getConnectedUserRecipesWithDetails(userId: 2)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
+    
+    // Test Fetch Recipe Details Success (200)
+    func testGetRecipeDetailsSuccess() async throws {
+        let jsonData = """
+            {
+                "id": 1,
+                "userId": 2,
+                "title": "Homemade Pizza",
+                "recipeCoverPictureUrl1": "https://example.com/recipe1.jpg",
+                "recipeCoverPictureUrl2": "https://example.com/recipe2.jpg",
+                "description": "Delicious homemade pizza recipe",
+                "cookTime": "30 mins",
+                "serves": "4",
+                "origin": "Italy",
+                "ingredients": [
+                    {"index": 1, "ingredient": "Flour"},
+                    {"index": 2, "ingredient": "Tomato Sauce"},
+                    {"index": 3, "ingredient": "Cheese"}
+                ],
+                "instructions": [
+                    {
+                        "index": 1,
+                        "instruction": "Preheat the oven to 220°C",
+                        "instructionPictureUrl1": "https://example.com/instruction1.jpg",
+                        "instructionPictureUrl2": null,
+                        "instructionPictureUrl3": null
+                    },
+                    {
+                        "index": 2,
+                        "instruction": "Spread the sauce over the dough",
+                        "instructionPictureUrl1": "https://example.com/instruction2.jpg",
+                        "instructionPictureUrl2": "https://example.com/instruction3.jpg",
+                        "instructionPictureUrl3": null
+                    }
+                ],
+                "fullName": "John Doe",
+                "profilePictureUrl": "https://example.com/profile.jpg",
+                "username": "johndoe"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/recipe-details/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let recipeDetails = try await apiRequest.getRecipeDetails(recipeId: 1)
+        
+        XCTAssertEqual(recipeDetails.id, 1)
+        XCTAssertEqual(recipeDetails.title, "Homemade Pizza")
+        XCTAssertEqual(recipeDetails.cookTime, "30 mins")
+        XCTAssertEqual(recipeDetails.origin, "Italy")
+        XCTAssertEqual(recipeDetails.ingredients.count, 3)
+        XCTAssertEqual(recipeDetails.instructions.count, 2)
+        XCTAssertEqual(recipeDetails.fullName, "John Doe")
+        XCTAssertEqual(recipeDetails.profilePictureUrl, "https://example.com/profile.jpg")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetRecipeDetailsInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/recipe-details/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getRecipeDetails(recipeId: 1)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetRecipeDetailsDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/recipe-details/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getRecipeDetails(recipeId: 1)
             XCTFail("Expected APIGetError.decodingError but got success")
         } catch let error as APIGetError {
             XCTAssertEqual(error, APIGetError.decodingError)
