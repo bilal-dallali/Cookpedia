@@ -192,14 +192,12 @@ struct HomePageView: View {
                 
                 let userId = currentUser.userId
                 
-                apiGetManager.getAllRecentRecipes { result in
-                    switch result {
-                        case .success(let recipes):
-                            DispatchQueue.main.async {
-                                self.recentRecipes = recipes
-                            }
-                        case .failure(let error):
-                            print("Error fetching recipes:", error.localizedDescription)
+                Task {
+                    do {
+                        let recipe = try await apiGetManager.getAllRecentRecipes()
+                        self.recentRecipes = recipe
+                    } catch {
+                        print("Failure")
                     }
                 }
                 
@@ -230,14 +228,12 @@ struct HomePageView: View {
             
                 let userId = currentUser.userId
                 
-                apiGetManager.getAllRecentRecipes { result in
-                    switch result {
-                        case .success(let recipes):
-                            DispatchQueue.main.async {
-                                self.recentRecipes = recipes
-                            }
-                        case .failure(let error):
-                            print("Error fetching recipes:", error.localizedDescription)
+                Task {
+                    do {
+                        let recipe = try await apiGetManager.getAllRecentRecipes()
+                        self.recentRecipes = recipe
+                    } catch {
+                        print("Failure")
                     }
                 }
                 

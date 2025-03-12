@@ -255,12 +255,12 @@ struct DiscoverPageView: View {
                     }
                 }
                 
-                apiGetManager.getAllRecentRecipes { result in
-                    switch result {
-                        case .success(let recipe):
-                            self.recentRecipes = recipe
-                        case .failure(let failure):
-                            print("failure \(failure)")
+                Task {
+                    do {
+                        let recipe = try await apiGetManager.getAllRecentRecipes()
+                        self.recentRecipes = recipe
+                    } catch {
+                        print("Failure")
                     }
                 }
             }

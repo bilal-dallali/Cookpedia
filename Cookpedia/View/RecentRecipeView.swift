@@ -58,14 +58,12 @@ struct RecentRecipeView: View {
             }
         }
         .onAppear {
-            apiGetManager.getAllRecentRecipes { result in
-                switch result {
-                    case .success(let recipes):
-                        DispatchQueue.main.async {
-                            self.recipes = recipes
-                        }
-                    case .failure(let error):
-                        print("Error fetching recipes:", error.localizedDescription)
+            Task {
+                do {
+                    let recipes = try await apiGetManager.getAllRecentRecipes()
+                    self.recipes = recipes
+                } catch {
+                    print("Failure")
                 }
             }
         }
