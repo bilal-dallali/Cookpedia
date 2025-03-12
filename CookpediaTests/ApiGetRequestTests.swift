@@ -849,4 +849,68 @@ final class ApiGetRequestTests: XCTestCase {
             XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
+    
+    // Test Fetch Following Count Success (200)
+    func testGetFollowingCountSuccess() async throws {
+        let jsonData = """
+            {
+                "followingCount": 5
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/1/following")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let count = try await apiRequest.getFollowingCount(userId: 1)
+        
+        XCTAssertEqual(count, 5, "Expected following count to be 5 but got \(count)")
+    }
+    
+    // Test No Following Users (200 - Zero Count)
+    func testGetFollowingCountZero() async throws {
+        let jsonData = """
+            {
+                "followingCount": 0
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/1/following")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let count = try await apiRequest.getFollowingCount(userId: 1)
+        
+        XCTAssertEqual(count, 0, "Expected following count to be 0 but got \(count)")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetFollowingCountInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/1/following")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getFollowingCount(userId: 1)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetFollowingCountDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "invalid_field": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/1/following")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getFollowingCount(userId: 1)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
 }

@@ -458,14 +458,12 @@ struct MyProfilePageView: View {
                         }
                     }
                     
-                    apiGetManager.getFollowingCount(userId: userId) { result in
-                        DispatchQueue.main.async {
-                            switch result {
-                                case .success(let count):
-                                    self.followingCount = count
-                                case .failure(let error):
-                                    print("Failed to fetch following count: \(error.localizedDescription)")
-                            }
+                    Task {
+                        do {
+                            let count = try await apiGetManager.getFollowingCount(userId: userId)
+                            followingCount = count
+                        } catch {
+                            print("Failed to fetch following count")
                         }
                     }
                     
