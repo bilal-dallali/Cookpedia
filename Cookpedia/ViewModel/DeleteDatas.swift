@@ -108,11 +108,11 @@ class APIDeleteRequest: ObservableObject {
         }
     }
     
-    func unlikeComment(userId: Int, commentId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
+    func unlikeComment(userId: Int, commentId: Int) async throws {
         let endpoint = "/comments/unlike-comment"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIDeleteError.invalidUrl
         }
         
         var request = URLRequest(url: url)
@@ -120,15 +120,24 @@ class APIDeleteRequest: ObservableObject {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let body: [String: Any] = ["userId": userId, "commentId": commentId]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
         
-        URLSession.shared.dataTask(with: request) { _, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            completion(.success(()))
-        }.resume()
+        let (_, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIDeleteError.invalidResponse
+        }
+        
+        switch httpResponse.statusCode {
+        case 200:
+            return
+        case 404:
+            throw APIDeleteError.userNotFound
+        case 500:
+            throw APIDeleteError.serverError
+        default:
+            throw APIDeleteError.invalidResponse
+        }
     }
 }
 

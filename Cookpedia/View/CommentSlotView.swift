@@ -95,13 +95,16 @@ struct CommentSlotView: View {
                 HStack(spacing: 8) {
                     Button {
                         if isCommentLiked == true {
-                            apiDeleteManager.unlikeComment(userId: userId ?? 0, commentId: comment.id) { _ in
-                                DispatchQueue.main.async {
-                                    likeCount -= 1
-                                    isCommentLiked = false
-                                    withAnimation(.easeIn(duration: 0.4)) {
-                                        heartScaleX = 0
-                                        heartScaleY = 0
+                            Task {
+                                do {
+                                    let _ = try await apiDeleteManager.unlikeComment(userId: userId ?? 0, commentId: comment.id)
+                                    DispatchQueue.main.async {
+                                        likeCount -= 1
+                                        isCommentLiked = false
+                                        withAnimation(.easeIn(duration: 0.4)) {
+                                            heartScaleX = 0
+                                            heartScaleY = 0
+                                        }
                                     }
                                 }
                             }
