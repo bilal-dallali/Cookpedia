@@ -121,76 +121,61 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func getPublishedRecipesCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+    func getPublishedRecipesCount(userId: Int) async throws -> Int {
         let endpoint = "/recipes/published-recipes-count/\(userId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            guard let count = jsonResult?["count"] as? Int else {
+                throw APIGetError.decodingError
             }
             
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                
-                if let count = jsonResult?["count"] as? Int {
-                    completion(.success(count))
-                } else {
-                    completion(.success(0))
-                }
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+            return count
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
-    func getDraftRecipesCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
+    func getDraftRecipesCount(userId: Int) async throws -> Int {
         let endpoint = "/recipes/draft-recipes-count/\(userId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            
+            guard let count = jsonResult?["count"] as? Int else {
+                throw APIGetError.decodingError
             }
             
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                
-                if let count = jsonResult?["count"] as? Int {
-                    completion(.success(count))
-                } else {
-                    completion(.success(0))
-                }
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+            return count
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func getSavedRecipes(userId: Int, completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {

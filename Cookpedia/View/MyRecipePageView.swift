@@ -194,25 +194,21 @@ struct MyRecipePageView: View {
             
             let userId = currentUser.userId
             
-            apiGetManager.getPublishedRecipesCount(userId: userId) { result in
-                switch result {
-                    case .success(let count):
-                        DispatchQueue.main.async {
-                            self.publishedRecipesCount = count
-                        }
-                    case .failure(let error):
-                        print("Error fetching published recipes count:", error.localizedDescription)
+            Task {
+                do {
+                    let count = try await apiGetManager.getPublishedRecipesCount(userId: userId)
+                    self.publishedRecipesCount = count
+                } catch {
+                    print("Error fetching published recipes count")
                 }
             }
             
-            apiGetManager.getDraftRecipesCount(userId: userId) { result in
-                switch result {
-                    case .success(let count):
-                        DispatchQueue.main.async {
-                            self.draftRecipesCount = count
-                        }
-                    case .failure(let error):
-                        print("Error fetching published recipes count:", error.localizedDescription)
+            Task {
+                do {
+                    let count = try await apiGetManager.getDraftRecipesCount(userId: userId)
+                    self.draftRecipesCount = count
+                } catch {
+                    print("Error fetching draft recipes count")
                 }
             }
         }

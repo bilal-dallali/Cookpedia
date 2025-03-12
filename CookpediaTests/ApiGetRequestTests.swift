@@ -330,4 +330,132 @@ final class ApiGetRequestTests: XCTestCase {
             XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
+    
+    // Test Fetch Published Recipes Count Success (200)
+    func testGetPublishedRecipesCountSuccess() async throws {
+        let jsonData = """
+            {
+                "count": 5
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/published-recipes-count/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let count = try await apiRequest.getPublishedRecipesCount(userId: 1)
+        
+        XCTAssertEqual(count, 5, "Expected count to be 5 but got \(count)")
+    }
+    
+    // Test No Published Recipes (200 - Zero Count)
+    func testGetPublishedRecipesCountZero() async throws {
+        let jsonData = """
+            {
+                "count": 0
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/published-recipes-count/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let count = try await apiRequest.getPublishedRecipesCount(userId: 1)
+        
+        XCTAssertEqual(count, 0, "Expected count to be 0 but got \(count)")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetPublishedRecipesCountInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/published-recipes-count/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getPublishedRecipesCount(userId: 1)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetPublishedRecipesCountDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "invalid_field": "This is an invalid response"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/published-recipes-count/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getPublishedRecipesCount(userId: 1)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
+    
+    // Test Fetch Draft Recipes Count Success (200)
+    func testGetDraftRecipesCountSuccess() async throws {
+        let jsonData = """
+            {
+                "count": 3
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/draft-recipes-count/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let count = try await apiRequest.getDraftRecipesCount(userId: 1)
+        
+        XCTAssertEqual(count, 3, "Expected count to be 3 but got \(count)")
+    }
+    
+    // Test No Draft Recipes (200 - Zero Count)
+    func testGetDraftRecipesCountZero() async throws {
+        let jsonData = """
+            {
+                "count": 0
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/draft-recipes-count/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let count = try await apiRequest.getDraftRecipesCount(userId: 1)
+        
+        XCTAssertEqual(count, 0, "Expected count to be 0 but got \(count)")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetDraftRecipesCountInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/draft-recipes-count/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getDraftRecipesCount(userId: 1)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetDraftRecipesCountDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "invalid_field": "This is an invalid response"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/draft-recipes-count/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getDraftRecipesCount(userId: 1)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
 }
