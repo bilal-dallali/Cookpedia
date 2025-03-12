@@ -977,4 +977,79 @@ final class ApiGetRequestTests: XCTestCase {
             XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
+    
+    // Test Fetch Followers List Success (200)
+    func testGetFollowersSuccess() async throws {
+        let jsonData = """
+            [
+                {
+                    "id": 1,
+                    "username": "john_doe",
+                    "fullName": "John Doe",
+                    "profilePictureUrl": "https://example.com/profile1.jpg"
+                },
+                {
+                    "id": 2,
+                    "username": "jane_smith",
+                    "fullName": "Jane Smith",
+                    "profilePictureUrl": "https://example.com/profile2.jpg"
+                }
+            ]
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/followers/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let followers = try await apiRequest.getFollowers(userId: 1)
+        
+        XCTAssertEqual(followers.count, 2)
+        XCTAssertEqual(followers[0].id, 1)
+        XCTAssertEqual(followers[0].username, "john_doe")
+        XCTAssertEqual(followers[0].fullName, "John Doe")
+        XCTAssertEqual(followers[0].profilePictureUrl, "https://example.com/profile1.jpg")
+    }
+    
+    // Test No Followers (200 - Empty Array)
+    func testGetFollowersEmpty() async throws {
+        let jsonData = "[]".data(using: .utf8) // Empty JSON array means no followers
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/followers/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let followers = try await apiRequest.getFollowers(userId: 1)
+        
+        XCTAssertEqual(followers.count, 0, "Expected empty array but got non-empty result")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetFollowersInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/followers/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getFollowers(userId: 1)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetFollowersDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/followers/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getFollowers(userId: 1)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
 }

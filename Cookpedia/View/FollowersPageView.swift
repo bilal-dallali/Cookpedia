@@ -99,14 +99,14 @@ struct FollowersPageView: View {
             .padding(.horizontal, 24)
             .background(Color("Dark1"))
             .onAppear {
-                apiGetManager.getFollowers(userId: userId) { result in
-                    switch result {
-                        case .success(let followers):
-                            DispatchQueue.main.async {
-                                self.followerUser = followers
-                            }
-                        case .failure(let error):
-                            print("Error fetching followers: \(error.localizedDescription)")
+                Task {
+                    do {
+                        let followers = try await apiGetManager.getFollowers(userId: userId)
+                        DispatchQueue.main.async {
+                            self.followerUser = followers
+                        }
+                    } catch {
+                        print("Error fetching followers")
                     }
                 }
                 
