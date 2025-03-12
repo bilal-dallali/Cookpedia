@@ -127,12 +127,12 @@ struct CommentsView: View {
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
                     .onAppear {
-                        apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
-                            switch result {
-                                case .success(let comments):
-                                    self.topComments = comments
-                                case .failure(let error):
-                                    print("error \(error.localizedDescription)")
+                        Task {
+                            do {
+                                let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                                self.topComments = comments
+                            } catch {
+                                print("Cannot fetch comments with most likes")
                             }
                         }
                     }
@@ -229,12 +229,12 @@ struct CommentsView: View {
                                             print("Commentaire posté : \(response)")
                                             commentText = ""
                                             if isTopSelected {
-                                                apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
-                                                    switch result {
-                                                    case .success(let comments):
+                                                Task {
+                                                    do {
+                                                        let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
                                                         self.topComments = comments
-                                                    case .failure(let error):
-                                                        print("error \(error.localizedDescription)")
+                                                    } catch {
+                                                        print("Cannot fetch comments with most likes")
                                                     }
                                                 }
                                             } else if isNewestSelected {
@@ -278,12 +278,12 @@ struct CommentsView: View {
                                             print("Commentaire posté : \(response)")
                                             commentText = ""
                                             if isTopSelected {
-                                                apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
-                                                    switch result {
-                                                    case .success(let comments):
+                                                Task {
+                                                    do {
+                                                        let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
                                                         self.topComments = comments
-                                                    case .failure(let error):
-                                                        print("error \(error.localizedDescription)")
+                                                    } catch {
+                                                        print("Cannot fetch comments with most likes")
                                                     }
                                                 }
                                             } else if isNewestSelected {
@@ -400,12 +400,12 @@ struct CommentsView: View {
                 }
             }
             
-            apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
-                switch result {
-                    case .success(let comments):
-                        self.topComments = comments
-                    case .failure(let error):
-                        print("error \(error.localizedDescription)")
+            Task {
+                do {
+                    let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                    self.topComments = comments
+                } catch {
+                    print("Cannot fetch comments with most likes")
                 }
             }
         }
