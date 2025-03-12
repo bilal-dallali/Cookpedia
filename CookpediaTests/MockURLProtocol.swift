@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@testable import Cookpedia
 
 class MockURLProtocol: URLProtocol {
     
@@ -37,4 +38,21 @@ class MockURLProtocol: URLProtocol {
     }
 
     override func stopLoading() {}
+}
+
+class NetworkServiceMock: NetworkService {
+    
+    static var mockResponseData: Data?
+    static var mockResponse: URLResponse?
+    static var mockError: Error?
+    
+    
+    func request(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        guard let data = Self.mockResponseData, let response = Self.mockResponse else {
+            throw Self.mockError ?? URLError(.badServerResponse, userInfo: [:])
+        }
+        return (data, response)
+    }
+    
+    
 }
