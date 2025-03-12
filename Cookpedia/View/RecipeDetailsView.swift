@@ -503,12 +503,12 @@ struct RecipeDetailsView: View {
                                                                         withAnimation {
                                                                             proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
                                                                         }
-                                                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                                                            switch result {
-                                                                            case .success(let comments):
+                                                                        Task {
+                                                                            do {
+                                                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
                                                                                 self.comments = comments
-                                                                            case .failure(let error):
-                                                                                print("error \(error.localizedDescription)")
+                                                                            } catch {
+                                                                                print("Failed to fetch comments")
                                                                             }
                                                                         }
                                                                         
@@ -536,12 +536,12 @@ struct RecipeDetailsView: View {
                                                                         withAnimation {
                                                                             proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
                                                                         }
-                                                                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                                                            switch result {
-                                                                            case .success(let comments):
+                                                                        Task {
+                                                                            do {
+                                                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
                                                                                 self.comments = comments
-                                                                            case .failure(let error):
-                                                                                print("error \(error.localizedDescription)")
+                                                                            } catch {
+                                                                                print("Failed to fetch comments")
                                                                             }
                                                                         }
                                                                         
@@ -705,12 +705,12 @@ struct RecipeDetailsView: View {
                                         }
                                     }
                                     
-                                    apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                                        switch result {
-                                        case .success(let comments):
+                                    Task {
+                                        do {
+                                            let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
                                             self.comments = comments
-                                        case .failure(let error):
-                                            print("error \(error.localizedDescription)")
+                                        } catch {
+                                            print("Failed to fetch comments")
                                         }
                                     }
                                 }
@@ -729,14 +729,12 @@ struct RecipeDetailsView: View {
                         }
                     }
                     .onChange(of: refreshComment) {
-                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
-                            print("Trying to get comments \(result)")
-                            switch result {
-                            case .success(let comments):
-                                print("comments loaded successfully on page landing \(comments)")
+                        Task {
+                            do {
+                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
                                 self.comments = comments
-                            case .failure(let error):
-                                print("error \(error.localizedDescription)")
+                            } catch {
+                                print("Failed to fetch comments")
                             }
                         }
                     }

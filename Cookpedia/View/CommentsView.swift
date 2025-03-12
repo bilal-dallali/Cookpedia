@@ -167,12 +167,12 @@ struct CommentsView: View {
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
                     .onAppear {
-                        apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
-                            switch result {
-                                case .success(let comments):
-                                    self.oldestComments = comments
-                                case .failure(let error):
-                                    print("error \(error.localizedDescription)")
+                        Task {
+                            do {
+                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
+                                self.oldestComments = comments
+                            } catch {
+                                print("Failed to fetch comments")
                             }
                         }
                     }
@@ -247,12 +247,12 @@ struct CommentsView: View {
                                                     }
                                                 }
                                             } else if isOldestSelected {
-                                                apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
-                                                    switch result {
-                                                    case .success(let comments):
+                                                Task {
+                                                    do {
+                                                        let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
                                                         self.oldestComments = comments
-                                                    case .failure(let error):
-                                                        print("error \(error.localizedDescription)")
+                                                    } catch {
+                                                        print("Failed to fetch comments")
                                                     }
                                                 }
                                             }
@@ -296,12 +296,12 @@ struct CommentsView: View {
                                                     }
                                                 }
                                             } else if isOldestSelected {
-                                                apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
-                                                    switch result {
-                                                    case .success(let comments):
+                                                Task {
+                                                    do {
+                                                        let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
                                                         self.oldestComments = comments
-                                                    case .failure(let error):
-                                                        print("error \(error.localizedDescription)")
+                                                    } catch {
+                                                        print("Failed to fetch comments")
                                                     }
                                                 }
                                             }
@@ -382,12 +382,12 @@ struct CommentsView: View {
             }
         }
         .onChange(of: refreshComment) {
-            apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
-                switch result {
-                    case .success(let comments):
-                        self.oldestComments = comments
-                    case .failure(let error):
-                        print("error \(error.localizedDescription)")
+            Task {
+                do {
+                    let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
+                    self.oldestComments = comments
+                } catch {
+                    print("Failed to fetch comments")
                 }
             }
             
