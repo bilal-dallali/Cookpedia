@@ -110,14 +110,24 @@ struct FollowersPageView: View {
                     }
                 }
                 
-                apiGetManager.getFollowing(userId: userId) { result in
-                    switch result {
-                        case .success(let following):
-                            DispatchQueue.main.async {
-                                self.followingUser = following
-                            }
-                        case .failure(let error):
-                            print("Error fetching following: \(error.localizedDescription)")
+//                apiGetManager.getFollowing(userId: userId) { result in
+//                    switch result {
+//                        case .success(let following):
+//                            DispatchQueue.main.async {
+//                                self.followingUser = following
+//                            }
+//                        case .failure(let error):
+//                            print("Error fetching following: \(error.localizedDescription)")
+//                    }
+//                }
+                Task {
+                    do {
+                        let following = try await apiGetManager.getFollowing(userId: userId)
+                        DispatchQueue.main.async {
+                            self.followingUser = following
+                        }
+                    } catch {
+                        print("Error fetching following")
                     }
                 }
             }
