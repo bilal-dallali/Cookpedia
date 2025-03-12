@@ -106,14 +106,19 @@ struct CommentSlotView: View {
                                 }
                             }
                         } else if isCommentLiked == false {
-                            apiPostManager.likeComment(userId: userId ?? 0, commentId: comment.id) { _ in
-                                DispatchQueue.main.async {
-                                    likeCount += 1
-                                    isCommentLiked = true
-                                    withAnimation(.easeIn(duration: 0.4)) {
-                                        heartScaleX = 1
-                                        heartScaleY = 1
+                            Task {
+                                do {
+                                    try await apiPostManager.likeComment(userId: userId ?? 0, commentId: comment.id)
+                                    DispatchQueue.main.async {
+                                        likeCount += 1
+                                        isCommentLiked = true
+                                        withAnimation(.easeIn(duration: 0.4)) {
+                                            heartScaleX = 1
+                                            heartScaleY = 1
+                                        }
                                     }
+                                } catch {
+                                    print("Failed to like comment")
                                 }
                             }
                         }
