@@ -418,16 +418,16 @@ struct EditProfileView: View {
                                 profilePictureUrl: profilePictureUrl
                             )
                             
-                            apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage) { result in
-                                switch result {
-                                    case .success:
-                                        profileUpdated = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                            self.redirectHomePage = true
-                                            profileUpdated = false
-                                        }
-                                    case .failure(let error):
-                                        print("Failed to update profile: \(error.localizedDescription)")
+                            Task {
+                                do {
+                                    _ = try await apiPutManager.updateUserProfile(userId: userId, user: updatedUser, profilePicture: selectedImage)
+                                    profileUpdated = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        self.redirectHomePage = true
+                                        profileUpdated = false
+                                    }
+                                } catch {
+                                    print("Fauled to update profile")
                                 }
                             }
                         } label: {

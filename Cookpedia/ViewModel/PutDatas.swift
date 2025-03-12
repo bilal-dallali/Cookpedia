@@ -10,20 +10,30 @@ import UIKit
 
 class APIPutRequest: ObservableObject {
     
-    func updateUserProfile(userId: Int, user: EditUser, profilePicture: UIImage?, completion: @escaping (Result<String, Error>) -> Void) {
+    private let networkService: NetworkService
+    
+    // Dependency Injection
+    init(networkService: NetworkService = URLSession.shared) {
+        self.networkService = networkService
+    }
+    
+    func updateUserProfile(userId: Int, user: EditUser, profilePicture: UIImage?) async throws -> String {
         let endpoint = "/users/edit-profile/\(userId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIPutError.invalidUrl))
-            return
+            throw APIPutError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
+        
+        // Define multipart boundary
         let boundary = UUID().uuidString
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
         var body = Data()
         
+        // Function to append text fields
         func appendField(_ name: String, value: String?) {
             guard let value = value else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -31,6 +41,7 @@ class APIPutRequest: ObservableObject {
             body.append("\(value)\r\n".data(using: .utf8)!)
         }
         
+        // Function to append image data
         func appendImage(_ image: UIImage?, withName name: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -39,6 +50,8 @@ class APIPutRequest: ObservableObject {
             body.append(imageData)
             body.append("\r\n".data(using: .utf8)!)
         }
+        
+        // Append user fields
         appendField("fullName", value: user.fullName)
         appendField("username", value: user.username)
         appendField("description", value: user.description)
@@ -51,24 +64,33 @@ class APIPutRequest: ObservableObject {
         appendField("country", value: user.country)
         appendField("profilePictureUrl", value: user.profilePictureUrl)
         
+        // Append profile picture if provided
         appendImage(profilePicture, withName: "profilePicture")
         
+        // End the multipart body
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                completion(.failure(APIPutError.invalidResponse))
-                return
-            }
-            
-            completion(.success("Profile updated successfully"))
-        }.resume()
+        // 🔥 Use injected `networkService` instead of `URLSession.shared`
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPutError.invalidResponse
+        }
+        
+        // Handle response status codes
+        switch httpResponse.statusCode {
+        case 200:
+            return "Profile updated successfully"
+        case 400:
+            throw APIPutError.badRequest
+        case 404:
+            throw APIPutError.userNotFound
+        case 500:
+            throw APIPutError.serverError
+        default:
+            throw APIPutError.invalidResponse
+        }
     }
     
     func updateRecipe(recipeId: Int, updatedRecipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
@@ -147,15 +169,24 @@ enum APIPutError: Error {
     case invalidUrl
     case invalidResponse
     case decodingError
+    case badRequest
+    case userNotFound
+    case serverError
     
     var localizedDescription: String {
         switch self {
-            case .invalidUrl:
-                return "Invalid URL"
-            case .invalidResponse:
-                return "Invalid response"
-            case .decodingError:
-                return "Decoding error"
+        case .invalidUrl:
+            return "Invalid URL"
+        case .invalidResponse:
+            return "Invalid response"
+        case .decodingError:
+            return "Decoding error"
+        case .badRequest:
+            return "Bad Request"
+        case .userNotFound:
+            return "User not found"
+        case .serverError:
+            return "Server error"
         }
     }
 }
