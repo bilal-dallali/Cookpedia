@@ -1816,4 +1816,69 @@ final class ApiGetRequestTests: XCTestCase {
             XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
+    
+    // Test Active Session (200 - Returns User ID)
+    func testCheckUserSessionActive() async throws {
+        let jsonData = """
+            {
+                "active": true,
+                "userId": 42
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/check-session")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let userId = try await apiRequest.checkUserSession(token: "valid_token")
+        
+        XCTAssertEqual(userId, 42, "Expected userId to be 42 but got \(String(describing: userId))")
+    }
+    
+    // Test Expired Session (200 - Returns nil)
+    func testCheckUserSessionExpired() async throws {
+        let jsonData = """
+            {
+                "active": false
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/check-session")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let userId = try await apiRequest.checkUserSession(token: "expired_token")
+        
+        XCTAssertNil(userId, "Expected nil but got \(String(describing: userId))")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testCheckUserSessionInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/check-session")!, statusCode: 403, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.checkUserSession(token: "invalid_token")
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testCheckUserSessionDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/check-session")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.checkUserSession(token: "valid_token")
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
 }

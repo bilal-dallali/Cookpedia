@@ -45,22 +45,20 @@ struct SplashView: View {
         .frame(maxWidth: .infinity)
         .background(Color("Dark1"))
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     redirectHomePage = true
                     if let session = userSession.first {
-                        apiGetManager.checkUserSession(token: session.authToken) { result in
-                            DispatchQueue.main.async {
-                                switch result {
-                                case .success(let userId):
-                                    if userId != nil {
-                                        redirectHomePage = true
-                                    } else {
-                                        redirectWelcomePage = true
-                                    }
-                                case .failure:
+                        Task {
+                            do {
+                                let userId = try await apiGetManager.checkUserSession(token: session.authToken)
+                                if userId != nil {
+                                    redirectHomePage = true
+                                } else {
                                     redirectWelcomePage = true
                                 }
+                            } catch {
+                                redirectWelcomePage = true
                             }
                         }
                     } else {

@@ -642,41 +642,34 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func checkUserSession(token: String, completion: @escaping (Result<Int?, Error>) -> Void) {
+    func checkUserSession(token: String) async throws -> Int? {
         let endpoint = "/users/check-session"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
+        // 🔥 Use injected `networkService` instead of `URLSession.shared`
+        let (data, response) = try await networkService.request(request)
 
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
 
-            do {
-                if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                   let isActive = jsonResponse["active"] as? Bool {
-                    let userId = isActive ? jsonResponse["userId"] as? Int : nil
-                    completion(.success(userId))
-                } else {
-                    completion(.failure(APIGetError.invalidResponse))
-                }
-            } catch {
-                completion(.failure(APIGetError.decodingError))
+        do {
+            if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let isActive = jsonResponse["active"] as? Bool {
+                return isActive ? jsonResponse["userId"] as? Int : nil
+            } else {
+                throw APIGetError.invalidResponse
             }
-        }.resume()
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
 }
