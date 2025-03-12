@@ -418,16 +418,14 @@ struct ProfilePageView: View {
                 
                 let connectedUserId = currentUser.userId
                 
-                apiGetManager.isFollowing(followerId: connectedUserId, followedId: userId) { result in
-                    switch result {
-                        case .success(let isFollowing):
-                            if isFollowing {
-                                following = true
-                            } else {
-                                print("User is not following the other user.")
-                            }
-                        case .failure(let error):
-                            print("Failed to check follow status: \(error.localizedDescription)")
+                Task {
+                    do {
+                        let isFollowing = try await apiGetManager.isFollowing(followerId: connectedUserId, followedId: userId)
+                        if isFollowing {
+                            following = true
+                        } else {
+                            following = false
+                        }
                     }
                 }
                 

@@ -279,39 +279,32 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func isFollowing(followerId: Int, followedId: Int, completion: @escaping (Result<Bool, Error>) -> Void) {
+    func isFollowing(followerId: Int, followedId: Int) async throws -> Bool {
         let endpoint = "/users/is-following/\(followerId)/\(followedId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            if let isFollowing = jsonResponse?["isFollowing"] as? Bool {
+                return isFollowing
+            } else {
+                throw APIGetError.invalidResponse
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                if let isFollowing = jsonResponse?["isFollowing"] as? Bool {
-                    completion(.success(isFollowing))
-                } else {
-                    completion(.failure(APIGetError.invalidResponse))
-                }
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func getFollowingCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {

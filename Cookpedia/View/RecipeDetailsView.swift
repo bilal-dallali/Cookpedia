@@ -680,19 +680,19 @@ struct RecipeDetailsView: View {
                                 let details = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
                                 DispatchQueue.main.async {
                                     self.recipeDetails = details
-                                    apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId) { result in
-                                        switch result {
-                                        case .success(let isFollowing):
+                                    
+                                    Task {
+                                        do {
+                                            let isFollowing = try await apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId)
                                             if isFollowing {
-                                                following = true
+                                                DispatchQueue.main.async {
+                                                    self.following = true
+                                                }
                                             } else {
                                                 following = false
                                             }
-                                        case .failure(let error):
-                                            print("Failed to check follow status: \(error.localizedDescription)")
                                         }
                                     }
-                                    
                                     Task {
                                         do {
                                             let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
