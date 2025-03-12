@@ -755,4 +755,130 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
+    // Test Like Comment Success (200)
+    func testLikeCommentSuccess() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/like-comment")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.likeComment(userId: 1, commentId: 101)
+        } catch {
+            XCTFail("Expected success, but got \(error)")
+        }
+    }
+    
+    // Test Invalid Request (400)
+    func testLikeCommentInvalidRequest() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/like-comment")!, statusCode: 400, httpVersion: nil,  headerFields: nil)
+        
+        do {
+            try await apiRequest.likeComment(userId: -1, commentId: -1)
+            XCTFail("Expected APIPostError.invalidData but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidData)
+        }
+    }
+    
+    // Test User or Comment Not Found (404)
+    func testLikeCommentUserNotFound() async throws {
+        let jsonData = """
+        {
+            "error": "User or comment not found"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/like-comment")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.likeComment(userId: 999, commentId: 1000)
+            XCTFail("Expected APIPostError.userNotFound but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.userNotFound)
+        }
+    }
+    
+    // Test Server Error (500)
+    func testLikeCommentServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/like-comment")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            try await apiRequest.likeComment(userId: 1, commentId: 101)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
+    // Test Increment Recipe Search Success (200)
+    func testIncrementRecipeSearchSuccess() async throws {
+        let responseMessage = "Recipe search count incremented successfully"
+        let jsonData = responseMessage.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-searches/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let result = try await apiRequest.incrementRecipeSearch(recipeId: 1)
+        
+        XCTAssertEqual(result, "Recipe search count incremented successfully")
+    }
+    
+    // Test Invalid Request (400)
+    func testIncrementRecipeSearchInvalidRequest() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-searches/1")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.incrementRecipeSearch(recipeId: -1)
+            XCTFail("Expected NSError with code 400 but got success")
+        } catch let error as NSError {
+            XCTAssertEqual(error.code, 400)
+        }
+    }
+    
+    // Test Recipe Not Found (404)
+    func testIncrementRecipeSearchRecipeNotFound() async throws {
+        let jsonData = """
+        {
+            "error": "Recipe not found"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-searches/999")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.incrementRecipeSearch(recipeId: 999)
+            XCTFail("Expected NSError with code 404 but got success")
+        } catch let error as NSError {
+            XCTAssertEqual(error.code, 404)
+        }
+    }
+    
+    // Test Server Error (500)
+    func testIncrementRecipeSearchServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-searches/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.incrementRecipeSearch(recipeId: 1)
+            XCTFail("Expected NSError with code 500 but got success")
+        } catch let error as NSError {
+            XCTAssertEqual(error.code, 500)
+        }
+    }
 }

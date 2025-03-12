@@ -538,7 +538,7 @@ class APIPostRequest: ObservableObject {
             throw APIPostError.invalidData
         }
         
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPostError.invalidResponse
@@ -558,30 +558,34 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func incrementRecipeSearch(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+    func incrementRecipeSearch(recipeId: Int) async throws -> String {
         let endpoint = "/recipes/increment-searches/\(recipeId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-            return
+            throw NSError(domain: "Invalid URL", code: -1, userInfo: nil)
         }
-
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        // Execute request
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                completion(.failure(NSError(domain: "Invalid Response", code: -1, userInfo: nil)))
-                return
-            }
-
-            completion(.success("Recipe search count incremented successfully"))
-        }.resume()
+        let (_, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NSError(domain: "Invalid Response", code: -1, userInfo: nil)
+        }
+        
+        switch httpResponse.statusCode {
+        case 200:
+            return "Recipe search count incremented successfully"
+        case 400:
+            throw NSError(domain: "Bad Request", code: 400, userInfo: nil)
+        case 404:
+            throw NSError(domain: "Recipe Not Found", code: 404, userInfo: nil)
+        case 500:
+            throw NSError(domain: "Server Error", code: 500, userInfo: nil)
+        default:
+            throw NSError(domain: "Unexpected Error", code: httpResponse.statusCode, userInfo: nil)
+        }
     }
 }
 
