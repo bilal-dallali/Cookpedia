@@ -488,39 +488,27 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func getMostPopularRecipes(completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
+    func getMostPopularRecipes() async throws -> [RecipeTitleCoverUser] {
         let endpoint = "/recipes/most-popular-recipes"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
-            return
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
         }
         
-        // Create usersession request
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            // Network errors
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            // Check datas
-            guard let data = data else {
-                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
-                return
-            }
-            
-            // Decode datas
-            do {
-                let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
-                completion(.success(recipes))
-            } catch {
-                completion(.failure(error))
-            }
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
         }
-        task.resume()
+        
+        do {
+            return try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+        } catch {
+            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode response"])
+        }
     }
     
     func getUsersByRecipeViews(completion: @escaping (Result<[UserDetails], Error>) -> Void) {

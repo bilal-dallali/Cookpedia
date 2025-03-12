@@ -219,12 +219,14 @@ struct DiscoverPageView: View {
                 isTextFocused = false
             }
             .onAppear {
-                apiGetManager.getMostPopularRecipes { result in
-                    switch result {
-                        case .success(let recipes):
+                Task {
+                    do {
+                        let recipes = try await apiGetManager.getMostPopularRecipes()
+                        DispatchQueue.main.async {
                             self.mostPopularRecipes = recipes
-                        case .failure(let failure):
-                            print("failure \(failure)")
+                        }
+                    } catch {
+                        print("Error fetching most popular recipes")
                     }
                 }
                 
