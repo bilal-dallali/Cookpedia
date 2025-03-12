@@ -683,4 +683,76 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
+    // Test Post Comment Success (201)
+    func testPostCommentSuccess() async throws {
+        let responseMessage = "Comment posted successfully"
+        let jsonData = responseMessage.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/add-comment")!, statusCode: 201, httpVersion: nil, headerFields: nil)
+        
+        let comment = CommentsPost(userId: 1, recipeId: 101, comment: "Great recipe!")
+        
+        let result = try await apiRequest.postComment(comment: comment)
+        
+        XCTAssertEqual(result, "Comment posted successfully")
+    }
+    
+    // Test Invalid Request (400)
+    func testPostCommentInvalidRequest() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/add-comment")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        let comment = CommentsPost(userId: 0, recipeId: 0, comment: "")
+        
+        do {
+            _ = try await apiRequest.postComment(comment: comment)
+            XCTFail("Expected APIPostError.invalidData but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidData)
+        }
+    }
+    
+    // Test User Not Found (404)
+    func testPostCommentUserNotFound() async throws {
+        let jsonData = """
+        {
+            "error": "User not found"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/add-comment")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        let comment = CommentsPost(userId: 999, recipeId: 101, comment: "Great recipe!")
+        
+        do {
+            _ = try await apiRequest.postComment(comment: comment)
+            XCTFail("Expected APIPostError.userNotFound but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.userNotFound)
+        }
+    }
+    
+    // Test Server Error (500)
+    func testPostCommentServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/add-comment")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        let comment = CommentsPost(userId: 1, recipeId: 101, comment: "Great recipe!")
+        
+        do {
+            _ = try await apiRequest.postComment(comment: comment)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
 }

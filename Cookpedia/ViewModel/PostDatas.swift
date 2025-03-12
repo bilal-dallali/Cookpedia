@@ -495,7 +495,7 @@ class APIPostRequest: ObservableObject {
             throw APIPostError.invalidData
         }
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPostError.invalidResponse
