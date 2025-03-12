@@ -96,5 +96,56 @@ final class ApiDeleteRequestTests: XCTestCase {
         }
     }
     
+    // Test Delete Recipe Success (200 - Returns success message)
+    func testDeleteRecipeSuccess() async throws {
+        let jsonData = "Recipe deleted successfully".data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/delete-recipe/10")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let message = try await apiRequest.deleteRecipe(recipeId: 10)
+        
+        XCTAssertEqual(message, "Recipe deleted successfully", "Expected success message but got \(message)")
+    }
+    
+    // Test Recipe Not Found (404 - Throws `userNotFound`)
+    func testDeleteRecipeNotFound() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/delete-recipe/10")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.deleteRecipe(recipeId: 10)
+            XCTFail("Expected APIDeleteError.userNotFound but got success")
+        } catch let error as APIDeleteError {
+            XCTAssertEqual(error, APIDeleteError.userNotFound)
+        }
+    }
+    
+    // Test Server Error (500 - Throws `serverError`)
+    func testDeleteRecipeServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/delete-recipe/10")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.deleteRecipe(recipeId: 10)
+            XCTFail("Expected APIDeleteError.serverError but got success")
+        } catch let error as APIDeleteError {
+            XCTAssertEqual(error, APIDeleteError.serverError)
+        }
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testDeleteRecipeInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/delete-recipe/10")!, statusCode: 403, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.deleteRecipe(recipeId: 10)
+            XCTFail("Expected APIDeleteError.invalidResponse but got success")
+        } catch let error as APIDeleteError {
+            XCTAssertEqual(error, APIDeleteError.invalidResponse)
+        }
+    }
+    
     
 }

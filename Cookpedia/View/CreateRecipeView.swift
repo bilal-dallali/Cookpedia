@@ -849,17 +849,17 @@ struct CreateRecipeView: View {
                         if case .create = mode {
                             isCreateRecipeSelected = false
                         } else if case .edit(let existingRecipe) = mode {
-                            apiDeleteManager.deleteRecipe(recipeId: existingRecipe) { result in
-                                switch result {
-                                    case .success:
-                                        deleteRecipeModal = false
-                                        isDeletedRecipe = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                            isDeletedRecipe = false
-                                            isUpdateRecipeSelected = false
-                                        }
-                                    case .failure(let error):
-                                        print("error deleting the recipe \(error.localizedDescription)")
+                            Task {
+                                do {
+                                    let _ = try await apiDeleteManager.deleteRecipe(recipeId: existingRecipe)
+                                    deleteRecipeModal = false
+                                    isDeletedRecipe = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        isDeletedRecipe = false
+                                        isUpdateRecipeSelected = false
+                                    }
+                                } catch {
+                                    print("Error deleting the recipe")
                                 }
                             }
                         }

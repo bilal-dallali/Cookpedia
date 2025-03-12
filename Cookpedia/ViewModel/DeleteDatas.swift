@@ -29,7 +29,6 @@ class APIDeleteRequest: ObservableObject {
         let (data, response) = try await networkService.request(request)
 
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            // ✅ First, check if there is an error message in the response
             if let jsonResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                let errorMessage = jsonResponse["error"] as? String {
                 throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: errorMessage])
@@ -49,34 +48,36 @@ class APIDeleteRequest: ObservableObject {
         }
     }
     
-    func deleteRecipe(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
-        
+    func deleteRecipe(recipeId: Int) async throws -> String {
         let endpoint = "/recipes/delete-recipe/\(recipeId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIDeleteError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                completion(.failure(APIDeleteError.invalidResponse))
-                return
-            }
-            
-            if let data = data, let message = String(data: data, encoding: .utf8) {
-                completion(.success(message))
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIDeleteError.invalidResponse
+        }
+        
+        switch httpResponse.statusCode {
+        case 200:
+            if let message = String(data: data, encoding: .utf8) {
+                return message
             } else {
-                completion(.failure(APIDeleteError.invalidResponse))
+                throw APIDeleteError.invalidResponse
             }
-        }.resume()
+        case 404:
+            throw APIDeleteError.userNotFound
+        case 500:
+            throw APIDeleteError.serverError
+        default:
+            throw APIDeleteError.invalidResponse
+        }
     }
     
     func deleteComment(commentId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -132,15 +133,21 @@ enum APIDeleteError: Error {
     case invalidUrl
     case invalidResponse
     case decodingError
+    case serverError
+    case userNotFound
     
     var localizedDescription: String {
         switch self {
-            case .invalidUrl:
-                return "Invalid URL"
-            case .invalidResponse:
-                return "Invalid response"
-            case .decodingError:
-                return "Decoding error"
+        case .invalidUrl:
+            return "Invalid URL"
+        case .invalidResponse:
+            return "Invalid response"
+        case .decodingError:
+            return "Decoding error"
+        case .serverError:
+            return "Server error"
+        case .userNotFound:
+            return "User not found"
         }
     }
 }
