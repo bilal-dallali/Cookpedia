@@ -427,21 +427,18 @@ struct MyProfilePageView: View {
                     
                     connectedUserId = userId
                     
-                    apiGetManager.getRecipesFromUserId(userId: userId) { result in
-                        switch result {
-                            case .success(let recipes):
-                                DispatchQueue.main.async {
-                                    self.recipes = recipes
-                                }
-                            case .failure(let error):
-                                print("Failed to fetch user recipes: \(error.localizedDescription)")
+                    Task {
+                        do {
+                            let recipes = try await apiGetManager.getRecipesFromUserId(userId: userId)
+                            self.recipes = recipes
+                        } catch {
+                            print("Error fetching recipes:")
                         }
                     }
                     
                     Task {
                         do {
                             let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                            print("User loaded: \(user)")
                             DispatchQueue.main.async {
                                 self.profilePictureUrl = user.profilePictureUrl ?? ""
                                 self.fullName = user.fullName

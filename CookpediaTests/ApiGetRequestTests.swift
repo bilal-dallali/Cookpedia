@@ -72,16 +72,13 @@ final class ApiGetRequestTests: XCTestCase {
     // Test Invalid Request (400)
     func testGetUserDataInvalidRequest() async throws {
         let jsonData = """
-            {
-                "error": "Invalid request"
-            }
-            """.data(using: .utf8)
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/profile/1")!,
-                                                       statusCode: 400,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/profile/1")!, statusCode: 400, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.getUserDataFromUserId(userId: -1)
