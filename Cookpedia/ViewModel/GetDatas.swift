@@ -26,7 +26,7 @@ class APIGetRequest: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw APIGetError.invalidResponse
@@ -849,6 +849,8 @@ enum APIGetError: Error {
     case invalidUrl
     case invalidResponse
     case decodingError
+    case serverError
+    case userNotFound
     
     var localizedDescription: String {
         switch self {
@@ -858,6 +860,10 @@ enum APIGetError: Error {
             return "Invalid response"
         case .decodingError:
             return "Decoding error"
+        case .serverError:
+            return "Server error"
+        case .userNotFound:
+            return "User not found"
         }
     }
 }
