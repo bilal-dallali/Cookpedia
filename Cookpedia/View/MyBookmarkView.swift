@@ -68,15 +68,12 @@ struct MyBookmarkView: View {
             
             let userId = currentUser.userId
             
-            apiGetManager.getSavedRecipes(userId: userId) { result in
-                switch result {
-                    case .success(let fetchedRecipes):
-                        DispatchQueue.main.async {
-                            // Update only with the fetched saved recipes
-                            self.recipes = fetchedRecipes
-                        }
-                    case .failure(let error):
-                        print("Error fetching saved recipes:", error.localizedDescription)
+            Task {
+                do {
+                    let fetchedRecipes = try await apiGetManager.getSavedRecipes(userId: userId)
+                    self.recipes = fetchedRecipes
+                } catch {
+                    print("Failed to fetch saved recipes")
                 }
             }
         }
@@ -87,15 +84,12 @@ struct MyBookmarkView: View {
             
             let userId = currentUser.userId
             
-            apiGetManager.getSavedRecipes(userId: userId) { result in
-                switch result {
-                    case .success(let fetchedRecipes):
-                        DispatchQueue.main.async {
-                            // Update only with the fetched saved recipes
-                            self.recipes = fetchedRecipes
-                        }
-                    case .failure(let error):
-                        print("Error fetching saved recipes:", error.localizedDescription)
+            Task {
+                do {
+                    let fetchedRecipes = try await apiGetManager.getSavedRecipes(userId: userId)
+                    self.recipes = fetchedRecipes
+                } catch {
+                    print("Failed to fetch saved recipes")
                 }
             }
         }

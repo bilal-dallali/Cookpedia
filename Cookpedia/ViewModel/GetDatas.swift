@@ -178,37 +178,30 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func getSavedRecipes(userId: Int, completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
+    func getSavedRecipes(userId: Int) async throws -> [RecipeTitleCoverUser] {
         let endpoint = "/recipes/bookmarked-recipes/\(userId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let savedRecipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
-                completion(.success(savedRecipes))
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let savedRecipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
+            return savedRecipes
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func getAllRecentRecipes(completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
