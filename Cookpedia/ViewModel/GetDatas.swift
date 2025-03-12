@@ -492,22 +492,22 @@ class APIGetRequest: ObservableObject {
         let endpoint = "/recipes/most-popular-recipes"
         
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response from server"])
+            throw APIGetError.invalidResponse
         }
         
         do {
             return try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
         } catch {
-            throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to decode response"])
+            throw APIGetError.decodingError
         }
     }
     
