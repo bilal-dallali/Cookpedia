@@ -494,24 +494,27 @@ struct RecipeDetailsView: View {
                                                             
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
-                                                            apiPostManager.postComment(comment: comment) { result in
-                                                                switch result {
-                                                                    case .success:
+                                                            Task {
+                                                                Task {
+                                                                    do {
+                                                                        let response = try await apiPostManager.postComment(comment: comment)
+                                                                        print("Commentaire posté : \(response)")
                                                                         commentText = ""
                                                                         withAnimation {
                                                                             proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
                                                                         }
                                                                         apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
                                                                             switch result {
-                                                                                case .success(let comments):
-                                                                                    self.comments = comments
-                                                                                case .failure(let error):
-                                                                                    print("error \(error.localizedDescription)")
+                                                                            case .success(let comments):
+                                                                                self.comments = comments
+                                                                            case .failure(let error):
+                                                                                print("error \(error.localizedDescription)")
                                                                             }
                                                                         }
                                                                         
-                                                                    case .failure(let error):
-                                                                        print("Failed to post comment\(error)")
+                                                                    } catch {
+                                                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -524,24 +527,27 @@ struct RecipeDetailsView: View {
                                                             
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
-                                                            apiPostManager.postComment(comment: comment) { result in
-                                                                switch result {
-                                                                    case .success:
+                                                            Task {
+                                                                Task {
+                                                                    do {
+                                                                        let response = try await apiPostManager.postComment(comment: comment)
+                                                                        print("Commentaire posté : \(response)")
                                                                         commentText = ""
                                                                         withAnimation {
                                                                             proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
                                                                         }
                                                                         apiGetManager.getCommentsOrderAsc(forRecipeId: recipeDetails.id) { result in
                                                                             switch result {
-                                                                                case .success(let comments):
-                                                                                    self.comments = comments
-                                                                                case .failure(let error):
-                                                                                    print("error \(error.localizedDescription)")
+                                                                            case .success(let comments):
+                                                                                self.comments = comments
+                                                                            case .failure(let error):
+                                                                                print("error \(error.localizedDescription)")
                                                                             }
                                                                         }
                                                                         
-                                                                    case .failure(let error):
-                                                                        print("Failed to post comment\(error)")
+                                                                    } catch {
+                                                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
+                                                                    }
                                                                 }
                                                             }
                                                         } label: {

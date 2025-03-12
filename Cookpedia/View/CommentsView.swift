@@ -222,40 +222,43 @@ struct CommentsView: View {
                                 
                                 let comment = CommentsPost(userId: userId, recipeId: recipeId, comment: commentText)
                                 
-                                apiPostManager.postComment(comment: comment) { result in
-                                    switch result {
-                                        case .success:
+                                Task {
+                                    Task {
+                                        do {
+                                            let response = try await apiPostManager.postComment(comment: comment)
+                                            print("Commentaire posté : \(response)")
                                             commentText = ""
-                                        if isTopSelected {
-                                            apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
-                                                switch result {
-                                                case .success(let comments):
-                                                    self.topComments = comments
-                                                case .failure(let error):
-                                                    print("error \(error.localizedDescription)")
+                                            if isTopSelected {
+                                                apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
+                                                    switch result {
+                                                    case .success(let comments):
+                                                        self.topComments = comments
+                                                    case .failure(let error):
+                                                        print("error \(error.localizedDescription)")
+                                                    }
+                                                }
+                                            } else if isNewestSelected {
+                                                apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
+                                                    switch result {
+                                                    case .success(let comments):
+                                                        self.newestComments = comments
+                                                    case .failure(let error):
+                                                        print("error \(error.localizedDescription)")
+                                                    }
+                                                }
+                                            } else if isOldestSelected {
+                                                apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
+                                                    switch result {
+                                                    case .success(let comments):
+                                                        self.oldestComments = comments
+                                                    case .failure(let error):
+                                                        print("error \(error.localizedDescription)")
+                                                    }
                                                 }
                                             }
-                                        } else if isNewestSelected {
-                                            apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
-                                                switch result {
-                                                case .success(let comments):
-                                                    self.newestComments = comments
-                                                case .failure(let error):
-                                                    print("error \(error.localizedDescription)")
-                                                }
-                                            }
-                                        } else if isOldestSelected {
-                                            apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
-                                                switch result {
-                                                case .success(let comments):
-                                                    self.oldestComments = comments
-                                                case .failure(let error):
-                                                    print("error \(error.localizedDescription)")
-                                                }
-                                            }
+                                        } catch {
+                                            print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                         }
-                                        case .failure(let error):
-                                            print("Failed to post comment\(error)")
                                     }
                                 }
                             }
@@ -268,40 +271,43 @@ struct CommentsView: View {
                                 
                                 let comment = CommentsPost(userId: userId, recipeId: recipeId, comment: commentText)
                                 
-                                apiPostManager.postComment(comment: comment) { result in
-                                    switch result {
-                                        case .success:
+                                Task {
+                                    Task {
+                                        do {
+                                            let response = try await apiPostManager.postComment(comment: comment)
+                                            print("Commentaire posté : \(response)")
                                             commentText = ""
-                                        if isTopSelected {
-                                            apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
-                                                switch result {
-                                                case .success(let comments):
-                                                    self.topComments = comments
-                                                case .failure(let error):
-                                                    print("error \(error.localizedDescription)")
+                                            if isTopSelected {
+                                                apiGetManager.getCommentsByLikes(forRecipeId: recipeId) { result in
+                                                    switch result {
+                                                    case .success(let comments):
+                                                        self.topComments = comments
+                                                    case .failure(let error):
+                                                        print("error \(error.localizedDescription)")
+                                                    }
+                                                }
+                                            } else if isNewestSelected {
+                                                apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
+                                                    switch result {
+                                                    case .success(let comments):
+                                                        self.newestComments = comments
+                                                    case .failure(let error):
+                                                        print("error \(error.localizedDescription)")
+                                                    }
+                                                }
+                                            } else if isOldestSelected {
+                                                apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
+                                                    switch result {
+                                                    case .success(let comments):
+                                                        self.oldestComments = comments
+                                                    case .failure(let error):
+                                                        print("error \(error.localizedDescription)")
+                                                    }
                                                 }
                                             }
-                                        } else if isNewestSelected {
-                                            apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
-                                                switch result {
-                                                case .success(let comments):
-                                                    self.newestComments = comments
-                                                case .failure(let error):
-                                                    print("error \(error.localizedDescription)")
-                                                }
-                                            }
-                                        } else if isOldestSelected {
-                                            apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId) { result in
-                                                switch result {
-                                                case .success(let comments):
-                                                    self.oldestComments = comments
-                                                case .failure(let error):
-                                                    print("error \(error.localizedDescription)")
-                                                }
-                                            }
+                                        } catch {
+                                            print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                         }
-                                        case .failure(let error):
-                                            print("Failed to post comment\(error)")
                                     }
                                 }
                             } label: {

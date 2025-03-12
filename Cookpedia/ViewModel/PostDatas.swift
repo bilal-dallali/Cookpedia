@@ -477,11 +477,11 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func postComment(comment: CommentsPost, completion: @escaping (Result<String, Error>) -> Void) {
+    func postComment(comment: CommentsPost) async throws -> String {
         let endpoint = "/comments/add-comment"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIPostError.invalidUrl))
-            return
+            throw APIPostError.invalidUrl
         }
         
         var request = URLRequest(url: url)
@@ -492,28 +492,31 @@ class APIPostRequest: ObservableObject {
             let requestBody = try JSONEncoder().encode(comment)
             request.httpBody = requestBody
         } catch {
-            completion(.failure(error))
-            return
+            throw APIPostError.invalidData
         }
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201,
-                  let data = data else {
-                completion(.failure(APIPostError.invalidResponse))
-                return
-            }
-            
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPostError.invalidResponse
+        }
+        
+        switch httpResponse.statusCode {
+        case 201:
             if let responseMessage = String(data: data, encoding: .utf8) {
-                completion(.success(responseMessage))
+                return responseMessage
             } else {
-                completion(.failure(APIPostError.decodingError))
+                throw APIPostError.decodingError
             }
-        }.resume()
+        case 400:
+            throw APIPostError.invalidData
+        case 404:
+            throw APIPostError.userNotFound
+        case 500:
+            throw APIPostError.serverError
+        default:
+            throw APIPostError.invalidResponse
+        }
     }
     
     func likeComment(userId: Int, commentId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
