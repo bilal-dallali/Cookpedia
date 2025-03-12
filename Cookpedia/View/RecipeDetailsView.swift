@@ -664,14 +664,14 @@ struct RecipeDetailsView: View {
                         
                         connectedUserId = userId
                         
-                        apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id) { result in
-                            switch result {
-                            case .success(let jsonResult):
-                                if jsonResult {
+                        Task {
+                            do {
+                                let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
+                                if isBookmarked {
                                     isBookmarkSelected = true
                                 }
-                            case .failure(let error):
-                                print("failure \(error.localizedDescription)")
+                            } catch {
+                                print("Error")
                             }
                         }
                         

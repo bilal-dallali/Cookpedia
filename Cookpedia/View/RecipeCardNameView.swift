@@ -117,14 +117,14 @@ struct RecipeCardNameView: View {
                 
                 let userId = currentUser.userId
                 
-                apiGetManager.getBookmark(userId: userId, recipeId: recipe.id) { result in
-                    switch result {
-                        case .success(let jsonResult):
-                            if jsonResult {
-                                isBookmarkSelected = true
-                            }
-                        case .failure(let error):
-                            print("failure \(error.localizedDescription)")
+                Task {
+                    do {
+                        let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipe.id)
+                        if isBookmarked {
+                            isBookmarkSelected = true
+                        }
+                    } catch {
+                        print("Error")
                     }
                 }
             }
@@ -135,14 +135,14 @@ struct RecipeCardNameView: View {
                 
                 let userId = currentUser.userId
                 
-                apiGetManager.getBookmark(userId: userId, recipeId: recipe.id) { result in
-                    switch result {
-                        case .success(let jsonResult):
-                            if jsonResult {
-                                isBookmarkSelected = true
-                            }
-                        case .failure(let error):
-                            print("failure \(error.localizedDescription)")
+                Task {
+                    do {
+                        let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipe.id)
+                        if isBookmarked {
+                            isBookmarkSelected = true
+                        }
+                    } catch {
+                        print("Error")
                     }
                 }
             }
