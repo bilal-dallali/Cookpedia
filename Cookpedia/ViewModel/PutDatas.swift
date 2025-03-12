@@ -42,21 +42,8 @@ class APIPutRequest: ObservableObject {
         }
         
         // Function to append image data
-//        func appendImage(_ image: UIImage?, withName name: String) {
-//            guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
-//            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-//            body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(name).jpg\"\r\n".data(using: .utf8)!)
-//            body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
-//            body.append(imageData)
-//            body.append("\r\n".data(using: .utf8)!)
-//        }
         func appendImage(_ image: UIImage?, withName name: String) {
-            guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else {
-                print("🚨 No image data found for \(name)")
-                return
-            }
-            print("✅ Appending image: \(name)")
-            
+            guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
             body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(name).jpg\"\r\n".data(using: .utf8)!)
             body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)

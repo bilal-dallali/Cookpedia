@@ -43,56 +43,22 @@ final class ApiPutRequestTests: XCTestCase {
         XCTAssertEqual(message, "Profile updated successfully", "Expected success message but got \(message)")
     }
     
-    // ✅ Test Profile Update with Image
-//    func testUpdateUserProfileWithImage() async throws {
-//        let jsonData = "Profile updated successfully".data(using: .utf8)
-//
-//        MockURLProtocol.mockResponseData = jsonData
-//        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/edit-profile/1")!,
-//                                                       statusCode: 200,
-//                                                       httpVersion: nil,
-//                                                       headerFields: nil)
-//
-//        // Create a dummy image
-//        let testImage = UIImage(systemName: "person.fill")!
-//
-//        let user = EditUser(id: 1, fullName: "John Doe", username: "john_doe", description: "Updated profile",
-//                            youtube: nil, facebook: nil, twitter: nil, instagram: nil, website: nil,
-//                            city: "New York", country: "USA", profilePictureUrl: nil)
-//
-//        let message = try await apiRequest.updateUserProfile(userId: 1, user: user, profilePicture: testImage)
-//
-//        XCTAssertEqual(message, "Profile updated successfully", "Expected success message but got \(message)")
-//        
-//        // ✅ Validate the request was sent with multipart form-data
-//        guard let request = MockURLProtocol.lastRequest else {
-//            XCTFail("Expected request but got nil")
-//            return
-//        }
-//
-//        XCTAssertEqual(request.httpMethod, "PUT", "Expected HTTP method PUT but got \(String(describing: request.httpMethod))")
-//        XCTAssertTrue(request.value(forHTTPHeaderField: "Content-Type")?.contains("multipart/form-data") ?? false,
-//                      "Expected multipart/form-data Content-Type but got \(String(describing: request.value(forHTTPHeaderField: "Content-Type")))")
-//        
-//        // ✅ Debugging: Print the request body
-//        if let requestBody = MockURLProtocol.lastRequestBody {
-//            print("Captured Request Body:\n", String(data: requestBody, encoding: .utf8) ?? "Invalid Body")
-//        } else {
-//            XCTFail("Request body is nil or could not be captured")
-//        }
-//
-//        // ✅ Validate the request body contains profile picture data
-//        guard let requestBody = MockURLProtocol.lastRequestBody else {
-//            XCTFail("Expected request body but got nil")
-//            return
-//        }
-//
-//        let requestString = String(data: requestBody, encoding: .utf8)
-//        
-//        XCTAssertNotNil(requestString, "Failed to convert request body to string")
-//        XCTAssertTrue(requestString!.contains("Content-Disposition: form-data; name=\"profilePicture\""),
-//                      "Profile picture field not found in request")
-//    }
+    // Test Profile Update with Image
+    func testUpdateUserProfileWithProfileImageSuccess() async throws {
+        let jsonData = "Profile updated successfully".data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/edit-profile/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let user = EditUser(id: 1, fullName: "John Doe", username: "john_doe", description: "Food Blogger", youtube: nil, facebook: nil, twitter: nil, instagram: nil, website: nil, city: "New York", country: "USA", profilePictureUrl: nil)
+        
+        // Create a dummy image for testing
+        let testImage = UIImage(systemName: "person.circle")!
+        
+        let message = try await apiRequest.updateUserProfile(userId: 1, user: user, profilePicture: testImage)
+        
+        XCTAssertEqual(message, "Profile updated successfully", "Expected success message but got \(message)")
+    }
     
     // Test Bad Request (400 - Throws `badRequest`)
     func testUpdateUserProfileBadRequest() async throws {
