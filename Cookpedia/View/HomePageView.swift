@@ -201,14 +201,12 @@ struct HomePageView: View {
                     }
                 }
                 
-                apiGetManager.getConnectedUserRecipesWithDetails(userId: userId) { result in
-                    DispatchQueue.main.async {
-                        switch result {
-                            case .success(let recipes):
-                                self.yourRecipes = recipes
-                            case .failure(let error):
-                                print("Failed to fetch user recipes: \(error.localizedDescription)")
-                        }
+                Task {
+                    do {
+                        let recipes = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
+                        self.yourRecipes = recipes
+                    } catch {
+                        print("Failed to fetch user recipes")
                     }
                 }
                 
@@ -237,14 +235,12 @@ struct HomePageView: View {
                     }
                 }
                 
-                apiGetManager.getConnectedUserRecipesWithDetails(userId: userId) { result in
-                    DispatchQueue.main.async {
-                        switch result {
-                            case .success(let recipes):
-                                self.yourRecipes = recipes
-                            case .failure(let error):
-                                print("Failed to fetch user recipes: \(error.localizedDescription)")
-                        }
+                Task {
+                    do {
+                        let recipes = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
+                        self.yourRecipes = recipes
+                    } catch {
+                        print("Failed to fetch user recipes")
                     }
                 }
                 

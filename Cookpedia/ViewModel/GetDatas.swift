@@ -214,7 +214,7 @@ class APIGetRequest: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw APIGetError.invalidResponse
@@ -229,37 +229,29 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func getConnectedUserRecipesWithDetails(userId: Int, completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {
+    func getConnectedUserRecipesWithDetails(userId: Int) async throws -> [RecipeTitleCoverUser] {
         let endpoint = "/recipes/user-recipes-with-details/\(userId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let recipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
-                completion(.success(recipes))
-            } catch {
-                completion(.failure(APIGetError.decodingError))
-            }
-        }.resume()
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode([RecipeTitleCoverUser].self, from: data)
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func getRecipeDetails(recipeId: Int, completion: @escaping (Result<RecipeDetails, Error>) -> Void) {
