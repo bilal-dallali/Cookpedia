@@ -55,10 +55,7 @@ final class ApiGetRequestTests: XCTestCase {
             """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/profile/1")!,
-                                                       statusCode: 200,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/profile/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         let user = try await apiRequest.getUserDataFromUserId(userId: 1)
         
@@ -199,7 +196,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Bookmark Exists (User has bookmarked the recipe)
+    // Test Bookmark Exists (User has bookmarked the recipe)
     func testGetBookmarkExists() async throws {
         let jsonData = """
             [
@@ -211,38 +208,29 @@ final class ApiGetRequestTests: XCTestCase {
             """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!,
-                                                       statusCode: 200,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         let isBookmarked = try await apiRequest.getBookmark(userId: 1, recipeId: 101)
         
         XCTAssertTrue(isBookmarked, "Expected recipe to be bookmarked but got false")
     }
     
-    // ✅ Test Bookmark Does Not Exist (User has not bookmarked the recipe)
+    // Test Bookmark Does Not Exist (User has not bookmarked the recipe)
     func testGetBookmarkNotExists() async throws {
         let jsonData = "[]".data(using: .utf8)
         
         MockURLProtocol.mockResponseData = jsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!,
-                                                       statusCode: 200,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         let isBookmarked = try await apiRequest.getBookmark(userId: 1, recipeId: 101)
         
         XCTAssertFalse(isBookmarked, "Expected recipe to not be bookmarked but got true")
     }
     
-    // 🚨 Test Invalid Response (Non-200 Status Code)
+    // Test Invalid Response (Non-200 Status Code)
     func testGetBookmarkInvalidResponse() async throws {
         MockURLProtocol.mockResponseData = nil
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!,
-                                                       statusCode: 500,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!, statusCode: 500, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.getBookmark(userId: 1, recipeId: 101)
@@ -252,7 +240,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Decoding Error
+    // Test Decoding Error
     func testGetBookmarkDecodingError() async throws {
         let invalidJsonData = """
             {
@@ -261,13 +249,82 @@ final class ApiGetRequestTests: XCTestCase {
             """.data(using: .utf8)
         
         MockURLProtocol.mockResponseData = invalidJsonData
-        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!,
-                                                       statusCode: 200,
-                                                       httpVersion: nil,
-                                                       headerFields: nil)
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/bookmark/1/101")!, statusCode: 200, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.getBookmark(userId: 1, recipeId: 101)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
+    
+    // Test Fetch Published Recipes Success (200)
+    func testGetPublishedRecipesFromUserIdSuccess() async throws {
+        let jsonData = """
+            [
+                {
+                    "id": 1,
+                    "title": "Pasta Carbonara",
+                    "recipeCoverPictureUrl1": "https://example.com/recipe1.jpg"
+                },
+                {
+                    "id": 2,
+                    "title": "Chicken Alfredo",
+                    "recipeCoverPictureUrl1": "https://example.com/recipe2.jpg"
+                }
+            ]
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/fetch-user-published-recipes/1/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let recipes = try await apiRequest.getPublishedRecipesFromUserId(userId: 1, published: true)
+        
+        XCTAssertEqual(recipes.count, 2)
+        XCTAssertEqual(recipes[0].id, 1)
+        XCTAssertEqual(recipes[0].title, "Pasta Carbonara")
+        XCTAssertEqual(recipes[0].recipeCoverPictureUrl1, "https://example.com/recipe1.jpg")
+    }
+    
+    // Test No Published Recipes (200 - Empty Array)
+    func testGetPublishedRecipesFromUserIdEmpty() async throws {
+        let jsonData = "[]".data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/fetch-user-published-recipes/1/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let recipes = try await apiRequest.getPublishedRecipesFromUserId(userId: 1, published: true)
+        
+        XCTAssertEqual(recipes.count, 0, "Expected empty array but got non-empty result")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetPublishedRecipesFromUserIdInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/fetch-user-published-recipes/1/1")!,statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getPublishedRecipesFromUserId(userId: 1, published: true)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetPublishedRecipesFromUserIdDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/fetch-user-published-recipes/1/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getPublishedRecipesFromUserId(userId: 1, published: true)
             XCTFail("Expected APIGetError.decodingError but got success")
         } catch let error as APIGetError {
             XCTAssertEqual(error, APIGetError.decodingError)
