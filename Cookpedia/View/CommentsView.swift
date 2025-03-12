@@ -113,7 +113,6 @@ struct CommentsView: View {
                                 }
                         }
                     }
-
                 }
                 .padding(.top, 0)
                 if isTopSelected {
@@ -126,16 +125,6 @@ struct CommentsView: View {
                     }
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
-                    .onAppear {
-                        Task {
-                            do {
-                                let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                                self.topComments = comments
-                            } catch {
-                                print("Cannot fetch comments with most likes")
-                            }
-                        }
-                    }
                 } else if isNewestSelected {
                     ScrollView {
                         VStack(spacing: 24) {
@@ -146,16 +135,6 @@ struct CommentsView: View {
                     }
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
-                    .onAppear {
-                        Task {
-                            do {
-                                let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                                self.newestComments = comments
-                            } catch {
-                                print("Error fetching comments")
-                            }
-                        }
-                    }
                 } else if isOldestSelected {
                     ScrollView {
                         VStack(spacing: 24) {
@@ -166,16 +145,6 @@ struct CommentsView: View {
                     }
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
-                    .onAppear {
-                        Task {
-                            do {
-                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                self.oldestComments = comments
-                            } catch {
-                                print("Failed to fetch comments")
-                            }
-                        }
-                    }
                 }
             }
             .padding(.horizontal, 24)
@@ -223,42 +192,36 @@ struct CommentsView: View {
                                 let comment = CommentsPost(userId: userId, recipeId: recipeId, comment: commentText)
                                 
                                 Task {
-                                    Task {
-                                        do {
-                                            let response = try await apiPostManager.postComment(comment: comment)
-                                            print("Commentaire posté : \(response)")
-                                            commentText = ""
-                                            if isTopSelected {
-                                                Task {
-                                                    do {
-                                                        let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                                                        self.topComments = comments
-                                                    } catch {
-                                                        print("Cannot fetch comments with most likes")
-                                                    }
-                                                }
-                                            } else if isNewestSelected {
-                                                Task {
-                                                    do {
-                                                        let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                                                        self.newestComments = comments
-                                                    } catch {
-                                                        print("Error fetching comments")
-                                                    }
-                                                }
-                                            } else if isOldestSelected {
-                                                Task {
-                                                    do {
-                                                        let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                                        self.oldestComments = comments
-                                                    } catch {
-                                                        print("Failed to fetch comments")
-                                                    }
-                                                }
+                                    do {
+                                        let response = try await apiPostManager.postComment(comment: comment)
+                                        commentText = ""
+                                        Task {
+                                            do {
+                                                let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                                                self.topComments = comments
+                                            } catch {
+                                                print("Cannot fetch comments with most likes")
                                             }
-                                        } catch {
-                                            print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                         }
+                                        Task {
+                                            do {
+                                                let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                                                self.newestComments = comments
+                                            } catch {
+                                                print("Error fetching comments")
+                                            }
+                                        }
+                                        Task {
+                                            do {
+                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
+                                                self.oldestComments = comments
+                                            } catch {
+                                                print("Failed to fetch comments")
+                                            }
+                                        }
+                                        
+                                    } catch {
+                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                     }
                                 }
                             }
@@ -272,42 +235,38 @@ struct CommentsView: View {
                                 let comment = CommentsPost(userId: userId, recipeId: recipeId, comment: commentText)
                                 
                                 Task {
-                                    Task {
-                                        do {
-                                            let response = try await apiPostManager.postComment(comment: comment)
-                                            print("Commentaire posté : \(response)")
-                                            commentText = ""
-                                            if isTopSelected {
-                                                Task {
-                                                    do {
-                                                        let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                                                        self.topComments = comments
-                                                    } catch {
-                                                        print("Cannot fetch comments with most likes")
-                                                    }
-                                                }
-                                            } else if isNewestSelected {
-                                                Task {
-                                                    do {
-                                                        let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                                                        self.newestComments = comments
-                                                    } catch {
-                                                        print("Error fetching comments")
-                                                    }
-                                                }
-                                            } else if isOldestSelected {
-                                                Task {
-                                                    do {
-                                                        let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                                        self.oldestComments = comments
-                                                    } catch {
-                                                        print("Failed to fetch comments")
-                                                    }
-                                                }
+                                    do {
+                                        let response = try await apiPostManager.postComment(comment: comment)
+                                        commentText = ""
+                                        
+                                        Task {
+                                            do {
+                                                let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                                                self.topComments = comments
+                                            } catch {
+                                                print("Cannot fetch comments with most likes")
                                             }
-                                        } catch {
-                                            print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                         }
+                                        
+                                        Task {
+                                            do {
+                                                let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                                                self.newestComments = comments
+                                            } catch {
+                                                print("Error fetching comments")
+                                            }
+                                        }
+                                        
+                                        Task {
+                                            do {
+                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
+                                                self.oldestComments = comments
+                                            } catch {
+                                                print("Failed to fetch comments")
+                                            }
+                                        }
+                                    } catch {
+                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                     }
                                 }
                             } label: {
@@ -372,7 +331,6 @@ struct CommentsView: View {
             Task {
                 do {
                     let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                    print("User loaded: \(user)")
                     DispatchQueue.main.async {
                         self.profilePictureUrl = user.profilePictureUrl ?? ""
                     }
@@ -380,8 +338,16 @@ struct CommentsView: View {
                     print("Erreur de chargement de l'utilisateur: \(error)")
                 }
             }
-        }
-        .onChange(of: refreshComment) {
+            
+            Task {
+                do {
+                    let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                    self.topComments = comments
+                } catch {
+                    print("Cannot fetch comments with most likes")
+                }
+            }
+            
             Task {
                 do {
                     let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
@@ -397,15 +363,6 @@ struct CommentsView: View {
                     self.newestComments = comments
                 } catch {
                     print("Error fetching comments")
-                }
-            }
-            
-            Task {
-                do {
-                    let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                    self.topComments = comments
-                } catch {
-                    print("Cannot fetch comments with most likes")
                 }
             }
         }
