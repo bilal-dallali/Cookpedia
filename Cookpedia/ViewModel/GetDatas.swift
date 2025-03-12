@@ -511,35 +511,27 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func getUsersByRecipeViews(completion: @escaping (Result<[UserDetails], Error>) -> Void) {
+    func getUsersByRecipeViews() async throws -> [UserDetails] {
         let endpoint = "/users/recipe-views"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
-                return
-            }
-            
-            do {
-                let users = try JSONDecoder().decode([UserDetails].self, from: data)
-                completion(.success(users))
-            } catch {
-                completion(.failure(error))
-            }
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
         }
-        task.resume()
+        
+        do {
+            return try JSONDecoder().decode([UserDetails].self, from: data)
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func getRecommendations(completion: @escaping (Result<[RecipeTitleCoverUser], Error>) -> Void) {

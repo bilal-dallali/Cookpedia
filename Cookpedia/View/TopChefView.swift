@@ -57,14 +57,14 @@ struct TopChefView: View {
             }
         }
         .onAppear {
-            apiGetManager.getUsersByRecipeViews { result in
-                switch result {
-                    case .success(let users):
+            Task {
+                do {
+                    let users = try await apiGetManager.getUsersByRecipeViews()
                     DispatchQueue.main.async {
                         self.mostPopularUsers = users
                     }
-                    case .failure(let failure):
-                        print("failure \(failure)")
+                } catch {
+                    print("Failed to load users by recipe views")
                 }
             }
         }
