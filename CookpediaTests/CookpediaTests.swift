@@ -552,7 +552,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Follow User Success (201)
+    // Test Follow User Success (201)
     func testFollowUserSuccess() async throws {
         let jsonData = """
         {
@@ -568,7 +568,7 @@ final class APIPostRequestTests: XCTestCase {
         XCTAssertEqual(result, "Successfully followed user")
     }
     
-    // 🚨 Test Invalid Request (400)
+    // Test Invalid Request (400)
     func testFollowUserInvalidRequest() async throws {
         let jsonData = """
         {
@@ -587,7 +587,7 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test User Not Found (404)
+    // Test User Not Found (404)
     func testFollowUserNotFound() async throws {
         let jsonData = """
         {
@@ -606,13 +606,77 @@ final class APIPostRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Server Error (500)
+    // Test Server Error (500)
     func testFollowUserServerError() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/follow")!, statusCode: 500, httpVersion: nil, headerFields: nil)
         
         do {
             _ = try await apiRequest.followUser(followerId: 1, followedId: 2)
+            XCTFail("Expected APIPostError.serverError but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.serverError)
+        }
+    }
+    
+    // Test Increment Views Success (200)
+    func testIncrementViewsSuccess() async throws {
+        let responseMessage = "View count updated successfully"
+        let jsonData = responseMessage.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-views/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let result = try await apiRequest.incrementViews(recipeId: 1)
+        
+        XCTAssertEqual(result, "View count updated successfully")
+    }
+    
+    // Test Invalid Request (400)
+    func testIncrementViewsInvalidRequest() async throws {
+        let jsonData = """
+        {
+            "error": "Invalid request"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-views/1")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.incrementViews(recipeId: -1)
+            XCTFail("Expected APIPostError.invalidData but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.invalidData)
+        }
+    }
+    
+    // Test Recipe Not Found (404)
+    func testIncrementViewsRecipeNotFound() async throws {
+        let jsonData = """
+        {
+            "error": "Recipe not found"
+        }
+        """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-views/999")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.incrementViews(recipeId: 999)
+            XCTFail("Expected APIPostError.userNotFound but got success")
+        } catch let error as APIPostError {
+            XCTAssertEqual(error, APIPostError.userNotFound)
+        }
+    }
+    
+    // Test Server Error (500)
+    func testIncrementViewsServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/increment-views/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.incrementViews(recipeId: 1)
             XCTFail("Expected APIPostError.serverError but got success")
         } catch let error as APIPostError {
             XCTAssertEqual(error, APIPostError.serverError)

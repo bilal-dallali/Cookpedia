@@ -208,14 +208,6 @@ struct RecipeDetailsView: View {
                                                                 }
                                                             }
                                                         } else if following == false {
-//                                                            apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId) { result in
-//                                                                switch result {
-//                                                                    case .success:
-//                                                                        following = true
-//                                                                    case .failure(let error):
-//                                                                        print("Failed to follow user : \(error.localizedDescription)")
-//                                                                }
-//                                                            }
                                                             Task {
                                                                 do {
                                                                     let message = try await apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId)
@@ -721,12 +713,12 @@ struct RecipeDetailsView: View {
                             }
                         }
                         
-                        apiPostManager.incrementViews(recipeId: recipeId) { result in
-                            switch result {
-                                case .success:
-                                    print("increment views")
-                                case .failure(let error):
-                                    print("Failed to increment views: \(error.localizedDescription)")
+                        Task {
+                            do {
+                                let message = try await apiPostManager.incrementViews(recipeId: recipeId)
+                                print("Increment views:\(message)")
+                            } catch {
+                                print("❌ Error incrementing views: \(error.localizedDescription)")
                             }
                         }
                     }

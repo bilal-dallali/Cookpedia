@@ -443,34 +443,38 @@ class APIPostRequest: ObservableObject {
         }
     }
     
-    func incrementViews(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+    func incrementViews(recipeId: Int) async throws -> String {
         let endpoint = "/recipes/increment-views/\(recipeId)"
         
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIPostError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            if let data = data, let message = String(data: data, encoding: .utf8) {
-                completion(.success(message))
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPostError.invalidResponse
+        }
+        
+        switch httpResponse.statusCode {
+        case 200:
+            if let message = String(data: data, encoding: .utf8) {
+                return message
             } else {
-                completion(.failure(APIGetError.invalidResponse))
+                throw APIPostError.invalidData
             }
-        }.resume()
+        case 400:
+            throw APIPostError.invalidData
+        case 404:
+            throw APIPostError.userNotFound
+        case 500:
+            throw APIPostError.serverError
+        default:
+            throw APIPostError.invalidResponse
+        }
     }
     
     func postComment(comment: CommentsPost, completion: @escaping (Result<String, Error>) -> Void) {
