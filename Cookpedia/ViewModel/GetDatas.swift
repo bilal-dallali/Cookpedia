@@ -76,7 +76,7 @@ class APIGetRequest: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw APIGetError.invalidResponse
@@ -85,44 +85,40 @@ class APIGetRequest: ObservableObject {
         do {
             let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]]
             
-            return jsonResult?.isEmpty == false
+            guard let json = jsonResult else {
+                throw APIGetError.decodingError
+            }
+            
+            return !json.isEmpty
         } catch {
             throw APIGetError.decodingError
         }
     }
     
-    func getPublishedRecipesFromUserId(userId: Int, published: Bool, completion: @escaping (Result<[RecipeTitleCover], Error>) -> Void) {
+    func getPublishedRecipesFromUserId(userId: Int, published: Bool) async throws -> [RecipeTitleCover] {
         let publishedValue = published ? 1 : 0
         let endpoint = "/recipes/fetch-user-published-recipes/\(userId)/\(publishedValue)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let recipes = try decoder.decode([RecipeTitleCover].self, from: data)
-                completion(.success(recipes))
-            } catch {
-                completion(.failure(APIGetError.decodingError))
-            }
-        }.resume()
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode([RecipeTitleCover].self, from: data)
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func getPublishedRecipesCount(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {

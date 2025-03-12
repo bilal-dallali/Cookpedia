@@ -454,16 +454,12 @@ struct ProfilePageView: View {
                     }
                 }
                 
-                apiGetManager.getPublishedRecipesFromUserId(userId: userId, published: true) { result in
-                    switch result {
-                        case .success(let recipes):
-                            DispatchQueue.main.async {
-                                self.publishedRecipes = recipes
-                            }
-                        case .failure(let error):
-                            DispatchQueue.main.async {
-                                print("Error fetching recipes:", error.localizedDescription)
-                            }
+                Task {
+                    do {
+                        let recipes = try await apiGetManager.getPublishedRecipesFromUserId(userId: userId, published: true)
+                        self.publishedRecipes = recipes
+                    } catch {
+                        print("Error fatching recipes")
                     }
                 }
                 
