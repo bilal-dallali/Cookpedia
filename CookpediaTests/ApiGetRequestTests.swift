@@ -107,7 +107,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Server Error (500)
+    // Test Server Error (500)
     func testGetUserDataServerError() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/users/profile/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
@@ -120,7 +120,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Decoding Error (Invalid JSON Response)
+    // Test Decoding Error (Invalid JSON Response)
     func testGetUserDataDecodingError() async throws {
         let invalidJsonData = """
         {
@@ -133,6 +133,66 @@ final class ApiGetRequestTests: XCTestCase {
         
         do {
             _ = try await apiRequest.getUserDataFromUserId(userId: 1)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
+    
+    // Test Fetch Recipes Success (200)
+    func testGetRecipesFromUserIdSuccess() async throws {
+        let jsonData = """
+            [
+                {
+                    "id": 1,
+                    "title": "Pasta Carbonara",
+                    "recipeCoverPictureUrl1": "https://example.com/recipe1.jpg"
+                },
+                {
+                    "id": 2,
+                    "title": "Chicken Alfredo",
+                    "recipeCoverPictureUrl1": "https://example.com/recipe2.jpg"
+                }
+            ]
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/fetch-all-recipes-from-user/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let recipes = try await apiRequest.getRecipesFromUserId(userId: 1)
+        
+        XCTAssertEqual(recipes.count, 2)
+        XCTAssertEqual(recipes[0].id, 1)
+        XCTAssertEqual(recipes[0].title, "Pasta Carbonara")
+        XCTAssertEqual(recipes[0].recipeCoverPictureUrl1, "https://example.com/recipe1.jpg")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetRecipesFromUserIdInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/fetch-all-recipes-from-user/1")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getRecipesFromUserId(userId: 1)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetRecipesFromUserIdDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/fetch-all-recipes-from-user/1")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getRecipesFromUserId(userId: 1)
             XCTFail("Expected APIGetError.decodingError but got success")
         } catch let error as APIGetError {
             XCTAssertEqual(error, APIGetError.decodingError)
