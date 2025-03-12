@@ -761,25 +761,25 @@ struct CreateRecipeView: View {
                     }
                     .onAppear {
                         if case .edit(let existingRecipe) = mode {
-                            apiGetManager.getRecipeDetails(recipeId: existingRecipe) { result in
-                                DispatchQueue.main.async {
-                                    switch result {
-                                        case .success(let details):
-                                            self.recipeCoverPictureUrl1 = details.recipeCoverPictureUrl1
-                                            self.recipeCoverPictureUrl2 = details.recipeCoverPictureUrl2
-                                            self.title = details.title
-                                            self.description = details.description
-                                            self.cookTime = details.cookTime
-                                            self.serves = details.serves
-                                            self.origin = details.origin
-                                            self.ingredients = details.ingredients.map { $0.ingredient }
-                                            self.instructions = details.instructions.map {
-                                                Instruction(text: $0.instruction, instructionPictureUrl1: $0.instructionPictureUrl1, instructionPictureUrl2: $0.instructionPictureUrl2, instructionPictureUrl3: $0.instructionPictureUrl3)
-                                            }
-                                            self.loadInstructionImages(from: self.instructions)
-                                        case .failure(let error):
-                                            print("error \(error.localizedDescription)")
+                            Task {
+                                do {
+                                    let details = try await apiGetManager.getRecipeDetails(recipeId: existingRecipe)
+                                    DispatchQueue.main.async {
+                                        self.recipeCoverPictureUrl1 = details.recipeCoverPictureUrl1
+                                        self.recipeCoverPictureUrl2 = details.recipeCoverPictureUrl2
+                                        self.title = details.title
+                                        self.description = details.description
+                                        self.cookTime = details.cookTime
+                                        self.serves = details.serves
+                                        self.origin = details.origin
+                                        self.ingredients = details.ingredients.map { $0.ingredient }
+                                        self.instructions = details.instructions.map {
+                                            Instruction(text: $0.instruction, instructionPictureUrl1: $0.instructionPictureUrl1, instructionPictureUrl2: $0.instructionPictureUrl2, instructionPictureUrl3: $0.instructionPictureUrl3)
+                                        }
+                                        self.loadInstructionImages(from: self.instructions)
                                     }
+                                } catch {
+                                    print("Failure")
                                 }
                             }
                         }

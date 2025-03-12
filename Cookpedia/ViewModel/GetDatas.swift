@@ -254,36 +254,29 @@ class APIGetRequest: ObservableObject {
         }
     }
     
-    func getRecipeDetails(recipeId: Int, completion: @escaping (Result<RecipeDetails, Error>) -> Void) {
+    func getRecipeDetails(recipeId: Int) async throws -> RecipeDetails {
         let endpoint = "/recipes/recipe-details/\(recipeId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
+            throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(APIGetError.invalidResponse))
-                return
-            }
-            
-            do {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                let recipeDetails = try decoder.decode(RecipeDetails.self, from: data)
-                completion(.success(recipeDetails))
-            } catch {
-                completion(.failure(APIGetError.invalidResponse))
-            }
-        }.resume()
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode(RecipeDetails.self, from: data)
+        } catch {
+            throw APIGetError.decodingError
+        }
     }
     
     func isFollowing(followerId: Int, followedId: Int, completion: @escaping (Result<Bool, Error>) -> Void) {

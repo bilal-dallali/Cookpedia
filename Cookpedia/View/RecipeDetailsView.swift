@@ -675,12 +675,11 @@ struct RecipeDetailsView: View {
                             }
                         }
                         
-                        apiGetManager.getRecipeDetails(recipeId: recipeId) { result in
-                            DispatchQueue.main.async {
-                                switch result {
-                                case .success(let details):
+                        Task {
+                            do {
+                                let details = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
+                                DispatchQueue.main.async {
                                     self.recipeDetails = details
-                                    
                                     apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId) { result in
                                         switch result {
                                         case .success(let isFollowing):
@@ -714,9 +713,9 @@ struct RecipeDetailsView: View {
                                             print("error \(error.localizedDescription)")
                                         }
                                     }
-                                case .failure(let error):
-                                    print("error \(error.localizedDescription)")
                                 }
+                            } catch {
+                                print("Failure")
                             }
                         }
                         
