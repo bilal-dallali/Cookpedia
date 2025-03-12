@@ -252,12 +252,14 @@ struct DiscoverPageView: View {
                     }
                 }
                 
-                apiGetManager.getMostSearchesRecipes { result in
-                    switch result {
-                        case .success(let recipes):
+                Task {
+                    do {
+                        let recipes = try await apiGetManager.getMostSearchesRecipes()
+                        DispatchQueue.main.async {
                             self.mostSearchedRecipes = recipes
-                        case .failure(let failure):
-                            print("failure \(failure)")
+                        }
+                    } catch {
+                        print("Failed to display most searched recipes")
                     }
                 }
                 

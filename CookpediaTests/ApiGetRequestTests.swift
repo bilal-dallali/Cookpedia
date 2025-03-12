@@ -1608,4 +1608,84 @@ final class ApiGetRequestTests: XCTestCase {
             XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
+    
+    // Test Fetch Most Searched Recipes Success (200)
+    func testGetMostSearchesRecipesSuccess() async throws {
+        let jsonData = """
+            [
+                {
+                    "id": 1,
+                    "userId": 2,
+                    "title": "Avocado Salad",
+                    "recipeCoverPictureUrl1": "https://example.com/recipe1.jpg",
+                    "fullName": "John Doe",
+                    "profilePictureUrl": "https://example.com/profile1.jpg"
+                },
+                {
+                    "id": 2,
+                    "userId": 3,
+                    "title": "Chocolate Brownies",
+                    "recipeCoverPictureUrl1": "https://example.com/recipe2.jpg",
+                    "fullName": "Jane Smith",
+                    "profilePictureUrl": "https://example.com/profile2.jpg"
+                }
+            ]
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/most-searches-recipes")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let recipes = try await apiRequest.getMostSearchesRecipes()
+        
+        XCTAssertEqual(recipes.count, 2)
+        XCTAssertEqual(recipes[0].id, 1)
+        XCTAssertEqual(recipes[0].title, "Avocado Salad")
+        XCTAssertEqual(recipes[0].recipeCoverPictureUrl1, "https://example.com/recipe1.jpg")
+        XCTAssertEqual(recipes[0].fullName, "John Doe")
+        XCTAssertEqual(recipes[0].profilePictureUrl, "https://example.com/profile1.jpg")
+    }
+    
+    // Test No Most Searched Recipes (200 - Empty Array)
+    func testGetMostSearchesRecipesEmpty() async throws {
+        let jsonData = "[]".data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/most-searches-recipes")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let recipes = try await apiRequest.getMostSearchesRecipes()
+        
+        XCTAssertEqual(recipes.count, 0, "Expected empty array but got non-empty result")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetMostSearchesRecipesInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/most-searches-recipes")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getMostSearchesRecipes()
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetMostSearchesRecipesDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/most-searches-recipes")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getMostSearchesRecipes()
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
 }
