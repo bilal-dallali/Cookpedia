@@ -241,12 +241,14 @@ struct DiscoverPageView: View {
                     }
                 }
                 
-                apiGetManager.getRecommendations { result in
-                    switch result {
-                        case .success(let recipes):
+                Task {
+                    do {
+                        let recipes = try await apiGetManager.getRecommendations()
+                        DispatchQueue.main.async {
                             self.recommendationsRecipes = recipes
-                        case .failure(let failure):
-                            print("failure \(failure)")
+                        }
+                    } catch {
+                        print("Failed to load recommendations")
                     }
                 }
                 
@@ -262,9 +264,11 @@ struct DiscoverPageView: View {
                 Task {
                     do {
                         let recipe = try await apiGetManager.getAllRecentRecipes()
-                        self.recentRecipes = recipe
+                        DispatchQueue.main.async {
+                            self.recentRecipes = recipe
+                        }
                     } catch {
-                        print("Failure")
+                        print("Failed to load recent recipes")
                     }
                 }
             }

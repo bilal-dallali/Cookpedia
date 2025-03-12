@@ -58,14 +58,17 @@ struct OurRecommendationsView: View {
             }
         }
         .onAppear {
-            apiGetManager.getRecommendations { result in
-                switch result {
-                    case .success(let recipes):
+            Task {
+                do {
+                    let recipes = try await apiGetManager.getRecommendations()
+                    DispatchQueue.main.async {
                         self.recommendationsRecipes = recipes
-                    case .failure(let failure):
-                        print("failure \(failure)")
+                    }
+                } catch {
+                    print("Failed to load recommendations")
                 }
             }
+
         }
     }
 }
