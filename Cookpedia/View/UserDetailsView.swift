@@ -54,27 +54,21 @@ struct UserDetailsView: View {
                     let userId = currentUser.userId
                     
                     if following == true {
-                        apiDeleteManager.unfollowUser(followerId: userId, followedId: user.id) { result in
-                            switch result {
-                                case .success:
+                        Task {
+                            do {
+                                let message = try await apiDeleteManager.unfollowUser(followerId: userId, followedId: user.id)
+                                DispatchQueue.main.async {
                                     following = false
-                                case .failure(let error):
-                                    print("Failed to unfollow user: \(error.localizedDescription)")
+                                }
                             }
                         }
                     } else if following == false {
-//                        apiPostManager.followUser(followerId: userId, followedId: user.id) { result in
-//                            switch result {
-//                                case .success:
-//                                    following = true
-//                                case .failure(let error):
-//                                    print("Failed to follow user : \(error.localizedDescription)")
-//                            }
-//                        }
                         Task {
                             do {
                                 let message = try await apiPostManager.followUser(followerId: userId, followedId: user.id)
-                                following = true
+                                DispatchQueue.main.async {
+                                    following = true
+                                }
                             } catch let error {
                                 print("Failed to follow user : \(error.localizedDescription)")
                             }

@@ -9,41 +9,44 @@ import Foundation
 
 class APIDeleteRequest: ObservableObject {
     
-    func unfollowUser(followerId: Int, followedId: Int, completion: @escaping (Result<String, Error>) -> Void) {
+    private let networkService: NetworkService
+    
+    // Dependency Injection
+    init(networkService: NetworkService = URLSession.shared) {
+        self.networkService = networkService
+    }
+    
+    func unfollowUser(followerId: Int, followedId: Int) async throws -> String {
         let endpoint = "/users/unfollow/\(followerId)/\(followedId)"
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIGetError.invalidUrl))
-            return
-        }
         
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            throw APIDeleteError.invalidUrl
+        }
+
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
+
+        let (data, response) = try await networkService.request(request)
+
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            // ✅ First, check if there is an error message in the response
+            if let jsonResponse = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let errorMessage = jsonResponse["error"] as? String {
+                throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: errorMessage])
             }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200,
-                  let data = data else {
-                completion(.failure(APIDeleteError.invalidResponse))
-                return
+            throw APIDeleteError.invalidResponse
+        }
+
+        do {
+            if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let message = jsonResponse["message"] as? String {
+                return message
+            } else {
+                throw APIDeleteError.invalidResponse
             }
-            
-            do {
-                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                if let message = jsonResponse?["message"] as? String {
-                    completion(.success(message))
-                } else if let error = jsonResponse?["error"] as? String {
-                    completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: error])))
-                } else {
-                    completion(.failure(APIDeleteError.invalidResponse))
-                }
-            } catch {
-                completion(.failure(error))
-            }
-        }.resume()
+        } catch {
+            throw APIDeleteError.decodingError
+        }
     }
     
     func deleteRecipe(recipeId: Int, completion: @escaping (Result<String, Error>) -> Void) {

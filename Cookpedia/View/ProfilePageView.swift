@@ -81,20 +81,23 @@ struct ProfilePageView: View {
                                     let connectedUserId = currentUser.userId
                                     
                                     if following == true {
-                                        apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId) { result in
-                                            switch result {
-                                                case .success:
+                                        Task {
+                                            do {
+                                                let message = try await apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId)
+                                                DispatchQueue.main.async {
                                                     following = false
-                                                case .failure(let error):
-                                                    print("Failed to unfollow user: \(error.localizedDescription)")
+                                                }
+                                            } catch {
+                                                print("Failed to unfollow user")
                                             }
                                         }
                                     } else if following == false {
                                         Task {
                                             do {
                                                 let message = try await apiPostManager.followUser(followerId: connectedUserId, followedId: userId)
-                                                following = true
-                                                
+                                                DispatchQueue.main.async {
+                                                    following = true
+                                                }
                                             } catch {
                                                 print("Failed to follow user")
                                             }

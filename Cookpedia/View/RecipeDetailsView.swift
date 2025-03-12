@@ -199,19 +199,23 @@ struct RecipeDetailsView: View {
                                                         let userId = currentUser.userId
                                                         
                                                         if following == true {
-                                                            apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId) { result in
-                                                                switch result {
-                                                                case .success:
-                                                                    following = false
-                                                                case .failure(let error):
-                                                                    print("Failed to unfollow user: \(error.localizedDescription)")
+                                                            Task {
+                                                                do {
+                                                                    _ = try await apiDeleteManager.unfollowUser(followerId: userId, followedId: recipeDetails.userId)
+                                                                    DispatchQueue.main.async {
+                                                                        following = false
+                                                                    }
+                                                                } catch {
+                                                                    print("Failed to unfollow user")
                                                                 }
                                                             }
                                                         } else if following == false {
                                                             Task {
                                                                 do {
-                                                                    let message = try await apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId)
-                                                                    following = true
+                                                                    _ = try await apiPostManager.followUser(followerId: userId, followedId: recipeDetails.userId)
+                                                                    DispatchQueue.main.async {
+                                                                        following = true
+                                                                    }
                                                                     
                                                                 } catch {
                                                                     print("Failed to follow user")
