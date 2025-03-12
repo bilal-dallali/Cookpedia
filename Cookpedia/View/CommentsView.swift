@@ -147,12 +147,12 @@ struct CommentsView: View {
                     .scrollIndicators(.hidden)
                     .padding(.top, 24)
                     .onAppear {
-                        apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
-                            switch result {
-                                case .success(let comments):
-                                    self.newestComments = comments
-                                case .failure(let error):
-                                    print("error \(error.localizedDescription)")
+                        Task {
+                            do {
+                                let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                                self.newestComments = comments
+                            } catch {
+                                print("Error fetching comments")
                             }
                         }
                     }
@@ -238,12 +238,12 @@ struct CommentsView: View {
                                                     }
                                                 }
                                             } else if isNewestSelected {
-                                                apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
-                                                    switch result {
-                                                    case .success(let comments):
+                                                Task {
+                                                    do {
+                                                        let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
                                                         self.newestComments = comments
-                                                    case .failure(let error):
-                                                        print("error \(error.localizedDescription)")
+                                                    } catch {
+                                                        print("Error fetching comments")
                                                     }
                                                 }
                                             } else if isOldestSelected {
@@ -287,12 +287,12 @@ struct CommentsView: View {
                                                     }
                                                 }
                                             } else if isNewestSelected {
-                                                apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
-                                                    switch result {
-                                                    case .success(let comments):
+                                                Task {
+                                                    do {
+                                                        let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
                                                         self.newestComments = comments
-                                                    case .failure(let error):
-                                                        print("error \(error.localizedDescription)")
+                                                    } catch {
+                                                        print("Error fetching comments")
                                                     }
                                                 }
                                             } else if isOldestSelected {
@@ -391,12 +391,12 @@ struct CommentsView: View {
                 }
             }
             
-            apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId) { result in
-                switch result {
-                    case .success(let comments):
-                        self.newestComments = comments
-                    case .failure(let error):
-                        print("error \(error.localizedDescription)")
+            Task {
+                do {
+                    let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                    self.newestComments = comments
+                } catch {
+                    print("Error fetching comments")
                 }
             }
             

@@ -1128,7 +1128,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // ✅ Test Fetch Comments in Ascending Order Success (200)
+    // Test Fetch Comments in Ascending Order Success (200)
     func testGetCommentsOrderAscSuccess() async throws {
         let jsonData = """
             [
@@ -1166,7 +1166,7 @@ final class ApiGetRequestTests: XCTestCase {
         XCTAssertEqual(comments[0].createdAt, "2024-01-01T10:00:00Z")
     }
     
-    // ✅ Test No Comments (200 - Empty Array)
+    // Test No Comments (200 - Empty Array)
     func testGetCommentsOrderAscEmpty() async throws {
         let jsonData = "[]".data(using: .utf8)
         
@@ -1178,7 +1178,7 @@ final class ApiGetRequestTests: XCTestCase {
         XCTAssertEqual(comments.count, 0, "Expected empty array but got non-empty result")
     }
     
-    // 🚨 Test Invalid Response (Non-200 Status Code)
+    // Test Invalid Response (Non-200 Status Code)
     func testGetCommentsOrderAscInvalidResponse() async throws {
         MockURLProtocol.mockResponseData = nil
         MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/get-comments-from-recipe-id-order-asc/101")!, statusCode: 500, httpVersion: nil, headerFields: nil)
@@ -1191,7 +1191,7 @@ final class ApiGetRequestTests: XCTestCase {
         }
     }
     
-    // 🚨 Test Decoding Error
+    // Test Decoding Error
     func testGetCommentsOrderAscDecodingError() async throws {
         let invalidJsonData = """
             {
@@ -1204,6 +1204,88 @@ final class ApiGetRequestTests: XCTestCase {
         
         do {
             _ = try await apiRequest.getCommentsOrderAsc(forRecipeId: 101)
+            XCTFail("Expected APIGetError.decodingError but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.decodingError)
+        }
+    }
+    
+    // Test Fetch Comments in Descending Order Success (200)
+    func testGetCommentsOrderDescSuccess() async throws {
+        let jsonData = """
+            [
+                {
+                    "id": 2,
+                    "userId": 3,
+                    "recipeId": 101,
+                    "comment": "Can't wait to try this!",
+                    "fullName": "Jane Smith",
+                    "profilePictureUrl": "https://example.com/profile2.jpg",
+                    "createdAt": "2024-01-01T10:05:00Z"
+                },
+                {
+                    "id": 1,
+                    "userId": 2,
+                    "recipeId": 101,
+                    "comment": "Looks delicious!",
+                    "fullName": "John Doe",
+                    "profilePictureUrl": "https://example.com/profile1.jpg",
+                    "createdAt": "2024-01-01T10:00:00Z"
+                }
+            ]
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/get-comments-from-recipe-id-order-desc/101")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let comments = try await apiRequest.getCommentsOrderDesc(forRecipeId: 101)
+        
+        XCTAssertEqual(comments.count, 2)
+        XCTAssertEqual(comments[0].id, 2)
+        XCTAssertEqual(comments[0].comment, "Can't wait to try this!")
+        XCTAssertEqual(comments[0].fullName, "Jane Smith")
+        XCTAssertEqual(comments[0].profilePictureUrl, "https://example.com/profile2.jpg")
+        XCTAssertEqual(comments[0].createdAt, "2024-01-01T10:05:00Z")
+    }
+    
+    // Test No Comments (200 - Empty Array)
+    func testGetCommentsOrderDescEmpty() async throws {
+        let jsonData = "[]".data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/get-comments-from-recipe-id-order-desc/101")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let comments = try await apiRequest.getCommentsOrderDesc(forRecipeId: 101)
+        
+        XCTAssertEqual(comments.count, 0, "Expected empty array but got non-empty result")
+    }
+    
+    // Test Invalid Response (Non-200 Status Code)
+    func testGetCommentsOrderDescInvalidResponse() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/get-comments-from-recipe-id-order-desc/101")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getCommentsOrderDesc(forRecipeId: 101)
+            XCTFail("Expected APIGetError.invalidResponse but got success")
+        } catch let error as APIGetError {
+            XCTAssertEqual(error, APIGetError.invalidResponse)
+        }
+    }
+    
+    // Test Decoding Error
+    func testGetCommentsOrderDescDecodingError() async throws {
+        let invalidJsonData = """
+            {
+                "error": "Invalid response format"
+            }
+            """.data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = invalidJsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/comments/get-comments-from-recipe-id-order-desc/101")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        do {
+            _ = try await apiRequest.getCommentsOrderDesc(forRecipeId: 101)
             XCTFail("Expected APIGetError.decodingError but got success")
         } catch let error as APIGetError {
             XCTAssertEqual(error, APIGetError.decodingError)
