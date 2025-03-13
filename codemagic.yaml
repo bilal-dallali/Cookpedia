@@ -6,34 +6,27 @@ workflows:
 
     environment:
       vars:
-        XCODE_PROJECT: "Cookpedia.xcodeproj"
-        XCODE_SCHEME: "CookpediaTests"
+        XCODE_PROJECT: "Cookpedia.xcodeproj"  # Assure-toi que ce fichier existe bien dans le repo
+        XCODE_SCHEME: "CookpediaTests"        # Utilise bien le bon schéma de test
         XCODE_DESTINATION: "platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest"
 
-      vars:
-        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
-        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
-
     scripts:
+      - name: Debug environment variables
+        script: |
+          echo "XCODE_PROJECT: $XCODE_PROJECT"
+          echo "XCODE_SCHEME: $XCODE_SCHEME"
+
       - name: Clean project
         script: |
-          xcodebuild clean -project $XCODE_PROJECT -scheme $XCODE_SCHEME
+          if [[ -z "$XCODE_PROJECT" || -z "$XCODE_SCHEME" ]]; then
+            echo "ERROR: XCODE_PROJECT or XCODE_SCHEME is not set!"
+            exit 1
+          fi
+          xcodebuild clean -project "$XCODE_PROJECT" -scheme "$XCODE_SCHEME"
+
       - name: Run tests
         script: |
-          xcodebuild test -project $XCODE_PROJECT \
-          -scheme $XCODE_SCHEME \
+          xcodebuild test -project "$XCODE_PROJECT" \
+          -scheme "$XCODE_SCHEME" \
           -destination "$XCODE_DESTINATION" \
           -enableCodeCoverage YES | xcpretty && exit ${PIPESTATUS[0]}
-      - name: Build App
-        script: |
-          xcodebuild build -project $XCODE_PROJECT \
-          -scheme Cookpedia \
-          -destination 'generic/platform=iOS' \
-          -allowProvisioningUpdates
-      - name: Debug Build
-        script: |
-         set -o pipefail && xcodebuild build -project $XCODE_PROJECT \
-         -scheme Cookpedia \
-         -destination 'generic/platform=iOS' | tee build.log | xcpretty && exit ${PIPESTATUS[0]}
-         
