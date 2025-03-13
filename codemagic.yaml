@@ -1,6 +1,30 @@
 workflows:
-    cookpedia-workflow:
-    name: Cookpedia Pipeline
+  ios-workflow:
+    name: iOS Build & Test
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.yourapp.bundleid
+      xcode: latest
+      cocoapods: default
+      vars:
+        XCODE_WORKSPACE: "Cookpedia.xcworkspace"
+        XCODE_SCHEME: "Cookpedia"
+
     scripts:
-        - name: CI/CD Started
-          script: echo "Welcome to CI/CD setup"
+      - name: Install dependencies
+        script: |
+          pod install
+      - name: Run tests
+        script: |
+          xcodebuild test -workspace $XCODE_WORKSPACE \
+          -scheme $XCODE_SCHEME \
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+      - name: Build App
+        script: |
+          xcodebuild build -workspace $XCODE_WORKSPACE \
+          -scheme $XCODE_SCHEME \
+          -destination 'generic/platform=iOS'
