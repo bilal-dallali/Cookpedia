@@ -5,19 +5,11 @@ workflows:
     instance_type: mac_mini_m1
 
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.bilal-dallali.Cookpedia
-      xcode: latest
-      cocoapods: default
       vars:
         XCODE_WORKSPACE: "Cookpedia.xcworkspace"
         XCODE_SCHEME: "Cookpedia"
 
     scripts:
-      - name: Install dependencies
-        script: |
-          pod install
       - name: Run tests
         script: |
           xcodebuild test -workspace $XCODE_WORKSPACE \
