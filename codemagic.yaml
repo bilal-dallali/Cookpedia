@@ -23,7 +23,6 @@ workflows:
           -destination 'generic/platform=iOS'
       - name: Debug Build
         script: |
-         set -o pipefail && xcodebuild -project $XCODE_PROJECT \
-         -scheme $XCODE_SCHEME \
-         -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest' \
-         -enableCodeCoverage YES | tee xcodebuild.log | xcpretty && exit ${PIPESTATUS[0]}
+         set -o pipefail && xcodebuild build -project $XCODE_PROJECT \
+         -scheme Cookpedia \
+         -destination 'generic/platform=iOS' | tee build.log | xcpretty && exit ${PIPESTATUS[0]}
