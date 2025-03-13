@@ -1,13 +1,14 @@
 workflows:
   ios-workflow:
     name: iOS Build & Test
-    max_build_duration: 300
+    max_build_duration: 60
     instance_type: mac_mini_m1
 
     environment:
       vars:
         XCODE_PROJECT: "Cookpedia.xcodeproj"
         XCODE_SCHEME: "CookpediaTests"
+        XCODE_DESTINATION: "platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest"
 
       vars:
         APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
@@ -15,11 +16,14 @@ workflows:
         APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
 
     scripts:
+      - name: Clean project
+        script: |
+          xcodebuild clean -project $XCODE_PROJECT -scheme $XCODE_SCHEME
       - name: Run tests
         script: |
           xcodebuild test -project $XCODE_PROJECT \
           -scheme $XCODE_SCHEME \
-          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest' \
+          -destination "$XCODE_DESTINATION" \
           -enableCodeCoverage YES | xcpretty && exit ${PIPESTATUS[0]}
       - name: Build App
         script: |
