@@ -72,15 +72,14 @@ struct DiscoverPageView: View {
                                     }
                                 }
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(mostPopularRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
-                                            }
-                                        }
+                                            }                                        }
                                     }
                                 }
                                 .scrollIndicators(.hidden)
@@ -103,7 +102,7 @@ struct DiscoverPageView: View {
                                 }
                                 
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(mostPopularUsers.prefix(5), id: \.id) { user in
                                             NavigationLink {
                                                 ProfilePageView(userId: user.id)
@@ -133,7 +132,7 @@ struct DiscoverPageView: View {
                                     }
                                 }
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(recommendationsRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
@@ -163,7 +162,7 @@ struct DiscoverPageView: View {
                                     }
                                 }
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(mostSearchedRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
@@ -193,7 +192,7 @@ struct DiscoverPageView: View {
                                     }
                                 }
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(recentRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
@@ -218,59 +217,23 @@ struct DiscoverPageView: View {
             .onTapGesture {
                 isTextFocused = false
             }
+            
             .onAppear {
                 Task {
+                    async let mostPopularRecipes = apiGetManager.getMostPopularRecipes()
+                    async let mostPopularUsers = apiGetManager.getUsersByRecipeViews()
+                    async let recommendationsRecipes = apiGetManager.getRecommendations()
+                    async let mostSearchesRecipes = apiGetManager.getMostSearchesRecipes()
+                    async let recentRecipes = apiGetManager.getAllRecentRecipes()
+                    
                     do {
-                        let recipes = try await apiGetManager.getMostPopularRecipes()
-                        DispatchQueue.main.async {
-                            self.mostPopularRecipes = recipes
-                        }
+                        self.mostPopularRecipes = try await mostPopularRecipes
+                        self.mostPopularUsers = try await mostPopularUsers
+                        self.recommendationsRecipes = try await recommendationsRecipes
+                        self.mostSearchedRecipes = try await mostSearchesRecipes
+                        self.recentRecipes = try await recentRecipes
                     } catch {
-                        print("Error fetching most popular recipes")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let users = try await apiGetManager.getUsersByRecipeViews()
-                        DispatchQueue.main.async {
-                            self.mostPopularUsers = users
-                        }
-                    } catch {
-                        print("Failed to load users by recipe views")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let recipes = try await apiGetManager.getRecommendations()
-                        DispatchQueue.main.async {
-                            self.recommendationsRecipes = recipes
-                        }
-                    } catch {
-                        print("Failed to load recommendations")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let recipes = try await apiGetManager.getMostSearchesRecipes()
-                        DispatchQueue.main.async {
-                            self.mostSearchedRecipes = recipes
-                        }
-                    } catch {
-                        print("Failed to display most searched recipes")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let recipe = try await apiGetManager.getAllRecentRecipes()
-                        DispatchQueue.main.async {
-                            self.recentRecipes = recipe
-                        }
-                    } catch {
-                        print("Failed to load recent recipes")
+                        print("Failed to load data")
                     }
                 }
             }

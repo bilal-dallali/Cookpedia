@@ -63,16 +63,6 @@ struct HomePageView: View {
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .lineSpacing(7)
-//                                        Button {
-//                                            //
-//                                        } label: {
-//                                            Text("Read more")
-//                                                .foregroundStyle(Color("Primary900"))
-//                                                .font(.custom("Urbanist-Semibold", size: 14))
-//                                        }
-//                                        .frame(width: 102, height: 32)
-//                                        .background(Color("MyWhite"))
-//                                        .clipShape(RoundedRectangle(cornerRadius: .infinity))
                                         
                                     }
                                     .frame(width: 220)
@@ -98,7 +88,7 @@ struct HomePageView: View {
                                 }
                                 
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(recentRecipes.prefix(3), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
@@ -132,7 +122,7 @@ struct HomePageView: View {
                                 }
                                 
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(yourRecipes.prefix(3), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
@@ -163,7 +153,7 @@ struct HomePageView: View {
                                 }
                                 
                                 ScrollView(.horizontal) {
-                                    HStack(spacing: 16) {
+                                    LazyHStack(spacing: 16) {
                                         ForEach(bookmarkedRecipes.prefix(3), id: \.id) { recipe in
                                             NavigationLink {
                                                 RecipeDetailsView(recipeId: recipe.id)
@@ -193,29 +183,16 @@ struct HomePageView: View {
                 let userId = currentUser.userId
                 
                 Task {
+                    async let recentRecipes = apiGetManager.getAllRecentRecipes()
+                    async let yourRecipes = apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
+                    async let bookmarkedRecipes = apiGetManager.getSavedRecipes(userId: userId)
+                    
                     do {
-                        let recipe = try await apiGetManager.getAllRecentRecipes()
-                        self.recentRecipes = recipe
+                        self.recentRecipes = try await recentRecipes
+                        self.yourRecipes = try await yourRecipes
+                        self.bookmarkedRecipes = try await bookmarkedRecipes
                     } catch {
-                        print("Failure")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let recipes = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
-                        self.yourRecipes = recipes
-                    } catch {
-                        print("Failed to fetch user recipes")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let fetchedRecipes = try await apiGetManager.getSavedRecipes(userId: userId)
-                        self.bookmarkedRecipes = fetchedRecipes
-                    } catch {
-                        print("Failed to fetch saved recipes")
+                        print("Failed to load data")
                     }
                 }
             }
@@ -227,29 +204,16 @@ struct HomePageView: View {
                 let userId = currentUser.userId
                 
                 Task {
+                    async let recentRecipes = apiGetManager.getAllRecentRecipes()
+                    async let yourRecipes = apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
+                    async let bookmarkedRecipes = apiGetManager.getSavedRecipes(userId: userId)
+                    
                     do {
-                        let recipe = try await apiGetManager.getAllRecentRecipes()
-                        self.recentRecipes = recipe
+                        self.recentRecipes = try await recentRecipes
+                        self.yourRecipes = try await yourRecipes
+                        self.bookmarkedRecipes = try await bookmarkedRecipes
                     } catch {
-                        print("Failure")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let recipes = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
-                        self.yourRecipes = recipes
-                    } catch {
-                        print("Failed to fetch user recipes")
-                    }
-                }
-                
-                Task {
-                    do {
-                        let fetchedRecipes = try await apiGetManager.getSavedRecipes(userId: userId)
-                        self.bookmarkedRecipes = fetchedRecipes
-                    } catch {
-                        print("Failed to fetch saved recipes")
+                        print("Failed to load data")
                     }
                 }
             }
