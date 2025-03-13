@@ -9,6 +9,11 @@ workflows:
         XCODE_PROJECT: "Cookpedia.xcodeproj"
         XCODE_SCHEME: "CookpediaTests"
 
+      vars:
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_IDENTIFIER
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
+        APP_STORE_CONNECT_PRIVATE_KEY: $APP_STORE_CONNECT_PRIVATE_KEY
+
     scripts:
       - name: Run tests
         script: |
