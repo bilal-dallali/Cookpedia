@@ -138,7 +138,7 @@ struct CommentsView: View {
                 } else if isOldestSelected {
                     ScrollView {
                         VStack(spacing: 24) {
-                            ForEach(oldestComments, id: \.id) { comment in
+                            ForEach(newestComments.reversed(), id: \.id) { comment in
                                 CommentSlotView(comment: comment, refreshComment: $refreshComment)
                             }
                         }
@@ -193,7 +193,7 @@ struct CommentsView: View {
                                 
                                 Task {
                                     do {
-                                        let response = try await apiPostManager.postComment(comment: comment)
+                                        _ = try await apiPostManager.postComment(comment: comment)
                                         commentText = ""
                                         Task {
                                             do {
@@ -211,15 +211,6 @@ struct CommentsView: View {
                                                 print("Error fetching comments")
                                             }
                                         }
-                                        Task {
-                                            do {
-                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                                self.oldestComments = comments
-                                            } catch {
-                                                print("Failed to fetch comments")
-                                            }
-                                        }
-                                        
                                     } catch {
                                         print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                     }
@@ -240,29 +231,14 @@ struct CommentsView: View {
                                         commentText = ""
                                         
                                         Task {
+                                            async let topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                                            async let newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                                            
                                             do {
-                                                let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                                                self.topComments = comments
+                                                self.topComments = try await topComments
+                                                self.newestComments = try await newestComments
                                             } catch {
-                                                print("Cannot fetch comments with most likes")
-                                            }
-                                        }
-                                        
-                                        Task {
-                                            do {
-                                                let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                                                self.newestComments = comments
-                                            } catch {
-                                                print("Error fetching comments")
-                                            }
-                                        }
-                                        
-                                        Task {
-                                            do {
-                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                                self.oldestComments = comments
-                                            } catch {
-                                                print("Failed to fetch comments")
+                                                print("Failed to load data")
                                             }
                                         }
                                     } catch {
@@ -329,68 +305,29 @@ struct CommentsView: View {
             let userId = currentUser.userId
             
             Task {
+                async let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                async let topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                async let newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                
                 do {
-                    let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                    DispatchQueue.main.async {
-                        self.profilePictureUrl = user.profilePictureUrl ?? ""
-                    }
+                    self.profilePictureUrl = try await user.profilePictureUrl ?? ""
+                    self.topComments = try await topComments
+                    self.newestComments = try await newestComments
                 } catch {
-                    print("Erreur de chargement de l'utilisateur: \(error)")
-                }
-            }
-            
-            Task {
-                do {
-                    let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                    self.topComments = comments
-                } catch {
-                    print("Cannot fetch comments with most likes")
-                }
-            }
-            
-            Task {
-                do {
-                    let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                    self.oldestComments = comments
-                } catch {
-                    print("Failed to fetch comments")
-                }
-            }
-            
-            Task {
-                do {
-                    let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                    self.newestComments = comments
-                } catch {
-                    print("Error fetching comments")
+                    print("Failed to load data")
                 }
             }
         }
         .onChange(of: refreshComment) {
             Task {
+                async let topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                async let newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                
                 do {
-                    let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                    self.topComments = comments
+                    self.topComments = try await topComments
+                    self.newestComments = try await newestComments
                 } catch {
-                    print("Cannot fetch comments with most likes")
-                }
-            }
-            
-            Task {
-                do {
-                    let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                    self.oldestComments = comments
-                } catch {
-                    print("Failed to fetch comments")
-                }
-            }
-            
-            Task {
-                do {
-                    let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                    self.newestComments = comments
-                } catch {
-                    print("Error fetching comments")
+                    print("Failed to load data")
                 }
             }
         }

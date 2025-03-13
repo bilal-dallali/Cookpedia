@@ -459,7 +459,7 @@ struct RecipeDetailsView: View {
                                             }
                                             
                                             VStack(spacing: 20) {
-                                                ForEach(comments.prefix(5), id: \.id) { comment in
+                                                ForEach(comments.prefix(5).reversed(), id: \.id) { comment in
                                                     CommentSlotView(comment: comment, refreshComment: $refreshComment)
                                                 }
                                                 
@@ -499,26 +499,24 @@ struct RecipeDetailsView: View {
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
                                                             Task {
-                                                                Task {
-                                                                    do {
-                                                                        let response = try await apiPostManager.postComment(comment: comment)
-                                                                        print("Commentaire posté : \(response)")
-                                                                        commentText = ""
-                                                                        withAnimation {
-                                                                            proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
-                                                                        }
-                                                                        Task {
-                                                                            do {
-                                                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                                                                self.comments = comments
-                                                                            } catch {
-                                                                                print("Failed to fetch comments")
-                                                                            }
-                                                                        }
-                                                                        
-                                                                    } catch {
-                                                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
+                                                                do {
+                                                                    let response = try await apiPostManager.postComment(comment: comment)
+                                                                    print("Commentaire posté : \(response)")
+                                                                    commentText = ""
+                                                                    withAnimation {
+                                                                        proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
                                                                     }
+                                                                    Task {
+                                                                        do {
+                                                                            let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                                                                            self.comments = comments
+                                                                        } catch {
+                                                                            print("Failed to fetch comments")
+                                                                        }
+                                                                    }
+                                                                    
+                                                                } catch {
+                                                                    print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                                                 }
                                                             }
                                                         }
@@ -532,28 +530,27 @@ struct RecipeDetailsView: View {
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
                                                             Task {
-                                                                Task {
-                                                                    do {
-                                                                        let response = try await apiPostManager.postComment(comment: comment)
-                                                                        print("Commentaire posté : \(response)")
-                                                                        commentText = ""
-                                                                        withAnimation {
-                                                                            proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
-                                                                        }
-                                                                        Task {
-                                                                            do {
-                                                                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                                                                self.comments = comments
-                                                                            } catch {
-                                                                                print("Failed to fetch comments")
-                                                                            }
-                                                                        }
-                                                                        
-                                                                    } catch {
-                                                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
+                                                                do {
+                                                                    let response = try await apiPostManager.postComment(comment: comment)
+                                                                    print("Commentaire posté : \(response)")
+                                                                    commentText = ""
+                                                                    withAnimation {
+                                                                        proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
                                                                     }
+                                                                    Task {
+                                                                        do {
+                                                                            let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                                                                            self.comments = comments
+                                                                        } catch {
+                                                                            print("Failed to fetch comments")
+                                                                        }
+                                                                    }
+                                                                    
+                                                                } catch {
+                                                                    print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                                                 }
                                                             }
+                                                            
                                                         } label: {
                                                             Image("Send - Regular - Bold")
                                                                 .resizable()
@@ -669,76 +666,22 @@ struct RecipeDetailsView: View {
                         connectedUserId = userId
                         
                         Task {
+                            async let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
+                            async let recipeDetails = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
+                            async let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                            async let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                            async let _ = try await apiPostManager.incrementViews(recipeId: recipeId)
+                            
+                            
                             do {
-                                let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
-                                if isBookmarked {
+                                if try await isBookmarked {
                                     isBookmarkSelected = true
                                 }
+                                self.recipeDetails = try await recipeDetails
+                                self.profilePictureUrl = try await user.profilePictureUrl ?? ""
+                                self.comments = try await comments
                             } catch {
-                                print("Error")
-                            }
-                        }
-                        
-                        Task {
-                            do {
-                                let details = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
-                                DispatchQueue.main.async {
-                                    self.recipeDetails = details
-                                    
-                                    Task {
-                                        do {
-                                            let isFollowing = try await apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId)
-                                            if isFollowing {
-                                                DispatchQueue.main.async {
-                                                    self.following = true
-                                                }
-                                            } else {
-                                                following = false
-                                            }
-                                        }
-                                    }
-                                    Task {
-                                        do {
-                                            let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                                            print("User loaded: \(user)")
-                                            DispatchQueue.main.async {
-                                                self.profilePictureUrl = user.profilePictureUrl ?? ""
-                                            }
-                                        } catch {
-                                            print("Erreur de chargement de l'utilisateur: \(error)")
-                                        }
-                                    }
-                                    
-                                    Task {
-                                        do {
-                                            let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                            self.comments = comments
-                                        } catch {
-                                            print("Failed to fetch comments")
-                                        }
-                                    }
-                                }
-                            } catch {
-                                print("Failure")
-                            }
-                        }
-                        
-                        Task {
-                            do {
-                                let message = try await apiPostManager.incrementViews(recipeId: recipeId)
-                                print("Increment views:\(message)")
-                            } catch {
-                                print("❌ Error incrementing views: \(error.localizedDescription)")
-                            }
-                        }
-                    }
-                    .onChange(of: refreshComment) {
-                        Task {
-                            do {
-                                let comments = try await apiGetManager.getCommentsOrderAsc(forRecipeId: recipeId)
-                                self.comments = comments
-                            } catch {
-                                print("Failed to fetch comments")
+                                print("Failed to load data")
                             }
                         }
                     }
@@ -759,9 +702,10 @@ struct RecipeDetailsView: View {
                         .frame(width: 225, height: 61)
                         .background(Color("Dark3"))
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .overlay(
+                        .overlay {
                             RoundedRectangle(cornerRadius: 16)
-                                .strokeBorder(LinearGradient(gradient: Gradient(colors: [Color(red: 0.96, green: 0.28, blue: 0.29, opacity: 1), Color(red: 1, green: 0.45, blue: 0.46, opacity: 1)]), startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 2))
+                                .strokeBorder(LinearGradient(gradient: Gradient(colors: [Color(red: 0.96, green: 0.28, blue: 0.29, opacity: 1), Color(red: 1, green: 0.45, blue: 0.46, opacity: 1)]), startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 2)
+                        }
                         
                         .padding(.top, 120)
                         .ignoresSafeArea()
