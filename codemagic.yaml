@@ -20,7 +20,8 @@ workflows:
         script: |
           xcodebuild build -project $XCODE_PROJECT \
           -scheme Cookpedia \
-          -destination 'generic/platform=iOS'
+          -destination 'generic/platform=iOS' \
+          -allowProvisioningUpdates
       - name: Debug Build
         script: |
          set -o pipefail && xcodebuild build -project $XCODE_PROJECT \
