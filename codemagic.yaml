@@ -6,17 +6,17 @@ workflows:
 
     environment:
       vars:
-        XCODE_WORKSPACE: "Cookpedia.xcworkspace"
+        XCODE_PROJECT: "Cookpedia.xcodeproj"
         XCODE_SCHEME: "Cookpedia"
 
     scripts:
       - name: Run tests
         script: |
-          xcodebuild test -workspace $XCODE_WORKSPACE \
+          xcodebuild test -project $XCODE_PROJECT \
           -scheme $XCODE_SCHEME \
           -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest'
       - name: Build App
         script: |
-          xcodebuild build -workspace $XCODE_WORKSPACE \
+          xcodebuild build -project $XCODE_PROJECT \
           -scheme $XCODE_SCHEME \
           -destination 'generic/platform=iOS'
