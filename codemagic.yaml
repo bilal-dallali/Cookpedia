@@ -7,16 +7,17 @@ workflows:
     environment:
       vars:
         XCODE_PROJECT: "Cookpedia.xcodeproj"
-        XCODE_SCHEME: "Cookpedia"
+        XCODE_SCHEME: "CookpediaTests"
 
     scripts:
       - name: Run tests
         script: |
           xcodebuild test -project $XCODE_PROJECT \
           -scheme $XCODE_SCHEME \
-          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest'
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest' \
+          -enableCodeCoverage YES | xcpretty && exit ${PIPESTATUS[0]}
       - name: Build App
         script: |
           xcodebuild build -project $XCODE_PROJECT \
-          -scheme $XCODE_SCHEME \
+          -scheme Cookpedia \
           -destination 'generic/platform=iOS'
