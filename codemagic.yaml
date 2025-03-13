@@ -1,7 +1,7 @@
 workflows:
   ios-workflow:
     name: iOS Build & Test
-    max_build_duration: 60
+    max_build_duration: 300
     instance_type: mac_mini_m1
 
     environment:
@@ -32,3 +32,4 @@ workflows:
          set -o pipefail && xcodebuild build -project $XCODE_PROJECT \
          -scheme Cookpedia \
          -destination 'generic/platform=iOS' | tee build.log | xcpretty && exit ${PIPESTATUS[0]}
+         
