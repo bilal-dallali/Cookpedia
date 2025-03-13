@@ -14,7 +14,7 @@ workflows:
         script: |
           xcodebuild test -workspace $XCODE_WORKSPACE \
           -scheme $XCODE_SCHEME \
-          -destination 'platform=iOS Simulator,name=iPhone 14,OS=latest'
+          -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=latest'
       - name: Build App
         script: |
           xcodebuild build -workspace $XCODE_WORKSPACE \
