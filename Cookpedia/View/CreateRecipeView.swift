@@ -159,20 +159,19 @@ struct CreateRecipeView: View {
                                             } else if case .edit(let existingRecipe) = mode {
                                                 let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                                 
-                                                apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false) { result in
-                                                    switch result {
-                                                        case .success:
-                                                            isSavedRecipe = true
-                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                                isSavedRecipe = false
-                                                                isCreateRecipeSelected = false
-                                                            }
-                                                        case .failure(let error):
-                                                            print("Failed to update recipe: \(error.localizedDescription)")
+                                                Task {
+                                                    do {
+                                                        let result = try await apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false)
+                                                        isSavedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                            isSavedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    } catch {
+                                                        print("Error updating the recipe")
                                                     }
                                                 }
                                             }
-                                            
                                         } label: {
                                             Text("Save")
                                                 .foregroundStyle(Color("Primary900"))
@@ -246,16 +245,16 @@ struct CreateRecipeView: View {
                                             } else if case .edit(let existingRecipe) = mode {
                                                 let updatedRecipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                                 
-                                                apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true) { result in
-                                                    switch result {
-                                                        case .success:
-                                                            isPublishedRecipe = true
-                                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                                                                isPublishedRecipe = false
-                                                                isCreateRecipeSelected = false
-                                                            }
-                                                        case .failure(let error):
-                                                            print("Failed to update recipe: \(error.localizedDescription)")
+                                                Task {
+                                                    do {
+                                                        let result = try await apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true)
+                                                        isPublishedRecipe = true
+                                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                                            isPublishedRecipe = false
+                                                            isCreateRecipeSelected = false
+                                                        }
+                                                    } catch {
+                                                        print("Error updating the recipe")
                                                     }
                                                 }
                                             }

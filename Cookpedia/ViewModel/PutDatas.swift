@@ -93,21 +93,22 @@ class APIPutRequest: ObservableObject {
         }
     }
     
-    func updateRecipe(recipeId: Int, updatedRecipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+    func updateRecipe(recipeId: Int, updatedRecipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool) async throws -> String {
         let endpoint = "/recipes/update-recipe/\(recipeId)"
+        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            completion(.failure(APIPutError.invalidUrl))
-            return
+            throw APIPutError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
+        
         let boundary = UUID().uuidString
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
         var body = Data()
         
-        // Helper Functions
+        // Helper function to append text fields
         func appendField(_ name: String, value: String?) {
             guard let value = value else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -115,6 +116,7 @@ class APIPutRequest: ObservableObject {
             body.append("\(value)\r\n".data(using: .utf8)!)
         }
         
+        // Helper function to append image data
         func appendImage(_ image: UIImage?, withName name: String, fileName: String) {
             guard let image = image, let imageData = image.jpegData(compressionQuality: 0.8) else { return }
             body.append("--\(boundary)\r\n".data(using: .utf8)!)
@@ -124,7 +126,7 @@ class APIPutRequest: ObservableObject {
             body.append("\r\n".data(using: .utf8)!)
         }
         
-        // Append recipe fields
+        // Append all fields and images
         appendField("userId", value: "\(updatedRecipe.userId)")
         appendField("title", value: updatedRecipe.title)
         appendField("recipeCoverPictureUrl1", value: updatedRecipe.recipeCoverPictureUrl1 ?? "")
@@ -137,7 +139,7 @@ class APIPutRequest: ObservableObject {
         appendField("instructions", value: updatedRecipe.instructions)
         appendField("isPublished", value: "\(isPublished)")
         
-        // Append recipe cover images
+        // Append images
         appendImage(recipeCoverPicture1, withName: "recipeCoverPicture1", fileName: "recipeCoverPicture1.jpg")
         appendImage(recipeCoverPicture2, withName: "recipeCoverPicture2", fileName: "recipeCoverPicture2.jpg")
         
@@ -146,22 +148,30 @@ class APIPutRequest: ObservableObject {
             appendImage(image, withName: "instructionImages", fileName: fileName)
         }
         
+        // Close boundary
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-                completion(.failure(APIPutError.invalidResponse))
-                return
-            }
-            
-            completion(.success("Recipe updated successfully"))
-        }.resume()
+        // Execute the request asynchronously
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIPutError.invalidResponse
+        }
+        
+        // Check the response status code
+        switch httpResponse.statusCode {
+        case 200:
+            return "Recipe updated successfully"
+        case 400:
+            throw APIPutError.badRequest
+        case 404:
+            throw APIPutError.userNotFound
+        case 500:
+            throw APIPutError.serverError
+        default:
+            throw APIPutError.invalidResponse
+        }
     }
 }
 

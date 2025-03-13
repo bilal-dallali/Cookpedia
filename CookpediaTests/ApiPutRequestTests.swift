@@ -102,4 +102,171 @@ final class ApiPutRequestTests: XCTestCase {
         }
     }
     
+    // Test Update Recipe Success (200 - Returns success message)
+    func testUpdateRecipeSuccess() async throws {
+        let jsonData = "Recipe updated successfully".data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/update-recipe/10")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let updatedRecipe = RecipeRegistration(
+            userId: 1,
+            title: "Updated Recipe",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "This is an updated recipe.",
+            cookTime: "30 mins",
+            serves: "4",
+            origin: "Italy",
+            ingredients: "Tomatoes, Basil, Cheese",
+            instructions: "Mix and cook"
+        )
+        
+        let message = try await apiRequest.updateRecipe(
+            recipeId: 10,
+            updatedRecipe: updatedRecipe,
+            recipeCoverPicture1: nil,
+            recipeCoverPicture2: nil,
+            instructionImages: [],
+            isPublished: true
+        )
+        
+        XCTAssertEqual(message, "Recipe updated successfully", "Expected success message but got \(message)")
+    }
+    
+    // Test Multipart Form-Data Contains Images
+    func testUpdateRecipWithImageseSuccess() async throws {
+        let jsonData = "Recipe updated successfully".data(using: .utf8)
+        
+        MockURLProtocol.mockResponseData = jsonData
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/update-recipe/10")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        
+        let updatedRecipe = RecipeRegistration(
+            userId: 1,
+            title: "Updated Recipe",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "This is an updated recipe.",
+            cookTime: "30 mins",
+            serves: "4",
+            origin: "Italy",
+            ingredients: "Tomatoes, Basil, Cheese",
+            instructions: "Mix and cook"
+        )
+        
+        let testImage1 = UIImage(systemName: "photo")!
+        let testImage2 = UIImage(systemName: "photo")!
+        let instructionImages = [(testImage1, "step1.jpg"), (testImage2, "step2.jpg")]
+        
+        let message = try await apiRequest.updateRecipe(
+            recipeId: 10,
+            updatedRecipe: updatedRecipe,
+            recipeCoverPicture1: testImage1,
+            recipeCoverPicture2: testImage2,
+            instructionImages: instructionImages,
+            isPublished: true
+        )
+        
+        XCTAssertEqual(message, "Recipe updated successfully", "Expected success message but got \(message)")
+    }
+    
+    // Test Bad Request (400 - Throws `badRequest`)
+    func testUpdateRecipeBadRequest() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/update-recipe/10")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+        
+        let updatedRecipe = RecipeRegistration(
+            userId: 1,
+            title: "",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "",
+            cookTime: "",
+            serves: "",
+            origin: "",
+            ingredients: "",
+            instructions: ""
+        )
+        
+        do {
+            _ = try await apiRequest.updateRecipe(
+                recipeId: 10,
+                updatedRecipe: updatedRecipe,
+                recipeCoverPicture1: nil,
+                recipeCoverPicture2: nil,
+                instructionImages: [],
+                isPublished: true
+            )
+            XCTFail("Expected APIPutError.badRequest but got success")
+        } catch let error as APIPutError {
+            XCTAssertEqual(error, APIPutError.badRequest)
+        }
+    }
+    
+    // Test Recipe Not Found (404 - Throws `userNotFound`)
+    func testUpdateRecipeNotFound() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/update-recipe/10")!, statusCode: 404, httpVersion: nil, headerFields: nil)
+        
+        let updatedRecipe = RecipeRegistration(
+            userId: 1,
+            title: "Updated Recipe",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "This is an updated recipe.",
+            cookTime: "30 mins",
+            serves: "4",
+            origin: "Italy",
+            ingredients: "Tomatoes, Basil, Cheese",
+            instructions: "Mix and cook"
+        )
+        
+        do {
+            _ = try await apiRequest.updateRecipe(
+                recipeId: 10,
+                updatedRecipe: updatedRecipe,
+                recipeCoverPicture1: nil,
+                recipeCoverPicture2: nil,
+                instructionImages: [],
+                isPublished: true
+            )
+            XCTFail("Expected APIPutError.userNotFound but got success")
+        } catch let error as APIPutError {
+            XCTAssertEqual(error, APIPutError.userNotFound)
+        }
+    }
+    
+    // Test Server Error (500 - Throws `serverError`)
+    func testUpdateRecipeServerError() async throws {
+        MockURLProtocol.mockResponseData = nil
+        MockURLProtocol.mockResponse = HTTPURLResponse(url: URL(string: "\(baseUrl)/recipes/update-recipe/10")!, statusCode: 500, httpVersion: nil, headerFields: nil)
+        
+        let updatedRecipe = RecipeRegistration(
+            userId: 1,
+            title: "Updated Recipe",
+            recipeCoverPictureUrl1: nil,
+            recipeCoverPictureUrl2: nil,
+            description: "This is an updated recipe.",
+            cookTime: "30 mins",
+            serves: "4",
+            origin: "Italy",
+            ingredients: "Tomatoes, Basil, Cheese",
+            instructions: "Mix and cook"
+        )
+        
+        do {
+            _ = try await apiRequest.updateRecipe(
+                recipeId: 10,
+                updatedRecipe: updatedRecipe,
+                recipeCoverPicture1: nil,
+                recipeCoverPicture2: nil,
+                instructionImages: [],
+                isPublished: true
+            )
+            XCTFail("Expected APIPutError.serverError but got success")
+        } catch let error as APIPutError {
+            XCTAssertEqual(error, APIPutError.serverError)
+        }
+    }
+    
 }
