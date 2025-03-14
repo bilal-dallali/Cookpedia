@@ -143,7 +143,7 @@ struct SearchView: View {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                 ForEach(filteredResults as! [RecipeTitleCoverUser], id: \.id) { recipe in
                                     NavigationLink {
-                                        RecipeDetailsView(recipeId: recipe.id)
+                                        RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                     } label: {
                                         RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                             .frame(width: 183, height: 260)
@@ -155,7 +155,7 @@ struct SearchView: View {
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                             ForEach(mostSearchedRecipes, id: \.id) { recipe in
                                 NavigationLink {
-                                    RecipeDetailsView(recipeId: recipe.id)
+                                    RecipeDetailsView(recipeId: recipe.id, isSearch: true)
                                 } label: {
                                     RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                         .frame(width: 183, height: 260)

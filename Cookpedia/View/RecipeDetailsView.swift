@@ -51,6 +51,7 @@ struct RecipeDetailsView: View {
     
     @State private var recipeDetails: RecipeDetails
     let recipeId: Int
+    @State var isSearch: Bool
     @State private var isBookmarkSelected: Bool = false
     @State private var addedToBookmarks: Bool = false
     var apiGetManager = APIGetRequest()
@@ -69,16 +70,18 @@ struct RecipeDetailsView: View {
     @State private var refreshComment: Bool = false
     
     // Private initializer for internal use only
-    private init(recipeDetails: RecipeDetails, recipeId: Int, isDropdownActivated: Bool) {
+    private init(recipeDetails: RecipeDetails, recipeId: Int, isSearch: Bool, isDropdownActivated: Bool) {
         self.recipeDetails = recipeDetails
         self.recipeId = recipeId
+        self.isSearch = isSearch
     }
     
     @State private var comments: [CommentsDetails] = []
     
     // Public initializer for NavigationLink and external use
-    init(recipeId: Int) {
+    init(recipeId: Int, isSearch: Bool) {
         self.recipeId = recipeId
+        self.isSearch = isSearch
         self.recipeDetails = RecipeDetails(
             id: recipeId,
             userId: 0,
@@ -665,13 +668,22 @@ struct RecipeDetailsView: View {
                         
                         connectedUserId = userId
                         
+                        if isSearch == true {
+                            Task {
+                                do {
+                                    _ = try await apiPostManager.incrementRecipeSearch(recipeId: recipeId)
+                                } catch {
+                                    print("Failed to increment search")
+                                }
+                            }
+                        }
+                        
                         Task {
                             async let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
                             async let recipeDetails = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
                             async let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
                             async let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
                             async let _ = try await apiPostManager.incrementViews(recipeId: recipeId)
-                            
                             
                             do {
                                 if try await isBookmarked {
@@ -720,5 +732,5 @@ struct RecipeDetailsView: View {
 }
 
 #Preview {
-    RecipeDetailsView(recipeId: 1)
+    RecipeDetailsView(recipeId: 1, isSearch: false)
 }

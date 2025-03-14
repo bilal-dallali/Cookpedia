@@ -19,7 +19,7 @@ struct MostSearchedView: View {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                     ForEach(mostSearchedRecipes, id: \.id) { recipe in
                         NavigationLink {
-                            RecipeDetailsView(recipeId: recipe.id)
+                            RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                         } label: {
                             RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                 .frame(width: 183, height: 260)

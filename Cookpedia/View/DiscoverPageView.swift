@@ -75,7 +75,7 @@ struct DiscoverPageView: View {
                                     LazyHStack(spacing: 16) {
                                         ForEach(mostPopularRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
-                                                RecipeDetailsView(recipeId: recipe.id)
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
@@ -135,7 +135,7 @@ struct DiscoverPageView: View {
                                     LazyHStack(spacing: 16) {
                                         ForEach(recommendationsRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
-                                                RecipeDetailsView(recipeId: recipe.id)
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
@@ -165,7 +165,7 @@ struct DiscoverPageView: View {
                                     LazyHStack(spacing: 16) {
                                         ForEach(mostSearchedRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
-                                                RecipeDetailsView(recipeId: recipe.id)
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
@@ -195,7 +195,7 @@ struct DiscoverPageView: View {
                                     LazyHStack(spacing: 16) {
                                         ForEach(recentRecipes.prefix(5), id: \.id) { recipe in
                                             NavigationLink {
-                                                RecipeDetailsView(recipeId: recipe.id)
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)

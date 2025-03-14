@@ -98,7 +98,7 @@ struct HomePageView: View {
                                     LazyHStack(spacing: 16) {
                                         ForEach(recentRecipes.prefix(3), id: \.id) { recipe in
                                             NavigationLink {
-                                                RecipeDetailsView(recipeId: recipe.id)
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
@@ -132,7 +132,7 @@ struct HomePageView: View {
                                     LazyHStack(spacing: 16) {
                                         ForEach(yourRecipes.prefix(3), id: \.id) { recipe in
                                             NavigationLink {
-                                                RecipeDetailsView(recipeId: recipe.id)
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)
@@ -163,7 +163,7 @@ struct HomePageView: View {
                                     LazyHStack(spacing: 16) {
                                         ForEach(bookmarkedRecipes.prefix(3), id: \.id) { recipe in
                                             NavigationLink {
-                                                RecipeDetailsView(recipeId: recipe.id)
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                             } label: {
                                                 RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                     .frame(width: 183, height: 260)

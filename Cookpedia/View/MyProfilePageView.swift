@@ -261,7 +261,7 @@ struct MyProfilePageView: View {
                                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
                                     ForEach(recipes, id: \.id) { recipe in
                                         NavigationLink {
-                                            RecipeDetailsView(recipeId: recipe.id)
+                                            RecipeDetailsView(recipeId: recipe.id, isSearch: false)
                                         } label: {
                                             RecipeCardView(recipe: recipe)
                                                 .frame(height: 260)

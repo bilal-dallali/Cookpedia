@@ -181,7 +181,7 @@ class APIPostRequest: ObservableObject {
             throw APIPostError.invalidData
         }
 
-        let (data, response) = try await networkService.request(request)
+        let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPostError.invalidData
@@ -217,7 +217,7 @@ class APIPostRequest: ObservableObject {
             throw APIPostError.invalidData
         }
 
-        let (data, response) = try await networkService.request(request)
+        let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPostError.invalidData
@@ -352,7 +352,7 @@ class APIPostRequest: ObservableObject {
         request.httpBody = body
         
         // Execute request with async await
-        let (data, response) = try await networkService.request(request)
+        let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw NSError(domain: "Invalid Response", code: -1, userInfo: nil)
@@ -562,29 +562,33 @@ class APIPostRequest: ObservableObject {
         let endpoint = "/recipes/increment-searches/\(recipeId)"
         
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            throw NSError(domain: "Invalid URL", code: -1, userInfo: nil)
+            throw APIPostError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        let (_, response) = try await networkService.request(request)
+        let (data, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw NSError(domain: "Invalid Response", code: -1, userInfo: nil)
+            throw APIPostError.invalidResponse
         }
         
         switch httpResponse.statusCode {
         case 200:
-            return "Recipe search count incremented successfully"
+            if let message = String(data: data, encoding: .utf8) {
+                return message
+            } else {
+                throw APIPostError.invalidData
+            }
         case 400:
-            throw NSError(domain: "Bad Request", code: 400, userInfo: nil)
+            throw APIPostError.invalidData
         case 404:
-            throw NSError(domain: "Recipe Not Found", code: 404, userInfo: nil)
+            throw APIPostError.userNotFound
         case 500:
-            throw NSError(domain: "Server Error", code: 500, userInfo: nil)
+            throw APIPostError.serverError
         default:
-            throw NSError(domain: "Unexpected Error", code: httpResponse.statusCode, userInfo: nil)
+            throw APIPostError.invalidResponse
         }
     }
 }
