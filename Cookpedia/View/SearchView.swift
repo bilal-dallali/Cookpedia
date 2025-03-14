@@ -123,72 +123,90 @@ struct SearchView: View {
                     }
                 }
             }
-            if isRecipeSelected {
-                ScrollView {
-                    if searchText != "" {
-                        if filteredResults.isEmpty {
-                            VStack(spacing: 60) {
-                                Image("not-found-icon")
-                                    .resizable()
-                                    .frame(width: 350, height: 258)
-                                VStack(spacing: 12) {
-                                    Text("Not Found")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Bold", size: 24))
-                                    Text("We're sorry, the keyword you were looking for could not be found. Please search with another keywords.")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Regular", size: 18))
+            if displayErrorMessage {
+                Text(errorMessage)
+                    .foregroundStyle(Color("MyWhite"))
+                    .font(.custom("Urbanist-Bold", size: 24))
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 120)
+            } else {
+                if isRecipeSelected {
+                    ScrollView {
+                        if searchText != "" {
+                            if filteredResults.isEmpty {
+                                VStack(spacing: 60) {
+                                    Image("not-found-icon")
+                                        .resizable()
+                                        .frame(width: 350, height: 258)
+                                    VStack(spacing: 12) {
+                                        Text("Not Found")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 24))
+                                        Text("We're sorry, the keyword you were looking for could not be found. Please search with another keywords.")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Regular", size: 18))
+                                    }
+                                }
+                                .padding(.vertical, 120)
+                            } else {
+                                LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+                                    ForEach(filteredResults as! [RecipeTitleCoverUser], id: \.id) { recipe in
+                                        NavigationLink {
+                                            RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                                        } label: {
+                                            RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                .frame(width: 183, height: 260)
+                                        }
+                                    }
                                 }
                             }
-                            .padding(.vertical, 120)
                         } else {
                             LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                                ForEach(filteredResults as! [RecipeTitleCoverUser], id: \.id) { recipe in
+                                ForEach(mostSearchedRecipes, id: \.id) { recipe in
                                     NavigationLink {
-                                        RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                                        RecipeDetailsView(recipeId: recipe.id, isSearch: true)
                                     } label: {
                                         RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                             .frame(width: 183, height: 260)
                                     }
+                                    
                                 }
-                            }
-                        }
-                    } else {
-                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                            ForEach(mostSearchedRecipes, id: \.id) { recipe in
-                                NavigationLink {
-                                    RecipeDetailsView(recipeId: recipe.id, isSearch: true)
-                                } label: {
-                                    RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                        .frame(width: 183, height: 260)
-                                }
-                                
                             }
                         }
                     }
-                }
-                .scrollIndicators(.hidden)
-            } else if isPeopleSelected {
-                ScrollView {
-                    if searchText != "" {
-                        if filteredResults.isEmpty {
-                            VStack(spacing: 60) {
-                                Image("not-found-icon")
-                                    .resizable()
-                                    .frame(width: 350, height: 258)
-                                VStack(spacing: 12) {
-                                    Text("Not Found")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Bold", size: 24))
-                                    Text("We're sorry, the keyword you were looking for could not be found. Please search with another keywords.")
-                                        .foregroundStyle(Color("MyWhite"))
-                                        .font(.custom("Urbanist-Regular", size: 18))
+                    .scrollIndicators(.hidden)
+                } else if isPeopleSelected {
+                    ScrollView {
+                        if searchText != "" {
+                            if filteredResults.isEmpty {
+                                VStack(spacing: 60) {
+                                    Image("not-found-icon")
+                                        .resizable()
+                                        .frame(width: 350, height: 258)
+                                    VStack(spacing: 12) {
+                                        Text("Not Found")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 24))
+                                        Text("We're sorry, the keyword you were looking for could not be found. Please search with another keywords.")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Regular", size: 18))
+                                    }
+                                }
+                                .padding(.vertical, 120)
+                            } else {
+                                VStack(spacing: 20) {
+                                    ForEach(filteredResults as! [UserDetails], id: \.id) { user in
+                                        NavigationLink {
+                                            ProfilePageView(userId: user.id)
+                                        } label: {
+                                            UserDetailsView(user: user)
+                                        }
+                                    }
                                 }
                             }
-                            .padding(.vertical, 120)
                         } else {
                             VStack(spacing: 20) {
-                                ForEach(filteredResults as! [UserDetails], id: \.id) { user in
+                                ForEach(mostPopularUsers, id: \.id) { user in
                                     NavigationLink {
                                         ProfilePageView(userId: user.id)
                                     } label: {
@@ -197,20 +215,11 @@ struct SearchView: View {
                                 }
                             }
                         }
-                    } else {
-                        VStack(spacing: 20) {
-                            ForEach(mostPopularUsers, id: \.id) { user in
-                                NavigationLink {
-                                    ProfilePageView(userId: user.id)
-                                } label: {
-                                    UserDetailsView(user: user)
-                                }
-                            }
-                        }
                     }
+                    .scrollIndicators(.hidden)
                 }
-                .scrollIndicators(.hidden)
             }
+            
         }
         .padding(.horizontal, 24)
         .padding(.top, 16)

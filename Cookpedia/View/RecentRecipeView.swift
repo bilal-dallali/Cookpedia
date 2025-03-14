@@ -79,16 +79,6 @@ struct RecentRecipeView: View {
                 displayErrorMessage = true
             }
         }
-//        .onAppear {
-//            Task {
-//                do {
-//                    let recipes = try await apiGetManager.getAllRecentRecipes()
-//                    self.recipes = recipes
-//                } catch {
-//                    print("Failure")
-//                }
-//            }
-//        }
     }
 }
 
