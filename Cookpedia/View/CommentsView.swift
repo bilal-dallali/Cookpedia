@@ -23,7 +23,6 @@ struct CommentsView: View {
     
     @State private var topComments: [CommentsDetails] = []
     @State private var newestComments: [CommentsDetails] = []
-    @State private var oldestComments: [CommentsDetails] = []
     
     var apiGetManager = APIGetRequest()
     var apiPostManager = APIPostRequest()
@@ -227,7 +226,7 @@ struct CommentsView: View {
                                 
                                 Task {
                                     do {
-                                        let response = try await apiPostManager.postComment(comment: comment)
+                                        _ = try await apiPostManager.postComment(comment: comment)
                                         commentText = ""
                                         
                                         Task {
@@ -279,7 +278,7 @@ struct CommentsView: View {
             }
             ToolbarItem(placement: .principal) {
                 HStack {
-                    Text("Comments (\(oldestComments.count))")
+                    Text("Comments (\(newestComments.count))")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 24))
                         .padding(.leading, 16)

@@ -56,7 +56,7 @@ struct UserDetailsView: View {
                     if following == true {
                         Task {
                             do {
-                                let message = try await apiDeleteManager.unfollowUser(followerId: userId, followedId: user.id)
+                                _ = try await apiDeleteManager.unfollowUser(followerId: userId, followedId: user.id)
                                 DispatchQueue.main.async {
                                     following = false
                                 }
@@ -65,7 +65,7 @@ struct UserDetailsView: View {
                     } else if following == false {
                         Task {
                             do {
-                                let message = try await apiPostManager.followUser(followerId: userId, followedId: user.id)
+                                _ = try await apiPostManager.followUser(followerId: userId, followedId: user.id)
                                 DispatchQueue.main.async {
                                     following = true
                                 }

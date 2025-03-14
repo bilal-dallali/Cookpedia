@@ -83,7 +83,7 @@ struct ProfilePageView: View {
                                     if following == true {
                                         Task {
                                             do {
-                                                let message = try await apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId)
+                                                _ = try await apiDeleteManager.unfollowUser(followerId: connectedUserId, followedId: userId)
                                                 DispatchQueue.main.async {
                                                     following = false
                                                 }
@@ -94,7 +94,7 @@ struct ProfilePageView: View {
                                     } else if following == false {
                                         Task {
                                             do {
-                                                let message = try await apiPostManager.followUser(followerId: connectedUserId, followedId: userId)
+                                                _ = try await apiPostManager.followUser(followerId: connectedUserId, followedId: userId)
                                                 DispatchQueue.main.async {
                                                     following = true
                                                 }

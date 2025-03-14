@@ -161,7 +161,7 @@ struct CreateRecipeView: View {
                                                 
                                                 Task {
                                                     do {
-                                                        let result = try await apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false)
+                                                        _ = try await apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: false)
                                                         isSavedRecipe = true
                                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                                             isSavedRecipe = false
@@ -247,7 +247,7 @@ struct CreateRecipeView: View {
                                                 
                                                 Task {
                                                     do {
-                                                        let result = try await apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true)
+                                                        _ = try await apiPutManager.updateRecipe(recipeId: existingRecipe, updatedRecipe: updatedRecipe, recipeCoverPicture1: selectedImage1, recipeCoverPicture2: selectedImage2, instructionImages: instructionImages, isPublished: true)
                                                         isPublishedRecipe = true
                                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                                             isPublishedRecipe = false

@@ -57,13 +57,13 @@ struct HomePageView: View {
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 160)
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-                                RoundedRectangle(cornerRadius: 20)
-                                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: [
-                                        Color(red: 0.96, green: 0.28, blue: 0.29),
-                                        Color(red: 1, green: 0.45, blue: 0.46)
-                                    ]), startPoint: .bottomTrailing, endPoint: .topLeading))
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 160)
+//                                RoundedRectangle(cornerRadius: 20)
+//                                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: [
+//                                        Color(red: 0.96, green: 0.28, blue: 0.29),
+//                                        Color(red: 1, green: 0.45, blue: 0.46)
+//                                    ]), startPoint: .bottomTrailing, endPoint: .topLeading))
+//                                    .frame(maxWidth: .infinity)
+//                                    .frame(height: 160)
                                 HStack {
                                     VStack(alignment: .leading, spacing: 12) {
                                         Text("Learn how to become a master chef right now!")
