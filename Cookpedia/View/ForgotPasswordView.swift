@@ -100,24 +100,9 @@ struct ForgotPasswordView: View {
                 if email != "" {
                     if isValidEmail(email) {
                         Button {
-//                            apiPostManager.sendResetCode(email: email) { result in
-//                                switch result {
-//                                case .success:
-//                                    showOTPScreen = true
-//                                case .failure(let error):
-//                                    errorMessage = error.localizedDescription
-//                                    if error.localizedDescription.contains("User not found") {
-//                                        emailDoesntExist = true
-//                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-//                                            emailDoesntExist = false
-//                                        }
-//                                    }
-//                                }
-//                            }
                             Task {
                                 do {
                                     try await apiPostManager.sendResetCode(email: email)
-                                    print("Email de réinitialisation envoyé avec succès.")
                                     showOTPScreen = true
                                 } catch let error as APIPostError {
                                     print("Erreur : \(error.localizedDescription)")

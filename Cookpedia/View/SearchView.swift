@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SearchView: View {
     
+    @State private var errorMessage: String = ""
+    @State private var displayErrorMessage: Bool = false
     @State private var searchText: String = ""
     @FocusState private var isTextFocused: Bool
     @State private var isRecipeSelected: Bool = true
@@ -164,7 +166,6 @@ struct SearchView: View {
                             }
                         }
                     }
-                    
                 }
                 .scrollIndicators(.hidden)
             } else if isPeopleSelected {
@@ -217,30 +218,54 @@ struct SearchView: View {
         .onTapGesture {
             isTextFocused = false
         }
+        .task {
+            do {
+                //mostPopularRecipes = try await apiGetManager.getMostPopularRecipes()
+                mostSearchedRecipes = try await apiGetManager.getMostSearchesRecipes()
+                mostPopularUsers = try await apiGetManager.getUsersByRecipeViews()
+            } catch let error as APIGetError {
+                switch error {
+                case .invalidUrl:
+                    errorMessage = "The request URL is invalid. Please check your connection."
+                case .invalidResponse:
+                    errorMessage = "Unexpected response from the server. Try again later."
+                case .decodingError:
+                    errorMessage = "We couldn't process the data. Please update your app."
+                case .serverError:
+                    errorMessage = "The server is currently unavailable. Try again later."
+                case .userNotFound:
+                    errorMessage = "We couldn't find the user you're looking for."
+                }
+                displayErrorMessage = true
+            } catch {
+                errorMessage = "An unexpected error occurred. Please try again later."
+                displayErrorMessage = true
+            }
+        }
         .onAppear {
             isTextFocused = true
             
-            Task {
-                do {
-                    let recipes = try await apiGetManager.getMostSearchesRecipes()
-                    DispatchQueue.main.async {
-                        self.mostSearchedRecipes = recipes
-                    }
-                } catch {
-                    print("Failed to display most searched recipes")
-                }
-            }
-            
-            Task {
-                do {
-                    let users = try await apiGetManager.getUsersByRecipeViews()
-                    DispatchQueue.main.async {
-                        self.mostPopularUsers = users
-                    }
-                } catch {
-                    print("Failed to load users by recipe views")
-                }
-            }
+//            Task {
+//                do {
+//                    let recipes = try await apiGetManager.getMostSearchesRecipes()
+//                    DispatchQueue.main.async {
+//                        self.mostSearchedRecipes = recipes
+//                    }
+//                } catch {
+//                    print("Failed to display most searched recipes")
+//                }
+//            }
+//            
+//            Task {
+//                do {
+//                    let users = try await apiGetManager.getUsersByRecipeViews()
+//                    DispatchQueue.main.async {
+//                        self.mostPopularUsers = users
+//                    }
+//                } catch {
+//                    print("Failed to load users by recipe views")
+//                }
+//            }
         }
         .navigationBarBackButtonHidden(true)
     }

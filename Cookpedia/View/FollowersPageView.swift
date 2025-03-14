@@ -10,6 +10,8 @@ import SwiftUI
 struct FollowersPageView: View {
     
     let userId: Int
+    @State private var errorMessage: String = ""
+    @State private var displayErrorMessage: Bool = false
     @State private var followingUser: [UserDetails] = []
     @State private var followerUser: [UserDetails] = []
     @State var isFollowingSelected: Bool
@@ -72,22 +74,38 @@ struct FollowersPageView: View {
                         }
                     }
                     if isFollowingSelected {
-                        VStack(spacing: 20) {
-                            ForEach(followingUser, id: \.id) { user in
-                                NavigationLink {
-                                    ProfilePageView(userId: user.id)
-                                } label: {
-                                    UserDetailsView(user: user)
+                        if displayErrorMessage {
+                            Text(errorMessage)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 24))
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 120)
+                        } else {
+                            VStack(spacing: 20) {
+                                ForEach(followingUser, id: \.id) { user in
+                                    NavigationLink {
+                                        ProfilePageView(userId: user.id)
+                                    } label: {
+                                        UserDetailsView(user: user)
+                                    }
                                 }
                             }
                         }
                     } else if isFollowersSelected {
-                        VStack(spacing: 20) {
-                            ForEach(followerUser, id: \.id) { user in
-                                NavigationLink {
-                                    ProfilePageView(userId: user.id)
-                                } label: {
-                                    UserDetailsView(user: user)
+                        if displayErrorMessage {
+                            Text(errorMessage)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 24))
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 120)
+                        } else {
+                            VStack(spacing: 20) {
+                                ForEach(followerUser, id: \.id) { user in
+                                    NavigationLink {
+                                        ProfilePageView(userId: user.id)
+                                    } label: {
+                                        UserDetailsView(user: user)
+                                    }
                                 }
                             }
                         }
@@ -98,37 +116,27 @@ struct FollowersPageView: View {
             .padding(.top, 24)
             .padding(.horizontal, 24)
             .background(Color("Dark1"))
-            .onAppear {
-                Task {
-                    do {
-                        let followers = try await apiGetManager.getFollowers(userId: userId)
-                        DispatchQueue.main.async {
-                            self.followerUser = followers
-                        }
-                    } catch {
-                        print("Error fetching followers")
+            .task {
+                do {
+                    followerUser = try await apiGetManager.getFollowers(userId: userId)
+                    followingUser = try await apiGetManager.getFollowing(userId: userId)
+                } catch let error as APIGetError {
+                    switch error {
+                    case .invalidUrl:
+                        errorMessage = "The request URL is invalid. Please check your connection."
+                    case .invalidResponse:
+                        errorMessage = "Unexpected response from the server. Try again later."
+                    case .decodingError:
+                        errorMessage = "We couldn't process the data. Please update your app."
+                    case .serverError:
+                        errorMessage = "The server is currently unavailable. Try again later."
+                    case .userNotFound:
+                        errorMessage = "We couldn't find the user you're looking for."
                     }
-                }
-                
-//                apiGetManager.getFollowing(userId: userId) { result in
-//                    switch result {
-//                        case .success(let following):
-//                            DispatchQueue.main.async {
-//                                self.followingUser = following
-//                            }
-//                        case .failure(let error):
-//                            print("Error fetching following: \(error.localizedDescription)")
-//                    }
-//                }
-                Task {
-                    do {
-                        let following = try await apiGetManager.getFollowing(userId: userId)
-                        DispatchQueue.main.async {
-                            self.followingUser = following
-                        }
-                    } catch {
-                        print("Error fetching following")
-                    }
+                    displayErrorMessage = true
+                } catch {
+                    errorMessage = "An unexpected error occurred. Please try again later."
+                    displayErrorMessage = true
                 }
             }
         }

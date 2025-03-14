@@ -443,33 +443,30 @@ struct EditProfileView: View {
                     
                 }
             }
-            .onAppear {
+            .task {
                 guard let currentUser = userSession.first else {
                     return
                 }
                 
                 let userId = currentUser.userId
-                
-                Task {
-                    do {
-                        let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                        print("User loaded: \(user)")
-                        DispatchQueue.main.async {
-                            self.profilePictureUrl = user.profilePictureUrl ?? ""
-                            self.fullName = user.fullName
-                            self.username = user.username
-                            self.description = user.description ?? ""
-                            self.youtube = user.youtube ?? ""
-                            self.facebook = user.facebook ?? ""
-                            self.twitter = user.twitter ?? ""
-                            self.instagram = user.instagram ?? ""
-                            self.website = user.website ?? ""
-                            self.city = user.city
-                            self.country = user.country
-                        }
-                    } catch {
-                        print("Erreur de chargement de l'utilisateur: \(error)")
+                    
+                do {
+                    let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                    DispatchQueue.main.async {
+                        self.profilePictureUrl = user.profilePictureUrl ?? ""
+                        self.fullName = user.fullName
+                        self.username = user.username
+                        self.description = user.description ?? ""
+                        self.youtube = user.youtube ?? ""
+                        self.facebook = user.facebook ?? ""
+                        self.twitter = user.twitter ?? ""
+                        self.instagram = user.instagram ?? ""
+                        self.website = user.website ?? ""
+                        self.city = user.city
+                        self.country = user.country
                     }
+                } catch {
+                    print("Erreur de chargement de l'utilisateur: \(error)")
                 }
             }
             .onTapGesture {

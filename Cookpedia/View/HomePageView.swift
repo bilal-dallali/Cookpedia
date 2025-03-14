@@ -239,8 +239,20 @@ struct HomePageView: View {
                         self.recentRecipes = try await recentRecipes
                         self.yourRecipes = try await yourRecipes
                         self.bookmarkedRecipes = try await bookmarkedRecipes
-                    } catch {
-                        print("Failed to load data")
+                    } catch let error as APIGetError {
+                        switch error {
+                        case .invalidUrl:
+                            errorMessage = "The request URL is invalid. Please check your connection."
+                        case .invalidResponse:
+                            errorMessage = "Unexpected response from the server. Try again later."
+                        case .decodingError:
+                            errorMessage = "We couldn't process the data. Please update your app."
+                        case .serverError:
+                            errorMessage = "The server is currently unavailable. Try again later."
+                        case .userNotFound:
+                            errorMessage = "We couldn't find the user you're looking for."
+                        }
+                        displayErrorMessage = true
                     }
                 }
             }

@@ -10,6 +10,8 @@ import SwiftData
 
 struct MyBookmarkView: View {
     
+    @State private var errorMessage: String = ""
+    @State private var displayErrorMessage: Bool = false
     @State private var recipes: [RecipeTitleCoverUser] = []
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
@@ -19,14 +21,22 @@ struct MyBookmarkView: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                    ForEach(recipes, id: \.id) { recipe in
-                        NavigationLink {
-                            RecipeDetailsView(recipeId: recipe.id, isSearch: false)
-                        } label: {
-                            RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                .frame(height: 260)
-                                
+                if displayErrorMessage {
+                    Text(errorMessage)
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 24))
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 120)
+                } else {
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+                        ForEach(recipes, id: \.id) { recipe in
+                            NavigationLink {
+                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                            } label: {
+                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                    .frame(height: 260)
+                                    
+                            }
                         }
                     }
                 }
@@ -61,20 +71,32 @@ struct MyBookmarkView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
             guard let currentUser = userSession.first else {
                 return
             }
             
             let userId = currentUser.userId
             
-            Task {
-                do {
-                    let fetchedRecipes = try await apiGetManager.getSavedRecipes(userId: userId)
-                    self.recipes = fetchedRecipes
-                } catch {
-                    print("Failed to fetch saved recipes")
+            do {
+                recipes = try await apiGetManager.getSavedRecipes(userId: userId)
+            } catch let error as APIGetError {
+                switch error {
+                case .invalidUrl:
+                    errorMessage = "The request URL is invalid. Please check your connection."
+                case .invalidResponse:
+                    errorMessage = "Unexpected response from the server. Try again later."
+                case .decodingError:
+                    errorMessage = "We couldn't process the data. Please update your app."
+                case .serverError:
+                    errorMessage = "The server is currently unavailable. Try again later."
+                case .userNotFound:
+                    errorMessage = "We couldn't find the user you're looking for."
                 }
+                displayErrorMessage = true
+            } catch {
+                errorMessage = "An unexpected error occurred. Please try again later."
+                displayErrorMessage = true
             }
         }
         .onChange(of: shouldRefresh) {
@@ -88,8 +110,20 @@ struct MyBookmarkView: View {
                 do {
                     let fetchedRecipes = try await apiGetManager.getSavedRecipes(userId: userId)
                     self.recipes = fetchedRecipes
-                } catch {
-                    print("Failed to fetch saved recipes")
+                } catch let error as APIGetError {
+                    switch error {
+                    case .invalidUrl:
+                        errorMessage = "The request URL is invalid. Please check your connection."
+                    case .invalidResponse:
+                        errorMessage = "Unexpected response from the server. Try again later."
+                    case .decodingError:
+                        errorMessage = "We couldn't process the data. Please update your app."
+                    case .serverError:
+                        errorMessage = "The server is currently unavailable. Try again later."
+                    case .userNotFound:
+                        errorMessage = "We couldn't find the user you're looking for."
+                    }
+                    displayErrorMessage = true
                 }
             }
         }

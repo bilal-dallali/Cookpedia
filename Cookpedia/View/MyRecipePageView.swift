@@ -196,8 +196,8 @@ struct MyRecipePageView: View {
             
             Task {
                 do {
-                    let count = try await apiGetManager.getPublishedRecipesCount(userId: userId)
-                    self.publishedRecipesCount = count
+                    let publishedCount = try await apiGetManager.getPublishedRecipesCount(userId: userId)
+                    self.publishedRecipesCount = publishedCount
                 } catch {
                     print("Error fetching published recipes count")
                 }

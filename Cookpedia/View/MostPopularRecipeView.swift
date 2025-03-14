@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MostPopularRecipeView: View {
     
+    @State private var errorMessage: String = ""
+    @State private var displayErrorMessage: Bool = false
     @State private var mostPopularRecipes: [RecipeTitleCoverUser] = []
     var apiGetManager = APIGetRequest()
     @State private var shouldRefresh: Bool = false
@@ -16,13 +18,21 @@ struct MostPopularRecipeView: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
-                    ForEach(mostPopularRecipes, id: \.id) { recipe in
-                        NavigationLink {
-                            RecipeDetailsView(recipeId: recipe.id, isSearch: false)
-                        } label: {
-                            RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                .frame(height: 260)
+                if displayErrorMessage {
+                    Text(errorMessage)
+                        .foregroundStyle(Color("MyWhite"))
+                        .font(.custom("Urbanist-Bold", size: 24))
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 120)
+                } else {
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 16), GridItem(.flexible(), spacing: 16)], spacing: 16) {
+                        ForEach(mostPopularRecipes, id: \.id) { recipe in
+                            NavigationLink {
+                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                            } label: {
+                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                    .frame(height: 260)
+                            }
                         }
                     }
                 }
@@ -57,16 +67,26 @@ struct MostPopularRecipeView: View {
                 }
             }
         }
-        .onAppear {
-            Task {
-                do {
-                    let recipes = try await apiGetManager.getMostPopularRecipes()
-                    DispatchQueue.main.async {
-                        self.mostPopularRecipes = recipes
-                    }
-                } catch {
-                    print("Error fetching most popular recipes")
+        .task {
+            do {
+                mostPopularRecipes = try await apiGetManager.getMostPopularRecipes()
+            } catch let error as APIGetError {
+                switch error {
+                case .invalidUrl:
+                    errorMessage = "The request URL is invalid. Please check your connection."
+                case .invalidResponse:
+                    errorMessage = "Unexpected response from the server. Try again later."
+                case .decodingError:
+                    errorMessage = "We couldn't process the data. Please update your app."
+                case .serverError:
+                    errorMessage = "The server is currently unavailable. Try again later."
+                case .userNotFound:
+                    errorMessage = "We couldn't find the user you're looking for."
                 }
+                displayErrorMessage = true
+            } catch {
+                errorMessage = "An unexpected error occurred. Please try again later."
+                displayErrorMessage = true
             }
         }
     }

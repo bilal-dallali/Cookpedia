@@ -11,6 +11,8 @@ import SwiftData
 struct CommentsView: View {
     
     let recipeId: Int
+    @State private var errorMessage: String = ""
+    @State private var displayErrorMessage: Bool = false
     @State private var isTopSelected: Bool = true
     @State private var isNewestSelected: Bool = false
     @State private var isOldestSelected: Bool = false
@@ -116,9 +118,17 @@ struct CommentsView: View {
                 .padding(.top, 0)
                 if isTopSelected {
                     ScrollView {
-                        VStack(spacing: 24) {
-                            ForEach(topComments, id: \.id) { comment in
-                                CommentSlotView(comment: comment, refreshComment: $refreshComment)
+                        if displayErrorMessage {
+                            Text(errorMessage)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 24))
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 120)
+                        } else {
+                            VStack(spacing: 24) {
+                                ForEach(topComments, id: \.id) { comment in
+                                    CommentSlotView(comment: comment, refreshComment: $refreshComment)
+                                }
                             }
                         }
                     }
@@ -126,9 +136,17 @@ struct CommentsView: View {
                     .padding(.top, 24)
                 } else if isNewestSelected {
                     ScrollView {
-                        VStack(spacing: 24) {
-                            ForEach(newestComments, id: \.id) { comment in
-                                CommentSlotView(comment: comment, refreshComment: $refreshComment)
+                        if displayErrorMessage {
+                            Text(errorMessage)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 24))
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 120)
+                        } else {
+                            VStack(spacing: 24) {
+                                ForEach(newestComments, id: \.id) { comment in
+                                    CommentSlotView(comment: comment, refreshComment: $refreshComment)
+                                }
                             }
                         }
                     }
@@ -136,9 +154,17 @@ struct CommentsView: View {
                     .padding(.top, 24)
                 } else if isOldestSelected {
                     ScrollView {
-                        VStack(spacing: 24) {
-                            ForEach(newestComments.reversed(), id: \.id) { comment in
-                                CommentSlotView(comment: comment, refreshComment: $refreshComment)
+                        if displayErrorMessage {
+                            Text(errorMessage)
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 24))
+                                .frame(maxWidth: .infinity)
+                                .padding(.top, 120)
+                        } else {
+                            VStack(spacing: 24) {
+                                ForEach(newestComments.reversed(), id: \.id) { comment in
+                                    CommentSlotView(comment: comment, refreshComment: $refreshComment)
+                                }
                             }
                         }
                     }
@@ -194,24 +220,58 @@ struct CommentsView: View {
                                     do {
                                         _ = try await apiPostManager.postComment(comment: comment)
                                         commentText = ""
+                                        
                                         Task {
+                                            async let topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                                            async let newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                                            
                                             do {
-                                                let comments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                                                self.topComments = comments
+                                                self.topComments = try await topComments
+                                                self.newestComments = try await newestComments
+                                            } catch let error as APIGetError {
+                                                switch error {
+                                                case .invalidUrl:
+                                                    errorMessage = "The request URL is invalid. Please check your connection."
+                                                case .invalidResponse:
+                                                    errorMessage = "Unexpected response from the server. Try again later."
+                                                case .decodingError:
+                                                    errorMessage = "We couldn't process the data. Please update your app."
+                                                case .serverError:
+                                                    errorMessage = "The server is currently unavailable. Try again later."
+                                                case .userNotFound:
+                                                    errorMessage = "We couldn't find the user you're looking for."
+                                                }
+                                                displayErrorMessage = true
                                             } catch {
-                                                print("Cannot fetch comments with most likes")
+                                                errorMessage = "An unexpected error occurred. Please try again later."
+                                                displayErrorMessage = true
                                             }
                                         }
-                                        Task {
-                                            do {
-                                                let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                                                self.newestComments = comments
-                                            } catch {
-                                                print("Error fetching comments")
-                                            }
+                                    } catch let error as APIPostError {
+                                        switch error {
+                                        case .invalidUrl:
+                                            errorMessage = "The request URL is invalid. Please check your connection."
+                                        case .invalidResponse:
+                                            errorMessage = "Unexpected response from the server. Try again later."
+                                        case .decodingError:
+                                            errorMessage = "We couldn't process the data. Please update your app."
+                                        case .serverError:
+                                            errorMessage = "The server is currently unavailable. Try again later."
+                                        case .userNotFound:
+                                            errorMessage = "We couldn't find the user you're looking for."
+                                        case .invalidData:
+                                            errorMessage = "The data you provided is invalid."
+                                        case .invalidCredentials:
+                                            errorMessage = "The credentials you provided are incorrect."
+                                        case .emailAlreadyExists:
+                                            errorMessage = "The email address you provided is already in use."
+                                        case .usernameAlreadyExists:
+                                            errorMessage = "The username you provided is already in use."
+                                        case .phoneNumberAlreadyExists:
+                                            errorMessage = "The phone number you provided is already in use."
+                                        case .requestFailed:
+                                            errorMessage = "We encountered an error processing your request."
                                         }
-                                    } catch {
-                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
                                     }
                                 }
                             }
@@ -236,12 +296,50 @@ struct CommentsView: View {
                                             do {
                                                 self.topComments = try await topComments
                                                 self.newestComments = try await newestComments
+                                            } catch let error as APIGetError {
+                                                switch error {
+                                                case .invalidUrl:
+                                                    errorMessage = "The request URL is invalid. Please check your connection."
+                                                case .invalidResponse:
+                                                    errorMessage = "Unexpected response from the server. Try again later."
+                                                case .decodingError:
+                                                    errorMessage = "We couldn't process the data. Please update your app."
+                                                case .serverError:
+                                                    errorMessage = "The server is currently unavailable. Try again later."
+                                                case .userNotFound:
+                                                    errorMessage = "We couldn't find the user you're looking for."
+                                                }
+                                                displayErrorMessage = true
                                             } catch {
-                                                print("Failed to load data")
+                                                errorMessage = "An unexpected error occurred. Please try again later."
+                                                displayErrorMessage = true
                                             }
                                         }
-                                    } catch {
-                                        print("Erreur lors de l'ajout du commentaire : \(error.localizedDescription)")
+                                    } catch let error as APIPostError {
+                                        switch error {
+                                        case .invalidUrl:
+                                            errorMessage = "The request URL is invalid. Please check your connection."
+                                        case .invalidResponse:
+                                            errorMessage = "Unexpected response from the server. Try again later."
+                                        case .decodingError:
+                                            errorMessage = "We couldn't process the data. Please update your app."
+                                        case .serverError:
+                                            errorMessage = "The server is currently unavailable. Try again later."
+                                        case .userNotFound:
+                                            errorMessage = "We couldn't find the user you're looking for."
+                                        case .invalidData:
+                                            errorMessage = "The data you provided is invalid."
+                                        case .invalidCredentials:
+                                            errorMessage = "The credentials you provided are incorrect."
+                                        case .emailAlreadyExists:
+                                            errorMessage = "The email address you provided is already in use."
+                                        case .usernameAlreadyExists:
+                                            errorMessage = "The username you provided is already in use."
+                                        case .phoneNumberAlreadyExists:
+                                            errorMessage = "The phone number you provided is already in use."
+                                        case .requestFailed:
+                                            errorMessage = "We encountered an error processing your request."
+                                        }
                                     }
                                 }
                             } label: {
@@ -296,25 +394,34 @@ struct CommentsView: View {
                 }
             }
         }
-        .onAppear {
+        .task {
             guard let currentUser = userSession.first else {
                 return
             }
             
             let userId = currentUser.userId
             
-            Task {
-                async let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                async let topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
-                async let newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                
-                do {
-                    self.profilePictureUrl = try await user.profilePictureUrl ?? ""
-                    self.topComments = try await topComments
-                    self.newestComments = try await newestComments
-                } catch {
-                    print("Failed to load data")
+            do {
+                profilePictureUrl = try await apiGetManager.getUserDataFromUserId(userId: userId).profilePictureUrl ?? ""
+                topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+            } catch let error as APIGetError {
+                switch error {
+                case .invalidUrl:
+                    errorMessage = "The request URL is invalid. Please check your connection."
+                case .invalidResponse:
+                    errorMessage = "Unexpected response from the server. Try again later."
+                case .decodingError:
+                    errorMessage = "We couldn't process the data. Please update your app."
+                case .serverError:
+                    errorMessage = "The server is currently unavailable. Try again later."
+                case .userNotFound:
+                    errorMessage = "We couldn't find the user you're looking for."
                 }
+                displayErrorMessage = true
+            } catch {
+                errorMessage = "An unexpected error occurred. Please try again later."
+                displayErrorMessage = true
             }
         }
         .onChange(of: refreshComment) {
@@ -325,8 +432,23 @@ struct CommentsView: View {
                 do {
                     self.topComments = try await topComments
                     self.newestComments = try await newestComments
+                } catch let error as APIGetError {
+                    switch error {
+                    case .invalidUrl:
+                        errorMessage = "The request URL is invalid. Please check your connection."
+                    case .invalidResponse:
+                        errorMessage = "Unexpected response from the server. Try again later."
+                    case .decodingError:
+                        errorMessage = "We couldn't process the data. Please update your app."
+                    case .serverError:
+                        errorMessage = "The server is currently unavailable. Try again later."
+                    case .userNotFound:
+                        errorMessage = "We couldn't find the user you're looking for."
+                    }
+                    displayErrorMessage = true
                 } catch {
-                    print("Failed to load data")
+                    errorMessage = "An unexpected error occurred. Please try again later."
+                    displayErrorMessage = true
                 }
             }
         }

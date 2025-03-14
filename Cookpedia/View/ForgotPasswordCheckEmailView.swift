@@ -108,7 +108,6 @@ struct ForgotPasswordCheckEmailView: View {
                                             timerActive = true
                                             timeRemaining = 10
                                             try await apiPostManager.sendResetCode(email: email)
-                                            print("Email de réinitialisation envoyé avec succès.")
                                         } catch let error as APIPostError {
                                             print("Erreur : \(error.localizedDescription)")
                                         }

@@ -16,6 +16,7 @@ struct CommentSlotView: View {
     @State private var isCommentLiked: Bool = false
     @State private var userId: Int?
     @State private var deleteCommentAlert: Bool = false
+    @State private var errorMessage: String = ""
     var apiPostManager = APIPostRequest()
     var apiGetManager = APIGetRequest()
     var apiDeleteManager = APIDeleteRequest()
@@ -120,8 +121,31 @@ struct CommentSlotView: View {
                                             heartScaleY = 1
                                         }
                                     }
-                                } catch {
-                                    print("Failed to like comment")
+                                } catch let error as APIPostError {
+                                    switch error {
+                                    case .invalidUrl:
+                                        errorMessage = "The request URL is invalid. Please check your connection."
+                                    case .invalidResponse:
+                                        errorMessage = "Unexpected response from the server. Try again later."
+                                    case .decodingError:
+                                        errorMessage = "We couldn't process the data. Please update your app."
+                                    case .serverError:
+                                        errorMessage = "The server is currently unavailable. Try again later."
+                                    case .userNotFound:
+                                        errorMessage = "We couldn't find the user you're looking for."
+                                    case .invalidData:
+                                        errorMessage = "The data you provided is invalid."
+                                    case .invalidCredentials:
+                                        errorMessage = "The credentials you provided are incorrect."
+                                    case .emailAlreadyExists:
+                                        errorMessage = "The email address you provided is already in use."
+                                    case .usernameAlreadyExists:
+                                        errorMessage = "The username you provided is already in use."
+                                    case .phoneNumberAlreadyExists:
+                                        errorMessage = "The phone number you provided is already in use."
+                                    case .requestFailed:
+                                        errorMessage = "We encountered an error processing your request."
+                                    }
                                 }
                             }
                         }
@@ -173,8 +197,19 @@ struct CommentSlotView: View {
                         DispatchQueue.main.async {
                             refreshComment.toggle()
                         }
-                    } catch {
-                        print("Didn't delete the comment")
+                    } catch let error as APIDeleteError {
+                        switch error {
+                        case .invalidUrl:
+                            errorMessage = "The request URL is invalid. Please check your connection."
+                        case .invalidResponse:
+                            errorMessage = "Unexpected response from the server. Try again later."
+                        case .decodingError:
+                            errorMessage = "We couldn't process the data. Please update your app."
+                        case .serverError:
+                            errorMessage = "The server is currently unavailable. Try again later."
+                        case .userNotFound:
+                            errorMessage = "We couldn't find the user you're looking for."
+                        }
                     }
                 }
             }
