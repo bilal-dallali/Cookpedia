@@ -72,7 +72,7 @@ class APIPutRequest: ObservableObject {
         request.httpBody = body
         
         // 🔥 Use injected `networkService` instead of `URLSession.shared`
-        let (data, response) = try await networkService.request(request)
+        let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPutError.invalidResponse
@@ -153,7 +153,7 @@ class APIPutRequest: ObservableObject {
         request.httpBody = body
         
         // Execute the request asynchronously
-        let (data, response) = try await networkService.request(request)
+        let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIPutError.invalidResponse
