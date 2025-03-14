@@ -674,7 +674,7 @@ class APIGetRequest: ObservableObject {
     
 }
 
-enum APIGetError: Error {
+enum APIGetError: Error, LocalizedError {
     case invalidUrl
     case invalidResponse
     case decodingError
