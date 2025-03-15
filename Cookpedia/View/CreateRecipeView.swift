@@ -22,7 +22,11 @@ struct CreateRecipeView: View {
     @State private var origin = ""
     @State private var recipeCoverPictureUrl1: String = ""
     @State private var recipeCoverPictureUrl2: String = ""
-    @FocusState private var isTextFocused: Bool
+    @FocusState private var isTitleFocused: Bool
+    @FocusState private var isDescriptionFocused: Bool
+    @FocusState private var isCooktimeFocused: Bool
+    @FocusState private var isServesFocused: Bool
+    @FocusState private var isOriginFocused: Bool
     
     @State private var selectedImage1: UIImage? = nil
     @State private var selectedImage2: UIImage? = nil
@@ -62,7 +66,6 @@ struct CreateRecipeView: View {
     
     @Binding var isCreateRecipeSelected: Bool
     @Binding var isUpdateRecipeSelected: Bool
-    @FocusState private var isOriginFocused: Bool
     @State private var fieldsNotFilled: Bool = false
     @Environment(\.modelContext) var context
     @Query(sort: \UserSession.userId) var userSession: [UserSession]
@@ -593,7 +596,11 @@ struct CreateRecipeView: View {
                                 .frame(minHeight: 58)
                                 .background(Color("Dark2"))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .focused($isTextFocused)
+                                .focused($isTitleFocused)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    isDescriptionFocused = true
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
@@ -612,7 +619,11 @@ struct CreateRecipeView: View {
                                     .multilineTextAlignment(.leading)
                                     .padding(.horizontal, 20)
                                     .padding(.vertical, 18)
-                                    .focused($isTextFocused)
+                                    .focused($isDescriptionFocused)
+                                    .submitLabel(.next)
+                                    .onSubmit {
+                                        isCooktimeFocused = true
+                                    }
                                     Spacer()
                                 }
                                 .frame(minHeight: 140)
@@ -640,7 +651,11 @@ struct CreateRecipeView: View {
                                 .frame(minHeight: 58)
                                 .background(Color("Dark2"))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .focused($isTextFocused)
+                                .focused($isCooktimeFocused)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    isServesFocused = true
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
@@ -662,7 +677,11 @@ struct CreateRecipeView: View {
                                 .frame(minHeight: 58)
                                 .background(Color("Dark2"))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                                .focused($isTextFocused)
+                                .focused($isServesFocused)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    isOriginFocused = true
+                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
@@ -682,7 +701,8 @@ struct CreateRecipeView: View {
                                     .multilineTextAlignment(.leading)
                                     .padding(.vertical, 18)
                                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                                    .focused($isTextFocused)
+                                    .focused($isOriginFocused)
+                                    .submitLabel(.next)
                                     Image("Location - Regular - Light - Outline")
                                         .resizable()
                                         .frame(width: 20, height: 20)
@@ -756,7 +776,11 @@ struct CreateRecipeView: View {
                     .blur(radius: isSavedRecipe || isPublishedRecipe || isDeletedRecipe ? 4 : 0)
                     .onTapGesture {
                         isDropdownActivated = false
-                        isTextFocused = false
+                        isTitleFocused = false
+                        isDescriptionFocused = false
+                        isCooktimeFocused = false
+                        isServesFocused = false
+                        isOriginFocused = false
                     }
                     .onAppear {
                         if case .edit(let existingRecipe) = mode {

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct IngredientSlotView: View {
     
+    @FocusState private var isIngredientFocused: Bool
     @Binding var ingredient: String
     let index: Int
     let onDelete: () -> Void
