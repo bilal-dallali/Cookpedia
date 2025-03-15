@@ -59,7 +59,7 @@ struct RecentRecipeView: View {
         }
         .task {
             do {
-                recipes = try await apiGetManager.getMostSearchesRecipes()
+                recipes = try await apiGetManager.getAllRecentRecipes()
             } catch let error as APIGetError {
                 switch error {
                 case .invalidUrl:
