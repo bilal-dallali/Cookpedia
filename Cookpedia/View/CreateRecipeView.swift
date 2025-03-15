@@ -781,6 +781,7 @@ struct CreateRecipeView: View {
                         isCooktimeFocused = false
                         isServesFocused = false
                         isOriginFocused = false
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     }
                     .onAppear {
                         if case .edit(let existingRecipe) = mode {

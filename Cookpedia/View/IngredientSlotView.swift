@@ -43,6 +43,8 @@ struct IngredientSlotView: View {
             .frame(minHeight: 58)
             .background(Color("Dark2"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
+            .focused($isIngredientFocused)
+            .submitLabel(.next)
             Button {
                 withAnimation {
                     onDelete()
@@ -53,7 +55,9 @@ struct IngredientSlotView: View {
                     .frame(width: 24, height: 24)
                     .foregroundStyle(Color("Error"))
             }
-            
+        }
+        .onTapGesture {
+            isIngredientFocused = false
         }
     }
 }
