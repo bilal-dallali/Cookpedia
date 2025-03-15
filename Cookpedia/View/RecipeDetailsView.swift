@@ -670,6 +670,19 @@ struct RecipeDetailsView: View {
                         }
                         
                         Task {
+                            do {
+                                let isFollowing = try await apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId)
+                                print("is following : \(isFollowing)")
+                                print("follower \(userId) followed \(recipeDetails.userId)")
+                                if isFollowing {
+                                    following = true
+                                } else {
+                                    following = false
+                                }
+                            }
+                        }
+                        
+                        Task {
                             async let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
                             async let recipeDetails = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
                             async let user = try await apiGetManager.getUserDataFromUserId(userId: userId)

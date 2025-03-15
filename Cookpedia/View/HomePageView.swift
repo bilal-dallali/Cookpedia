@@ -30,158 +30,150 @@ struct HomePageView: View {
         NavigationStack {
             VStack {
                 ScrollView {
-                    if displayErrorMessage {
-                        Text(errorMessage)
-                            .foregroundStyle(Color("MyWhite"))
-                            .font(.custom("Urbanist-Bold", size: 24))
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 120)
-                    } else {
-                        VStack(alignment: .leading, spacing: 24) {
-                            HStack(spacing: 16) {
-                                Image("logo")
+                    VStack(alignment: .leading, spacing: 24) {
+                        HStack(spacing: 16) {
+                            Image("logo")
+                                .resizable()
+                                .frame(width: 28, height: 28)
+                            Text("Cookpedia")
+                                .foregroundStyle(Color("MyWhite"))
+                                .font(.custom("Urbanist-Bold", size: 24))
+                            
+                            Spacer()
+                            
+                            NavigationLink {
+                                MyBookmarkView()
+                            } label: {
+                                Image("Bookmark - Regular - Light - Outline")
                                     .resizable()
                                     .frame(width: 28, height: 28)
-                                Text("Cookpedia")
                                     .foregroundStyle(Color("MyWhite"))
-                                    .font(.custom("Urbanist-Bold", size: 24))
-                                
-                                Spacer()
-                                
-                                NavigationLink {
-                                    MyBookmarkView()
-                                } label: {
-                                    Image("Bookmark - Regular - Light - Outline")
-                                        .resizable()
-                                        .frame(width: 28, height: 28)
-                                        .foregroundStyle(Color("MyWhite"))
+                            }
+                        }
+                        .padding(.vertical, 5)
+                        
+                        VStack(alignment: .leading, spacing: 28) {
+                            ZStack {
+                                Image("read-more")
+                                    .resizable()
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 160)
+                                    .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
+                                //                                RoundedRectangle(cornerRadius: 20)
+                                //                                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: [
+                                //                                        Color(red: 0.96, green: 0.28, blue: 0.29),
+                                //                                        Color(red: 1, green: 0.45, blue: 0.46)
+                                //                                    ]), startPoint: .bottomTrailing, endPoint: .topLeading))
+                                //                                    .frame(maxWidth: .infinity)
+                                //                                    .frame(height: 160)
+                                HStack {
+                                    VStack(alignment: .leading, spacing: 12) {
+                                        Text("Learn how to become a master chef right now!")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 20))
+                                            .lineSpacing(7)
+                                        
+                                    }
+                                    .frame(width: 220)
+                                    .padding(.leading, 30)
+                                    Spacer()
                                 }
                             }
-                            .padding(.vertical, 5)
                             
-                            VStack(alignment: .leading, spacing: 28) {
-                                ZStack {
-                                    Image("read-more")
-                                        .resizable()
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 160)
-                                        .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
-    //                                RoundedRectangle(cornerRadius: 20)
-    //                                    .foregroundStyle(LinearGradient(gradient: Gradient(colors: [
-    //                                        Color(red: 0.96, green: 0.28, blue: 0.29),
-    //                                        Color(red: 1, green: 0.45, blue: 0.46)
-    //                                    ]), startPoint: .bottomTrailing, endPoint: .topLeading))
-    //                                    .frame(maxWidth: .infinity)
-    //                                    .frame(height: 160)
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: 12) {
-                                            Text("Learn how to become a master chef right now!")
-                                                .foregroundStyle(Color("MyWhite"))
-                                                .font(.custom("Urbanist-Bold", size: 20))
-                                                .lineSpacing(7)
-                                            
-                                        }
-                                        .frame(width: 220)
-                                        .padding(.leading, 30)
-                                        Spacer()
+                            VStack(alignment: .leading, spacing: 20) {
+                                HStack {
+                                    Text("Recent Recipes")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    NavigationLink {
+                                        RecentRecipeView()
+                                    } label: {
+                                        Image("Arrow - Right - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
                                     }
                                 }
                                 
-                                VStack(alignment: .leading, spacing: 20) {
-                                    HStack {
-                                        Text("Recent Recipes")
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 24))
-                                        Spacer()
-                                        NavigationLink {
-                                            RecentRecipeView()
-                                        } label: {
-                                            Image("Arrow - Right - Regular - Light - Outline")
-                                                .resizable()
-                                                .frame(width: 24, height: 24)
-                                                .foregroundStyle(Color("Primary900"))
-                                        }
-                                    }
-                                    
-                                    ScrollView(.horizontal) {
-                                        LazyHStack(spacing: 16) {
-                                            ForEach(recentRecipes.prefix(3), id: \.id) { recipe in
-                                                NavigationLink {
-                                                    RecipeDetailsView(recipeId: recipe.id, isSearch: false)
-                                                } label: {
-                                                    RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                                        .frame(width: 183, height: 260)
-                                                }
+                                ScrollView(.horizontal) {
+                                    LazyHStack(spacing: 16) {
+                                        ForEach(recentRecipes.prefix(3), id: \.id) { recipe in
+                                            NavigationLink {
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                    .frame(width: 183, height: 260)
                                             }
                                         }
                                     }
-                                    .scrollIndicators(.hidden)
+                                }
+                                .scrollIndicators(.hidden)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 20) {
+                                HStack {
+                                    Text("Your Recipes")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    Button {
+                                        isHomeSelected = false
+                                        isDiscoverSelected = false
+                                        isMyRecipeSelected = true
+                                        isMyProfileSelected = false
+                                    } label: {
+                                        Image("Arrow - Right - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
                                 }
                                 
-                                VStack(alignment: .leading, spacing: 20) {
-                                    HStack {
-                                        Text("Your Recipes")
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 24))
-                                        Spacer()
-                                        Button {
-                                            isHomeSelected = false
-                                            isDiscoverSelected = false
-                                            isMyRecipeSelected = true
-                                            isMyProfileSelected = false
-                                        } label: {
-                                            Image("Arrow - Right - Regular - Light - Outline")
-                                                .resizable()
-                                                .frame(width: 24, height: 24)
-                                                .foregroundStyle(Color("Primary900"))
-                                        }
-                                    }
-                                    
-                                    ScrollView(.horizontal) {
-                                        LazyHStack(spacing: 16) {
-                                            ForEach(yourRecipes.prefix(3), id: \.id) { recipe in
-                                                NavigationLink {
-                                                    RecipeDetailsView(recipeId: recipe.id, isSearch: false)
-                                                } label: {
-                                                    RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                                        .frame(width: 183, height: 260)
-                                                }
+                                ScrollView(.horizontal) {
+                                    LazyHStack(spacing: 16) {
+                                        ForEach(yourRecipes.prefix(3), id: \.id) { recipe in
+                                            NavigationLink {
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                    .frame(width: 183, height: 260)
                                             }
                                         }
                                     }
-                                    .scrollIndicators(.hidden)
+                                }
+                                .scrollIndicators(.hidden)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 20) {
+                                HStack {
+                                    Text("Your Bookmark")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    NavigationLink {
+                                        MyBookmarkView()
+                                    } label: {
+                                        Image("Arrow - Right - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
                                 }
                                 
-                                VStack(alignment: .leading, spacing: 20) {
-                                    HStack {
-                                        Text("Your Bookmark")
-                                            .foregroundStyle(Color("MyWhite"))
-                                            .font(.custom("Urbanist-Bold", size: 24))
-                                        Spacer()
-                                        NavigationLink {
-                                            MyBookmarkView()
-                                        } label: {
-                                            Image("Arrow - Right - Regular - Light - Outline")
-                                                .resizable()
-                                                .frame(width: 24, height: 24)
-                                                .foregroundStyle(Color("Primary900"))
-                                        }
-                                    }
-                                    
-                                    ScrollView(.horizontal) {
-                                        LazyHStack(spacing: 16) {
-                                            ForEach(bookmarkedRecipes.prefix(3), id: \.id) { recipe in
-                                                NavigationLink {
-                                                    RecipeDetailsView(recipeId: recipe.id, isSearch: false)
-                                                } label: {
-                                                    RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
-                                                        .frame(width: 183, height: 260)
-                                                }
+                                ScrollView(.horizontal) {
+                                    LazyHStack(spacing: 16) {
+                                        ForEach(bookmarkedRecipes.prefix(3), id: \.id) { recipe in
+                                            NavigationLink {
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                    .frame(width: 183, height: 260)
                                             }
                                         }
                                     }
-                                    .scrollIndicators(.hidden)
                                 }
+                                .scrollIndicators(.hidden)
                             }
                         }
                     }
@@ -196,21 +188,20 @@ struct HomePageView: View {
                 guard let currentUser = userSession.first else {
                     return
                 }
-
+                
                 let userId = currentUser.userId
-
+                
                 do {
                     let recentRecipesData = try await apiGetManager.getAllRecentRecipes()
                     let yourRecipesData = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
                     let bookmarkedRecipesData = try await apiGetManager.getSavedRecipes(userId: userId)
-
-                    // Mise à jour de l'UI sur le thread principal
+                    
                     DispatchQueue.main.async {
                         recentRecipes = recentRecipesData
                         yourRecipes = yourRecipesData
                         bookmarkedRecipes = bookmarkedRecipesData
                     }
-
+                    
                 } catch let error as APIGetError {
                     DispatchQueue.main.async {
                         switch error {
@@ -238,7 +229,7 @@ struct HomePageView: View {
                 guard let currentUser = userSession.first else {
                     return
                 }
-            
+                
                 let userId = currentUser.userId
                 
                 Task {

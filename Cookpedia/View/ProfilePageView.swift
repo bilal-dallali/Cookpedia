@@ -435,7 +435,6 @@ struct ProfilePageView: View {
                 Task {
                     do {
                         let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                        print("User loaded: \(user)")
                         DispatchQueue.main.async {
                             self.profilePictureUrl = user.profilePictureUrl ?? ""
                             self.fullName = user.fullName
