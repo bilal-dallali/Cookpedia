@@ -659,6 +659,8 @@ struct RecipeDetailsView: View {
                         
                         let userId = currentUser.userId
                         
+                        connectedUserId = userId
+                        
                         do {
                             isBookmarkSelected = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
                             recipeDetails = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
