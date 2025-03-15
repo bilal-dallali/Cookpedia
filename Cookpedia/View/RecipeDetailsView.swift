@@ -49,6 +49,8 @@ func timeAgo(from dateString: String) -> String {
 
 struct RecipeDetailsView: View {
     
+    @State private var errorMessage: String = ""
+    @State private var displayErrorMessage: Bool = false
     @State private var recipeDetails: RecipeDetails
     let recipeId: Int
     @State var isSearch: Bool
@@ -650,55 +652,44 @@ struct RecipeDetailsView: View {
                             }
                         }
                     }
-                    .onAppear {
+                    .task {
                         guard let currentUser = userSession.first else {
                             return
                         }
                         
                         let userId = currentUser.userId
                         
-                        connectedUserId = userId
-                        
-                        if isSearch == true {
-                            Task {
-                                do {
-                                    _ = try await apiPostManager.incrementRecipeSearch(recipeId: recipeId)
-                                } catch {
-                                    print("Failed to increment search")
-                                }
+                        do {
+                            isBookmarkSelected = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
+                            recipeDetails = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
+                            let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                            comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                            let _ = try await apiPostManager.incrementViews(recipeId: recipeId)
+                            following = try await apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId)
+                            DispatchQueue.main.async {
+                                self.profilePictureUrl = user.profilePictureUrl ?? ""
                             }
-                        }
-                        
-                        Task {
-                            do {
-                                let isFollowing = try await apiGetManager.isFollowing(followerId: userId, followedId: recipeDetails.userId)
-                                print("is following : \(isFollowing)")
-                                print("follower \(userId) followed \(recipeDetails.userId)")
-                                if isFollowing {
-                                    following = true
-                                } else {
-                                    following = false
-                                }
+                            if isSearch == true {
+                                let _ = try await apiPostManager.incrementRecipeSearch(recipeId: recipeId)
                             }
-                        }
-                        
-                        Task {
-                            async let isBookmarked = try await apiGetManager.getBookmark(userId: userId, recipeId: recipeDetails.id)
-                            async let recipeDetails = try await apiGetManager.getRecipeDetails(recipeId: recipeId)
-                            async let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
-                            async let comments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
-                            async let _ = try await apiPostManager.incrementViews(recipeId: recipeId)
                             
-                            do {
-                                if try await isBookmarked {
-                                    isBookmarkSelected = true
-                                }
-                                self.recipeDetails = try await recipeDetails
-                                self.profilePictureUrl = try await user.profilePictureUrl ?? ""
-                                self.comments = try await comments
-                            } catch {
-                                print("Failed to load data")
+                        } catch let error as APIGetError {
+                            switch error {
+                            case .invalidUrl:
+                                errorMessage = "The request URL is invalid. Please check your connection."
+                            case .invalidResponse:
+                                errorMessage = "Unexpected response from the server. Try again later."
+                            case .decodingError:
+                                errorMessage = "We couldn't process the data. Please update your app."
+                            case .serverError:
+                                errorMessage = "The server is currently unavailable. Try again later."
+                            case .userNotFound:
+                                errorMessage = "We couldn't find the user you're looking for."
                             }
+                            displayErrorMessage = true
+                        } catch {
+                            errorMessage = "An unexpected error occurred. Please try again later."
+                            displayErrorMessage = true
                         }
                     }
                 }
