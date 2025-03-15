@@ -633,11 +633,11 @@ struct CreateRecipeView: View {
                             }
                             
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("Cook Time")
+                                Text("Cook Time (minutes)")
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 20))
                                 TextField(text: $cookTime) {
-                                    Text("1 hour, 30 mins, etc")
+                                    Text("30 mins")
                                         .foregroundStyle(Color("Greyscale500"))
                                         .font(.custom("Urbanist-Regular", size: 16))
                                     
@@ -690,7 +690,7 @@ struct CreateRecipeView: View {
                                     .font(.custom("Urbanist-Bold", size: 20))
                                 HStack {
                                     TextField(text: $origin) {
-                                        Text("Location")
+                                        Text("Country")
                                             .foregroundStyle(Color("Greyscale500"))
                                             .font(.custom("Urbanist-Regular", size: 16))
                                         
