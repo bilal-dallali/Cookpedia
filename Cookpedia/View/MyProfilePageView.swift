@@ -413,47 +413,45 @@ struct MyProfilePageView: View {
                     guard let currentUser = userSession.first else {
                         return
                     }
-
+                    
                     let userId = currentUser.userId
                     connectedUserId = userId
-
+                    
                     Task {
                         do {
-                            async let recipesData = apiGetManager.getRecipesFromUserId(userId: userId)
-                            async let userData = apiGetManager.getUserDataFromUserId(userId: userId)
-                            async let followingCountData = apiGetManager.getFollowingCount(userId: userId)
-                            async let followersCountData = apiGetManager.getFollowersCount(userId: userId)
-
-                            let recipesResult = try await recipesData
-                            let userResult = try await userData
-                            let followingCountResult = try await followingCountData
-                            let followersCountResult = try await followersCountData
-
+                            let recipes = try await apiGetManager.getRecipesFromUserId(userId: userId)
+                            followersCount = try await apiGetManager.getFollowersCount(userId: userId)
+                            followingCount = try await apiGetManager.getFollowingCount(userId: userId)
                             DispatchQueue.main.async {
-                                self.recipes = recipesResult
-                                
-                                self.profilePictureUrl = userResult.profilePictureUrl ?? ""
-                                self.fullName = userResult.fullName
-                                self.username = userResult.username
-                                self.description = userResult.description ?? ""
-                                self.youtube = userResult.youtube ?? ""
-                                self.facebook = userResult.facebook ?? ""
-                                self.twitter = userResult.twitter ?? ""
-                                self.instagram = userResult.instagram ?? ""
-                                self.website = userResult.website ?? ""
-                                self.city = userResult.city
-                                self.country = userResult.country
-                                self.createdAt = formatDate(from: userResult.createdAt)
-
-                                self.followingCount = followingCountResult
-                                self.followersCount = followersCountResult
+                                self.recipes = recipes
                             }
                         } catch {
-                            DispatchQueue.main.async {
-                                print("Erreur lors du chargement des données: \(error)")
-                            }
+                            print("Error fetching recipes:")
                         }
                     }
+                    
+                    Task {
+                        do {
+                            let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                            DispatchQueue.main.async {
+                                self.profilePictureUrl = user.profilePictureUrl ?? ""
+                                self.fullName = user.fullName
+                                self.username = user.username
+                                self.description = user.description ?? ""
+                                self.youtube = user.youtube ?? ""
+                                self.facebook = user.facebook ?? ""
+                                self.twitter = user.twitter ?? ""
+                                self.instagram = user.instagram ?? ""
+                                self.website = user.website ?? ""
+                                self.city = user.city
+                                self.country = user.country
+                                self.createdAt = formatDate(from: user.createdAt)
+                            }
+                        } catch {
+                            print("Erreur de chargement de l'utilisateur: \(error)")
+                        }
+                    }
+                
                 }
             }
             .navigationBarBackButtonHidden(true)

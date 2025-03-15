@@ -377,7 +377,7 @@ struct CreateAccountView: View {
                                                 
                                                 loadingScreen = true
                                                 
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                                     loadingScreen = false
                                                     self.redirectHomePage = true
                                                 }

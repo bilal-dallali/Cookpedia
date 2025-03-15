@@ -192,16 +192,29 @@ struct HomePageView: View {
                 let userId = currentUser.userId
                 
                 do {
-                    let recentRecipesData = try await apiGetManager.getAllRecentRecipes()
                     let yourRecipesData = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
-                    let bookmarkedRecipesData = try await apiGetManager.getSavedRecipes(userId: userId)
                     
                     DispatchQueue.main.async {
-                        recentRecipes = recentRecipesData
                         yourRecipes = yourRecipesData
+                    }
+                } catch {
+                    print("Error fetching recipes:")
+                }
+                
+                do {
+                    let bookmarkedRecipesData = try await apiGetManager.getSavedRecipes(userId: userId)
+                    DispatchQueue.main.async {
                         bookmarkedRecipes = bookmarkedRecipesData
                     }
-                    
+                } catch {
+                    print("Failed to fetch bookmarked recipes:")
+                }
+                
+                do {
+                    let recentRecipesData = try await apiGetManager.getAllRecentRecipes()
+                    DispatchQueue.main.async {
+                        recentRecipes = recentRecipesData
+                    }
                 } catch let error as APIGetError {
                     DispatchQueue.main.async {
                         switch error {
@@ -233,13 +246,9 @@ struct HomePageView: View {
                 let userId = currentUser.userId
                 
                 Task {
-                    async let recentRecipes = apiGetManager.getAllRecentRecipes()
-                    async let yourRecipes = apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
                     async let bookmarkedRecipes = apiGetManager.getSavedRecipes(userId: userId)
                     
                     do {
-                        self.recentRecipes = try await recentRecipes
-                        self.yourRecipes = try await yourRecipes
                         self.bookmarkedRecipes = try await bookmarkedRecipes
                     } catch let error as APIGetError {
                         switch error {
