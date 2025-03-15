@@ -196,31 +196,42 @@ struct HomePageView: View {
                 guard let currentUser = userSession.first else {
                     return
                 }
-                
+
                 let userId = currentUser.userId
-                
+
                 do {
-                    recentRecipes = try await apiGetManager.getAllRecentRecipes()
-                    yourRecipes = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
-                    bookmarkedRecipes = try await apiGetManager.getSavedRecipes(userId: userId)
-                    
-                } catch let error as APIGetError {
-                    switch error {
-                    case .invalidUrl:
-                        errorMessage = "The request URL is invalid. Please check your connection."
-                    case .invalidResponse:
-                        errorMessage = "Unexpected response from the server. Try again later."
-                    case .decodingError:
-                        errorMessage = "We couldn't process the data. Please update your app."
-                    case .serverError:
-                        errorMessage = "The server is currently unavailable. Try again later."
-                    case .userNotFound:
-                        errorMessage = "We couldn't find the user you're looking for."
+                    let recentRecipesData = try await apiGetManager.getAllRecentRecipes()
+                    let yourRecipesData = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
+                    let bookmarkedRecipesData = try await apiGetManager.getSavedRecipes(userId: userId)
+
+                    // Mise à jour de l'UI sur le thread principal
+                    DispatchQueue.main.async {
+                        recentRecipes = recentRecipesData
+                        yourRecipes = yourRecipesData
+                        bookmarkedRecipes = bookmarkedRecipesData
                     }
-                    displayErrorMessage = true
+
+                } catch let error as APIGetError {
+                    DispatchQueue.main.async {
+                        switch error {
+                        case .invalidUrl:
+                            errorMessage = "The request URL is invalid. Please check your connection."
+                        case .invalidResponse:
+                            errorMessage = "Unexpected response from the server. Try again later."
+                        case .decodingError:
+                            errorMessage = "We couldn't process the data. Please update your app."
+                        case .serverError:
+                            errorMessage = "The server is currently unavailable. Try again later."
+                        case .userNotFound:
+                            errorMessage = "We couldn't find the user you're looking for."
+                        }
+                        displayErrorMessage = true
+                    }
                 } catch {
-                    errorMessage = "An unexpected error occurred. Please try again later."
-                    displayErrorMessage = true
+                    DispatchQueue.main.async {
+                        errorMessage = "An unexpected error occurred. Please try again later."
+                        displayErrorMessage = true
+                    }
                 }
             }
             .onChange(of: shouldRefresh) {

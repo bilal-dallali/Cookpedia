@@ -234,7 +234,9 @@ struct CommentSlotView: View {
                         likeCount = count
                     }
                 } catch {
-                    likeCount = 0
+                    DispatchQueue.main.async {
+                        likeCount = 0
+                    }
                 }
             }
             
@@ -244,14 +246,18 @@ struct CommentSlotView: View {
                     DispatchQueue.main.async {
                         isCommentLiked = isLiked
                         if isCommentLiked == true {
-                            withAnimation(.easeIn(duration: 0.4)) {
-                                heartScaleX = 1
-                                heartScaleY = 1
+                            DispatchQueue.main.async {
+                                withAnimation(.easeIn(duration: 0.4)) {
+                                    heartScaleX = 1
+                                    heartScaleY = 1
+                                }
                             }
                         } else {
-                            withAnimation(.easeIn(duration: 0.4)) {
-                                heartScaleX = 0
-                                heartScaleY = 0
+                            DispatchQueue.main.async {
+                                withAnimation(.easeIn(duration: 0.4)) {
+                                    heartScaleX = 0
+                                    heartScaleY = 0
+                                }
                             }
                         }
                     }

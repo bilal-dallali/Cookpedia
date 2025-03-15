@@ -647,15 +647,6 @@ struct RecipeDetailsView: View {
                                         .frame(width: 28, height: 28)
                                         .foregroundStyle(Color(isBookmarkSelected ? "Primary900" : "MyWhite"))
                                 }
-                                
-                                Button {
-                                    //
-                                } label: {
-                                    Image("More Circle - Regular - Light - Outline")
-                                        .resizable()
-                                        .frame(width: 28, height: 28)
-                                        .foregroundStyle(Color("MyWhite"))
-                                }
                             }
                         }
                     }

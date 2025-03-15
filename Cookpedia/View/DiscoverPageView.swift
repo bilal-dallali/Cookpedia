@@ -225,28 +225,42 @@ struct DiscoverPageView: View {
             .navigationBarBackButtonHidden(true)
             .task {
                 do {
-                    mostPopularRecipes = try await apiGetManager.getMostPopularRecipes()
-                    mostPopularUsers = try await apiGetManager.getUsersByRecipeViews()
-                    recommendationsRecipes = try await apiGetManager.getRecommendations()
-                    mostSearchedRecipes = try await apiGetManager.getMostSearchesRecipes()
-                    recentRecipes = try await apiGetManager.getAllRecentRecipes()
-                } catch let error as APIGetError {
-                    switch error {
-                    case .invalidUrl:
-                        errorMessage = "The request URL is invalid. Please check your connection."
-                    case .invalidResponse:
-                        errorMessage = "Unexpected response from the server. Try again later."
-                    case .decodingError:
-                        errorMessage = "We couldn't process the data. Please update your app."
-                    case .serverError:
-                        errorMessage = "The server is currently unavailable. Try again later."
-                    case .userNotFound:
-                        errorMessage = "We couldn't find the user you're looking for."
+                    let mostPopularRecipesData = try await apiGetManager.getMostPopularRecipes()
+                    let mostPopularUsersData = try await apiGetManager.getUsersByRecipeViews()
+                    let recommendationsRecipesData = try await apiGetManager.getRecommendations()
+                    let mostSearchedRecipesData = try await apiGetManager.getMostSearchesRecipes()
+                    let recentRecipesData = try await apiGetManager.getAllRecentRecipes()
+
+                    // Mise à jour de l'UI sur le thread principal
+                    DispatchQueue.main.async {
+                        mostPopularRecipes = mostPopularRecipesData
+                        mostPopularUsers = mostPopularUsersData
+                        recommendationsRecipes = recommendationsRecipesData
+                        mostSearchedRecipes = mostSearchedRecipesData
+                        recentRecipes = recentRecipesData
                     }
-                    displayErrorMessage = true
+
+                } catch let error as APIGetError {
+                    DispatchQueue.main.async {
+                        switch error {
+                        case .invalidUrl:
+                            errorMessage = "The request URL is invalid. Please check your connection."
+                        case .invalidResponse:
+                            errorMessage = "Unexpected response from the server. Try again later."
+                        case .decodingError:
+                            errorMessage = "We couldn't process the data. Please update your app."
+                        case .serverError:
+                            errorMessage = "The server is currently unavailable. Try again later."
+                        case .userNotFound:
+                            errorMessage = "We couldn't find the user you're looking for."
+                        }
+                        displayErrorMessage = true
+                    }
                 } catch {
-                    errorMessage = "An unexpected error occurred. Please try again later."
-                    displayErrorMessage = true
+                    DispatchQueue.main.async {
+                        errorMessage = "An unexpected error occurred. Please try again later."
+                        displayErrorMessage = true
+                    }
                 }
             }
         }

@@ -56,16 +56,6 @@ struct MostPopularRecipeView: View {
                     Spacer()
                 }
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    //
-                } label: {
-                    Image("Search - Regular - Light - Outline")
-                        .resizable()
-                        .frame(width: 28, height: 28)
-                        .foregroundStyle(Color("MyWhite"))
-                }
-            }
         }
         .task {
             do {

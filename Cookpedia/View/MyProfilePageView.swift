@@ -53,15 +53,6 @@ struct MyProfilePageView: View {
                                 .font(.custom("Urbanist-Bold", size: 24))
                                 .padding(.leading, 16)
                             Spacer()
-                            Button {
-                                //
-                            } label: {
-                                Image("Send - Curved - Light - Outline")
-                                    .resizable()
-                                    .frame(width: 28, height: 28)
-                                    .foregroundStyle(Color("MyWhite"))
-                            }
-                            .padding(.trailing, 20)
                             
                             NavigationLink {
                                 SettingsView()
@@ -422,57 +413,45 @@ struct MyProfilePageView: View {
                     guard let currentUser = userSession.first else {
                         return
                     }
-                    
+
                     let userId = currentUser.userId
-                    
                     connectedUserId = userId
-                    
+
                     Task {
                         do {
-                            let recipes = try await apiGetManager.getRecipesFromUserId(userId: userId)
-                            self.recipes = recipes
-                        } catch {
-                            print("Error fetching recipes:")
-                        }
-                    }
-                    
-                    Task {
-                        do {
-                            let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                            async let recipesData = apiGetManager.getRecipesFromUserId(userId: userId)
+                            async let userData = apiGetManager.getUserDataFromUserId(userId: userId)
+                            async let followingCountData = apiGetManager.getFollowingCount(userId: userId)
+                            async let followersCountData = apiGetManager.getFollowersCount(userId: userId)
+
+                            let recipesResult = try await recipesData
+                            let userResult = try await userData
+                            let followingCountResult = try await followingCountData
+                            let followersCountResult = try await followersCountData
+
                             DispatchQueue.main.async {
-                                self.profilePictureUrl = user.profilePictureUrl ?? ""
-                                self.fullName = user.fullName
-                                self.username = user.username
-                                self.description = user.description ?? ""
-                                self.youtube = user.youtube ?? ""
-                                self.facebook = user.facebook ?? ""
-                                self.twitter = user.twitter ?? ""
-                                self.instagram = user.instagram ?? ""
-                                self.website = user.website ?? ""
-                                self.city = user.city
-                                self.country = user.country
-                                self.createdAt = formatDate(from: user.createdAt)
+                                self.recipes = recipesResult
+                                
+                                self.profilePictureUrl = userResult.profilePictureUrl ?? ""
+                                self.fullName = userResult.fullName
+                                self.username = userResult.username
+                                self.description = userResult.description ?? ""
+                                self.youtube = userResult.youtube ?? ""
+                                self.facebook = userResult.facebook ?? ""
+                                self.twitter = userResult.twitter ?? ""
+                                self.instagram = userResult.instagram ?? ""
+                                self.website = userResult.website ?? ""
+                                self.city = userResult.city
+                                self.country = userResult.country
+                                self.createdAt = formatDate(from: userResult.createdAt)
+
+                                self.followingCount = followingCountResult
+                                self.followersCount = followersCountResult
                             }
                         } catch {
-                            print("Erreur de chargement de l'utilisateur: \(error)")
-                        }
-                    }
-                    
-                    Task {
-                        do {
-                            let count = try await apiGetManager.getFollowingCount(userId: userId)
-                            followingCount = count
-                        } catch {
-                            print("Failed to fetch following count")
-                        }
-                    }
-                    
-                    Task {
-                        do {
-                            let count = try await apiGetManager.getFollowersCount(userId: userId)
-                            followersCount = count
-                        } catch {
-                            print("Failed to fetch followers count")
+                            DispatchQueue.main.async {
+                                print("Erreur lors du chargement des données: \(error)")
+                            }
                         }
                     }
                 }

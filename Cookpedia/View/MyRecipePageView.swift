@@ -27,36 +27,16 @@ struct MyRecipePageView: View {
         VStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    HStack(spacing: 0) {
-                        HStack(spacing: 16) {
-                            Image("logo")
-                                .resizable()
-                                .frame(width: 28, height: 28)
-                            Text("My Recipes")
-                                .foregroundStyle(Color("MyWhite"))
-                                .font(.custom("Urbanist-Bold", size: 24))
-                        }
+                    HStack(spacing: 16) {
+                        Image("logo")
+                            .resizable()
+                            .frame(width: 28, height: 28)
+                        Text("My Recipes")
+                            .foregroundStyle(Color("MyWhite"))
+                            .font(.custom("Urbanist-Bold", size: 24))
                         Spacer()
-                        HStack(spacing: 20) {
-                            Button {
-                                //
-                            } label: {
-                                Image("Search - Regular - Light - Outline")
-                                    .resizable()
-                                    .frame(width: 28, height: 28)
-                                    .foregroundStyle(Color("MyWhite"))
-                            }
-                            
-                            Button {
-                                //
-                            } label: {
-                                Image("More Circle - Regular - Light - Outline")
-                                    .resizable()
-                                    .frame(width: 28, height: 28)
-                                    .foregroundStyle(Color("MyWhite"))
-                            }
-                        }
                     }
+                    
                     VStack(alignment: .leading, spacing: 28) {
                         HStack(spacing: 0) {
                             Button {
@@ -191,24 +171,25 @@ struct MyRecipePageView: View {
             guard let currentUser = userSession.first else {
                 return
             }
-            
+
             let userId = currentUser.userId
-            
+
             Task {
                 do {
-                    let publishedCount = try await apiGetManager.getPublishedRecipesCount(userId: userId)
-                    self.publishedRecipesCount = publishedCount
+                    async let publishedCountData = apiGetManager.getPublishedRecipesCount(userId: userId)
+                    async let draftCountData = apiGetManager.getDraftRecipesCount(userId: userId)
+
+                    let publishedCountResult = try await publishedCountData
+                    let draftCountResult = try await draftCountData
+
+                    DispatchQueue.main.async {
+                        self.publishedRecipesCount = publishedCountResult
+                        self.draftRecipesCount = draftCountResult
+                    }
                 } catch {
-                    print("Error fetching published recipes count")
-                }
-            }
-            
-            Task {
-                do {
-                    let count = try await apiGetManager.getDraftRecipesCount(userId: userId)
-                    self.draftRecipesCount = count
-                } catch {
-                    print("Error fetching draft recipes count")
+                    DispatchQueue.main.async {
+                        print("Error fetching recipes count: \(error)")
+                    }
                 }
             }
         }

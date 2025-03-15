@@ -626,9 +626,9 @@ class APIGetRequest: ObservableObject {
         }
         
         // Log raw response (for debugging)
-        if let responseString = String(data: data, encoding: .utf8) {
-            print("Raw server response:", responseString)
-        }
+//        if let responseString = String(data: data, encoding: .utf8) {
+//            print("Raw server response:", responseString)
+//        }
         
         do {
             if let jsonResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any],

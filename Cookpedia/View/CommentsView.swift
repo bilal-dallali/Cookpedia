@@ -402,7 +402,12 @@ struct CommentsView: View {
             let userId = currentUser.userId
             
             do {
-                profilePictureUrl = try await apiGetManager.getUserDataFromUserId(userId: userId).profilePictureUrl ?? ""
+                
+                let user = try await apiGetManager.getUserDataFromUserId(userId: userId)
+                
+                DispatchQueue.main.async {
+                    self.profilePictureUrl = user.profilePictureUrl ?? ""
+                }
                 topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
                 newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
             } catch let error as APIGetError {
