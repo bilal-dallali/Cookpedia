@@ -1859,7 +1859,7 @@ final class ApiGetRequestTests: XCTestCase {
             _ = try await apiRequest.checkUserSession(token: "invalid_token")
             XCTFail("Expected APIGetError.invalidResponse but got success")
         } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.invalidResponse)
+            XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
     

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebasePerformance
 
 class APIGetRequest: ObservableObject {
     
@@ -642,32 +643,136 @@ class APIGetRequest: ObservableObject {
         }
     }
     
+//    func checkUserSession(token: String) async throws -> Int? {
+//        let trace = Performance.startTrace(name: "checkUserSession")
+//        
+//        let endpoint = "/users/check-session"
+//        
+//        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+//            throw APIGetError.invalidUrl
+//        }
+//
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+//
+//        // 🔥 Use injected `networkService` instead of `URLSession.shared`
+//        let (data, response) = try await networkService.request(request)
+//
+//        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+//            throw APIGetError.invalidResponse
+//        }
+//
+//        do {
+//            if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+//               let isActive = jsonResponse["active"] as? Bool {
+//                return isActive ? jsonResponse["userId"] as? Int : nil
+//            } else {
+//                throw APIGetError.invalidResponse
+//            }
+//        } catch {
+//            throw APIGetError.decodingError
+//        }
+//    }
+    
+
+//    func checkUserSession(token: String) async throws -> Int? {
+//        let trace = Performance.startTrace(name: "checkSession")
+//
+//        let endpoint = "/users/check-session"
+//        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+//            trace?.incrementMetric("invalid_url", by: 1)
+//            throw APIGetError.invalidUrl
+//        }
+//
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+//        
+//        do {
+//            let (data, response) = try await networkService.request(request)
+//
+//            guard let httpResponse = response as? HTTPURLResponse else {
+//                trace?.incrementMetric("invalid_response", by: 1)
+//                throw APIGetError.invalidResponse
+//            }
+//
+//            trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+//
+//            trace?.setValue(Int64(data.count), forMetric: "response_size")
+//            
+//            
+//            if httpResponse.statusCode == 200 {
+//                if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+//                   let isActive = jsonResponse["active"] as? Bool {
+//                    trace?.stop() // ✅ Arrêter le trace en succès
+//                    return isActive ? jsonResponse["userId"] as? Int : nil
+//                } else {
+//                    trace?.incrementMetric("invalid_json", by: 1)
+//                    throw APIGetError.invalidResponse
+//                }
+//            } else {
+//                trace?.incrementMetric("http_error", by: 1)
+//                throw APIGetError.invalidResponse
+//            }
+//        } catch {
+//            trace?.incrementMetric("request_failed", by: 1)
+//            trace?.stop()
+//            throw APIGetError.decodingError
+//        }
+//    }
+
     func checkUserSession(token: String) async throws -> Int? {
-        let endpoint = "/users/check-session"
+        let trace = Performance.startTrace(name: "checkSession")
         
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+        guard let url = URL(string: "\(baseUrl)/users/check-session") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
+            throw APIGetError.invalidResponse
+        }
+
+        metric.start()
 
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
 
-        // 🔥 Use injected `networkService` instead of `URLSession.shared`
-        let (data, response) = try await networkService.request(request)
-
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw APIGetError.invalidResponse
-        }
-
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             if let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                let isActive = jsonResponse["active"] as? Bool {
+                trace?.stop()
                 return isActive ? jsonResponse["userId"] as? Int : nil
             } else {
+                trace?.incrementMetric("invalid_json", by: 1)
+                trace?.stop()
                 throw APIGetError.invalidResponse
             }
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }

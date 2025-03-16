@@ -1,0 +1,1 @@
+# This app use a Node JS and MySQL custom API to run, you can access the code for the API at this URL 'https://github.com/bilal-dallali/cookpedia-backend'
