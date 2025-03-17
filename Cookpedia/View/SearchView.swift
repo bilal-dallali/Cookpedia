@@ -48,16 +48,13 @@ struct SearchView: View {
                         .frame(maxWidth: .infinity)
                         .focused($isTextFocused)
                         .submitLabel(.done)
-                        .onSubmit {
-                            //
-                        }
                     Button {
                         searchText = ""
                     } label: {
                         Image("Icon=times, Component=Additional Icons")
                             .resizable()
                             .frame(width: 20, height: 20)
-                            .foregroundStyle(Color("MyWhite"))
+                            .foregroundStyle(Color(searchText.isEmpty ? "Dark2" : "MyWhite"))
                     }
                     .padding(.trailing, 20)
                 }
@@ -229,7 +226,6 @@ struct SearchView: View {
         }
         .task {
             do {
-                //mostPopularRecipes = try await apiGetManager.getMostPopularRecipes()
                 mostSearchedRecipes = try await apiGetManager.getMostSearchesRecipes()
                 mostPopularUsers = try await apiGetManager.getUsersByRecipeViews()
             } catch let error as APIGetError {
@@ -253,28 +249,6 @@ struct SearchView: View {
         }
         .onAppear {
             isTextFocused = true
-            
-//            Task {
-//                do {
-//                    let recipes = try await apiGetManager.getMostSearchesRecipes()
-//                    DispatchQueue.main.async {
-//                        self.mostSearchedRecipes = recipes
-//                    }
-//                } catch {
-//                    print("Failed to display most searched recipes")
-//                }
-//            }
-//            
-//            Task {
-//                do {
-//                    let users = try await apiGetManager.getUsersByRecipeViews()
-//                    DispatchQueue.main.async {
-//                        self.mostPopularUsers = users
-//                    }
-//                } catch {
-//                    print("Failed to load users by recipe views")
-//                }
-//            }
         }
         .navigationBarBackButtonHidden(true)
     }

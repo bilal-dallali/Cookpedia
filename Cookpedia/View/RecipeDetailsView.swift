@@ -505,8 +505,7 @@ struct RecipeDetailsView: View {
                                                             
                                                             Task {
                                                                 do {
-                                                                    let response = try await apiPostManager.postComment(comment: comment)
-                                                                    print("Commentaire posté : \(response)")
+                                                                    _ = try await apiPostManager.postComment(comment: comment)
                                                                     commentText = ""
                                                                     withAnimation {
                                                                         proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
@@ -536,8 +535,7 @@ struct RecipeDetailsView: View {
                                                             
                                                             Task {
                                                                 do {
-                                                                    let response = try await apiPostManager.postComment(comment: comment)
-                                                                    print("Commentaire posté : \(response)")
+                                                                    _ = try await apiPostManager.postComment(comment: comment)
                                                                     commentText = ""
                                                                     withAnimation {
                                                                         proxy.scrollTo(scrollToBottomKey, anchor: .bottom)
