@@ -204,28 +204,61 @@ class APIGetRequest: ObservableObject {
             throw APIGetError.decodingError
         }
     }
-    
+
     func getAllRecentRecipes() async throws -> [RecipeTitleCoverUser] {
+        let trace = Performance.startTrace(name: "get_all_recent_recipes")
+        
         let endpoint = "/recipes/recent-recipes"
         
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([RecipeTitleCoverUser].self, from: data)
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let recipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
+                trace?.stop()
+                return recipes
+            } catch {
+                trace?.incrementMetric("decoding_error", by: 1)
+                trace?.stop()
+                throw APIGetError.decodingError
+            }
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
@@ -723,7 +756,7 @@ class APIGetRequest: ObservableObject {
 //    }
 
     func checkUserSession(token: String) async throws -> Int? {
-        let trace = Performance.startTrace(name: "checkSession")
+        let trace = Performance.startTrace(name: "check_session")
         
         guard let url = URL(string: "\(baseUrl)/users/check-session") else {
             trace?.incrementMetric("invalid_url", by: 1)
