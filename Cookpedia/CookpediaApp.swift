@@ -19,6 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
       //Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
       Analytics.setAnalyticsCollectionEnabled(true)
+      Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
     return true
   }
     
