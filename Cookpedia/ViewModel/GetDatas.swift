@@ -70,7 +70,7 @@ class APIGetRequest: ObservableObject {
             trace?.incrementMetric("request_failed", by: 1)
             metric.stop()
             trace?.stop()
-            throw APIGetError.decodingError
+            throw APIGetError.invalidResponse
         }
     }
 

@@ -17,5 +17,7 @@
 	<true/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
+	<key>FirebaseCrashlyticsCollectionEnabled</key>
+	<string>YES</string>
 </dict>
 </plist>

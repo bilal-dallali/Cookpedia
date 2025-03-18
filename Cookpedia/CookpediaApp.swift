@@ -10,6 +10,7 @@ import SwiftData
 import Firebase
 import FirebaseCore
 import FirebaseCrashlytics
+import FirebaseAnalytics
 
 class AppDelegate: NSObject, UIApplicationDelegate {
   func application(_ application: UIApplication,
@@ -17,6 +18,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     FirebaseApp.configure()
     Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
       //Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
+      Analytics.setAnalyticsCollectionEnabled(true)
     return true
   }
     

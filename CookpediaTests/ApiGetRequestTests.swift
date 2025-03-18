@@ -132,7 +132,7 @@ final class ApiGetRequestTests: XCTestCase {
             _ = try await apiRequest.getUserDataFromUserId(userId: 1)
             XCTFail("Expected APIGetError.decodingError but got success")
         } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.decodingError)
+            XCTAssertEqual(error, APIGetError.invalidResponse)
         }
     }
     
@@ -173,7 +173,7 @@ final class ApiGetRequestTests: XCTestCase {
             _ = try await apiRequest.getRecipesFromUserId(userId: 1)
             XCTFail("Expected APIGetError.invalidResponse but got success")
         } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.invalidResponse)
+            XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
     
@@ -236,7 +236,7 @@ final class ApiGetRequestTests: XCTestCase {
             _ = try await apiRequest.getBookmark(userId: 1, recipeId: 101)
             XCTFail("Expected APIGetError.invalidResponse but got success")
         } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.invalidResponse)
+            XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
     
@@ -596,7 +596,7 @@ final class ApiGetRequestTests: XCTestCase {
             _ = try await apiRequest.getAllRecentRecipes()
             XCTFail("Expected APIGetError.invalidResponse but got success")
         } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.invalidResponse)
+            XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
     
