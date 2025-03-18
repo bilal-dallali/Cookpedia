@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCrashlytics
 
 struct HomePageView: View {
     
@@ -103,26 +104,9 @@ struct HomePageView: View {
                                 }
                                 .scrollIndicators(.hidden)
                                 
-                                Button {
-                                    let myString: String? = nil
-                                    let string2 = myString!
-                                } label: {
-                                    Text("Click Me 1")
+                                Button("Test Crash") {
+                                    fatalError("Crash test Firebase!")
                                 }
-                                
-                                Button {
-                                    fatalError("This was a fatal error")
-                                } label: {
-                                    Text("Fatal error")
-                                }
-                                
-                                Button {
-                                    let array: [String] = []
-                                    let item = array[0]
-                                } label: {
-                                    Text("Click Me 3")
-                                }
-
                             }
                             
                             VStack(alignment: .leading, spacing: 20) {

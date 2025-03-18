@@ -13,6 +13,8 @@
 		<string>Urbanist-SemiBold.ttf</string>
 		<string>Urbanist-Thin.ttf</string>
 	</array>
+	<key> NSApplicationCrashOnExceptions</key>
+	<true/>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<true/>
 </dict>
