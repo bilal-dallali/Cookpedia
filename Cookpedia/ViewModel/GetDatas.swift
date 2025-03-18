@@ -16,82 +16,179 @@ class APIGetRequest: ObservableObject {
     init(networkService: NetworkService = URLSession.shared) {
         self.networkService = networkService
     }
-    
+
     func getUserDataFromUserId(userId: Int) async throws -> User {
+        let trace = Performance.startTrace(name: "get_user_data_from_user_id")
+
         let endpoint = "/users/profile/\(userId)"
-        
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
-        do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode(User.self, from: data)
-        } catch {
-            throw APIGetError.decodingError
-        }
-    }
-    
-    func getRecipesFromUserId(userId: Int) async throws -> [RecipeTitleCover] {
-        let endpoint = "/recipes/fetch-all-recipes-from-user/\(userId)"
-        
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            throw APIGetError.invalidUrl
-        }
-        
+
+        metric.start()
+
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw APIGetError.invalidResponse
-        }
-        
+
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([RecipeTitleCover].self, from: data)
-        } catch {
-            throw APIGetError.decodingError
-        }
-    }
-    
-    func getBookmark(userId: Int, recipeId: Int) async throws -> Bool {
-        let endpoint = "/recipes/bookmark/\(userId)/\(recipeId)"
-        
-        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
-            throw APIGetError.invalidUrl
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw APIGetError.invalidResponse
-        }
-        
-        do {
-            let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]]
-            
-            guard let json = jsonResult else {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let user = try decoder.decode(User.self, from: data)
+                trace?.stop()
+                return user
+            } catch {
+                trace?.incrementMetric("decoding_error", by: 1)
+                trace?.stop()
                 throw APIGetError.decodingError
             }
-            
-            return !json.isEmpty
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
+            throw APIGetError.decodingError
+        }
+    }
+
+    func getRecipesFromUserId(userId: Int) async throws -> [RecipeTitleCover] {
+        let trace = Performance.startTrace(name: "get_recipes_from_user_id")
+
+        let endpoint = "/recipes/fetch-all-recipes-from-user/\(userId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
+            throw APIGetError.invalidUrl
+        }
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
+            throw APIGetError.invalidResponse
+        }
+
+        metric.start()
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
+                let recipes = try decoder.decode([RecipeTitleCover].self, from: data)
+                trace?.stop()
+                return recipes
+            } catch {
+                trace?.incrementMetric("decoding_error", by: 1)
+                trace?.stop()
+                throw APIGetError.decodingError
+            }
+        } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
+            throw APIGetError.decodingError
+        }
+    }
+
+    func getBookmark(userId: Int, recipeId: Int) async throws -> Bool {
+        let trace = Performance.startTrace(name: "get_bookmark")
+
+        let endpoint = "/recipes/bookmark/\(userId)/\(recipeId)"
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
+            throw APIGetError.invalidUrl
+        }
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
+            throw APIGetError.invalidResponse
+        }
+
+        metric.start()
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            do {
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]]
+
+                guard let json = jsonResult else {
+                    trace?.incrementMetric("decoding_error", by: 1)
+                    trace?.stop()
+                    throw APIGetError.decodingError
+                }
+
+                trace?.stop()
+                return !json.isEmpty
+            } catch {
+                trace?.incrementMetric("decoding_error", by: 1)
+                trace?.stop()
+                throw APIGetError.decodingError
+            }
+        } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
