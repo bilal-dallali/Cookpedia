@@ -104,10 +104,6 @@ struct HomePageView: View {
                                     }
                                 }
                                 .scrollIndicators(.hidden)
-                                
-                                Button("Test Crash") {
-                                    fatalError("Crash test Firebase!")
-                                }
                             }
                             
                             VStack(alignment: .leading, spacing: 20) {

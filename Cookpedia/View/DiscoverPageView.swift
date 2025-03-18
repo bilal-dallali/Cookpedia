@@ -181,6 +181,10 @@ struct DiscoverPageView: View {
                                         }
                                     }
                                     .scrollIndicators(.hidden)
+                                    
+                                    Button("Crash") {
+                                      fatalError("Crash was triggered")
+                                    }
                                 }
                                 
                                 VStack(spacing: 20) {

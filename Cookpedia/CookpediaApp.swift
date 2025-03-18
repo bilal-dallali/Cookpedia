@@ -13,15 +13,11 @@ import FirebaseCrashlytics
 import FirebaseAnalytics
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
-      //Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
-      Analytics.setAnalyticsCollectionEnabled(true)
-      Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         
@@ -36,9 +32,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct CookpediaApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-//    init() {
-//        FirebaseApp.configure()
-//    }
     
     var body: some Scene {
         WindowGroup {
