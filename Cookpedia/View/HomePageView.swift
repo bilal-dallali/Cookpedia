@@ -20,6 +20,7 @@ struct HomePageView: View {
     @State private var errorMessage: String = ""
     @State private var displayErrorMessage: Bool = false
     @State private var recentRecipes: [RecipeTitleCoverUser] = []
+    @State private var yourFollowsRecipes: [RecipeTitleCoverUser] = []
     @State private var yourRecipes: [RecipeTitleCoverUser] = []
     @State private var bookmarkedRecipes: [RecipeTitleCoverUser] = []
     
@@ -73,6 +74,37 @@ struct HomePageView: View {
                                     .padding(.leading, 30)
                                     Spacer()
                                 }
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 20) {
+                                HStack {
+                                    Text("Your follows")
+                                        .foregroundStyle(Color("MyWhite"))
+                                        .font(.custom("Urbanist-Bold", size: 24))
+                                    Spacer()
+                                    NavigationLink {
+                                        YourFollowsRecipesView()
+                                    } label: {
+                                        Image("Arrow - Right - Regular - Light - Outline")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .foregroundStyle(Color("Primary900"))
+                                    }
+                                }
+                                
+                                ScrollView(.horizontal) {
+                                    LazyHStack(spacing: 16) {
+                                        ForEach(yourFollowsRecipes.prefix(3), id: \.id) { recipe in
+                                            NavigationLink {
+                                                RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                                            } label: {
+                                                RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                    .frame(width: 183, height: 260)
+                                            }
+                                        }
+                                    }
+                                }
+                                .scrollIndicators(.hidden)
                             }
                             
                             VStack(alignment: .leading, spacing: 20) {
@@ -190,6 +222,16 @@ struct HomePageView: View {
                 let userId = currentUser.userId
                 
                 do {
+                    let yourFollowsRecipesData = try await apiGetManager.getFollowedUsersRecipes(userId: userId)
+                    
+                    DispatchQueue.main.async {
+                        yourFollowsRecipes = yourFollowsRecipesData
+                    }
+                } catch {
+                    print("Error fetching recipes:")
+                }
+                
+                do {
                     let yourRecipesData = try await apiGetManager.getConnectedUserRecipesWithDetails(userId: userId)
                     
                     DispatchQueue.main.async {
@@ -242,6 +284,28 @@ struct HomePageView: View {
                 }
                 
                 let userId = currentUser.userId
+                
+                Task {
+                    async let yourFollowsRecipes = apiGetManager.getFollowedUsersRecipes(userId: userId)
+                    
+                    do {
+                        self.yourFollowsRecipes = try await yourFollowsRecipes
+                    } catch let error as APIGetError {
+                        switch error {
+                        case .invalidUrl:
+                            errorMessage = "The request URL is invalid. Please check your connection."
+                        case .invalidResponse:
+                            errorMessage = "Unexpected response from the server. Try again later."
+                        case .decodingError:
+                            errorMessage = "We couldn't process the data. Please update your app."
+                        case .serverError:
+                            errorMessage = "The server is currently unavailable. Try again later."
+                        case .userNotFound:
+                            errorMessage = "We couldn't find the user you're looking for."
+                        }
+                        displayErrorMessage = true
+                    }
+                }
                 
                 Task {
                     async let bookmarkedRecipes = apiGetManager.getSavedRecipes(userId: userId)

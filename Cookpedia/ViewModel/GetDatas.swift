@@ -385,6 +385,31 @@ class APIGetRequest: ObservableObject {
         }
     }
     
+    func getFollowedUsersRecipes(userId: Int) async throws -> [RecipeTitleCoverUser] {
+        let endpoint = "/recipes/followed-users-recipes/\(userId)"
+        
+        guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            throw APIGetError.invalidUrl
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let (data, response) = try await networkService.request(request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw APIGetError.invalidResponse
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            return try decoder.decode([RecipeTitleCoverUser].self, from: data)
+        } catch {
+            throw APIGetError.decodingError
+        }
+    }
+    
     func getRecipeDetails(recipeId: Int) async throws -> RecipeDetails {
         let endpoint = "/recipes/recipe-details/\(recipeId)"
         
