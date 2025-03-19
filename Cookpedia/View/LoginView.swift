@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCrashlytics
 
 struct LoginView: View {
     
@@ -179,6 +180,9 @@ struct LoginView: View {
                                 Task {
                                     do {
                                         let (token, id) = try await apiPostManager.loginUser(email: email, password: password, rememberMe: rememberMe)
+                                        
+                                        AnalyticsManager.shared.setUserId(userId: String(id))
+                                        AnalyticsManager.shared.logEvent(name: "login_success", params: ["user_id": id])
                                         
                                         // Store session in SwiftData
                                         let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)

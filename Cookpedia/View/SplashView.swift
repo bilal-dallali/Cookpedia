@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import FirebasePerformance
+import FirebaseAnalytics
 
 struct SplashView: View {
     
@@ -46,6 +47,7 @@ struct SplashView: View {
         .frame(maxWidth: .infinity)
         .background(Color("Dark1"))
         .onAppear {
+            AnalyticsManager.shared.logEvent(name: "app_opened")
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 if let _ = try? context.fetch(sessionDescriptor).first {
                     redirectHomePage = true

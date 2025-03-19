@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCrashlytics
 
 struct SettingsView: View {
     
@@ -117,6 +118,9 @@ struct SettingsView: View {
                         }
                         doLogout = false
                         redirectWelcomePage = true
+                        
+                        Crashlytics.crashlytics().log("User logged out")
+                        AnalyticsManager.shared.logEvent(name: "logout")
                     } label: {
                         Text("Yes, Logout")
                             .foregroundStyle(Color("MyWhite"))
