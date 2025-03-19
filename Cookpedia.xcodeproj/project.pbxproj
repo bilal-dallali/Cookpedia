@@ -13,6 +13,7 @@
 		E13011362D86D19D001BE6F5 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = E13011352D86D19D001BE6F5 /* FirebaseAppCheck */; };
 		E13011382D86D19D001BE6F5 /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = E13011372D86D19D001BE6F5 /* FirebaseAppDistribution-Beta */; };
 		E130113B2D86D1E7001BE6F5 /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = E130113A2D86D1E7001BE6F5 /* FirebasePerformance */; };
+		E1FB5DB02D8AAA2C001801A0 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FB5DAF2D8AAA2C001801A0 /* AdSupport.framework */; };
 		E1FCBF1F2D89BBFF006F5EA3 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = E1FCBF1E2D89BBFF006F5EA3 /* FirebaseCrashlytics */; };
 		E1FCBF212D89BC40006F5EA3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = E1FCBF202D89BC40006F5EA3 /* FirebaseCore */; };
 /* End PBXBuildFile section */
@@ -30,6 +31,7 @@
 /* Begin PBXFileReference section */
 		E145406E2CCBF3A600D2D86E /* Cookpedia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cookpedia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E156C98E2D7F0B3D00DB433F /* CookpediaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CookpediaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1FB5DAF2D8AAA2C001801A0 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -65,6 +67,7 @@
 			files = (
 				E13011362D86D19D001BE6F5 /* FirebaseAppCheck in Frameworks */,
 				E13011302D86D19D001BE6F5 /* FirebaseAnalytics in Frameworks */,
+				E1FB5DB02D8AAA2C001801A0 /* AdSupport.framework in Frameworks */,
 				E130113B2D86D1E7001BE6F5 /* FirebasePerformance in Frameworks */,
 				E1FCBF1F2D89BBFF006F5EA3 /* FirebaseCrashlytics in Frameworks */,
 				E13011382D86D19D001BE6F5 /* FirebaseAppDistribution-Beta in Frameworks */,
@@ -87,6 +90,7 @@
 		E13011392D86D1E7001BE6F5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E1FB5DAF2D8AAA2C001801A0 /* AdSupport.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -187,6 +187,7 @@ struct LoginView: View {
                                             try context.save()
                                         } catch {
                                             print("Failed to save user session: \(error.localizedDescription)")
+                                            CrashManager.shared.setUserId(userId: String(id))
                                         }
                                         loadingScreen = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

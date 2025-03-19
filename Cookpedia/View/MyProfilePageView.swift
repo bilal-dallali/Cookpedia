@@ -7,6 +7,29 @@
 
 import SwiftUI
 import SwiftData
+import FirebaseCrashlytics
+
+final class CrashManager {
+    static let shared = CrashManager()
+    
+    private init() {}
+    
+    func setUserId(userId: String) {
+        Crashlytics.crashlytics().setUserID(userId)
+    }
+    
+    func setValue(value: String, key: String) {
+        Crashlytics.crashlytics().setCustomValue(value, forKey: key)
+    }
+    
+    func addLog(message: String) {
+        Crashlytics.crashlytics().log(message)
+    }
+    
+    func sendNonFatal(error: Error) {
+        Crashlytics.crashlytics().record(error: error)
+    }
+}
 
 struct MyProfilePageView: View {
     
@@ -449,6 +472,7 @@ struct MyProfilePageView: View {
                             }
                         } catch {
                             print("Erreur de chargement de l'utilisateur: \(error)")
+                            CrashManager.shared.setUserId(userId: String(userId))
                         }
                     }
                 

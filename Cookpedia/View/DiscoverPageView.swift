@@ -86,7 +86,38 @@ struct DiscoverPageView: View {
                                                 } label: {
                                                     RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
                                                         .frame(width: 183, height: 260)
-                                                }                                        }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    .scrollIndicators(.hidden)
+                                }
+                                
+                                VStack(spacing: 20) {
+                                    HStack {
+                                        Text("From Users You Follow")
+                                            .foregroundStyle(Color("MyWhite"))
+                                            .font(.custom("Urbanist-Bold", size: 24))
+                                        Spacer()
+                                        NavigationLink {
+                                            MostPopularRecipeView()
+                                        } label: {
+                                            Image("Arrow - Right - Regular - Light - Outline")
+                                                .resizable()
+                                                .frame(width: 24, height: 24)
+                                                .foregroundStyle(Color("Primary900"))
+                                        }
+                                    }
+                                    ScrollView(.horizontal) {
+                                        LazyHStack(spacing: 16) {
+                                            ForEach(mostPopularRecipes.prefix(5), id: \.id) { recipe in
+                                                NavigationLink {
+                                                    RecipeDetailsView(recipeId: recipe.id, isSearch: false)
+                                                } label: {
+                                                    RecipeCardNameView(recipe: recipe, shouldRefresh: $shouldRefresh)
+                                                        .frame(width: 183, height: 260)
+                                                }
+                                            }
                                         }
                                     }
                                     .scrollIndicators(.hidden)
