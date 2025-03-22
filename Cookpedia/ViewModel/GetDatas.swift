@@ -194,110 +194,203 @@ class APIGetRequest: ObservableObject {
     }
     
     func getPublishedRecipesFromUserId(userId: Int, published: Bool) async throws -> [RecipeTitleCover] {
+        let trace = Performance.startTrace(name: "get_published_recipes")
         let publishedValue = published ? 1 : 0
         let endpoint = "/recipes/fetch-user-published-recipes/\(userId)/\(publishedValue)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([RecipeTitleCover].self, from: data)
+            let result = try decoder.decode([RecipeTitleCover].self, from: data)
+            trace?.stop()
+            return result
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getPublishedRecipesCount(userId: Int) async throws -> Int {
+        let trace = Performance.startTrace(name: "get_published_recipes_count")
         let endpoint = "/recipes/published-recipes-count/\(userId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
             guard let count = jsonResult?["count"] as? Int else {
+                trace?.incrementMetric("invalid_json", by: 1)
+                trace?.stop()
                 throw APIGetError.decodingError
             }
-            
+
+            trace?.stop()
             return count
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getDraftRecipesCount(userId: Int) async throws -> Int {
+        let trace = Performance.startTrace(name: "get_draft_recipes_count")
         let endpoint = "/recipes/draft-recipes-count/\(userId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            
             guard let count = jsonResult?["count"] as? Int else {
+                trace?.incrementMetric("invalid_json", by: 1)
+                trace?.stop()
                 throw APIGetError.decodingError
             }
-            
+
+            trace?.stop()
             return count
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getSavedRecipes(userId: Int) async throws -> [RecipeTitleCoverUser] {
+        let trace = Performance.startTrace(name: "get_saved_recipes")
         let endpoint = "/recipes/bookmarked-recipes/\(userId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             let savedRecipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
+
+            trace?.stop()
             return savedRecipes
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
@@ -361,51 +454,101 @@ class APIGetRequest: ObservableObject {
     }
     
     func getConnectedUserRecipesWithDetails(userId: Int) async throws -> [RecipeTitleCoverUser] {
+        let trace = Performance.startTrace(name: "get_connected_user_recipes_with_details")
         let endpoint = "/recipes/user-recipes-with-details/\(userId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([RecipeTitleCoverUser].self, from: data)
+            let recipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
+            trace?.stop()
+            return recipes
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getFollowedUsersRecipes(userId: Int) async throws -> [RecipeTitleCoverUser] {
+        let trace = Performance.startTrace(name: "get_followed_users_recipes")
         let endpoint = "/recipes/followed-users-recipes/\(userId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([RecipeTitleCoverUser].self, from: data)
+            let recipes = try decoder.decode([RecipeTitleCoverUser].self, from: data)
+            trace?.stop()
+            return recipes
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
@@ -449,302 +592,605 @@ class APIGetRequest: ObservableObject {
     }
     
     func isFollowing(followerId: Int, followedId: Int) async throws -> Bool {
+        let trace = Performance.startTrace(name: "is_following")
         let endpoint = "/users/is-following/\(followerId)/\(followedId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            let jsonResponse = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            if let isFollowing = jsonResponse?["isFollowing"] as? Bool {
-                return isFollowing
-            } else {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
                 throw APIGetError.invalidResponse
             }
+
+            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            let isFollowing = json?["isFollowing"] as? Bool ?? false
+            trace?.stop()
+            return isFollowing
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getFollowingCount(userId: Int) async throws -> Int {
+        let trace = Performance.startTrace(name: "get_following_count")
         let endpoint = "/users/\(userId)/following"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            if let followingCount = jsonResult?["followingCount"] as? Int {
-                return followingCount
-            } else {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            guard let followingCount = json?["followingCount"] as? Int else {
+                trace?.incrementMetric("missing_field", by: 1)
+                trace?.stop()
                 throw APIGetError.decodingError
             }
+
+            trace?.stop()
+            return followingCount
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getFollowersCount(userId: Int) async throws -> Int {
+        let trace = Performance.startTrace(name: "get_followers_count")
         let endpoint = "/users/\(userId)/followers"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            let jsonResult = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            if let followersCount = jsonResult?["followersCount"] as? Int {
-                return followersCount
-            } else {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            guard let followersCount = json?["followersCount"] as? Int else {
+                trace?.incrementMetric("missing_field", by: 1)
+                trace?.stop()
                 throw APIGetError.decodingError
             }
+
+            trace?.stop()
+            return followersCount
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getFollowers(userId: Int) async throws -> [UserDetails] {
+        let trace = Performance.startTrace(name: "get_followers")
         let endpoint = "/users/followers/\(userId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([UserDetails].self, from: data)
+            let users = try decoder.decode([UserDetails].self, from: data)
+
+            trace?.stop()
+            return users
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getFollowing(userId: Int) async throws -> [UserDetails] {
+        let trace = Performance.startTrace(name: "get_following")
         let endpoint = "/users/following/\(userId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([UserDetails].self, from: data)
+            let users = try decoder.decode([UserDetails].self, from: data)
+
+            trace?.stop()
+            return users
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getCommentsOrderAsc(forRecipeId recipeId: Int) async throws -> [CommentsDetails] {
+        let trace = Performance.startTrace(name: "get_comments_asc")
         let endpoint = "/comments/get-comments-from-recipe-id-order-asc/\(recipeId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([CommentsDetails].self, from: data)
+            let comments = try decoder.decode([CommentsDetails].self, from: data)
+
+            trace?.stop()
+            return comments
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getCommentsOrderDesc(forRecipeId recipeId: Int) async throws -> [CommentsDetails] {
+        let trace = Performance.startTrace(name: "get_comments_desc")
         let endpoint = "/comments/get-comments-from-recipe-id-order-desc/\(recipeId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([CommentsDetails].self, from: data)
+            let comments = try decoder.decode([CommentsDetails].self, from: data)
+
+            trace?.stop()
+            return comments
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getCommentsByLikes(forRecipeId recipeId: Int) async throws -> [CommentsDetails] {
+        let trace = Performance.startTrace(name: "get_comments_by_likes")
         let endpoint = "/comments/get-comments-from-recipe-id-order-by-likes/\(recipeId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode([CommentsDetails].self, from: data)
+            let comments = try decoder.decode([CommentsDetails].self, from: data)
+
+            trace?.stop()
+            return comments
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getMostPopularRecipes() async throws -> [RecipeTitleCoverUser] {
+        let trace = Performance.startTrace(name: "get_most_popular_recipes")
         let endpoint = "/recipes/most-popular-recipes"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            return try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+            trace?.stop()
+            return recipes
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getUsersByRecipeViews() async throws -> [UserDetails] {
+        let trace = Performance.startTrace(name: "get_users_by_recipe_views")
         let endpoint = "/users/recipe-views"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            return try JSONDecoder().decode([UserDetails].self, from: data)
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            let users = try JSONDecoder().decode([UserDetails].self, from: data)
+            trace?.stop()
+            return users
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getRecommendations() async throws -> [RecipeTitleCoverUser] {
+        let trace = Performance.startTrace(name: "get_recommendations")
         let endpoint = "/recipes/recommendations"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            return try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+            trace?.stop()
+            return recipes
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
     
     func getMostSearchesRecipes() async throws -> [RecipeTitleCoverUser] {
+        let trace = Performance.startTrace(name: "get_most_searches_recipes")
         let endpoint = "/recipes/most-searches-recipes"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
             throw APIGetError.invalidResponse
         }
-        
+
+        metric.start()
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
         do {
-            return try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
+            let recipes = try JSONDecoder().decode([RecipeTitleCoverUser].self, from: data)
+            trace?.stop()
+            return recipes
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
@@ -778,35 +1224,56 @@ class APIGetRequest: ObservableObject {
     }
     
     func isCommentLiked(userId: Int, commentId: Int) async throws -> Bool {
+        let trace = Performance.startTrace(name: "is_comment_liked")
         let endpoint = "/comments/is-comment-liked/\(userId)/\(commentId)"
-        
+
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.incrementMetric("invalid_url", by: 1)
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
+
+        guard let metric = HTTPMetric(url: url, httpMethod: .get) else {
+            trace?.incrementMetric("metric_init_failed", by: 1)
+            trace?.stop()
+            throw APIGetError.invalidResponse
+        }
+
+        metric.start()
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        
-        // 🔥 Use injected `networkService` instead of `URLSession.shared`
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw APIGetError.invalidResponse
-        }
-        
-        // Log raw response (for debugging)
-//        if let responseString = String(data: data, encoding: .utf8) {
-//            print("Raw server response:", responseString)
-//        }
-        
+
         do {
+            let (data, response) = try await networkService.request(request)
+
+            if let httpResponse = response as? HTTPURLResponse {
+                metric.responseCode = httpResponse.statusCode
+                trace?.setValue(Int64(httpResponse.statusCode), forMetric: "http_status")
+            }
+
+            metric.responsePayloadSize = Int(Int64(data.count))
+            metric.stop()
+
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                trace?.incrementMetric("invalid_response", by: 1)
+                trace?.stop()
+                throw APIGetError.invalidResponse
+            }
+
             if let jsonResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                let isLiked = jsonResponse["isLiked"] as? Bool {
+                trace?.stop()
                 return isLiked
             } else {
+                trace?.incrementMetric("invalid_json", by: 1)
+                trace?.stop()
                 throw APIGetError.decodingError
             }
         } catch {
+            trace?.incrementMetric("request_failed", by: 1)
+            metric.stop()
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
