@@ -57,6 +57,9 @@ struct RecentRecipeView: View {
                 }
             }
         }
+        .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_recent_recipes_page")
+        }
         .task {
             do {
                 recipes = try await apiGetManager.getAllRecentRecipes()

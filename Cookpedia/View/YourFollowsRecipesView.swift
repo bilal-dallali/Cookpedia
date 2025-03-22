@@ -61,6 +61,9 @@ struct YourFollowsRecipesView: View {
                 }
             }
         }
+        .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_your_follows_page")
+        }
         .task {
             guard let currentUser = userSession.first else {
                 return

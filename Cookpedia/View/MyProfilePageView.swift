@@ -433,6 +433,8 @@ struct MyProfilePageView: View {
                 .padding(.horizontal, 24)
                 .background(Color("Dark1"))
                 .onAppear {
+                    AnalyticsManager.shared.logEvent(name: "view_my_profile_page")
+                    
                     guard let currentUser = userSession.first else {
                         return
                     }

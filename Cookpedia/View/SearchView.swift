@@ -224,6 +224,9 @@ struct SearchView: View {
         .onTapGesture {
             isTextFocused = false
         }
+        .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_search_page")
+        }
         .task {
             do {
                 mostSearchedRecipes = try await apiGetManager.getMostSearchesRecipes()

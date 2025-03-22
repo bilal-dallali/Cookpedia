@@ -57,6 +57,9 @@ struct MostPopularRecipeView: View {
                 }
             }
         }
+        .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_most_popular_recipes_page")
+        }
         .task {
             do {
                 mostPopularRecipes = try await apiGetManager.getMostPopularRecipes()

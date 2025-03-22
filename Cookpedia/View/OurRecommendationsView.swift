@@ -48,6 +48,8 @@ struct OurRecommendationsView: View {
             }
         }
         .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_recommendations_page")
+            
             Task {
                 do {
                     let recipes = try await apiGetManager.getRecommendations()

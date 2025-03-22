@@ -211,9 +211,9 @@ struct HomePageView: View {
                 .background(Color("Dark1"))
             }
             .navigationBarBackButtonHidden(true)
-            .onAppear(perform: {
+            .onAppear {
                 AnalyticsManager.shared.logEvent(name: "view_home_page")
-            })
+            }
             .task {
                 guard let currentUser = userSession.first else {
                     return

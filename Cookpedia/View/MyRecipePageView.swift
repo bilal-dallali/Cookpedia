@@ -168,6 +168,8 @@ struct MyRecipePageView: View {
             .background(Color("Dark1"))
         }
         .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_my_recipe_page")
+            
             guard let currentUser = userSession.first else {
                 return
             }

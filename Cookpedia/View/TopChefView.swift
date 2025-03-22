@@ -47,6 +47,8 @@ struct TopChefView: View {
             }
         }
         .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_top_chef_page")
+            
             Task {
                 do {
                     let users = try await apiGetManager.getUsersByRecipeViews()

@@ -224,6 +224,9 @@ struct DiscoverPageView: View {
                 
             }
             .navigationBarBackButtonHidden(true)
+            .onAppear {
+                AnalyticsManager.shared.logEvent(name: "view_discover_page")
+            }
             .task {
                 do {
                     let mostPopularRecipesData = try await apiGetManager.getMostPopularRecipes()

@@ -57,6 +57,9 @@ struct MostSearchedView: View {
                 }
             }
         }
+        .onAppear {
+            AnalyticsManager.shared.logEvent(name: "view_most_searched_page")
+        }
         .task {
             do {
                 mostSearchedRecipes = try await apiGetManager.getMostSearchesRecipes()
