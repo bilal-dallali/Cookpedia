@@ -419,6 +419,9 @@ struct MyProfilePageView: View {
                     }
                     
                     let userId = currentUser.userId
+                    
+                    CrashManager.shared.setUserId(userId: String(userId))
+                    CrashManager.shared.addLog(message: "Display my profile page")
                     connectedUserId = userId
                     
                     Task {
@@ -454,6 +457,7 @@ struct MyProfilePageView: View {
                         } catch {
                             print("Erreur de chargement de l'utilisateur: \(error)")
                             CrashManager.shared.setUserId(userId: String(userId))
+                            CrashManager.shared.addLog(message: "Display My Profile")
                         }
                     }
                 

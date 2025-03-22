@@ -43,6 +43,9 @@ struct RecipeCardView: View {
                             
                             let userId = currentUser.userId
                             
+                            CrashManager.shared.setUserId(userId: String(userId))
+                            CrashManager.shared.addLog(message: "Toggle bookmark")
+                            
                             Task {
                                 do {
                                     try await apiPostManager.toggleBookmark(userId: userId, recipeId: recipe.id, isBookmarked: isBookmarkSelected)
@@ -95,6 +98,9 @@ struct RecipeCardView: View {
                 }
                 
                 let userId = currentUser.userId
+                
+                CrashManager.shared.setUserId(userId: String(userId))
+                CrashManager.shared.addLog(message: "Display bookmark")
                 
                 Task {
                     do {

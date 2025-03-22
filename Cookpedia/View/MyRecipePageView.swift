@@ -122,6 +122,10 @@ struct MyRecipePageView: View {
                                 
                                 let userId = currentUser.userId
                                 
+                                CrashManager.shared.setUserId(userId: String(userId))
+                                
+                                CrashManager.shared.addLog(message: "Display draft recipes")
+                                
                                 Task {
                                     do {
                                         let recipes = try await apiGetManager.getPublishedRecipesFromUserId(userId: userId, published: false)
@@ -148,6 +152,9 @@ struct MyRecipePageView: View {
                                 }
                                 
                                 let userId = currentUser.userId
+                                
+                                CrashManager.shared.setUserId(userId: String(userId))
+                                CrashManager.shared.addLog(message: "Display published recipes")
                                 
                                 Task {
                                     do {
@@ -176,7 +183,10 @@ struct MyRecipePageView: View {
             }
 
             let userId = currentUser.userId
-
+            
+            CrashManager.shared.setUserId(userId: String(userId))
+            CrashManager.shared.addLog(message: "Display published and draft recipes")
+            
             Task {
                 do {
                     async let publishedCountData = apiGetManager.getPublishedRecipesCount(userId: userId)

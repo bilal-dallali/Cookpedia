@@ -204,6 +204,9 @@ struct RecipeDetailsView: View {
                                                         
                                                         let userId = currentUser.userId
                                                         
+                                                        CrashManager.shared.setUserId(userId: String(userId))
+                                                        CrashManager.shared.addLog(message: "Check if is following")
+                                                        
                                                         if following == true {
                                                             Task {
                                                                 do {
@@ -502,6 +505,9 @@ struct RecipeDetailsView: View {
                                                             
                                                             let userId = currentUser.userId
                                                             
+                                                            CrashManager.shared.setUserId(userId: String(userId))
+                                                            CrashManager.shared.addLog(message: "Submit comment")
+                                                            
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
                                                             Task {
@@ -531,6 +537,9 @@ struct RecipeDetailsView: View {
                                                             }
                                                             
                                                             let userId = currentUser.userId
+                                                            
+                                                            CrashManager.shared.setUserId(userId: String(userId))
+                                                            CrashManager.shared.addLog(message: "Button comment")
                                                             
                                                             let comment = CommentsPost(userId: userId, recipeId: recipeDetails.id, comment: commentText)
                                                             
@@ -628,6 +637,9 @@ struct RecipeDetailsView: View {
                                     
                                     let userId = currentUser.userId
                                     
+                                    CrashManager.shared.setUserId(userId: String(userId))
+                                    CrashManager.shared.addLog(message: "Bookmark this recipe through details view")
+                                    
                                     Task {
                                         do {
                                             try await apiPostManager.toggleBookmark(userId: userId, recipeId: recipeId, isBookmarked: isBookmarkSelected)
@@ -660,6 +672,9 @@ struct RecipeDetailsView: View {
                         }
                         
                         let userId = currentUser.userId
+                        
+                        CrashManager.shared.setUserId(userId: String(userId))
+                        CrashManager.shared.addLog(message: "Display recipe details")
                         
                         connectedUserId = userId
                         

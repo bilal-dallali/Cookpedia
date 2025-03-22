@@ -71,6 +71,9 @@ struct YourFollowsRecipesView: View {
             
             let userId = currentUser.userId
             
+            CrashManager.shared.setUserId(userId: String(userId))
+            CrashManager.shared.addLog(message: "Display your follows")
+            
             do {
                 recipes = try await apiGetManager.getFollowedUsersRecipes(userId: userId)
             } catch let error as APIGetError {

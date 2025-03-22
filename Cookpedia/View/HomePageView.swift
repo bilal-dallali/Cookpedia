@@ -201,6 +201,11 @@ struct HomePageView: View {
                                     }
                                 }
                                 .scrollIndicators(.hidden)
+                                Button {
+                                    fatalError("Crash test")
+                                } label: {
+                                    Text("Crash")
+                                }
                             }
                         }
                     }
@@ -221,6 +226,10 @@ struct HomePageView: View {
                 }
                 
                 let userId = currentUser.userId
+                
+                CrashManager.shared.setUserId(userId: String(userId))
+                CrashManager.shared.addLog(message: "Display home page infos")
+                
                 
                 do {
                     let yourFollowsRecipesData = try await apiGetManager.getFollowedUsersRecipes(userId: userId)
@@ -285,6 +294,9 @@ struct HomePageView: View {
                 }
                 
                 let userId = currentUser.userId
+                
+                CrashManager.shared.setUserId(userId: String(userId))
+                CrashManager.shared.addLog(message: "Refresh home page infos")
                 
                 Task {
                     async let yourFollowsRecipes = apiGetManager.getFollowedUsersRecipes(userId: userId)

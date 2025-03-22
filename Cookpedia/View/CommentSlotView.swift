@@ -225,6 +225,8 @@ struct CommentSlotView: View {
             
             let connectedUserId = currentUser.userId
             
+            CrashManager.shared.setUserId(userId: String(userId!))
+            
             userId = connectedUserId
             
             Task {

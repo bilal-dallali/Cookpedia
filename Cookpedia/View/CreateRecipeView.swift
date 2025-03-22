@@ -144,6 +144,9 @@ struct CreateRecipeView: View {
                                             
                                             let userId = currentUser.userId
                                             
+                                            CrashManager.shared.setUserId(userId: String(userId))
+                                            CrashManager.shared.addLog(message: "Creating recipe")
+                                            
                                             if case.create = mode {
                                                 let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)
                                                 
@@ -228,6 +231,9 @@ struct CreateRecipeView: View {
                                             }
                                             
                                             let userId = currentUser.userId
+                                            
+                                            CrashManager.shared.setUserId(userId: String(userId))
+                                            CrashManager.shared.addLog(message: "Creating recipe")
                                             
                                             if case.create = mode {
                                                 let recipe = RecipeRegistration(userId: userId, title: title, recipeCoverPictureUrl1: recipeCoverPictureUrl1, recipeCoverPictureUrl2: recipeCoverPictureUrl2, description: description, cookTime: cookTime, serves: serves, origin: origin, ingredients: ingredientsJson, instructions: instructionsJson)

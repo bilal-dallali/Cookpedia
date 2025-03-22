@@ -80,6 +80,9 @@ struct ProfilePageView: View {
                                     
                                     let connectedUserId = currentUser.userId
                                     
+                                    CrashManager.shared.setUserId(userId: String(userId))
+                                    CrashManager.shared.addLog(message: "Following user")
+                                    
                                     if following == true {
                                         Task {
                                             do {

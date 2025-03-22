@@ -71,6 +71,9 @@ struct MyBookmarkView: View {
             
             let userId = currentUser.userId
             
+            CrashManager.shared.setUserId(userId: String(userId))
+            CrashManager.shared.addLog(message: "Display My Bookmark")
+            
             do {
                 recipes = try await apiGetManager.getSavedRecipes(userId: userId)
             } catch let error as APIGetError {
@@ -98,6 +101,9 @@ struct MyBookmarkView: View {
             }
             
             let userId = currentUser.userId
+            
+            CrashManager.shared.setUserId(userId: String(userId))
+            CrashManager.shared.addLog(message: "Refresh my bookmarks")
             
             Task {
                 do {

@@ -214,6 +214,9 @@ struct CommentsView: View {
                                 
                                 let userId = currentUser.userId
                                 
+                                CrashManager.shared.setUserId(userId: String(userId))
+                                CrashManager.shared.addLog(message: "Submit comment")
+                                
                                 let comment = CommentsPost(userId: userId, recipeId: recipeId, comment: commentText)
                                 
                                 Task {
@@ -281,6 +284,9 @@ struct CommentsView: View {
                                 }
                                 
                                 let userId = currentUser.userId
+                                
+                                CrashManager.shared.setUserId(userId: String(userId))
+                                CrashManager.shared.addLog(message: "Comment button tapped")
                                 
                                 let comment = CommentsPost(userId: userId, recipeId: recipeId, comment: commentText)
                                 
@@ -393,6 +399,9 @@ struct CommentsView: View {
             }
             
             let userId = currentUser.userId
+            
+            CrashManager.shared.setUserId(userId: String(userId))
+            CrashManager.shared.addLog(message: "Display comments")
             
             do {
                 

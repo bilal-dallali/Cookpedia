@@ -404,6 +404,9 @@ struct EditProfileView: View {
                             
                             let userId = currentUser.userId
                             
+                            CrashManager.shared.setUserId(userId: String(userId))
+                            CrashManager.shared.addLog(message: "Edit profile")
+                            
                             let updatedUser = EditUser(
                                 id: userId,
                                 fullName: fullName,
@@ -450,6 +453,9 @@ struct EditProfileView: View {
                 }
                 
                 let userId = currentUser.userId
+                
+                CrashManager.shared.setUserId(userId: String(userId))
+                CrashManager.shared.addLog(message: "Display edit profile infos")
                     
                 do {
                     let user = try await apiGetManager.getUserDataFromUserId(userId: userId)

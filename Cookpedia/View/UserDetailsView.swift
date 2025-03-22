@@ -53,6 +53,9 @@ struct UserDetailsView: View {
                     
                     let userId = currentUser.userId
                     
+                    CrashManager.shared.setUserId(userId: String(userId))
+                    CrashManager.shared.addLog(message: "Follow or unfollow through user details view")
+                    
                     if following == true {
                         Task {
                             do {
@@ -102,6 +105,9 @@ struct UserDetailsView: View {
             }
             
             let userId = currentUser.userId
+            
+            CrashManager.shared.setUserId(userId: String(userId))
+            CrashManager.shared.addLog(message: "Displau user details infos")
             
             connectedUserId = userId
             
