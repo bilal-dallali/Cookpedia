@@ -16,6 +16,7 @@ class APIDeleteRequest: ObservableObject {
         self.networkService = networkService
     }
     
+    // Unfollow a user
     func unfollowUser(followerId: Int, followedId: Int) async throws -> String {
         let endpoint = "/users/unfollow/\(followerId)/\(followedId)"
         
@@ -48,6 +49,7 @@ class APIDeleteRequest: ObservableObject {
         }
     }
     
+    // Delete a recipe
     func deleteRecipe(recipeId: Int) async throws -> String {
         let endpoint = "/recipes/delete-recipe/\(recipeId)"
         
@@ -80,6 +82,7 @@ class APIDeleteRequest: ObservableObject {
         }
     }
     
+    // Delete a comment
     func deleteComment(commentId: Int) async throws {
         let endpoint = "/comments/delete-comment/\(commentId)"
         
@@ -108,6 +111,7 @@ class APIDeleteRequest: ObservableObject {
         }
     }
     
+    // Unlike a comment
     func unlikeComment(userId: Int, commentId: Int) async throws {
         let endpoint = "/comments/unlike-comment"
         

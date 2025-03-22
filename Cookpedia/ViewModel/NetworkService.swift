@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Network service to link the Api calls to the mock tests
 protocol NetworkService {
     func request(_ request: URLRequest) async throws -> (Data, URLResponse)
 }

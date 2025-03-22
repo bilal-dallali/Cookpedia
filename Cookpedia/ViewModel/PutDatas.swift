@@ -17,6 +17,7 @@ class APIPutRequest: ObservableObject {
         self.networkService = networkService
     }
     
+    // Update user infos
     func updateUserProfile(userId: Int, user: EditUser, profilePicture: UIImage?) async throws -> String {
         let endpoint = "/users/edit-profile/\(userId)"
         
@@ -71,7 +72,7 @@ class APIPutRequest: ObservableObject {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         request.httpBody = body
         
-        // 🔥 Use injected `networkService` instead of `URLSession.shared`
+        // Use injected `networkService` instead of `URLSession.shared`
         let (_, response) = try await networkService.request(request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -93,6 +94,7 @@ class APIPutRequest: ObservableObject {
         }
     }
     
+    // Update a recipe or change the visibility
     func updateRecipe(recipeId: Int, updatedRecipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool) async throws -> String {
         let endpoint = "/recipes/update-recipe/\(recipeId)"
         

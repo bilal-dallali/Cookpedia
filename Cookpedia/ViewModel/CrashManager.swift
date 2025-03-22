@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseCrashlytics
 
+// Handle crashmanager
 final class CrashManager {
     static let shared = CrashManager()
     

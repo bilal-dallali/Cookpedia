@@ -292,6 +292,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    // Function to upload the recipe
     func uploadRecipe(recipe: RecipeRegistration, recipeCoverPicture1: UIImage?, recipeCoverPicture2: UIImage?, instructionImages: [(UIImage, String)], isPublished: Bool) async throws -> String {
         
         let endpoint = "/recipes/upload"
@@ -371,6 +372,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    // Bookmark a recipe or delete the bookmark for the recipe
     func toggleBookmark(userId: Int, recipeId: Int, isBookmarked: Bool) async throws {
         let endpoint = "/recipes/bookmark"
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
@@ -394,6 +396,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    // Follow a user to have his recipes on the front page
     func followUser(followerId: Int, followedId: Int) async throws -> String {
         let endpoint = "/users/follow"
         
@@ -443,6 +446,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    // Add a view to a recipe
     func incrementViews(recipeId: Int) async throws -> String {
         let endpoint = "/recipes/increment-views/\(recipeId)"
         
@@ -477,6 +481,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    // Post a comment on a recipe
     func postComment(comment: CommentsPost) async throws -> String {
         let endpoint = "/comments/add-comment"
         
@@ -519,6 +524,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    // Like a comment from a user
     func likeComment(userId: Int, commentId: Int) async throws {
         let endpoint = "/comments/like-comment"
         
@@ -558,6 +564,7 @@ class APIPostRequest: ObservableObject {
         }
     }
     
+    // Adding a search for a recipe
     func incrementRecipeSearch(recipeId: Int) async throws -> String {
         let endpoint = "/recipes/increment-searches/\(recipeId)"
         

@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseAnalytics
 
+// Handle the analytics manager
 final class AnalyticsManager {
     static let shared = AnalyticsManager()
     
