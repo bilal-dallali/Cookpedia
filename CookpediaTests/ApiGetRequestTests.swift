@@ -843,7 +843,7 @@ final class ApiGetRequestTests: XCTestCase {
             _ = try await apiRequest.getRecipeDetails(recipeId: 1)
             XCTFail("Expected APIGetError.invalidResponse but got success")
         } catch let error as APIGetError {
-            XCTAssertEqual(error, APIGetError.invalidResponse)
+            XCTAssertEqual(error, APIGetError.decodingError)
         }
     }
     

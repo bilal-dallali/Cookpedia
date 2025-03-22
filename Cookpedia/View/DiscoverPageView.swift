@@ -215,6 +215,7 @@ struct DiscoverPageView: View {
                                 }
                             }
                         }
+                        .padding(.bottom, 100)
                     }
                 }
                 .scrollIndicators(.hidden)

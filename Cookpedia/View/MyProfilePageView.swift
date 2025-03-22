@@ -405,6 +405,7 @@ struct MyProfilePageView: View {
                             }
                         }
                     }
+                    .padding(.bottom, 100)
                 }
                 .scrollIndicators(.hidden)
                 .padding(.top, 24)

@@ -161,6 +161,7 @@ struct MyRecipePageView: View {
                         }
                     }
                 }
+                .padding(.bottom, 100)
             }
             .scrollIndicators(.hidden)
             .padding(.top, 16)

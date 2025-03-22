@@ -409,28 +409,41 @@ class APIGetRequest: ObservableObject {
             throw APIGetError.decodingError
         }
     }
-    
+
     func getRecipeDetails(recipeId: Int) async throws -> RecipeDetails {
+        let trace = Performance.startTrace(name: "get_recipe_details")
+        
         let endpoint = "/recipes/recipe-details/\(recipeId)"
         
         guard let url = URL(string: "\(baseUrl)\(endpoint)") else {
+            trace?.stop()
             throw APIGetError.invalidUrl
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let (data, response) = try await networkService.request(request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            throw APIGetError.invalidResponse
-        }
-        
         do {
+            let (data, response) = try await networkService.request(request)
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                trace?.incrementMetric("http_status_\(httpResponse.statusCode)", by: 1)
+                
+                guard httpResponse.statusCode == 200 else {
+                    trace?.stop()
+                    throw APIGetError.invalidResponse
+                }
+            }
+
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .convertFromSnakeCase
-            return try decoder.decode(RecipeDetails.self, from: data)
+            let recipeDetails = try decoder.decode(RecipeDetails.self, from: data)
+            
+            trace?.stop()
+            return recipeDetails
+            
         } catch {
+            trace?.stop()
             throw APIGetError.decodingError
         }
     }
