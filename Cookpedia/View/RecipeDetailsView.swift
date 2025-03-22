@@ -9,9 +9,10 @@ import SwiftUI
 import SwiftData
 import Foundation
 
+// CHeck when the comment was updated
 func timeAgo(from dateString: String) -> String {
     let inputFormatter = ISO8601DateFormatter()
-    inputFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // Supporte le format ISO 8601
+    inputFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     
     guard let date = inputFormatter.date(from: dateString) else {
         return "Unknown time"

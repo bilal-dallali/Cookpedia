@@ -26,6 +26,7 @@ final class UserSessionTests: XCTestCase {
         context = nil
     }
     
+    // Test to initialize user session
     func testUserSessionInitialization() {
         let session = UserSession(userId: 1, email: "test@example.com", authToken: "testToken", isRemembered: true)
         
@@ -35,6 +36,7 @@ final class UserSessionTests: XCTestCase {
         XCTAssertTrue(session.isRemembered)
     }
     
+    // Test saving user session
     func testSavingUserSession() throws {
         let session = UserSession(userId: 1, email: "test@example.com", authToken: "testToken", isRemembered: true)
         
@@ -47,6 +49,7 @@ final class UserSessionTests: XCTestCase {
         XCTAssertEqual(fetchedSessions.first?.email, "test@example.com")
     }
     
+    // Test deleting user session
     func testDeletingUserSession() throws {
         let session = UserSession(userId: 1, email: "test@example.com", authToken: "testToken", isRemembered: true)
         context.insert(session)

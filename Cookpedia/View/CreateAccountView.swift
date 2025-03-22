@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 
+// Check if the email is valid
 func isValidEmail(_ email: String) -> Bool {
     let emailRegEx = "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
     let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegEx)

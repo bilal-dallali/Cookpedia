@@ -464,6 +464,7 @@ struct MyProfilePageView: View {
     }
 }
 
+// Format the date, to have it in the good format
 func formatDate(from dateString: String) -> String {
     
     let inputFormatter = ISO8601DateFormatter()

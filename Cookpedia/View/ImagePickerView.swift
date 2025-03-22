@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 
+// Function to generate an image name, to be sure it's unique
 func generateUniqueImageName() -> String {
     let uuid = UUID().uuidString
     let dateFormatter = DateFormatter()

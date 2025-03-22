@@ -15,6 +15,7 @@ struct CountryView: View {
     @FocusState private var isTextFocused: Bool
     @State private var progressViewWidth: CGFloat = 0
     
+    // search country through the textfield
     var filteredCountries: [Country] {
         if searchText.isEmpty {
             return countryList

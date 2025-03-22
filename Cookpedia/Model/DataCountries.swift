@@ -13,6 +13,7 @@ struct Country: Equatable {
     let domain: String
 }
 
+// List of countries for the country view
 let countryList = [
     Country(name: "Afghanistan", flag: "afghanistan", domain: "AF"),
     Country(name: "Afrique du Sud", flag: "south-africa", domain: "ZA"),

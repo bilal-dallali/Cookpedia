@@ -73,15 +73,6 @@ struct RecipeCardUpdateView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .strokeBorder(Color("Dark3"), lineWidth: 1)
             }
-            .onAppear {
-                
-//                guard let currentUser = userSession.first else {
-//                    return
-//                }
-//                
-//                let userId = currentUser.userId
-                
-            }
             .fullScreenCover(isPresented: $isUpdateRecipeSelected) {
                 CreateRecipeView(isCreateRecipeSelected: $isUpdateRecipeSelected, isUpdateRecipeSelected: $isUpdateRecipeSelected, mode: .edit(existingRecipe: recipe.id))
             }

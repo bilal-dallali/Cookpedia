@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 
+// Check is the URL is in a valid format
 func isValidWebsiteURL(_ url: String) -> Bool {
     let regex = #"^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"#
     return url.range(of: regex, options: .regularExpression) != nil

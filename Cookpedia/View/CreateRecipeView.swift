@@ -10,6 +10,7 @@ import Foundation
 import SwiftData
 
 struct CreateRecipeView: View {
+    // Mode create or edit
     enum Mode {
         case create
         case edit(existingRecipe: Int)

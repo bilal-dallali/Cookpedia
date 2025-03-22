@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+// Model for the user sesssion
 @Model
 class UserSession: Identifiable {
     

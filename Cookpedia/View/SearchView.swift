@@ -21,6 +21,7 @@ struct SearchView: View {
     @State private var shouldRefresh: Bool = false
     @State private var mostPopularUsers: [UserDetails] = []
     
+    // Search the user or the right recipe
     var filteredResults: [Any] {
         if isRecipeSelected {
             return mostSearchedRecipes.filter { $0.title.lowercased().contains(searchText.lowercased()) }

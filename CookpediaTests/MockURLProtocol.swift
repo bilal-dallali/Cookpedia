@@ -8,6 +8,7 @@
 import Foundation
 @testable import Cookpedia
 
+// Mock URL protocol to handle mock data as response for the tests
 class MockURLProtocol: URLProtocol {
     
     static var mockResponseData: Data?
