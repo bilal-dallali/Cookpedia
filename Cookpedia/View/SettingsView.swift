@@ -120,6 +120,7 @@ struct SettingsView: View {
                         redirectWelcomePage = true
                         
                         Crashlytics.crashlytics().log("User logged out")
+                        CrashManager.shared.setUserId(userId: "")
                         AnalyticsManager.shared.logEvent(name: "logout")
                     } label: {
                         Text("Yes, Logout")

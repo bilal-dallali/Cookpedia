@@ -199,6 +199,7 @@ struct LoginView: View {
                                             loadingScreen = false
                                         }
                                     } catch let error as APIPostError {
+                                        AnalyticsManager.shared.logEvent(name: "login_failed")
                                         DispatchQueue.main.async {
                                             switch error {
                                             case .invalidUrl:

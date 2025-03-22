@@ -365,6 +365,9 @@ struct CreateAccountView: View {
                                             do {
                                                 let (token, id) = try await apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe)
                                                 
+                                                AnalyticsManager.shared.setUserId(userId: String(id))
+                                                AnalyticsManager.shared.logEvent(name: "create_account_success", params: ["user_id": id])
+                                                
                                                 let userSession = UserSession(userId: id, email: email, authToken: token, isRemembered: rememberMe)
                                                 
                                                 context.insert(userSession)
@@ -384,6 +387,7 @@ struct CreateAccountView: View {
                                                 
                                                 
                                             } catch let error as APIPostError {
+                                                AnalyticsManager.shared.logEvent(name: "create_account_failed")
                                                 DispatchQueue.main.async {
                                                     switch error {
                                                     case .invalidUrl:

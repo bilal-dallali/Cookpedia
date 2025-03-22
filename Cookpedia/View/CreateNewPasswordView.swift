@@ -250,6 +250,10 @@ struct CreateNewPasswordView: View {
                                 Task {
                                     do {
                                         let result = try await apiPostManager.resetPassword(email: email, newPassword: password, resetCode: code.joined(), rememberMe: rememberMe)
+                                        
+                                        AnalyticsManager.shared.setUserId(userId: String(result.id))
+                                        AnalyticsManager.shared.logEvent(name: "reset_password_success", params: ["user_id": result.id])
+                                        
                                         let userSession = UserSession(userId: result.id, email: email, authToken: result.token, isRemembered: rememberMe)
                                         context.insert(userSession)
                                         do {
@@ -265,7 +269,7 @@ struct CreateNewPasswordView: View {
                                             }
                                         }
                                     } catch let error as APIPostError {
-                                        print("Error: \(error.localizedDescription)")
+                                        AnalyticsManager.shared.logEvent(name: "reset_password_failure", params: ["error": error.localizedDescription])
                                         errorMessage = error.localizedDescription
                                     }
                                 }
