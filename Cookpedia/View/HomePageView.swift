@@ -64,7 +64,7 @@ struct HomePageView: View {
                                     .shadow(color: Color(red: 0.96, green: 0.28, blue: 0.29).opacity(0.25), radius: 12, x: 4, y: 8)
                                 HStack {
                                     VStack(alignment: .leading, spacing: 12) {
-                                        Text("Learn how to become a master chef right now!")
+                                        Text("Become a master chef right now!")
                                             .foregroundStyle(Color("MyWhite"))
                                             .font(.custom("Urbanist-Bold", size: 20))
                                             .lineSpacing(7)
@@ -201,11 +201,6 @@ struct HomePageView: View {
                                     }
                                 }
                                 .scrollIndicators(.hidden)
-                                Button {
-                                    fatalError("Crash test")
-                                } label: {
-                                    Text("Crash")
-                                }
                             }
                         }
                     }
@@ -219,6 +214,10 @@ struct HomePageView: View {
             .navigationBarBackButtonHidden(true)
             .onAppear {
                 AnalyticsManager.shared.logEvent(name: "view_home_page")
+                AnalyticsManager.shared.logEvent(name: AnalyticsEventScreenView, params: [
+                    AnalyticsParameterScreenName: "HomePage",
+                    AnalyticsParameterScreenClass: "HomePageView"
+                ])
             }
             .task {
                 guard let currentUser = userSession.first else {
