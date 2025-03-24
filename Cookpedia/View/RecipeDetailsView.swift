@@ -712,6 +712,34 @@ struct RecipeDetailsView: View {
                         }
                     }
                 }
+                .onChange(of: refreshComment) {
+                    Task {
+                        //async let topComments = try await apiGetManager.getCommentsByLikes(forRecipeId: recipeId)
+                        async let newestComments = try await apiGetManager.getCommentsOrderDesc(forRecipeId: recipeId)
+                        
+                        do {
+                            //self.topComments = try await topComments
+                            self.comments = try await newestComments
+                        } catch let error as APIGetError {
+                            switch error {
+                            case .invalidUrl:
+                                errorMessage = "The request URL is invalid. Please check your connection."
+                            case .invalidResponse:
+                                errorMessage = "Unexpected response from the server. Try again later."
+                            case .decodingError:
+                                errorMessage = "We couldn't process the data. Please update your app."
+                            case .serverError:
+                                errorMessage = "The server is currently unavailable. Try again later."
+                            case .userNotFound:
+                                errorMessage = "We couldn't find the user you're looking for."
+                            }
+                            displayErrorMessage = true
+                        } catch {
+                            errorMessage = "An unexpected error occurred. Please try again later."
+                            displayErrorMessage = true
+                        }
+                    }
+                }
                 if addedToBookmarks {
                     NavigationLink {
                         MyBookmarkView()
