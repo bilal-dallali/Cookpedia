@@ -46,9 +46,7 @@ struct IngredientSlotView: View {
             .focused($isIngredientFocused)
             .submitLabel(.next)
             Button {
-                withAnimation {
                     onDelete()
-                }
             } label: {
                 Image("Delete - Regular - Light - Outline")
                     .resizable()
