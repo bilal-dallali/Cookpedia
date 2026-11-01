@@ -9,14 +9,7 @@ import SwiftUI
 
 struct CompleteProfileView: View {
     
-    @Binding var country: String
-    @Binding var level: String
-    
-    @State var profilePictureUrl: String = ""
-    @State var fullName = ""
-    @State var phoneNumber = ""
-    @State var gender = ""
-    @State var selectedImage: UIImage?
+    @Binding var draft: SignupDraft
     
     @State private var isImagePickerPresented = false
     
@@ -33,8 +26,6 @@ struct CompleteProfileView: View {
         return formatter.string(from: selectedDate)
     }
     
-    @State var date: String = ""
-    @State var city = ""
     @State private var progressViewWidth: CGFloat = 108
     
     var body: some View {
@@ -57,7 +48,7 @@ struct CompleteProfileView: View {
                                 Button {
                                     isImagePickerPresented = true
                                 } label: {
-                                    if let selectedImage {
+                                    if let selectedImage = draft.selectedImage {
                                         Image(uiImage: selectedImage)
                                             .resizable()
                                             .aspectRatio(contentMode: .fill)
@@ -84,8 +75,8 @@ struct CompleteProfileView: View {
                                     }
                                 }
                                 .sheet(isPresented: $isImagePickerPresented) {
-                                    ImagePicker(image: $selectedImage) { filename in
-                                        profilePictureUrl = "profile_picture_\(filename)"
+                                    ImagePicker(image: $draft.selectedImage) { filename in
+                                        draft.profilePictureUrl = "profile_picture_\(filename)"
                                     }
                                 }
                                 Spacer()
@@ -96,7 +87,7 @@ struct CompleteProfileView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
                                 VStack(spacing: 8) {
-                                    TextField(text: $fullName) {
+                                    TextField(text: $draft.fullName) {
                                         Text("Full Name")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -121,7 +112,7 @@ struct CompleteProfileView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
                                 VStack(spacing: 8) {
-                                    TextField(text: $phoneNumber) {
+                                    TextField(text: $draft.phoneNumber) {
                                         Text("Phone Number")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -164,8 +155,8 @@ struct CompleteProfileView: View {
                                 } label: {
                                     VStack(spacing: 8) {
                                         HStack {
-                                            Text(gender == "" ? "Gender" : gender)
-                                                .foregroundStyle(gender == "" ? Color("Dark4") : Color("MyWhite"))
+                                            Text(draft.gender == "" ? "Gender" : draft.gender)
+                                                .foregroundStyle(draft.gender == "" ? Color("Dark4") : Color("MyWhite"))
                                                 .font(.custom("Urbanist-Bold", size: 20))
                                             Spacer()
                                             Image(isDropDownMenuActivated ? "Arrow - Up 2 - Regular - Light - Outline" : "Arrow - Down 2 - Regular - Light - Outline")
@@ -212,6 +203,7 @@ struct CompleteProfileView: View {
                                             Button {
                                                 showDatePicker = false
                                                 isShowingDate = true
+                                                draft.date = localDate
                                             } label: {
                                                 Text("Done")
                                                     .foregroundStyle(Color("MyWhite"))
@@ -238,7 +230,7 @@ struct CompleteProfileView: View {
                                     .foregroundStyle(Color("MyWhite"))
                                     .font(.custom("Urbanist-Bold", size: 16))
                                 VStack(spacing: 8) {
-                                    TextField(text: $city) {
+                                    TextField(text: $draft.city) {
                                         Text("City")
                                             .foregroundStyle(Color("Dark4"))
                                             .font(.custom("Urbanist-Bold", size: 20))
@@ -268,10 +260,10 @@ struct CompleteProfileView: View {
                                 .frame(height: 1)
                                 .foregroundStyle(Color("Dark4"))
                         }
-                    if fullName != "" && phoneNumber != "" && isShowingDate && city != "" {
-                        if phoneNumber.count == 10, phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
+                    if draft.fullName != "" && draft.phoneNumber != "" && isShowingDate && draft.city != "" {
+                        if draft.phoneNumber.count == 10, draft.phoneNumber.rangeOfCharacter(from: CharacterSet.decimalDigits.inverted) == nil {
                             NavigationLink {
-                                CreateAccountView(country: $country, level: $level, fullName: $fullName, phoneNumber: $phoneNumber, gender: $gender, date: $date, city: $city, profilePictureUrl: $profilePictureUrl, selectedImage: $selectedImage)
+                                CreateAccountView(draft: $draft)
                             } label: {
                                 Text("Continue")
                                     .foregroundStyle(Color("MyWhite"))
@@ -284,9 +276,6 @@ struct CompleteProfileView: View {
                                     .padding(.horizontal, 24)
                                     .padding(.top, 24)
                                     .padding(.bottom, 36)
-                            }
-                            .onAppear {
-                                date = localDate
                             }
                         } else {
                             Button {
@@ -355,10 +344,10 @@ struct CompleteProfileView: View {
             if isDropDownMenuActivated {
                 VStack(alignment: .leading, spacing: 16) {
                     Button {
-                        gender = "Male"
+                        draft.gender = "Male"
                         isDropDownMenuActivated = false
                     } label: {
-                        Image(gender == "Male" ? "selected-radio" : "unselected-radio")
+                        Image(draft.gender == "Male" ? "selected-radio" : "unselected-radio")
                             .resizable()
                             .frame(width: 20, height: 20)
                         
@@ -375,10 +364,10 @@ struct CompleteProfileView: View {
                         }
                     
                     Button {
-                        gender = "Female"
+                        draft.gender = "Female"
                         isDropDownMenuActivated = false
                     } label: {
-                        Image(gender == "Female" ? "selected-radio" : "unselected-radio")
+                        Image(draft.gender == "Female" ? "selected-radio" : "unselected-radio")
                             .resizable()
                             .frame(width: 20, height: 20)
                         Text("Female")
@@ -402,5 +391,5 @@ struct CompleteProfileView: View {
 }
 
 #Preview {
-    CompleteProfileView(country: .constant("France"), level: .constant("Novice"))
+    CompleteProfileView(draft: .constant(SignupDraft(country: "France", cookingLevel: .novice)))
 }
