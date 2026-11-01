@@ -11,7 +11,7 @@ struct CountryView: View {
     
     @State private var selectedCountry: Country?
     @State private var searchText: String = ""
-    @State var country: String = ""
+    @State private var draft = SignupDraft()
     @FocusState private var isTextFocused: Bool
     @State private var progressViewWidth: CGFloat = 0
     
@@ -77,7 +77,7 @@ struct CountryView: View {
                     }
                 if selectedCountry != nil {
                     NavigationLink {
-                        CookingLevelView(country: $country)
+                        CookingLevelView(draft: $draft)
                     } label: {
                         Text("Continue")
                             .foregroundStyle(Color("MyWhite"))
@@ -91,9 +91,6 @@ struct CountryView: View {
                             .padding(.top, 24)
                             .padding(.bottom, 36)
                         
-                    }
-                    .onAppear {
-                        country = selectedCountry?.name ?? ""
                     }
                 } else {
                     Text("Continue")
@@ -110,12 +107,14 @@ struct CountryView: View {
             }
         }
         .onAppear {
-            country = selectedCountry?.name ?? ""
             DispatchQueue.main.asyncAfter(deadline: .now()) {
                 withAnimation(.easeIn(duration: 1)) {
                     progressViewWidth = 54
                 }
             }
+        }
+        .onChange(of: selectedCountry?.name) { _, selectedCountryName in
+            draft.country = selectedCountryName ?? ""
         }
         .background(Color("Dark1"))
         .ignoresSafeArea(edges: isTextFocused == false ? .bottom : [])
