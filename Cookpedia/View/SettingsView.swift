@@ -76,7 +76,7 @@ struct SettingsView: View {
         }
         .sheet(isPresented: $doLogout) {
             VStack(spacing: 24) {
-                Text("Delete Recipe")
+                Text("Logout")
                     .foregroundStyle(Color("Error"))
                     .font(.custom("Urbanist-Bold", size: 24))
                 Divider()
