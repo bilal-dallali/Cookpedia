@@ -17,15 +17,7 @@ func isValidEmail(_ email: String) -> Bool {
 
 struct CreateAccountView: View {
     
-    @Binding var country: String
-    @Binding var level: String
-    @Binding var fullName: String
-    @Binding var phoneNumber: String
-    @Binding var gender: String
-    @Binding var date: String
-    @Binding var city: String
-    @Binding var profilePictureUrl: String
-    @Binding var selectedImage: UIImage?
+    @Binding var draft: SignupDraft
     
     @State var username = ""
     @State var email = ""
@@ -361,10 +353,10 @@ struct CreateAccountView: View {
                                 if isValidEmail(email) {
                                     Button {
                                         Task {
-                                            let registration = UserRegistration(username: username, email: email, password: password, country: country, level: level, fullName: fullName, phoneNumber: phoneNumber, gender: gender, date: date, city: city, profilePictureUrl: profilePictureUrl)
+                                            let registration = UserRegistration(username: username, email: email, password: password, country: draft.country, level: draft.level, fullName: draft.fullName, phoneNumber: draft.phoneNumber, gender: draft.gender, date: draft.date, city: draft.city, profilePictureUrl: draft.profilePictureUrl)
                                             
                                             do {
-                                                let (token, id) = try await apiPostManager.registerUser(registration: registration, profilePicture: selectedImage, rememberMe: rememberMe)
+                                                let (token, id) = try await apiPostManager.registerUser(registration: registration, profilePicture: draft.selectedImage, rememberMe: rememberMe)
                                                 
                                                 AnalyticsManager.shared.setUserId(userId: String(id))
                                                 AnalyticsManager.shared.logEvent(name: "create_account_success", params: ["user_id": id])
@@ -553,5 +545,5 @@ struct CreateAccountView: View {
 
 
 #Preview {
-    CreateAccountView(country: .constant("France"), level: .constant("Novice"), fullName: .constant("JK Rowling"), phoneNumber: .constant("0600000000"), gender: .constant("Male"), date: .constant("12/05/1997"), city: .constant("London"), profilePictureUrl: .constant("profile-picture"), selectedImage: .constant(nil))
+    CreateAccountView(draft: .constant(SignupDraft(country: "France", cookingLevel: .novice, fullName: "JK Rowling", phoneNumber: "0600000000", gender: "Male", date: "12/05/1997", city: "London", profilePictureUrl: "profile-picture")))
 }
