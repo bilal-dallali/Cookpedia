@@ -9,13 +9,7 @@ import SwiftUI
 
 struct CookingLevelView: View {
     
-    @Binding var country: String
-    @State var novice: Bool = false
-    @State var intermediate: Bool = false
-    @State var advanced: Bool = false
-    @State var professional: Bool = false
-    @State var master: Bool = false
-    @State var level: String = ""
+    @Binding var draft: SignupDraft
     @State private var progressViewWidth: CGFloat = 54
     
     var body: some View {
@@ -32,12 +26,7 @@ struct CookingLevelView: View {
                     }
                     VStack(alignment: .leading, spacing: 16) {
                         Button {
-                            novice = true
-                            intermediate = false
-                            advanced = false
-                            professional = false
-                            master = false
-                            level = "Novice"
+                            draft.cookingLevel = .novice
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Novice")
@@ -54,7 +43,7 @@ struct CookingLevelView: View {
                             .background(Color("Dark2"))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .overlay {
-                                if novice == true {
+                                if draft.cookingLevel == .novice {
                                     RoundedRectangle(cornerRadius: 16)
                                         .strokeBorder(Color("Primary900"), lineWidth: 2)
                                 } else {
@@ -65,12 +54,7 @@ struct CookingLevelView: View {
                         }
                         
                         Button {
-                            novice = false
-                            intermediate = true
-                            advanced = false
-                            professional = false
-                            master = false
-                            level = "Intermediate"
+                            draft.cookingLevel = .intermediate
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Intermediate")
@@ -87,7 +71,7 @@ struct CookingLevelView: View {
                             .background(Color("Dark2"))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .overlay {
-                                if intermediate == true {
+                                if draft.cookingLevel == .intermediate {
                                     RoundedRectangle(cornerRadius: 16)
                                         .strokeBorder(Color("Primary900"), lineWidth: 2)
                                 } else {
@@ -98,12 +82,7 @@ struct CookingLevelView: View {
                         }
                         
                         Button {
-                            novice = false
-                            intermediate = false
-                            advanced = true
-                            professional = false
-                            master = false
-                            level = "Advanced"
+                            draft.cookingLevel = .advanced
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Advanced")
@@ -120,7 +99,7 @@ struct CookingLevelView: View {
                             .background(Color("Dark2"))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .overlay {
-                                if advanced == true {
+                                if draft.cookingLevel == .advanced {
                                     RoundedRectangle(cornerRadius: 16)
                                         .strokeBorder(Color("Primary900"), lineWidth: 2)
                                 } else {
@@ -131,12 +110,7 @@ struct CookingLevelView: View {
                         }
                         
                         Button {
-                            novice = false
-                            intermediate = false
-                            advanced = false
-                            professional = true
-                            master = false
-                            level = "Professional"
+                            draft.cookingLevel = .professional
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Professional")
@@ -153,7 +127,7 @@ struct CookingLevelView: View {
                             .background(Color("Dark2"))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .overlay {
-                                if professional == true {
+                                if draft.cookingLevel == .professional {
                                     RoundedRectangle(cornerRadius: 16)
                                         .strokeBorder(Color("Primary900"), lineWidth: 2)
                                 } else {
@@ -164,12 +138,7 @@ struct CookingLevelView: View {
                         }
                         
                         Button {
-                            novice = false
-                            intermediate = false
-                            advanced = false
-                            professional = false
-                            master = true
-                            level = "Master"
+                            draft.cookingLevel = .master
                         } label: {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Master")
@@ -186,7 +155,7 @@ struct CookingLevelView: View {
                             .background(Color("Dark2"))
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .overlay {
-                                if master == true {
+                                if draft.cookingLevel == .master {
                                     RoundedRectangle(cornerRadius: 16)
                                         .strokeBorder(Color("Primary900"), lineWidth: 2)
                                 } else {
@@ -208,7 +177,7 @@ struct CookingLevelView: View {
                             .frame(height: 1)
                             .foregroundStyle(Color("Dark4"))
                     }
-                if level == "" {
+                if draft.cookingLevel == nil {
                     Text("Continue")
                         .foregroundStyle(Color("MyWhite"))
                         .font(.custom("Urbanist-Bold", size: 16))
@@ -221,7 +190,7 @@ struct CookingLevelView: View {
                         .padding(.bottom, 36)
                 } else {
                     NavigationLink {
-                        CompleteProfileView(country: $country, level: $level)
+                        CompleteProfileView(draft: $draft)
                     } label: {
                         Text("Continue")
                             .foregroundStyle(Color("MyWhite"))
@@ -267,5 +236,5 @@ struct CookingLevelView: View {
 }
 
 #Preview {
-    CookingLevelView(country: .constant("France"))
+    CookingLevelView(draft: .constant(SignupDraft(country: "France")))
 }
